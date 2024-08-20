@@ -1,0 +1,170 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import { auth, db } from "../config/firebaseConfig";
+import image from "../images/rafiki.png";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { IoMdEye } from "react-icons/io";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
+
+const SignInPage = () => {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Step 2: Handle input changes
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+  };
+
+  // Step 3: Handle form submission
+  const LoginUser = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Prevent default form submission
+    try {
+      // Attempt to sign in the user with email and password
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      const user = userCredential.user;
+      console.log("User signed in:", user);
+
+      const queryCollection = async (collectionName) => {
+        const q = query(
+          collection(db, collectionName),
+          where("uid", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          return querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }))[0];
+        } else {
+          return null;
+        }
+      };
+      toast.success("You signed in successfully");
+      // Check in "admins" collection
+      let userData = await queryCollection("admins");
+      if (userData) {
+        setLoading(false); // Stop loading
+        navigate("/AdminLayout");
+      }
+
+      userData = await queryCollection("TruckDrivers");
+      if (userData) {
+        setLoading(false); // Stop loading
+        navigate("/TruckDriverLayout");
+      }
+    } catch (error) {
+      setLoading(false); // Stop loading in case of error
+      console.error("Error signing in:", error.message);
+      toast.error("Sign-in failed: " + error.message);
+    }
+  };
+  if (loading) {
+    return <Loader />; // Display loader during transition
+  }
+  return (
+    <div className="flex flex-row justify-center items-center w-screen h-screen bg-blue-500 p-3">
+      <div className="flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
+        <h1 className="w-full text-center text-3xl font-extrabold text-white">
+          LOGO
+        </h1>
+        <div className="flex justify-center items-center w-full">
+          <img
+            src={image}
+            alt="......."
+            className="w-[55%] object-cover mx-auto "
+          />
+        </div>
+
+        <p className="text-lg font-radios w-[80%] text-white">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla
+          deserunt minus beatae fuga, quidem vel animi dolorem, eaque esse hic
+          dicta molestiae veritatis impedit modi ad quo quod aperiam accusantium
+          cumque inventore laboriosam quam labore obcaecati. Laborum quisquam
+          facere sequi?
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[50%] h-full bg-white">
+        <h1 className="w-full text-center text-3xl font-bold text-black">
+          Login to Your Account
+        </h1>
+        <form
+          className="flex flex-col gap-y-5 justify-center items-center w-[60%]"
+          onSubmit={LoginUser}
+        >
+          <input
+            type="email"
+            id="email"
+            className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleInputChange} // Handle input change
+            required
+          />
+
+          <div className="relative w-full">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+            />
+            <span
+              onClick={togglePasswordVisibility}
+              className="absolute right-3 top-3 cursor-pointer"
+            >
+              {showPassword ? (
+                <FaRegEyeSlash size={25} className="text-gray-500" />
+              ) : (
+                <IoMdEye size={25} className="text-gray-500" />
+              )}{" "}
+              {/* Replace with eye and eye-slash icons */}
+            </span>
+          </div>
+
+          <input
+            type="submit"
+            className="inline-block cursor-pointer font-radios px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md w-96 shadow-indigo-500/20 hover:bg-indigo-700"
+            value={"Sign In"}
+          />
+          <div className="flex flex-row gap-x-1 justify-center items-center ">
+            <span className="font-radios">Already Signed In?</span>
+            <Link
+              to={"/signUp"}
+              className="text-blue-500 hover:text-blue-700 font-bold"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default SignInPage;
