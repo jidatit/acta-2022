@@ -42,9 +42,6 @@ export const AuthProvider = ({ children }) => {
       return userData;
     }
 
-    // Check in "users" collection
-
-    // If no user data is found in any collection
     console.log("No such document!");
     return null;
   };
@@ -56,6 +53,11 @@ export const AuthProvider = ({ children }) => {
           setIsEmailVerified(user.emailVerified);
           const userData = await getUserInfo(user.uid);
           setCurrentUser(userData);
+          localStorage.setItem("currentUser", JSON.stringify(userData));
+          localStorage.setItem(
+            "isEmailVerified",
+            JSON.stringify(user.emailVerified)
+          );
           setLoading(false);
           console.log(userData);
         } catch (error) {
@@ -63,6 +65,8 @@ export const AuthProvider = ({ children }) => {
           setCurrentUser(null);
           setIsEmailVerified(false);
           setLoading(false);
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("isEmailVerified");
         }
       } else {
         setCurrentUser(null);
@@ -77,7 +81,8 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       setCurrentUser(null);
       setIsEmailVerified(null);
-
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isEmailVerified");
       // Clear the current user
       // Redirect to the homepage or login page
       console.log("User signed out successfully");
