@@ -1,41 +1,45 @@
-import { useState } from "react";
-import { FaBell } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../AuthContext";
+import { FaBell } from "react-icons/fa";
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState([
-    { street1: "", street2: "", city: "", state: "", zipCode: "" },
-  ]);
+  const { FormData, saveFormData, isSaveClicked, setIsSaveClicked } = useAuth();
+  const [localFormData, setLocalFormData] = useState(FormData);
 
-  const isFormFilled = formData.every((address) =>
+  useEffect(() => {
+    setLocalFormData(FormData);
+  }, [FormData]);
+
+  const isFormFilled = localFormData.every((address) =>
     Object.values(address).every((value) => value.trim() !== "")
   );
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    const newFormData = [...formData];
+    const newFormData = [...localFormData];
     newFormData[index][name] = value;
-    setFormData(newFormData);
+    setLocalFormData(newFormData);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    // Save form data to context
+    saveFormData(localFormData);
+    // Navigate or handle form submission
+    console.log(localFormData);
     // navigate("/TruckDriverLayout/ApplicationForm2");
   };
-
+  const handleSave = (e) => {
+    e.preventDefault();
+    saveFormData(localFormData); // Save form data to context
+    setIsSaveClicked(true); // Update save state
+  };
   const addAddressFields = () => {
-    setFormData([
-      ...formData,
+    setLocalFormData([
+      ...localFormData,
       { street1: "", street2: "", city: "", state: "", zipCode: "" },
     ]);
-  };
-
-  const saveFormInfo = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log(formData);
   };
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[80%]">
@@ -57,7 +61,7 @@ const ApplicationForm2 = () => {
 
       <div className=" flex flex-col w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
-          {formData.map((address, index) => (
+          {localFormData.map((address, index) => (
             <div key={index} className="grid grid-cols-3 gap-4 mb-6">
               <div>
                 <label
@@ -154,7 +158,7 @@ const ApplicationForm2 = () => {
         <div className="flex justify-end w-full gap-x-4">
           <button
             type="submit"
-            onClick={saveFormInfo}
+            onClick={handleSave}
             className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
           >
             Save

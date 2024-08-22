@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { useAuth } from "../AuthContext";
 const ApplicationForm = () => {
   const navigate = useNavigate();
+  const { setIsSaveClicked } = useAuth();
   const [formData, setFormData] = useState({
     applicantName: "",
     appliedDate: "",
@@ -45,6 +47,7 @@ const ApplicationForm = () => {
     e.preventDefault();
     // Handle form submission
     console.log(formData);
+    setIsSaveClicked(false);
     navigate("/TruckDriverLayout/ApplicationForm2");
   };
   const saveFormInfo = (e) => {

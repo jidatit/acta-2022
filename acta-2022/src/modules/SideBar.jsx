@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../index.css";
 import image from "../images/pngwing.com.png";
 import { useAuth } from "../AuthContext";
@@ -7,10 +7,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const SideBar = () => {
-  const { currentUser, handleLogout } = useAuth();
+  const { currentUser, handleLogout, setIsRouteChanging } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const { isSaveClicked } = useAuth();
+  const [completedSections, setCompletedSections] = useState([]);
   const [currentSection, setCurrentSection] = useState("Section 1");
   const sections = [
     "Section 1",
@@ -38,13 +40,20 @@ const SideBar = () => {
     "/TruckDriverLayout/ApplicationForm10": "Section 10",
     "/TruckDriverLayout/ApplicationForm11": "Section 11",
   };
+
   useEffect(() => {
     const currentPath = location.pathname;
     const correspondingSection = routeToSectionMap[currentPath];
     if (correspondingSection) {
       setCurrentSection(correspondingSection);
+      if (!completedSections.includes(correspondingSection)) {
+        setCompletedSections((prevSections) => [
+          ...prevSections,
+          correspondingSection,
+        ]);
+      }
     }
-    console.log("Current section: " + currentSection);
+    console.log(completedSections);
   }, [location.pathname]);
 
   const handleItemClick = (item) => {
@@ -52,9 +61,19 @@ const SideBar = () => {
   };
 
   const handleSectionClick = (section, index) => {
-    setCurrentSection(section);
+    if (!isSaveClicked) {
+      alert(
+        "Please save the current form before navigating to another section."
+      );
+      return;
+    }
 
-    navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
+    if (completedSections.includes(sections[index])) {
+      setCurrentSection(section);
+      navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
+    } else {
+      alert("Please complete the previous sections first.");
+    }
   };
 
   const handleEdit = () => {
@@ -163,18 +182,18 @@ const SideBar = () => {
                 >
                   <div
                     className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
-                      currentSection === section
+                      completedSections.includes(section)
                         ? "bg-white border-2 border-blue-500"
                         : "bg-blue-500 border-2 border-white"
                     }`}
                   >
-                    {currentSection === section && index === 0 && (
+                    {completedSections.includes(section) && index === 0 && (
                       <div className="w-3 h-3 bg-white rounded-full"></div>
                     )}
                   </div>
                   <span
                     className={`ml-4 ${
-                      currentSection === section
+                      completedSections.includes(section)
                         ? "text-white"
                         : "text-gray-300"
                     }`}

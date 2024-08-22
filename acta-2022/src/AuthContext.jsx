@@ -11,6 +11,52 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [FormData, setFormData] = useState([
+    { street1: "", street2: "", city: "", state: "", zipCode: "" },
+  ]);
+  const [FormData1, setFormData1] = useState([
+    {
+      applicantName: "",
+      appliedDate: "",
+      positionApplied: "",
+      ssn: "",
+      DOB: "",
+      gender: "",
+      referredBy: "",
+      legalRightToWork: "",
+      payExpected: "",
+      street1: "",
+      street2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      cellPhone: "",
+      Email: "",
+      EmergencyContact: "",
+      Relationship: "",
+      CDL: "",
+      CDLState: "",
+      CDLClass: "",
+      CDLExpirationDate: "",
+      EverBeenDeniedALicense: "",
+      PermitPrivilegeOfLicense: "",
+      TestedPositiveOrRefusedDotDrug: "",
+      EverConvictedOfFelony: "",
+    },
+  ]);
+  const [isSaveClicked, setIsSaveClicked] = useState(false);
+  console.log(FormData);
+  const saveFormData = (data) => {
+    setFormData(data);
+
+    setIsSaveClicked(true);
+  };
+  const saveForm1Data = (data) => {
+    setFormData1(data);
+
+    setIsSaveClicked(true);
+  };
   const getUserInfo = async (uid) => {
     console.log(uid);
 
@@ -106,6 +152,13 @@ export const AuthProvider = ({ children }) => {
         handleLogout,
         loading,
         verifyEmail,
+        saveFormData,
+        FormData,
+        setFormData,
+        isSaveClicked,
+        setIsSaveClicked,
+        saveForm1Data,
+        Fo,
       }}
     >
       {children}
