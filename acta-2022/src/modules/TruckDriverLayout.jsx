@@ -1,5 +1,4 @@
 import { Outlet, useNavigate } from "react-router";
-import Navbar from "./Navbar";
 import SideBar from "./SideBar";
 import { useAuth } from "../AuthContext";
 

@@ -19,18 +19,18 @@ const AdminSidebar = () => {
     <div className="bg-[#2257e7] h-full w-full">
       <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-10">
         <div className="flex w-full">
-          <h1 className="text-2xl font-bold text-black p-3 w-full rounded-lg bg-white">
+          <h1 className="w-full p-3 text-2xl font-bold text-black bg-white rounded-lg">
             Logo
           </h1>
         </div>
-        <div className="flex flex-row justify-between w-full items-center">
-          <div className="flex gap-x-2 w-full ">
+        <div className="flex flex-row items-center justify-between w-full">
+          <div className="flex w-full gap-x-2 ">
             <img
               src={image}
               alt="..."
-              className="w-10 h-10 object-cover rounded-full"
+              className="object-cover w-10 h-10 rounded-full"
             />
-            <div className="flex flex-col justify-center items-start ">
+            <div className="flex flex-col items-start justify-center ">
               <p className="text-[14px] text-white font-radios">
                 {currentUser ? currentUser.firstName : "Guest"}
               </p>
