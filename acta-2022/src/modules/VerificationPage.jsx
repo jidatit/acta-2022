@@ -18,12 +18,7 @@ const VerificationPage = () => {
       setLoading(false);
       if (isEmailVerified) {
         console.log("emailVerified");
-        if (currentUser.userType === "admins") {
-          toast.success("redirecting to Admin dashboard");
-          setTimeout(() => {
-            navigate("/EmployeeLayout");
-          }, 3000);
-        }
+
         if (currentUser.userType === "TruckDriver") {
           toast.success("redirecting to TruckDriver dashboard");
           setTimeout(() => {

@@ -11,8 +11,8 @@ const VirtualAssistantDashboard = () => {
     ); // or you can display a fallback UI or redirect
   }
   return (
-    <div className="flex flex-col gap-y-10 items-start justify-start h-full px-6 py-10">
-      <h1 className="text-xl text-black font-bold">Coming Soon..........</h1>
+    <div className="flex flex-col items-start justify-start h-full px-6 py-10 gap-y-10">
+      <h1 className="text-xl font-bold text-black">Coming Soon..........</h1>
       <div className="flex flex-col items-center justify-center">
         <h1>Login As : {currentUser.userType} </h1>
         <p>Email : {currentUser.email}</p>

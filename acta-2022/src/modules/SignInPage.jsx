@@ -64,7 +64,7 @@ const SignInPage = () => {
       };
       toast.success("You signed in successfully");
       // Check in "admins" collection
-      let userData = await queryCollection("admins");
+      let userData = await queryCollection("admin");
       if (userData) {
         setLoading(false); // Stop loading
         navigate("/AdminLayout");
