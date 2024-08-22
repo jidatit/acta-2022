@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Check in "admins" collection
-    let userData = await queryCollection("admins");
+    let userData = await queryCollection("admin");
     if (userData) {
       console.log("User Data from admins:", userData);
       return userData;

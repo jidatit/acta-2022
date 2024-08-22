@@ -11,11 +11,14 @@ const TruckDriverLayout = () => {
     <>
       {isEmailVerified ? (
         <div className="flex flex-row w-full h-screen">
-          <div className="w-[15%] h-full">
+          {/* Fixed Sidebar */}
+          <div className="w-[15%] h-screen fixed">
             <SideBar />
           </div>
-          <div className="w-[85%] flex flex-col h-full">
-            <div className="flex items-center justify-center flex-grow w-full">
+
+          {/* Scrollable Outlet */}
+          <div className="w-[85%] ml-[15%] flex flex-col h-screen overflow-y-auto">
+            <div className="flex items-center justify-center flex-grow w-full py-10">
               <Outlet />
             </div>
           </div>

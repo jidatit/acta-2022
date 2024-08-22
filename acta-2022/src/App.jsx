@@ -20,6 +20,9 @@ import TruckDriverDashboard from "./modules/TruckDriverDashboard";
 import AdminLayout from "./modules/AdminLayout";
 import AdminDashboard from "./modules/AdminDashboard";
 import AllUsers from "./modules/AllUsers";
+import ApplicationForm from "./modules/ApplicationForm1";
+import ApplicationForm2 from "./modules/ApplicationForm2";
+import ApplicationForm3 from "./modules/ApplicationForm3";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -60,6 +63,24 @@ function App() {
                   index
                   element={
                     currentUser ? <TruckDriverDashboard /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm1"
+                  element={
+                    currentUser ? <ApplicationForm /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm2"
+                  element={
+                    currentUser ? <ApplicationForm2 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm3"
+                  element={
+                    currentUser ? <ApplicationForm3 /> : <Navigate to="/" />
                   }
                 />
               </Route>

@@ -59,7 +59,7 @@ const SignUpPage = () => {
       );
       const user = userCredential.user;
 
-      let collectionName = "TruckDrivers";
+      let collectionName = "admin";
       // switch (selected) {
       //   case "TruckDriver":
       //     collectionName = "TruckDrivers";
@@ -79,11 +79,11 @@ const SignUpPage = () => {
         lastName: formData.lastName,
         email: formData.email,
         password: hashedPassword,
-        userType: "TruckDriver",
+        userType: "Admin",
         dateCreated: new Date(),
       });
       console.log(collectionName);
-      if (collectionName !== "admins") {
+      if (collectionName !== "admin") {
         await sendEmailVerification(user);
       }
 
@@ -98,12 +98,12 @@ const SignUpPage = () => {
       setSelected("SignUp As");
 
       toast.success("You registered successfully!");
-      if (collectionName === "admins") {
+      if (collectionName === "admin") {
         setTimeout(() => {
           navigate("/AdminLayout");
         }, 3000);
       }
-      if (collectionName !== "admins") {
+      if (collectionName !== "admin") {
         setTimeout(() => {
           navigate("/verificationPage");
         }, 3000);
@@ -153,12 +153,12 @@ const SignUpPage = () => {
     } // Log form data to the console
   };
   return (
-    <div className="flex flex-row justify-center items-center w-screen h-screen bg-blue-500 p-3">
+    <div className="flex flex-row items-center justify-center w-screen h-screen p-3 bg-blue-500">
       <div className="flex flex-col gap-y-6 justify-center items-center w-[50%] h-full ">
-        <h1 className="w-full text-center text-3xl font-extrabold text-white">
+        <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
         </h1>
-        <div className="flex justify-center items-center w-full">
+        <div className="flex items-center justify-center w-full">
           <img
             src={image}
             alt="......."
@@ -176,7 +176,7 @@ const SignUpPage = () => {
       </div>
 
       <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[50%] h-full bg-white">
-        <h1 className="w-full text-center text-3xl font-bold text-black">
+        <h1 className="w-full text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
         <form
@@ -187,7 +187,7 @@ const SignUpPage = () => {
             <input
               type="text"
               id="firstName"
-              className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="First Name"
               value={formData.firstName}
               onChange={handleInputChange} // Handle input change
@@ -196,7 +196,7 @@ const SignUpPage = () => {
             <input
               type="text"
               id="lastName"
-              className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Last Name"
               value={formData.lastName}
               onChange={handleInputChange} // Handle input change
@@ -206,7 +206,7 @@ const SignUpPage = () => {
           <input
             type="email"
             id="email"
-            className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+            className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
             placeholder="Email Address"
             value={formData.email}
             onChange={handleInputChange} // Handle input change
@@ -217,7 +217,7 @@ const SignUpPage = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
@@ -225,7 +225,7 @@ const SignUpPage = () => {
             />
             <span
               onClick={togglePasswordVisibility}
-              className="absolute right-3 top-3 cursor-pointer"
+              className="absolute cursor-pointer right-3 top-3"
             >
               {showPassword ? (
                 <FaRegEyeSlash size={25} className="text-gray-500" />
@@ -240,7 +240,7 @@ const SignUpPage = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className="block w-full p-4 text-sm text-gray-900 rounded-lg bg-blue-100 focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleInputChange}
@@ -248,7 +248,7 @@ const SignUpPage = () => {
             />
             <span
               onClick={toggleConfirmPasswordVisibility}
-              className="absolute right-3 top-3 cursor-pointer"
+              className="absolute cursor-pointer right-3 top-3"
             >
               {showConfirmPassword ? (
                 <FaRegEyeSlash size={25} className="text-gray-500" />
@@ -260,14 +260,14 @@ const SignUpPage = () => {
           </div>
           <input
             type="submit"
-            className="inline-block cursor-pointer font-radios px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md w-96 shadow-indigo-500/20 hover:bg-indigo-700"
+            className="inline-block px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios w-96 shadow-indigo-500/20 hover:bg-indigo-700"
             value={"Sign Up"}
           />
-          <div className="flex flex-row gap-x-1 justify-center items-center ">
+          <div className="flex flex-row items-center justify-center gap-x-1 ">
             <span className="font-radios">Already Signed Up?</span>
             <Link
               to={"/signIn"}
-              className="text-blue-500 hover:text-blue-700 font-bold"
+              className="font-bold text-blue-500 hover:text-blue-700"
             >
               Login
             </Link>

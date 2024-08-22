@@ -1,16 +1,62 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../index.css";
 import image from "../images/pngwing.com.png";
 import { useAuth } from "../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+
 const SideBar = () => {
-  const [activeItem, setActiveItem] = useState("JobApplication");
   const { currentUser, handleLogout } = useAuth();
+  const [activeItem, setActiveItem] = useState("JobApplication");
+  const navigate = useNavigate();
+
+  const [currentSection, setCurrentSection] = useState("Section 1");
+  const sections = [
+    "Section 1",
+    "Section 2",
+    "Section 3",
+    "Section 4",
+    "Section 5",
+    "Section 6",
+    "Section 7",
+    "Section 8",
+    "Section 9",
+    "Section 10",
+    "Section 11",
+  ];
+  const routeToSectionMap = {
+    "/TruckDriverLayout/ApplicationForm1": "Section 1",
+    "/TruckDriverLayout/ApplicationForm2": "Section 2",
+    "/TruckDriverLayout/ApplicationForm3": "Section 3",
+    "/TruckDriverLayout/ApplicationForm4": "Section 4",
+    "/TruckDriverLayout/ApplicationForm5": "Section 5",
+    "/TruckDriverLayout/ApplicationForm6": "Section 6",
+    "/TruckDriverLayout/ApplicationForm7": "Section 7",
+    "/TruckDriverLayout/ApplicationForm8": "Section 8",
+    "/TruckDriverLayout/ApplicationForm9": "Section 9",
+    "/TruckDriverLayout/ApplicationForm10": "Section 10",
+    "/TruckDriverLayout/ApplicationForm11": "Section 11",
+  };
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const correspondingSection = routeToSectionMap[currentPath];
+    if (correspondingSection) {
+      setCurrentSection(correspondingSection);
+    }
+    console.log("Current section: " + currentSection);
+  }, [location.pathname]);
+
   const handleItemClick = (item) => {
     setActiveItem(item);
   };
+
+  const handleSectionClick = (section, index) => {
+    setCurrentSection(section);
+
+    navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
+  };
+
   const handleEdit = () => {
     console.log("edit item");
   };
@@ -84,7 +130,7 @@ const SideBar = () => {
         </div>
         <div className="flex flex-col w-full gap-y-4">
           <Link
-            to=""
+            to="/TruckDriverLayout/ApplicationForm1"
             className={`w-full transition-all duration-300 ease-in-out rounded-md ${
               activeItem === "JobApplication"
                 ? "bg-white rounded-md shadow-lg"
@@ -100,23 +146,45 @@ const SideBar = () => {
               Job Application
             </p>
           </Link>
-          {/* <Link
-            to="users"
-            className={`w-full transition-all duration-300 ease-in-out rounded-md ${
-              activeItem === "Users"
-                ? "bg-white rounded-md shadow-lg"
-                : "hover:bg-white rounded-md hover:text-blue-900"
-            }`}
-            onClick={() => handleItemClick("Users")}
-          >
-            <p
-              className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 ${
-                activeItem === "Users" ? "text-blue-800" : "text-white"
-              }`}
-            >
-              Users
-            </p>
-          </Link> */}
+
+          <div className="w-full h-full overflow-hidden">
+            <div
+              className="absolute border-l-2 border-white left-[1.9rem]"
+              style={{
+                height: `calc(99% - ${(sections.length - 1) * 2}rem)`,
+              }}
+            ></div>
+            <ul className="relative space-y-8">
+              {sections.map((section, index) => (
+                <li
+                  key={index}
+                  className="flex items-center text-white cursor-pointer"
+                  onClick={() => handleSectionClick(section, index)}
+                >
+                  <div
+                    className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
+                      currentSection === section
+                        ? "bg-white border-2 border-blue-500"
+                        : "bg-blue-500 border-2 border-white"
+                    }`}
+                  >
+                    {currentSection === section && index === 0 && (
+                      <div className="w-3 h-3 bg-white rounded-full"></div>
+                    )}
+                  </div>
+                  <span
+                    className={`ml-4 ${
+                      currentSection === section
+                        ? "text-white"
+                        : "text-gray-300"
+                    }`}
+                  >
+                    {section}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
