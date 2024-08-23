@@ -7,7 +7,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const SideBar = () => {
-  const { currentUser, handleLogout, setIsRouteChanging } = useAuth();
+  const { currentUser, handleLogout } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,6 +61,7 @@ const SideBar = () => {
   };
 
   const handleSectionClick = (section, index) => {
+    // Check if the current section is saved
     if (!isSaveClicked) {
       alert(
         "Please save the current form before navigating to another section."
@@ -68,7 +69,18 @@ const SideBar = () => {
       return;
     }
 
-    if (completedSections.includes(sections[index])) {
+    // Ensure that all previous sections are completed before navigating to the next section
+    const previousSectionsCompleted = sections
+      .slice(0, index)
+      .every((sec) => completedSections.includes(sec));
+
+    if (!previousSectionsCompleted) {
+      alert("Please complete the previous sections before moving forward.");
+      return;
+    }
+
+    // Check if the current section is completed or it's the first section
+    if (completedSections.includes(sections[index]) || index === 0) {
       setCurrentSection(section);
       navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
     } else {

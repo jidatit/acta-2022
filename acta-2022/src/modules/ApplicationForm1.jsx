@@ -47,11 +47,12 @@ const ApplicationForm = () => {
     e.preventDefault();
     // Handle form submission
     console.log(formData);
-    setIsSaveClicked(false);
+    setIsSaveClicked(true);
     navigate("/TruckDriverLayout/ApplicationForm2");
   };
   const saveFormInfo = (e) => {
     e.preventDefault();
+    setIsSaveClicked(true);
     // Handle form submission
     console.log(formData);
   };

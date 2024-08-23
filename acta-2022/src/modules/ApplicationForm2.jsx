@@ -4,36 +4,75 @@ import { useAuth } from "../AuthContext";
 import { FaBell } from "react-icons/fa";
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
-  const { FormData, saveFormData, isSaveClicked, setIsSaveClicked } = useAuth();
+  const { FormData, saveFormData, setIsSaveClicked } = useAuth();
   const [localFormData, setLocalFormData] = useState(FormData);
-
+  const [errors, setErrors] = useState([]);
   useEffect(() => {
     setLocalFormData(FormData);
   }, [FormData]);
-
-  const isFormFilled = localFormData.every((address) =>
-    Object.values(address).every((value) => value.trim() !== "")
-  );
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const newFormData = [...localFormData];
     newFormData[index][name] = value;
     setLocalFormData(newFormData);
+    const allFieldsEmpty = newFormData.every((address) =>
+      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+    );
+
+    // Set isSaveClicked based on whether all fields are empty
+    setIsSaveClicked(allFieldsEmpty);
+
+    // Clear errors for the current field if it's no longer empty
+    if (errors[index] && errors[index][name]) {
+      const newErrors = [...errors];
+      delete newErrors[index][name];
+      setErrors(newErrors);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Save form data to context
-    saveFormData(localFormData);
-    // Navigate or handle form submission
-    console.log(localFormData);
-    // navigate("/TruckDriverLayout/ApplicationForm2");
+    const newErrors = localFormData.map((address) => {
+      const addressErrors = {};
+      Object.entries(address).forEach(([key, value]) => {
+        if (value.trim() === "") {
+          addressErrors[key] = "This field is required";
+        }
+      });
+      return addressErrors;
+    });
+
+    setErrors(newErrors);
+
+    // If there are no errors, proceed with form submission
+    if (newErrors.every((address) => Object.keys(address).length === 0)) {
+      saveFormData(localFormData);
+      setIsSaveClicked(false);
+      navigate("/TruckDriverLayout/ApplicationForm3");
+    }
   };
   const handleSave = (e) => {
     e.preventDefault();
-    saveFormData(localFormData); // Save form data to context
-    setIsSaveClicked(true); // Update save state
+
+    const newErrors = localFormData.map((address) => {
+      const addressErrors = {};
+      Object.entries(address).forEach(([key, value]) => {
+        if (value.trim() === "") {
+          addressErrors[key] = "This field is required";
+        }
+      });
+      return addressErrors;
+    });
+
+    setErrors(newErrors);
+
+    // If there are no errors, proceed with form submission
+    if (newErrors.every((address) => Object.keys(address).length === 0)) {
+      saveFormData(localFormData);
+      setIsSaveClicked(true);
+    }
   };
   const addAddressFields = () => {
     setLocalFormData([
@@ -52,7 +91,6 @@ const ApplicationForm2 = () => {
             List all addresses in previous three years
           </p>
         </div>
-
         <FaBell
           size={45}
           className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
@@ -76,8 +114,17 @@ const ApplicationForm2 = () => {
                   id={`street1-${index}`}
                   value={address.street1}
                   onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  className={`w-full p-2 mt-1 border ${
+                    errors[index] && errors[index].street1
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md`}
                 />
+                {errors[index] && errors[index].street1 && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].street1}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -92,8 +139,17 @@ const ApplicationForm2 = () => {
                   id={`street2-${index}`}
                   value={address.street2}
                   onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  className={`w-full p-2 mt-1 border ${
+                    errors[index] && errors[index].street2
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md`}
                 />
+                {errors[index] && errors[index].street2 && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].street2}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -108,8 +164,17 @@ const ApplicationForm2 = () => {
                   id={`city-${index}`}
                   value={address.city}
                   onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  className={`w-full p-2 mt-1 border ${
+                    errors[index] && errors[index].city
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md`}
                 />
+                {errors[index] && errors[index].city && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].city}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -124,8 +189,17 @@ const ApplicationForm2 = () => {
                   id={`state-${index}`}
                   value={address.state}
                   onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  className={`w-full p-2 mt-1 border ${
+                    errors[index] && errors[index].state
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md`}
                 />
+                {errors[index] && errors[index].state && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].state}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -140,8 +214,17 @@ const ApplicationForm2 = () => {
                   id={`zipCode-${index}`}
                   value={address.zipCode}
                   onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  className={`w-full p-2 mt-1 border ${
+                    errors[index] && errors[index].zipCode
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md`}
                 />
+                {errors[index] && errors[index].zipCode && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].zipCode}
+                  </p>
+                )}
               </div>
             </div>
           ))}
@@ -159,19 +242,14 @@ const ApplicationForm2 = () => {
           <button
             type="submit"
             onClick={handleSave}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!isFormFilled}
-            className={`px-6 py-2 font-semibold text-white rounded-lg  ${
-              isFormFilled
-                ? "bg-blue-500 hover:bg-blue-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
           >
             Next
           </button>

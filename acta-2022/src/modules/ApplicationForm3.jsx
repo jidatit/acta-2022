@@ -1,27 +1,17 @@
 import { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { useAuth } from "../AuthContext";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();
-  const [formFields, setFormFields] = useState([
-    {
-      companyName: "",
-      street: "",
-      city: "",
-      zipCode: "",
-      contactPerson: "",
-      phone: "",
-      fax1: "",
-      from: "",
-      to: "",
-      position: "",
-      salary: "",
-      leavingReason: "",
-      subjectToFMCSRs: "",
-      jobDesignatedAsSafetySensitive: "",
-    },
-  ]);
-  const isFormFilled = formFields.every((field) =>
+  const {
+    saveFormData3,
+    FormData3,
+    setFormData3,
+    setIsSaveClicked,
+  } = useAuth();
+  const [localFormData, setLocalFormData] = useState(FormData3);
+  const isFormFilled = localFormData.every((field) =>
     Object.values(field).every((value) => {
       console.log("Checking value:", value); // Debugging line
       return value.trim() !== "";
@@ -29,18 +19,22 @@ const ApplicationForm3 = () => {
   );
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formFields);
+    setIsSaveClicked(false);
+    console.log(localFormData);
+
     // navigate("/TruckDriverLayout/ApplicationForm2");
   };
 
   const saveFormInfo = (e) => {
     e.preventDefault();
-    console.log(formFields);
+    saveFormData3(localFormData);
+    setIsSaveClicked(true);
+    console.log(localFormData);
   };
 
   const handleAddCompany = () => {
-    setFormFields([
-      ...formFields,
+    setLocalFormData([
+      ...localFormData,
       {
         companyName: "",
         street: "",
@@ -62,12 +56,12 @@ const ApplicationForm3 = () => {
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedFields = formFields.map((field, i) =>
+    const updatedFields = localFormData.map((field, i) =>
       i === index
         ? { ...field, [name.replace(`company-${index}-`, "")]: value }
         : field
     );
-    setFormFields(updatedFields);
+    setLocalFormData(updatedFields);
   };
 
   return (
@@ -100,7 +94,7 @@ const ApplicationForm3 = () => {
 
       <div className=" flex flex-col w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
-          {formFields.map((field, index) => (
+          {localFormData.map((field, index) => (
             <div key={index} className="mb-6">
               <div className="grid w-full grid-cols-3 gap-4 mb-6">
                 <div>

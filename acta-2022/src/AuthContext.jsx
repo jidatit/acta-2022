@@ -15,34 +15,22 @@ export const AuthProvider = ({ children }) => {
   const [FormData, setFormData] = useState([
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
   ]);
-  const [FormData1, setFormData1] = useState([
+  const [FormData3, setFormData3] = useState([
     {
-      applicantName: "",
-      appliedDate: "",
-      positionApplied: "",
-      ssn: "",
-      DOB: "",
-      gender: "",
-      referredBy: "",
-      legalRightToWork: "",
-      payExpected: "",
-      street1: "",
-      street2: "",
+      companyName: "",
+      street: "",
       city: "",
-      state: "",
       zipCode: "",
-      cellPhone: "",
-      Email: "",
-      EmergencyContact: "",
-      Relationship: "",
-      CDL: "",
-      CDLState: "",
-      CDLClass: "",
-      CDLExpirationDate: "",
-      EverBeenDeniedALicense: "",
-      PermitPrivilegeOfLicense: "",
-      TestedPositiveOrRefusedDotDrug: "",
-      EverConvictedOfFelony: "",
+      contactPerson: "",
+      phone: "",
+      fax1: "",
+      from: "",
+      to: "",
+      position: "",
+      salary: "",
+      leavingReason: "",
+      subjectToFMCSRs: "",
+      jobDesignatedAsSafetySensitive: "",
     },
   ]);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
@@ -52,11 +40,13 @@ export const AuthProvider = ({ children }) => {
 
     setIsSaveClicked(true);
   };
-  const saveForm1Data = (data) => {
-    setFormData1(data);
+
+  const saveFormData3 = (data) => {
+    setFormData3(data);
 
     setIsSaveClicked(true);
   };
+  console.log(FormData3);
   const getUserInfo = async (uid) => {
     console.log(uid);
 
@@ -155,10 +145,11 @@ export const AuthProvider = ({ children }) => {
         saveFormData,
         FormData,
         setFormData,
+        saveFormData3,
+        FormData3,
+        setFormData3,
         isSaveClicked,
         setIsSaveClicked,
-        saveForm1Data,
-        Fo,
       }}
     >
       {children}
