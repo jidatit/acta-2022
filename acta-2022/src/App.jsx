@@ -11,18 +11,18 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 import { AuthProvider, useAuth } from "./AuthContext";
-import VerificationPage from "./modules/VerificationPage";
-import SignUpPage from "./modules/SignUpPage";
-import SignInPage from "./modules/SignInPage";
-import AuthLayout from "./modules/AuthLayout";
-import TruckDriverLayout from "./modules/TruckDriverLayout";
-import TruckDriverDashboard from "./modules/TruckDriverDashboard";
-import AdminLayout from "./modules/AdminLayout";
-import AdminDashboard from "./modules/AdminDashboard";
-import AllUsers from "./modules/AllUsers";
-import ApplicationForm from "./modules/ApplicationForm1";
-import ApplicationForm2 from "./modules/ApplicationForm2";
-import ApplicationForm3 from "./modules/ApplicationForm3";
+import VerificationPage from "./modules/AuthComponents/VerificationPage";
+import SignUpPage from "./modules/AuthComponents/SignUpPage";
+import SignInPage from "./modules/AuthComponents/SignInPage";
+import AuthLayout from "./modules/AuthComponents/AuthLayout";
+import TruckDriverLayout from "./modules/TruckDriverComponents/TruckDriverLayout";
+import TruckDriverDashboard from "./modules/TruckDriverComponents/TruckDriverDashboard";
+import AdminLayout from "./modules/AdminComponents/AdminLayout";
+import AdminDashboard from "./modules/AdminComponents/AdminDashboard";
+import AllUsers from "./modules/AdminComponents/AllUsers";
+import ApplicationForm from "./modules/ApplicationForms/ApplicationForm1";
+import ApplicationForm2 from "./modules/ApplicationForms/ApplicationForm2";
+import ApplicationForm3 from "./modules/ApplicationForms/ApplicationForm3";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">

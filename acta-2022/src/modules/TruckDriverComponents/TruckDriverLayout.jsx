@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router";
-import SideBar from "./SideBar";
-import { useAuth } from "../AuthContext";
+import SideBar from "../UiComponents/SideBar";
+import { useAuth } from "../../AuthContext";
 
 const TruckDriverLayout = () => {
   const navigate = useNavigate();
