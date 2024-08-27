@@ -5,7 +5,7 @@ import image from "../../images/pngwing.com.png";
 import { useAuth } from "../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-const AdminSidebar = () => {
+const AdminSidebar = ({ isSidebarExpanded }) => {
   const [activeItem, setActiveItem] = useState("JobApplication");
   const { currentUser, handleLogout } = useAuth();
   const handleItemClick = (item) => {
@@ -16,7 +16,11 @@ const AdminSidebar = () => {
   };
 
   return (
-    <div className="bg-[#2257e7] h-full w-full">
+    <div
+      className={`bg-[#2257e7] h-full w-full ${
+        !isSidebarExpanded ? "hidden md:flex" : "flex"
+      }`}
+    >
       <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-10">
         <div className="flex w-full">
           <h1 className="w-full p-3 text-2xl font-bold text-black bg-white rounded-lg">

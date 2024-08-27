@@ -1,60 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../AuthContext";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  const { setIsSaveClicked } = useAuth();
-  const [formData, setFormData] = useState({
-    applicantName: "",
-    appliedDate: "",
-    positionApplied: "",
-    ssn: "",
-    DOB: "",
-    gender: "",
-    referredBy: "",
-    legalRightToWork: "",
-    payExpected: "",
-    street1: "",
-    street2: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    cellPhone: "",
-    Email: "",
-    EmergencyContact: "",
-    Relationship: "",
-    CDL: "",
-    CDLState: "",
-    CDLClass: "",
-    CDLExpirationDate: "",
-    EverBeenDeniedALicense: "",
-    PermitPrivilegeOfLicense: "",
-    TestedPositiveOrRefusedDotDrug: "",
-    EverConvictedOfFelony: "",
-  });
-  const isFormFilled = Object.values(formData).every(
-    (value) => value.trim() !== ""
-  );
+  const { setIsSaveClicked, currentUser, FormData1, saveFormData1 } = useAuth();
+  const [formData, setFormData] = useState(FormData1);
+
+  const [errors, setErrors] = useState({});
+  useEffect(() => {
+    setIsSaveClicked(true);
+  }, []);
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (e.target.value.trim() !== "") {
+      setErrors((prevErrors) => ({ ...prevErrors, [e.target.name]: "" }));
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-    setIsSaveClicked(true);
-    navigate("/TruckDriverLayout/ApplicationForm2");
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key].trim()) {
+        newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} is required`;
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
-  const saveFormInfo = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSaveClicked(true);
-    // Handle form submission
-    console.log(formData);
+    if (validateForm()) {
+      saveFormData1(formData);
+      try {
+        const applicationData = { ...formData, submittedAt: new Date() };
+
+        // Reference to the specific document in the collection
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+
+        // Check if the document exists
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Document exists, update it
+          await updateDoc(docRef, {
+            form1: applicationData, // Use a descriptive key for each form
+          });
+        } else {
+          // Document does not exist, create it
+          await setDoc(docRef, {
+            form1: applicationData,
+          });
+        }
+        console.log(formData);
+
+        setIsSaveClicked(true);
+        navigate("/TruckDriverLayout/ApplicationForm2");
+      } catch (error) {
+        console.error("Error saving application: ", error);
+      }
+    }
+  };
+
+  const saveFormInfo = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      saveFormData1(formData);
+      try {
+        const applicationData = { ...formData, submittedAt: new Date() };
+
+        // Reference to the specific document in the collection
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+
+        // Check if the document exists
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // Document exists, update it
+          await updateDoc(docRef, {
+            form1: applicationData, // Use a descriptive key for each form
+          });
+        } else {
+          // Document does not exist, create it
+          await setDoc(docRef, {
+            form1: applicationData,
+          });
+        }
+
+        setIsSaveClicked(true);
+      } catch (error) {
+        console.error("Error saving application: ", error);
+      }
+    }
   };
 
   return (
@@ -84,12 +127,19 @@ const ApplicationForm = () => {
               id="applicantName"
               value={formData.applicantName}
               onChange={handleChange}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+              className={`w-full p-2 mt-1 border rounded-md ${
+                errors.applicantName ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.applicantName && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.applicantName}
+              </p>
+            )}
           </div>
 
           {/* Line 2: Applied Date, Position Applied For, SSN */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 mb-6 md md:grid-cols-3">
             <div>
               <label
                 htmlFor="appliedDate"
@@ -103,8 +153,15 @@ const ApplicationForm = () => {
                 id="appliedDate"
                 value={formData.appliedDate}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.appliedDate ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.appliedDate && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.appliedDate}
+                </p>
+              )}
             </div>
             <div>
               <label
@@ -118,8 +175,15 @@ const ApplicationForm = () => {
                 id="positionApplied"
                 value={formData.positionApplied}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.positionApplied ? "border-red-500" : "border-gray-300"
+                }`}
               >
+                {errors.positionApplied && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.positionApplied}
+                  </p>
+                )}
                 <option value="">Select Position</option>
                 <option value="position1">Position 1</option>
                 <option value="position2">Position 2</option>
@@ -138,13 +202,18 @@ const ApplicationForm = () => {
                 id="ssn"
                 value={formData.ssn}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.ssn ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.ssn && (
+                <p className="mt-1 text-sm text-red-500">{errors.ssn}</p>
+              )}
             </div>
           </div>
 
           {/* Line 3: Date of Birth, Gender, Who Referred You */}
-          <div className="grid justify-center grid-cols-3 gap-4 mb-6">
+          <div className="grid justify-center grid-cols-1 gap-4 mb-6 md:grid-cols-3">
             <div>
               <label
                 htmlFor="DOB"
@@ -158,8 +227,13 @@ const ApplicationForm = () => {
                 id="DOB"
                 value={formData.DOB}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.DOB ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.DOB && (
+                <p className="mt-1 text-sm text-red-500">{errors.DOB}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-900 font-radios">
@@ -203,8 +277,13 @@ const ApplicationForm = () => {
                 id="referredBy"
                 value={formData.referredBy}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.referredBy ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.referredBy && (
+                <p className="mt-1 text-sm text-red-500">{errors.referredBy}</p>
+              )}
             </div>
           </div>
 
@@ -252,13 +331,20 @@ const ApplicationForm = () => {
                 id="payExpected"
                 value={formData.payExpected}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.payExpected ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.payExpected && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.payExpected}
+                </p>
+              )}
             </div>
           </div>
 
           {/* Line 5-8: Address Details */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
             <div>
               <label
                 htmlFor="street1"
@@ -272,8 +358,13 @@ const ApplicationForm = () => {
                 id="street1"
                 value={formData.street1}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.street1 ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.street1 && (
+                <p className="mt-1 text-sm text-red-500">{errors.street1}</p>
+              )}
             </div>
             <div>
               <label
@@ -288,8 +379,13 @@ const ApplicationForm = () => {
                 id="street2"
                 value={formData.street2}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.street2 ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.street2 && (
+                <p className="mt-1 text-sm text-red-500">{errors.street2}</p>
+              )}
             </div>
             <div>
               <label
@@ -304,8 +400,13 @@ const ApplicationForm = () => {
                 id="city"
                 value={formData.city}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.city ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.city && (
+                <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+              )}
             </div>
             <div>
               <label
@@ -320,8 +421,13 @@ const ApplicationForm = () => {
                 id="state"
                 value={formData.state}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.state ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.state && (
+                <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+              )}
             </div>
             <div>
               <label
@@ -336,8 +442,13 @@ const ApplicationForm = () => {
                 id="zipCode"
                 value={formData.zipCode}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.zipCode ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.zipCode && (
+                <p className="mt-1 text-sm text-red-500">{errors.zipCode}</p>
+              )}
             </div>
             <div>
               <label
@@ -352,8 +463,13 @@ const ApplicationForm = () => {
                 id="cellPhone"
                 value={formData.cellPhone}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.cellPhone ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.cellPhone && (
+                <p className="mt-1 text-sm text-red-500">{errors.cellPhone}</p>
+              )}
             </div>
             <div>
               <label
@@ -368,8 +484,13 @@ const ApplicationForm = () => {
                 id="Email"
                 value={formData.Email}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.Email ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.Email && (
+                <p className="mt-1 text-sm text-red-500">{errors.Email}</p>
+              )}
             </div>
             <div>
               <label
@@ -384,8 +505,15 @@ const ApplicationForm = () => {
                 id="EmergencyContact"
                 value={formData.EmergencyContact}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.EmergencyContact ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.EmergencyContact && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.EmergencyContact}
+                </p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -401,8 +529,15 @@ const ApplicationForm = () => {
                 id="Relationship"
                 value={formData.Relationship}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.Relationship ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.Relationship && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.Relationship}
+                </p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -418,8 +553,13 @@ const ApplicationForm = () => {
                 id="CDL"
                 value={formData.CDL}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDL ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.CDL && (
+                <p className="mt-1 text-sm text-red-500">{errors.CDL}</p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -435,8 +575,13 @@ const ApplicationForm = () => {
                 id="CDLState"
                 value={formData.CDLState}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDLState ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.CDLState && (
+                <p className="mt-1 text-sm text-red-500">{errors.CDLState}</p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -452,8 +597,13 @@ const ApplicationForm = () => {
                 id="CDLClass"
                 value={formData.CDLClass}
                 onChange={handleChange}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDLClass ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.CDLClass && (
+                <p className="mt-1 text-sm text-red-500">{errors.CDLClass}</p>
+              )}
             </div>
           </div>
 
@@ -471,8 +621,15 @@ const ApplicationForm = () => {
               id="CDLExpirationDate"
               value={formData.CDLExpirationDate}
               onChange={handleChange}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+              className={`w-full p-2 mt-1 border rounded-md ${
+                errors.CDLExpirationDate ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.CDLExpirationDate && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.CDLExpirationDate}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -611,12 +768,7 @@ const ApplicationForm = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!isFormFilled}
-            className={`px-6 py-2 font-semibold text-white rounded-lg  ${
-              isFormFilled
-                ? "bg-blue-500 hover:bg-blue-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
           >
             Next
           </button>

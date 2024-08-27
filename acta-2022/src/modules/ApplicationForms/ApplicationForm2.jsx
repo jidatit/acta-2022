@@ -2,60 +2,89 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../AuthContext";
 import { FaBell } from "react-icons/fa";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
-  const { FormData, saveFormData, setIsSaveClicked } = useAuth();
-  const [localFormData, setLocalFormData] = useState(FormData);
+  const {
+    FormData,
+    saveFormData,
+    setIsSaveClicked,
+    currentUser,
+    isSaveClicked,
+  } = useAuth();
+  const [localFormData, setLocalFormData] = useState(FormData || []);
   const [errors, setErrors] = useState([]);
+
   useEffect(() => {
-    setLocalFormData(FormData);
+    if (FormData) {
+      setLocalFormData(FormData);
+    }
+    console.log(localFormData);
   }, [FormData]);
 
+  useEffect(() => {
+    setIsSaveClicked(true);
+    console.log(localFormData);
+  }, []);
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const newFormData = [...localFormData];
     newFormData[index][name] = value;
     setLocalFormData(newFormData);
+
     const allFieldsEmpty = newFormData.every((address) =>
       Object.values(address).every((fieldValue) => fieldValue.trim() === "")
     );
-
-    // Set isSaveClicked based on whether all fields are empty
+    console.log(localFormData);
     setIsSaveClicked(allFieldsEmpty);
 
-    // Clear errors for the current field if it's no longer empty
     if (errors[index] && errors[index][name]) {
       const newErrors = [...errors];
       delete newErrors[index][name];
       setErrors(newErrors);
     }
   };
+  const handleBack = () => {
+    // Check if save is clicked
+    if (isSaveClicked) {
+      alert("Please save the current form before going back.");
+      return;
+    }
+    // Navigate back to the previous form
+    navigate("/TruckDriverLayout/ApplicationForm1");
+  };
+  const saveToFirebase = async () => {
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Save form data to context
-    const newErrors = localFormData.map((address) => {
-      const addressErrors = {};
-      Object.entries(address).forEach(([key, value]) => {
-        if (value.trim() === "") {
-          addressErrors[key] = "This field is required";
-        }
-      });
-      return addressErrors;
-    });
+      const applicationData = {
+        previousAddresses: localFormData,
+        submittedAt: new Date(),
+      };
 
-    setErrors(newErrors);
+      if (docSnap.exists()) {
+        // Document exists, so update it
+        await updateDoc(docRef, {
+          form2: applicationData, // Update this with the specific key for this form
+        });
+      } else {
+        // Document does not exist, so create it
+        await setDoc(docRef, {
+          form2: applicationData,
+        });
+      }
 
-    // If there are no errors, proceed with form submission
-    if (newErrors.every((address) => Object.keys(address).length === 0)) {
-      saveFormData(localFormData);
-      setIsSaveClicked(false);
-      navigate("/TruckDriverLayout/ApplicationForm3");
+      console.log("Data successfully saved to Firebase");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      // Optionally, handle specific error cases or show user feedback
     }
   };
-  const handleSave = (e) => {
-    e.preventDefault();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newErrors = localFormData.map((address) => {
       const addressErrors = {};
       Object.entries(address).forEach(([key, value]) => {
@@ -68,21 +97,47 @@ const ApplicationForm2 = () => {
 
     setErrors(newErrors);
 
-    // If there are no errors, proceed with form submission
     if (newErrors.every((address) => Object.keys(address).length === 0)) {
       saveFormData(localFormData);
       setIsSaveClicked(true);
+
+      await saveToFirebase();
+      navigate("/TruckDriverLayout/ApplicationForm3");
     }
   };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const newErrors = localFormData.map((address) => {
+      const addressErrors = {};
+      Object.entries(address).forEach(([key, value]) => {
+        if (value.trim() === "") {
+          addressErrors[key] = "This field is required";
+        }
+      });
+      return addressErrors;
+    });
+
+    setErrors(newErrors);
+
+    if (newErrors.every((address) => Object.keys(address).length === 0)) {
+      saveFormData(localFormData);
+      setIsSaveClicked(true);
+
+      await saveToFirebase();
+    }
+  };
+
   const addAddressFields = () => {
     setLocalFormData([
       ...localFormData,
       { street1: "", street2: "", city: "", state: "", zipCode: "" },
     ]);
   };
+
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[80%]">
-      <div className="flex flex-row items-start justify-start w-full pr-10">
+    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[85%] md:w-[80%]">
+      <div className="flex flex-row items-start justify-start w-full ">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Previous Addresses
@@ -97,10 +152,13 @@ const ApplicationForm2 = () => {
         />
       </div>
 
-      <div className=" flex flex-col w-[85%] gap-y-8">
+      <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {localFormData.map((address, index) => (
-            <div key={index} className="grid grid-cols-3 gap-4 mb-6">
+            <div
+              key={index}
+              className="grid grid-cols-1 gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
+            >
               <div>
                 <label
                   htmlFor={`street1-${index}`}
@@ -238,21 +296,30 @@ const ApplicationForm2 = () => {
             </button>
           </div>
         </form>
-        <div className="flex justify-end w-full gap-x-4">
-          <button
-            type="submit"
-            onClick={handleSave}
-            className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
-          >
-            Save
-          </button>
+        <div className="flex items-center justify-between w-full">
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={handleBack}
             className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
           >
-            Next
+            back
           </button>
+          <div className="flex justify-end w-full gap-x-4">
+            <button
+              type="submit"
+              onClick={handleSave}
+              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

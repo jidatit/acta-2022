@@ -16,13 +16,13 @@ export const theme = {
       },
     },
     screens: {
-      sssm: "320px",
-      ssm: "500px",
+      sssm: "380px",
+      ssm: "450px",
       smd: "700px",
       md: "960px",
-      lg: "1078px",
-      xl: "1180px",
-      xxl: "1240px", // Add a custom 2xl breakpoint
+      lg: "1024px",
+      xl: "1280px",
+      xxl: "1440px", // Add a custom 2xl breakpoint
       // Add a custom 3xl breakpoint
     },
     borderWidth: {

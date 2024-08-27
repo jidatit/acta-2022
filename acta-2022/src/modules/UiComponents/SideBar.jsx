@@ -6,14 +6,14 @@ import { useAuth } from "../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-const SideBar = () => {
-  const { currentUser, handleLogout } = useAuth();
+const SideBar = ({ isSidebarExpanded }) => {
+  const { currentUser, handleLogout, isSaveClicked } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
   const navigate = useNavigate();
   const location = useLocation();
-  const { isSaveClicked } = useAuth();
   const [completedSections, setCompletedSections] = useState([]);
   const [currentSection, setCurrentSection] = useState("Section 1");
+
   const sections = [
     "Section 1",
     "Section 2",
@@ -27,6 +27,7 @@ const SideBar = () => {
     "Section 10",
     "Section 11",
   ];
+
   const routeToSectionMap = {
     "/TruckDriverLayout/ApplicationForm1": "Section 1",
     "/TruckDriverLayout/ApplicationForm2": "Section 2",
@@ -42,45 +43,50 @@ const SideBar = () => {
   };
 
   useEffect(() => {
+    // Load completed sections from local storage
+    const savedSections =
+      JSON.parse(localStorage.getItem("completedSections")) || [];
+    setCompletedSections(savedSections);
+  }, []);
+
+  useEffect(() => {
     const currentPath = location.pathname;
     const correspondingSection = routeToSectionMap[currentPath];
     if (correspondingSection) {
       setCurrentSection(correspondingSection);
       if (!completedSections.includes(correspondingSection)) {
-        setCompletedSections((prevSections) => [
-          ...prevSections,
-          correspondingSection,
-        ]);
+        setCompletedSections((prevSections) => {
+          const newSections = [...prevSections, correspondingSection];
+          localStorage.setItem(
+            "completedSections",
+            JSON.stringify(newSections)
+          );
+          return newSections;
+        });
       }
     }
-    console.log(completedSections);
-  }, [location.pathname]);
+  }, [location.pathname, completedSections]);
 
   const handleItemClick = (item) => {
     setActiveItem(item);
   };
 
   const handleSectionClick = (section, index) => {
-    // Check if the current section is saved
     if (!isSaveClicked) {
       alert(
         "Please save the current form before navigating to another section."
       );
       return;
     }
-
-    // Ensure that all previous sections are completed before navigating to the next section
     const previousSectionsCompleted = sections
       .slice(0, index)
       .every((sec) => completedSections.includes(sec));
-
     if (!previousSectionsCompleted) {
       alert("Please complete the previous sections before moving forward.");
       return;
     }
 
-    // Check if the current section is completed or it's the first section
-    if (completedSections.includes(sections[index]) || index === 0) {
+    if (completedSections.includes(section) || index === 0) {
       setCurrentSection(section);
       navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
     } else {
@@ -92,22 +98,31 @@ const SideBar = () => {
     console.log("edit item");
   };
 
+  const handleLogoutClick = () => {
+    handleLogout();
+    localStorage.removeItem("completedSections");
+  };
+
   return (
-    <div className="bg-[#2257e7] h-full w-full">
+    <div
+      className={`bg-[#2257e7] h-full w-full ${
+        !isSidebarExpanded ? "hidden md:flex" : "flex"
+      }`}
+    >
       <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-10">
         <div className="flex w-full">
           <h1 className="w-full p-3 text-2xl font-bold text-black bg-white rounded-lg">
             Logo
           </h1>
         </div>
-        <div className="flex flex-row items-center justify-between w-full">
-          <div className="flex w-full gap-x-2 ">
+        <div className="flex flex-row justify-between w-full md:items-center">
+          <div className="flex flex-col items-center justify-center w-full md:justify-start md:items-start md:flex-row gap-x-2 gap-y-2 ">
             <img
               src={image}
               alt="..."
               className="object-cover w-10 h-10 rounded-full"
             />
-            <div className="flex flex-col items-start justify-center ">
+            <div className="flex flex-col items-center justify-center w-full md:justify-start md:items-start ">
               <p className="text-[14px] text-white font-radios">
                 {currentUser ? currentUser.firstName : "Guest"}
               </p>
@@ -116,17 +131,16 @@ const SideBar = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-center gap-x-3">
+          <div className="flex md:items-center md:justify-center gap-x-3">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex w-full items-center justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50">
+                <MenuButton className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50">
                   <BsThreeDotsVertical
                     aria-hidden="true"
                     className="w-5 h-5 "
                   />
                 </MenuButton>
               </div>
-
               <MenuItems
                 transition
                 className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
@@ -147,7 +161,7 @@ const SideBar = () => {
                     <a
                       href="#"
                       className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
-                      onClick={handleLogout}
+                      onClick={handleLogoutClick}
                     >
                       Logout
                     </a>
@@ -155,8 +169,6 @@ const SideBar = () => {
                 </div>
               </MenuItems>
             </Menu>
-
-            {/* <FaBell size={20} className="text-gray-500 cursor-pointer" /> */}
           </div>
         </div>
         <div className="flex flex-col w-full gap-y-4">
@@ -177,15 +189,14 @@ const SideBar = () => {
               Job Application
             </p>
           </Link>
-
           <div className="w-full h-full overflow-hidden">
             <div
               className="absolute border-l-2 border-white left-[1.9rem]"
               style={{
-                height: `calc(99% - ${(sections.length - 1) * 2}rem)`,
+                height: `calc(${sections.length} * 3.38rem - 0.75rem)`, // Adjust the multiplier and subtractor based on spacing needs
               }}
             ></div>
-            <ul className="relative space-y-8">
+            <ul className="relative space-y-7 md:space-y-8">
               {sections.map((section, index) => (
                 <li
                   key={index}

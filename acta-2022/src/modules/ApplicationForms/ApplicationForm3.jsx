@@ -1,35 +1,96 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../AuthContext";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();
   const {
     saveFormData3,
     FormData3,
-    setFormData3,
     setIsSaveClicked,
+    currentUser,
+    isSaveClicked,
   } = useAuth();
-  const [localFormData, setLocalFormData] = useState(FormData3);
-  const isFormFilled = localFormData.every((field) =>
-    Object.values(field).every((value) => {
-      console.log("Checking value:", value); // Debugging line
-      return value.trim() !== "";
-    })
-  );
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSaveClicked(false);
-    console.log(localFormData);
 
-    // navigate("/TruckDriverLayout/ApplicationForm2");
+  const [localFormData, setLocalFormData] = useState(FormData3);
+  const [errors, setErrors] = useState([]);
+  useEffect(() => {
+    setLocalFormData(FormData3);
+  }, [FormData3]);
+  useEffect(() => {
+    setIsSaveClicked(true);
+  }, []);
+  const handleBack = () => {
+    // Check if save is clicked
+    if (isSaveClicked) {
+      alert("Please save the current form before going back.");
+      return;
+    }
+    // Navigate back to the previous form
+    navigate("/TruckDriverLayout/ApplicationForm1");
+  };
+  const saveToFirebase = async () => {
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        previousAddresses: localFormData,
+        submittedAt: new Date(),
+      };
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          form3: applicationData, // Update this with the specific key for this form
+        });
+      } else {
+        await setDoc(docRef, {
+          form3: applicationData,
+        });
+      }
+    } catch (error) {
+      console.error("Error saving application: ", error);
+    }
+  };
+  const validateForm = () => {
+    const newErrors = localFormData.map((field) => {
+      const fieldErrors = {};
+      Object.keys(field).forEach((key) => {
+        if (field[key].trim() === "") {
+          fieldErrors[key] = "This field is required";
+        }
+      });
+      return fieldErrors;
+    });
+    setErrors(newErrors);
+    return newErrors.every(
+      (fieldErrors) => Object.keys(fieldErrors).length === 0
+    );
   };
 
-  const saveFormInfo = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    saveFormData3(localFormData);
-    setIsSaveClicked(true);
-    console.log(localFormData);
+    setIsSaveClicked(false);
+
+    if (validateForm()) {
+      saveFormData3(localFormData);
+      setIsSaveClicked(true);
+
+      await saveToFirebase();
+      navigate("/TruckDriverLayout/ApplicationForm4");
+    }
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      saveFormData3(localFormData);
+      setIsSaveClicked(true);
+      await saveToFirebase();
+      console.log(localFormData);
+    }
   };
 
   const handleAddCompany = () => {
@@ -52,7 +113,11 @@ const ApplicationForm3 = () => {
         jobDesignatedAsSafetySensitive: "",
       },
     ]);
+    setErrors([...errors, {}]); // Add an empty error object for the new company
   };
+  const allFieldsEmpty = localFormData.every((address) =>
+    Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+  );
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
@@ -62,11 +127,21 @@ const ApplicationForm3 = () => {
         : field
     );
     setLocalFormData(updatedFields);
+    const allFieldsEmpty = updatedFields.every((address) =>
+      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+    );
+    setIsSaveClicked(allFieldsEmpty);
+    const updatedErrors = errors.map((error, i) =>
+      i === index
+        ? { ...error, [name.replace(`company-${index}-`, "")]: "" }
+        : error
+    );
+    setErrors(updatedErrors);
   };
 
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[80%]">
-      <div className="flex flex-row items-start justify-start w-full pr-10">
+    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[86%] md:w-[80%] flex-wrap overflow-x-hidden">
+      <div className="flex flex-row items-start justify-start w-full ">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Previous Addresses
@@ -92,11 +167,11 @@ const ApplicationForm3 = () => {
         />
       </div>
 
-      <div className=" flex flex-col w-[85%] gap-y-8">
+      <div className=" flex flex-col w-[99%] gap-y-8 flex-wrap">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {localFormData.map((field, index) => (
             <div key={index} className="mb-6">
-              <div className="grid w-full grid-cols-3 gap-4 mb-6">
+              <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
                 <div>
                   <label
                     htmlFor={`companyName-${index}`}
@@ -110,9 +185,19 @@ const ApplicationForm3 = () => {
                     id={`companyName-${index}`}
                     value={field.companyName}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.companyName
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.companyName && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].companyName}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`street-${index}`}
@@ -126,9 +211,19 @@ const ApplicationForm3 = () => {
                     id={`street-${index}`}
                     value={field.street}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.street
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.street && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].street}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`city-${index}`}
@@ -142,8 +237,15 @@ const ApplicationForm3 = () => {
                     id={`city-${index}`}
                     value={field.city}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.city ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.city && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].city}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -159,9 +261,19 @@ const ApplicationForm3 = () => {
                     id={`zipCode-${index}`}
                     value={field.zipCode}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.zipCode
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.zipCode && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].zipCode}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`contactPerson-${index}`}
@@ -175,9 +287,19 @@ const ApplicationForm3 = () => {
                     id={`contactPerson-${index}`}
                     value={field.contactPerson}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.contactPerson
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.contactPerson && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].contactPerson}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`phone-${index}`}
@@ -191,8 +313,17 @@ const ApplicationForm3 = () => {
                     id={`phone-${index}`}
                     value={field.phone}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.phone
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.phone && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].phone}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -208,9 +339,17 @@ const ApplicationForm3 = () => {
                     id={`fax1-${index}`}
                     value={field.fax1}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.fax1 ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.fax1 && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].fax1}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`from-${index}`}
@@ -224,9 +363,17 @@ const ApplicationForm3 = () => {
                     id={`from-${index}`}
                     value={field.from}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.from ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.from && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].from}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`to-${index}`}
@@ -240,9 +387,17 @@ const ApplicationForm3 = () => {
                     id={`to-${index}`}
                     value={field.to}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.to ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.to && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].to}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`position-${index}`}
@@ -256,9 +411,19 @@ const ApplicationForm3 = () => {
                     id={`position-${index}`}
                     value={field.position}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.position
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.position && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].position}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`salary-${index}`}
@@ -272,9 +437,19 @@ const ApplicationForm3 = () => {
                     id={`salary-${index}`}
                     value={field.salary}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.salary
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.salary && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].salary}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor={`leavingReason-${index}`}
@@ -288,8 +463,17 @@ const ApplicationForm3 = () => {
                     id={`leavingReason-${index}`}
                     value={field.leavingReason}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    className={`w-full p-2 mt-1 border rounded-md ${
+                      errors[index]?.leavingReason
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                   />
+                  {errors[index]?.leavingReason && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].leavingReason}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col w-screen mb-6">
                   <div className="w-full mb-6">
@@ -297,7 +481,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`company-${index}-subjectToFMCSRs`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Subject to FMCSRs
+                      Were you subject to the FMCSRs while employed?
                     </label>
                     <div className="mt-2">
                       <label className="inline-flex items-center">
@@ -326,14 +510,20 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div className="w-full mb-6">
+                    {" "}
+                    {/* Adjust container width */}
                     <label
-                      className="block text-sm font-semibold text-gray-900 font-radios"
+                      className="grid w-full grid-cols-1 gap-4 mb-6 text-sm font-semibold text-gray-900 font-radios sm:grid-cols-2"
                       htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
                     >
-                      Job Designated as Safety Sensitive
+                      Was your job designated as a safety-sensitive function in
+                      any DOT-regulated mode subject to the drug and alcohol
+                      testing requirements?
                     </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
+                    <div className="flex flex-col mt-2 sm:flex-row sm:items-center">
+                      {" "}
+                      {/* Use Flexbox for alignment */}
+                      <label className="inline-flex items-center mr-4">
                         <input
                           type="radio"
                           name={`company-${index}-jobDesignatedAsSafetySensitive`}
@@ -346,7 +536,7 @@ const ApplicationForm3 = () => {
                         />
                         <span className="ml-2">Yes</span>
                       </label>
-                      <label className="inline-flex items-center ml-6">
+                      <label className="inline-flex items-center">
                         <input
                           type="radio"
                           name={`company-${index}-jobDesignatedAsSafetySensitive`}
@@ -375,26 +565,30 @@ const ApplicationForm3 = () => {
             </button>
           </div>
         </form>
-        <div className="flex justify-end w-full gap-x-4">
-          <button
-            type="submit"
-            onClick={saveFormInfo}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-          >
-            Save
-          </button>
+        <div className="flex items-center justify-between w-full">
           <button
             type="button"
-            onClick={handleSubmit}
-            disabled={!isFormFilled}
-            className={`px-6 py-2 font-semibold text-white rounded-lg ${
-              isFormFilled
-                ? "bg-blue-500 hover:bg-blue-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            onClick={handleBack}
+            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
           >
-            Next
+            back
           </button>
+          <div className="flex justify-end w-full gap-x-4">
+            <button
+              type="submit"
+              onClick={handleSave}
+              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

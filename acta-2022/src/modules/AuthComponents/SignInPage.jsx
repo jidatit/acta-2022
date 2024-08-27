@@ -84,7 +84,7 @@ const SignInPage = () => {
 
   return (
     <div className="flex flex-row items-center justify-center w-screen h-screen p-3 bg-blue-500">
-      <div className="flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
+      <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
         </h1>
@@ -105,12 +105,12 @@ const SignInPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[50%] h-full bg-white">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[50%] h-full bg-white">
         <h1 className="w-full text-3xl font-bold text-center text-black">
           Login to Your Account
         </h1>
         <form
-          className="flex flex-col gap-y-5 justify-center items-center w-[60%]"
+          className="flex flex-col items-center justify-center w-[80%] md:w-[60%] gap-y-5 "
           onSubmit={LoginUser}
         >
           <input
@@ -148,7 +148,7 @@ const SignInPage = () => {
 
           <button
             type="submit"
-            className="inline-block px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios w-96 shadow-indigo-500/20 hover:bg-indigo-700"
+            className="inline-block w-[80%] px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
             disabled={loading}
           >
             {loading ? <Loader /> : "Sign In"}

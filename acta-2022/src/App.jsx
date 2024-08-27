@@ -23,6 +23,9 @@ import AllUsers from "./modules/AdminComponents/AllUsers";
 import ApplicationForm from "./modules/ApplicationForms/ApplicationForm1";
 import ApplicationForm2 from "./modules/ApplicationForms/ApplicationForm2";
 import ApplicationForm3 from "./modules/ApplicationForms/ApplicationForm3";
+import ApplicationForm4 from "./modules/ApplicationForms/ApplicationForm4";
+import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
+import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -81,6 +84,24 @@ function App() {
                   path="ApplicationForm3"
                   element={
                     currentUser ? <ApplicationForm3 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm4"
+                  element={
+                    currentUser ? <ApplicationForm4 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm5"
+                  element={
+                    currentUser ? <ApplicationForm5 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm6"
+                  element={
+                    currentUser ? <ApplicationForm6 /> : <Navigate to="/" />
                   }
                 />
               </Route>

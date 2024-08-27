@@ -12,9 +12,89 @@ export const AuthProvider = ({ children }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [FormData1, setFormData1] = useState({
+    applicantName: "",
+    appliedDate: "",
+    positionApplied: "",
+    ssn: "",
+    DOB: "",
+    gender: "",
+    referredBy: "",
+    legalRightToWork: "",
+    payExpected: "",
+    street1: "",
+    street2: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    cellPhone: "",
+    Email: "",
+    EmergencyContact: "",
+    Relationship: "",
+    CDL: "",
+    CDLState: "",
+    CDLClass: "",
+    CDLExpirationDate: "",
+    EverBeenDeniedALicense: "",
+    PermitPrivilegeOfLicense: "",
+    TestedPositiveOrRefusedDotDrug: "",
+    EverConvictedOfFelony: "",
+  });
+  const [addressField, setAddressField] = useState([
+    {
+      date: "",
+      accidentType: "",
+      location: "",
+      fatalities: "",
+      penalties: "",
+      comments: "",
+    },
+  ]);
+  const [trafficConvictionField, setTrafficConvictionField] = useState([
+    {
+      date: "",
+      offenseType: "",
+      location: "",
+      penalties: "",
+      comments: "",
+    },
+  ]);
+  const [DriverLicensePermit, setDriverLicensePermit] = useState([
+    {
+      LicenseNo: "",
+      type: "",
+      state: "",
+      expiryDate: "",
+    },
+  ]);
+  const [DriverExperience, setDriverExperience] = useState([
+    {
+      statesOperated: "",
+      ClassEquipment: "",
+      EquipmentType: "",
+      DateFrom: "",
+      DateTo: "",
+      ApproximatelyMiles: "",
+      comments: "",
+    },
+  ]);
+  const [EducationHistory, setEducationHistory] = useState([
+    {
+      school: "",
+      educationLevel: "",
+      DateFrom: "",
+      DateTo: "",
+      comments: "",
+    },
+  ]);
   const [FormData, setFormData] = useState([
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
   ]);
+  const [ExtraSkills, setExtraSkills] = useState({
+    safeDrivingAwards: "",
+    specialTraining: "",
+    otherSkills: "",
+  });
   const [FormData3, setFormData3] = useState([
     {
       companyName: "",
@@ -34,16 +114,81 @@ export const AuthProvider = ({ children }) => {
     },
   ]);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  console.log(FormData);
+
+  useEffect(() => {
+    // Load data from local storage
+    const savedFormData1 = localStorage.getItem("formData");
+    const savedFormData = localStorage.getItem("formData2");
+    const savedFormData3 = localStorage.getItem("formData3");
+    const savedAddressField = localStorage.getItem("addressField4");
+    const savedTrafficConvictionField = localStorage.getItem(
+      "trafficConvictionField4"
+    );
+    const driverLicensePermit = localStorage.getItem("driverLicensePermit5");
+    const driverExperience = localStorage.getItem("driverExperience5");
+    const educationHistory = localStorage.getItem("educationHistory5");
+    const extraSkills = localStorage.getItem("extraSkills5");
+    if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
+    if (savedFormData) setFormData(JSON.parse(savedFormData));
+    if (savedFormData3) setFormData3(JSON.parse(savedFormData3));
+    if (driverLicensePermit)
+      setDriverLicensePermit(JSON.parse(driverLicensePermit));
+    if (driverExperience) setDriverExperience(JSON.parse(driverExperience));
+    if (educationHistory) setEducationHistory(JSON.parse(educationHistory));
+    if (savedAddressField) setAddressField(JSON.parse(savedAddressField));
+    if (extraSkills) setExtraSkills(JSON.parse(extraSkills));
+    if (savedTrafficConvictionField)
+      setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
+
+    console.log(FormData1);
+  }, []);
+
   const saveFormData = (data) => {
     setFormData(data);
-
+    localStorage.setItem("formData2", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveFormData1 = (data) => {
+    console.log("heyyyyy");
+    setFormData1(data);
+    localStorage.setItem("formData", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveFormData3 = (data) => {
+    setFormData3(data);
+    localStorage.setItem("formData3", JSON.stringify(data));
     setIsSaveClicked(true);
   };
 
-  const saveFormData3 = (data) => {
+  const saveAddressField4 = (data) => {
+    setAddressField(data);
+    localStorage.setItem("addressField4", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveDriverLicensePermit = (data) => {
     setFormData3(data);
+    localStorage.setItem("driverLicensePermit5", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveDriverExperience = (data) => {
+    setFormData3(data);
+    localStorage.setItem("driverExperience5", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
 
+  const saveEducationHistory = (data) => {
+    setAddressField(data);
+    localStorage.setItem("educationHistory5", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveExtraSkills = (data) => {
+    setExtraSkills(data);
+    localStorage.setItem("extraSkills5", JSON.stringify(data));
+    setIsSaveClicked(true);
+  };
+  const saveTrafficConviction4 = (data) => {
+    setTrafficConvictionField(data);
+    localStorage.setItem("trafficConvictionField4", JSON.stringify(data));
     setIsSaveClicked(true);
   };
   console.log(FormData3);
@@ -144,12 +289,32 @@ export const AuthProvider = ({ children }) => {
         verifyEmail,
         saveFormData,
         FormData,
+        FormData1,
+        setFormData1,
+        saveFormData1,
         setFormData,
         saveFormData3,
         FormData3,
         setFormData3,
         isSaveClicked,
         setIsSaveClicked,
+        addressField,
+        trafficConvictionField,
+        setAddressField,
+        setTrafficConvictionField,
+        saveAddressField4,
+        DriverLicensePermit,
+        setDriverLicensePermit,
+        DriverExperience,
+        setDriverExperience,
+        EducationHistory,
+        setEducationHistory,
+        saveDriverLicensePermit,
+        saveDriverExperience,
+        saveEducationHistory,
+        saveTrafficConviction4,
+        ExtraSkills,
+        saveExtraSkills,
       }}
     >
       {children}
