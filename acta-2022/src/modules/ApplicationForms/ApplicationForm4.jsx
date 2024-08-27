@@ -40,12 +40,12 @@ const ApplicationForm4 = () => {
   }, [addressField, trafficConvictionField]);
   const handleBack = () => {
     // Check if save is clicked
-    if (isSaveClicked) {
+    if (!isSaveClicked) {
       alert("Please save the current form before going back.");
       return;
     }
     // Navigate back to the previous form
-    navigate("/TruckDriverLayout/ApplicationForm1");
+    navigate("/TruckDriverLayout/ApplicationForm3");
   };
   const handleAddressChange = (e, index) => {
     if (noAccidentsChecked) return;

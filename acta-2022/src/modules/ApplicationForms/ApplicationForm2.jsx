@@ -26,7 +26,7 @@ const ApplicationForm2 = () => {
   useEffect(() => {
     setIsSaveClicked(true);
     console.log(localFormData);
-  }, []);
+  }, [setIsSaveClicked]);
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const newFormData = [...localFormData];
@@ -47,7 +47,7 @@ const ApplicationForm2 = () => {
   };
   const handleBack = () => {
     // Check if save is clicked
-    if (isSaveClicked) {
+    if (!isSaveClicked) {
       alert("Please save the current form before going back.");
       return;
     }

@@ -201,12 +201,12 @@ const ApplicationForm5 = () => {
   };
   const handleBack = () => {
     // Check if save is clicked
-    if (isSaveClicked) {
+    if (!isSaveClicked) {
       alert("Please save the current form before going back.");
       return;
     }
     // Navigate back to the previous form
-    navigate("/TruckDriverLayout/ApplicationForm1");
+    navigate("/TruckDriverLayout/ApplicationForm4");
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
