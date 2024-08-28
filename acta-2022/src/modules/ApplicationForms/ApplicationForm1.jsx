@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../AuthContext";
 import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { toast } from "react-toastify";
 const ApplicationForm = () => {
   const navigate = useNavigate();
   const { setIsSaveClicked, currentUser, FormData1, saveFormData1 } = useAuth();
@@ -92,7 +93,7 @@ const ApplicationForm = () => {
             form1: applicationData,
           });
         }
-
+        toast.success("Form is successfully saved");
         setIsSaveClicked(true);
       } catch (error) {
         console.error("Error saving application: ", error);
@@ -247,7 +248,9 @@ const ApplicationForm = () => {
                     value="male"
                     checked={formData.gender === "male"}
                     onChange={handleChange}
-                    className="text-blue-500 form-radio"
+                    className={`text-blue-500 form-radio ${
+                      errors.gender ? "border-red-500" : ""
+                    }`}
                   />
                   <span className="ml-2">Male</span>
                 </label>
@@ -258,11 +261,16 @@ const ApplicationForm = () => {
                     value="female"
                     checked={formData.gender === "female"}
                     onChange={handleChange}
-                    className="text-blue-500 form-radio"
+                    className={`text-blue-500 form-radio ${
+                      errors.gender ? "border-red-500" : ""
+                    }`}
                   />
                   <span className="ml-2">Female</span>
                 </label>
               </div>
+              {errors.gender && (
+                <p className="mt-1 text-sm text-red-500">{errors.gender}</p>
+              )}
             </div>
             <div>
               <label
@@ -301,7 +309,9 @@ const ApplicationForm = () => {
                     value="yes"
                     checked={formData.legalRightToWork === "yes"}
                     onChange={handleChange}
-                    className="text-blue-500 form-radio"
+                    className={`text-blue-500 form-radio ${
+                      errors.legalRightToWork ? "border-red-500" : ""
+                    }`}
                   />
                   <span className="ml-2">Yes</span>
                 </label>
@@ -312,12 +322,20 @@ const ApplicationForm = () => {
                     value="no"
                     checked={formData.legalRightToWork === "no"}
                     onChange={handleChange}
-                    className="text-blue-500 form-radio"
+                    className={`text-blue-500 form-radio ${
+                      errors.legalRightToWork ? "border-red-500" : ""
+                    }`}
                   />
                   <span className="ml-2">No</span>
                 </label>
               </div>
+              {errors.legalRightToWork && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.legalRightToWork}
+                </p>
+              )}
             </div>
+
             <div>
               <label
                 htmlFor="payExpected"
@@ -631,7 +649,6 @@ const ApplicationForm = () => {
               </p>
             )}
           </div>
-
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 font-radios">
               Have you ever been denied a license, permit or privilege to
@@ -645,7 +662,9 @@ const ApplicationForm = () => {
                   value="yes"
                   checked={formData.EverBeenDeniedALicense === "yes"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.EverBeenDeniedALicense ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">Yes</span>
               </label>
@@ -656,11 +675,18 @@ const ApplicationForm = () => {
                   value="no"
                   checked={formData.EverBeenDeniedALicense === "no"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.EverBeenDeniedALicense ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
+            {errors.EverBeenDeniedALicense && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.EverBeenDeniedALicense}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -676,7 +702,9 @@ const ApplicationForm = () => {
                   value="yes"
                   checked={formData.PermitPrivilegeOfLicense === "yes"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.PermitPrivilegeOfLicense ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">Yes</span>
               </label>
@@ -687,11 +715,18 @@ const ApplicationForm = () => {
                   value="no"
                   checked={formData.PermitPrivilegeOfLicense === "no"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.PermitPrivilegeOfLicense ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
+            {errors.PermitPrivilegeOfLicense && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.PermitPrivilegeOfLicense}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -708,7 +743,11 @@ const ApplicationForm = () => {
                   value="yes"
                   checked={formData.TestedPositiveOrRefusedDotDrug === "yes"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.TestedPositiveOrRefusedDotDrug
+                      ? "border-red-500"
+                      : ""
+                  }`}
                 />
                 <span className="ml-2">Yes</span>
               </label>
@@ -719,11 +758,20 @@ const ApplicationForm = () => {
                   value="no"
                   checked={formData.TestedPositiveOrRefusedDotDrug === "no"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.TestedPositiveOrRefusedDotDrug
+                      ? "border-red-500"
+                      : ""
+                  }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
+            {errors.TestedPositiveOrRefusedDotDrug && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.TestedPositiveOrRefusedDotDrug}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -738,7 +786,9 @@ const ApplicationForm = () => {
                   value="yes"
                   checked={formData.EverConvictedOfFelony === "yes"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.EverConvictedOfFelony ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">Yes</span>
               </label>
@@ -749,26 +799,34 @@ const ApplicationForm = () => {
                   value="no"
                   checked={formData.EverConvictedOfFelony === "no"}
                   onChange={handleChange}
-                  className="text-blue-500 form-radio"
+                  className={`text-blue-500 form-radio ${
+                    errors.EverConvictedOfFelony ? "border-red-500" : ""
+                  }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
+            {errors.EverConvictedOfFelony && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.EverConvictedOfFelony}
+              </p>
+            )}
           </div>
+
           {/* Submit Button */}
         </form>
         <div className="flex justify-end w-full gap-x-4">
           <button
             type="submit"
             onClick={saveFormInfo}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700"
           >
             Next
           </button>

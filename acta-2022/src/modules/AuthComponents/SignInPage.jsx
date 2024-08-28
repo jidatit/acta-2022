@@ -76,9 +76,10 @@ const SignInPage = () => {
         navigate("/TruckDriverLayout");
       }
     } catch (error) {
-      setLoading(false); // Stop loading in case of error
+      // Stop loading in case of error
       console.error("Error signing in:", error.message);
       toast.error("Sign-in failed: " + error.message);
+      setLoading(false);
     }
   };
 

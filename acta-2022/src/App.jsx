@@ -6,8 +6,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import { ToastContainer } from "react-toastify";
 
 import { AuthProvider, useAuth } from "./AuthContext";
@@ -28,7 +26,7 @@ import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
 import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
 import ForgotPassword from "./modules/AuthComponents/ForgotPassword";
 import ChangePassword from "./modules/AuthComponents/ChangePassword";
-
+import "react-toastify/dist/ReactToastify.css";
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
     {/* Spinner */}
@@ -37,13 +35,20 @@ const LoadingSpinner = () => (
 );
 function App() {
   const { currentUser, loading } = useAuth();
-
+  const getDashboardPath = (userType) => {
+    switch (userType) {
+      case "TruckDriver":
+        return "/TruckDriverLayout";
+      case "admin":
+        return "/AdminLayout";
+      default:
+        return "/";
+    }
+  };
   return (
     <div className="w-full h-auto overflow-hidden bg-white">
       <Router>
         <AuthProvider>
-          <ToastContainer />
-
           {loading ? (
             <LoadingSpinner />
           ) : (
@@ -53,7 +58,7 @@ function App() {
                   index
                   element={
                     currentUser ? (
-                      <Navigate to="/TruckDriverLayout" />
+                      <Navigate to={getDashboardPath(currentUser.userType)} />
                     ) : (
                       <SignInPage />
                     )

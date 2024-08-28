@@ -4,6 +4,7 @@ import { useAuth } from "../../AuthContext";
 import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { toast } from "react-toastify";
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
   const {
@@ -121,6 +122,7 @@ const ApplicationForm2 = () => {
     setErrors(newErrors);
 
     if (newErrors.every((address) => Object.keys(address).length === 0)) {
+      toast.success("Form is successfully saved");
       saveFormData(localFormData);
       setIsSaveClicked(true);
 
@@ -308,7 +310,7 @@ const ApplicationForm2 = () => {
             <button
               type="submit"
               onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
+              className={`px-6 py-2 font-semibold text-white bg-green-600 hover:bg-green-800 rounded-lg`}
             >
               Save
             </button>

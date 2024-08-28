@@ -4,6 +4,7 @@ import { useAuth } from "../../AuthContext";
 import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { toast } from "react-toastify";
 
 const ApplicationForm5 = () => {
   const navigate = useNavigate();
@@ -32,8 +33,9 @@ const ApplicationForm5 = () => {
   const [extraSkills, setExtraSkills] = useState(ExtraSkills);
 
   const [errors, setErrors] = useState([]);
-  const [trafficErrors, setTrafficErrors] = useState([]);
-
+  const [extraSkillErrors, setExtraSkillErrors] = useState();
+  const [driverExperienceErrors, setDriverExperienceErrors] = useState([]);
+  const [driverEducationError, setDriverEducationError] = useState([]);
   // State to track if the checkboxes are checked
 
   useEffect(() => {
@@ -74,10 +76,10 @@ const ApplicationForm5 = () => {
     );
     setIsSaveClicked(allFieldsEmpty);
 
-    if (trafficErrors[index] && trafficErrors[index][name]) {
-      const updatedErrors = [...trafficErrors];
+    if (driverExperienceErrors[index] && driverExperienceErrors[index][name]) {
+      const updatedErrors = [...driverExperienceErrors];
       delete updatedErrors[index][name];
-      setTrafficErrors(updatedErrors);
+      setDriverExperienceErrors(updatedErrors);
     }
   };
   const handleEducationHistoryChange = (e, index) => {
@@ -91,10 +93,10 @@ const ApplicationForm5 = () => {
     );
     setIsSaveClicked(allFieldsEmpty);
 
-    if (trafficErrors[index] && trafficErrors[index][name]) {
-      const updatedErrors = [...trafficErrors];
+    if (driverEducationError[index] && driverEducationError[index][name]) {
+      const updatedErrors = [...driverEducationError];
       delete updatedErrors[index][name];
-      setTrafficErrors(updatedErrors);
+      setDriverEducationError(updatedErrors);
     }
   };
   const handleExtraSkillChange = (e) => {
@@ -113,8 +115,8 @@ const ApplicationForm5 = () => {
     setIsSaveClicked(allFieldsEmpty);
 
     // Remove error message for the updated field if it was previously set
-    if (trafficErrors[name]) {
-      setTrafficErrors((prevErrors) => ({
+    if (extraSkillErrors[name]) {
+      setExtraSkillErrors((prevErrors) => ({
         ...prevErrors,
         [name]: undefined,
       }));
@@ -144,7 +146,7 @@ const ApplicationForm5 = () => {
       });
       return fieldErrors;
     });
-    setTrafficErrors(newErrors);
+    setDriverExperienceErrors(newErrors);
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
@@ -158,7 +160,7 @@ const ApplicationForm5 = () => {
       });
       return fieldErrors;
     });
-    setTrafficErrors(newErrors);
+    setDriverEducationError(newErrors);
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
   const validateExtraSkills = () => {
@@ -169,7 +171,7 @@ const ApplicationForm5 = () => {
       }
     });
 
-    setTrafficErrors(fieldErrors);
+    setExtraSkillErrors(fieldErrors);
     return Object.keys(fieldErrors).length === 0;
   };
   const saveToFirebase = async () => {
@@ -247,6 +249,7 @@ const ApplicationForm5 = () => {
       saveEducationHistory(educationHistory);
       saveDriverExperience(driverExperience);
       saveExtraSkills(extraSkills);
+      toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -460,16 +463,18 @@ const ApplicationForm5 = () => {
                   value={experience.statesOperated}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].statesOperated
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].statesOperated
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].statesOperated && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].statesOperated}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].statesOperated && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].statesOperated}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -485,16 +490,18 @@ const ApplicationForm5 = () => {
                   value={experience.ClassEquipment}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].ClassEquipment
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].ClassEquipment
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].ClassEquipment && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].ClassEquipment}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].ClassEquipment && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].ClassEquipment}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -510,16 +517,18 @@ const ApplicationForm5 = () => {
                   value={experience.EquipmentType}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].EquipmentType
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].EquipmentType
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].EquipmentType && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].EquipmentType}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].EquipmentType && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].EquipmentType}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -535,16 +544,18 @@ const ApplicationForm5 = () => {
                   value={experience.DateTo}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].DateTo
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].DateTo
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].DateTo && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].DateTo}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].DateTo && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].DateTo}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -560,16 +571,18 @@ const ApplicationForm5 = () => {
                   value={experience.DateFrom}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].DateFrom
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].DateFrom
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].DateFrom && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].DateFrom}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].DateFrom && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].DateFrom}
+                    </p>
+                  )}
               </div>
 
               <div>
@@ -586,16 +599,18 @@ const ApplicationForm5 = () => {
                   value={experience.ApproximatelyMiles}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].ApproximatelyMiles
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].ApproximatelyMiles
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].ApproximatelyMiles && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].ApproximatelyMiles}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].ApproximatelyMiles && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].ApproximatelyMiles}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -611,16 +626,18 @@ const ApplicationForm5 = () => {
                   value={experience.comments}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].comments
+                    driverExperienceErrors[index] &&
+                    driverExperienceErrors[index].comments
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].comments && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].comments}
-                  </p>
-                )}
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].comments && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].comments}
+                    </p>
+                  )}
               </div>
             </div>
           ))}
@@ -660,16 +677,18 @@ const ApplicationForm5 = () => {
                   value={education.school}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].school
+                    driverEducationError[index] &&
+                    driverEducationError[index].school
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].school && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].school}
-                  </p>
-                )}
+                {driverEducationError[index] &&
+                  driverEducationError[index].school && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverEducationError[index].school}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -685,16 +704,18 @@ const ApplicationForm5 = () => {
                   value={education.educationLevel}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].educationLevel
+                    driverEducationError[index] &&
+                    driverEducationError[index].educationLevel
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].educationLevel && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].educationLevel}
-                  </p>
-                )}
+                {driverEducationError[index] &&
+                  driverEducationError[index].educationLevel && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverEducationError[index].educationLevel}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -710,16 +731,18 @@ const ApplicationForm5 = () => {
                   value={education.DateFrom}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].DateFrom
+                    driverEducationError[index] &&
+                    driverEducationError[index].DateFrom
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].DateFrom && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].DateFrom}
-                  </p>
-                )}
+                {driverEducationError[index] &&
+                  driverEducationError[index].DateFrom && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverEducationError[index].DateFrom}
+                    </p>
+                  )}
               </div>
               <div>
                 <label
@@ -735,16 +758,18 @@ const ApplicationForm5 = () => {
                   value={education.DateTo}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].DateTo
+                    driverEducationError[index] &&
+                    driverEducationError[index].DateTo
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].DateTo && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].DateTo}
-                  </p>
-                )}
+                {driverEducationError[index] &&
+                  driverEducationError[index].DateTo && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverEducationError[index].DateTo}
+                    </p>
+                  )}
               </div>
 
               <div>
@@ -761,16 +786,18 @@ const ApplicationForm5 = () => {
                   value={education.comments}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].comments
+                    driverEducationError[index] &&
+                    driverEducationError[index].comments
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md`}
                 />
-                {errors[index] && errors[index].comments && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].comments}
-                  </p>
-                )}
+                {driverEducationError[index] &&
+                  driverEducationError[index].comments && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverEducationError[index].comments}
+                    </p>
+                  )}
               </div>
             </div>
           ))}
@@ -801,14 +828,14 @@ const ApplicationForm5 = () => {
                 value={extraSkills.safeDrivingAwards}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className={`w-full p-2 mt-1 border ${
-                  errors && errors.safeDrivingAwards
+                  extraSkillErrors && extraSkillErrors.safeDrivingAwards
                     ? "border-red-500"
                     : "border-gray-300"
                 } rounded-md`}
               />
-              {errors && errors.safeDrivingAwards && (
+              {extraSkillErrors && extraSkillErrors.safeDrivingAwards && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.safeDrivingAwards}
+                  {extraSkillErrors.safeDrivingAwards}
                 </p>
               )}
             </div>
@@ -827,14 +854,14 @@ const ApplicationForm5 = () => {
                 value={extraSkills.specialTraining}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className={`w-full p-2 mt-1 border ${
-                  errors && errors.specialTraining
+                  extraSkillErrors && extraSkillErrors.specialTraining
                     ? "border-red-500"
                     : "border-gray-300"
                 } rounded-md`}
               />
-              {errors && errors.specialTraining && (
+              {extraSkillErrors && extraSkillErrors.specialTraining && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.specialTraining}
+                  {extraSkillErrors.specialTraining}
                 </p>
               )}
             </div>
@@ -852,14 +879,14 @@ const ApplicationForm5 = () => {
                 value={extraSkills.otherSkills}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className={`w-full p-2 mt-1 border ${
-                  errors && errors.otherSkills
+                  extraSkillErrors && extraSkillErrors.otherSkills
                     ? "border-red-500"
                     : "border-gray-300"
                 } rounded-md`}
               />
-              {errors && errors.otherSkills && (
+              {extraSkillErrors && extraSkillErrors.otherSkills && (
                 <p className="mt-1 text-xs text-red-500">
-                  {errors.otherSkills}
+                  {extraSkillErrors.otherSkills}
                 </p>
               )}
             </div>

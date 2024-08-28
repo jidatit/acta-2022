@@ -4,6 +4,7 @@ import { useAuth } from "../../AuthContext";
 import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { toast } from "react-toastify";
 
 const ApplicationForm4 = () => {
   const navigate = useNavigate();
@@ -179,6 +180,7 @@ const ApplicationForm4 = () => {
       saveTrafficConviction4(
         noTrafficConvictionsChecked ? [] : trafficConvictionFields
       );
+      toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -587,7 +589,7 @@ const ApplicationForm4 = () => {
             <button
               type="submit"
               onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
+              className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
             >
               Save
             </button>

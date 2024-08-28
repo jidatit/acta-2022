@@ -264,6 +264,15 @@ export const AuthProvider = ({ children }) => {
       setIsEmailVerified(null);
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isEmailVerified");
+      localStorage.removeItem("formData");
+      localStorage.removeItem("formData2");
+      localStorage.removeItem("formData3");
+      localStorage.removeItem("addressField4");
+      localStorage.removeItem("trafficConvictionField4");
+      localStorage.removeItem("driverLicensePermit5");
+      localStorage.removeItem("driverExperience5");
+      localStorage.removeItem("educationHistory5");
+      localStorage.removeItem("extraSkills5");
       // Clear the current user
       // Redirect to the homepage or login page
       console.log("User signed out successfully");

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../AuthContext";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { toast } from "react-toastify";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();
   const {
@@ -16,9 +17,7 @@ const ApplicationForm3 = () => {
 
   const [localFormData, setLocalFormData] = useState(FormData3);
   const [errors, setErrors] = useState([]);
-  useEffect(() => {
-    setLocalFormData(FormData3);
-  }, [FormData3]);
+
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -86,6 +85,7 @@ const ApplicationForm3 = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      toast.success("Form is successfully saved");
       saveFormData3(localFormData);
       setIsSaveClicked(true);
       await saveToFirebase();
@@ -577,7 +577,7 @@ const ApplicationForm3 = () => {
             <button
               type="submit"
               onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
+              className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
             >
               Save
             </button>
