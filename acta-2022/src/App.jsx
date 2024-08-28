@@ -27,6 +27,7 @@ import ApplicationForm4 from "./modules/ApplicationForms/ApplicationForm4";
 import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
 import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
 import ForgotPassword from "./modules/AuthComponents/ForgotPassword";
+import ChangePassword from "./modules/AuthComponents/ChangePassword";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -106,6 +107,12 @@ function App() {
                     currentUser ? <ApplicationForm6 /> : <Navigate to="/" />
                   }
                 />
+                <Route
+                  path="ChangePassword"
+                  element={
+                    currentUser ? <ChangePassword /> : <Navigate to="/" />
+                  }
+                />
               </Route>
               {/* <Route
                 path="/VirtualAssistantLayout"
@@ -132,6 +139,12 @@ function App() {
                 <Route
                   path="users"
                   element={currentUser ? <AllUsers /> : <Navigate to="/" />}
+                />
+                <Route
+                  path="ChangePassword"
+                  element={
+                    currentUser ? <ChangePassword /> : <Navigate to="/" />
+                  }
                 />
               </Route>
             </Routes>

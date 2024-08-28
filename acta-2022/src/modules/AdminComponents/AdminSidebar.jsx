@@ -80,6 +80,16 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                     </a>
                   </MenuItem>
                 </div>
+                <div className="">
+                  <MenuItem>
+                    <Link
+                      to={"/AdminLayout/ChangePassword"}
+                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
+                    >
+                      Change Password
+                    </Link>
+                  </MenuItem>
+                </div>
               </MenuItems>
             </Menu>
 

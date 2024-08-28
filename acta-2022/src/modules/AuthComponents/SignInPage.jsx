@@ -32,9 +32,7 @@ const SignInPage = () => {
       [id]: value,
     });
   };
-  const handleForgotPassword = () => {
-    navigate("/forgotPassword");
-  };
+
   // Step 3: Handle form submission
   const LoginUser = async (e) => {
     e.preventDefault();
@@ -148,12 +146,13 @@ const SignInPage = () => {
             </span>
           </div>
           <div className="flex flex-col w-full gap-x-1">
-            <button
+            <Link
+              to={"/forgotPassword"}
               className="w-full text-black cursor-pointer text-end"
-              onClick={handleForgotPassword} // Handle forgot password navigation
+              // Handle forgot password navigation
             >
               Forgot Password?
-            </button>
+            </Link>
             <button
               type="submit"
               className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
