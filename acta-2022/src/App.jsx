@@ -26,6 +26,7 @@ import ApplicationForm3 from "./modules/ApplicationForms/ApplicationForm3";
 import ApplicationForm4 from "./modules/ApplicationForms/ApplicationForm4";
 import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
 import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
+import ForgotPassword from "./modules/AuthComponents/ForgotPassword";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -60,6 +61,7 @@ function App() {
                 <Route path="signUp" element={<SignUpPage />} />
                 <Route path="verificationPage" element={<VerificationPage />} />
                 <Route path="signIn" element={<SignInPage />} />
+                <Route path="forgotPassword" element={<ForgotPassword />} />
               </Route>
               <Route path="/TruckDriverLayout" element={<TruckDriverLayout />}>
                 <Route
