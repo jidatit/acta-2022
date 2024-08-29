@@ -82,6 +82,7 @@ const SignUpPage = () => {
       });
       console.log(collectionName);
       if (collectionName !== "admin") {
+      if (collectionName !== "admin") {
         await sendEmailVerification(user);
       }
 
@@ -157,6 +158,7 @@ const SignUpPage = () => {
           LOGO
         </h1>
         <div className="flex items-center justify-center w-full">
+        <div className="flex items-center justify-center w-full">
           <img
             src={image}
             alt="......."
@@ -194,6 +196,7 @@ const SignUpPage = () => {
             <input
               type="text"
               id="lastName"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Last Name"
               value={formData.lastName}
@@ -247,6 +250,7 @@ const SignUpPage = () => {
             <span
               onClick={toggleConfirmPasswordVisibility}
               className="absolute cursor-pointer right-3 top-3"
+              className="absolute cursor-pointer right-3 top-3"
             >
               {showConfirmPassword ? (
                 <FaRegEyeSlash size={25} className="text-gray-500" />
@@ -258,9 +262,10 @@ const SignUpPage = () => {
           </div>
           <input
             type="submit"
-            className="inline-block px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios w-[100%] shadow-indigo-500/20 hover:bg-indigo-700"
+            className="inline-block cursor-pointer font-radios px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md w-96 shadow-indigo-500/20 hover:bg-indigo-700"
             value={"Sign Up"}
           />
+          <div className="flex flex-row items-center justify-center gap-x-1 ">
           <div className="flex flex-row items-center justify-center gap-x-1 ">
             <span className="font-radios">Already Signed Up?</span>
             <Link
