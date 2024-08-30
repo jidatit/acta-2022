@@ -45,7 +45,7 @@ const SignInPage = () => {
         formData.password
       );
       const user = userCredential.user;
-      console.log("User signed in:", user);
+      // console.log("User signed in:", user);
 
       const queryCollection = async (collectionName) => {
         const q = query(

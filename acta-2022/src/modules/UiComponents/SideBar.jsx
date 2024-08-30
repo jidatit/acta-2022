@@ -95,7 +95,7 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
 
   const handleEdit = () => {
-    console.log("edit item");
+    // console.log("edit item");
   };
 
   const handleLogoutClick = () => {

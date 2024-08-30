@@ -59,7 +59,7 @@ const ApplicationForm = () => {
             form1: applicationData,
           });
         }
-        console.log(formData);
+        // console.log(formData);
 
         setIsSaveClicked(true);
         navigate("/TruckDriverLayout/ApplicationForm2");

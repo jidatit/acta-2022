@@ -196,7 +196,7 @@ const ApplicationForm5 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      // console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
     }

@@ -21,12 +21,12 @@ const ApplicationForm2 = () => {
     if (FormData) {
       setLocalFormData(FormData);
     }
-    console.log(localFormData);
+    // console.log(localFormData);
   }, [FormData]);
 
   useEffect(() => {
     setIsSaveClicked(true);
-    console.log(localFormData);
+    // console.log(localFormData);
   }, [setIsSaveClicked]);
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -37,7 +37,7 @@ const ApplicationForm2 = () => {
     const allFieldsEmpty = newFormData.every((address) =>
       Object.values(address).every((fieldValue) => fieldValue.trim() === "")
     );
-    console.log(localFormData);
+    // console.log(localFormData);
     setIsSaveClicked(allFieldsEmpty);
 
     if (errors[index] && errors[index][name]) {
@@ -77,7 +77,7 @@ const ApplicationForm2 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      // console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
       // Optionally, handle specific error cases or show user feedback

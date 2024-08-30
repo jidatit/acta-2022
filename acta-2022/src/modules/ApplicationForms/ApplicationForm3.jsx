@@ -89,7 +89,7 @@ const ApplicationForm3 = () => {
       saveFormData3(localFormData);
       setIsSaveClicked(true);
       await saveToFirebase();
-      console.log(localFormData);
+      // console.log(localFormData);
     }
   };
 

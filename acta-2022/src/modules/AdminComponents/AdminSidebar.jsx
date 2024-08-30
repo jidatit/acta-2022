@@ -12,7 +12,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
     setActiveItem(item);
   };
   const handleEdit = () => {
-    console.log("edit item");
+    // console.log("edit item");
   };
 
   return (

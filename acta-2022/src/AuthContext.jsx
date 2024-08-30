@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }) => {
     if (savedTrafficConvictionField)
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
 
-    console.log(FormData1);
+    // console.log(FormData1);
   }, []);
 
   const saveFormData = (data) => {
@@ -149,7 +149,7 @@ export const AuthProvider = ({ children }) => {
     setIsSaveClicked(true);
   };
   const saveFormData1 = (data) => {
-    console.log("heyyyyy");
+    // console.log("heyyyyy");
     setFormData1(data);
     localStorage.setItem("formData", JSON.stringify(data));
     setIsSaveClicked(true);
@@ -191,9 +191,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("trafficConvictionField4", JSON.stringify(data));
     setIsSaveClicked(true);
   };
-  console.log(FormData3);
+  // console.log(FormData3);
   const getUserInfo = async (uid) => {
-    console.log(uid);
+    // console.log(uid);
 
     // Define a helper function to query a collection
     const queryCollection = async (collectionName) => {
@@ -212,18 +212,18 @@ export const AuthProvider = ({ children }) => {
     // Check in "admins" collection
     let userData = await queryCollection("admin");
     if (userData) {
-      console.log("User Data from admins:", userData);
+      // console.log("User Data from admins:", userData);
       return userData;
     }
 
     // Check in "employees" collection
     userData = await queryCollection("TruckDrivers");
     if (userData) {
-      console.log("User Data from employees:", userData);
+      // console.log("User Data from employees:", userData);
       return userData;
     }
 
-    console.log("No such document!");
+    // console.log("No such document!");
     return null;
   };
 
@@ -240,7 +240,7 @@ export const AuthProvider = ({ children }) => {
             JSON.stringify(user.emailVerified)
           );
           setLoading(false);
-          console.log(userData);
+          // console.log(userData);
         } catch (error) {
           console.error("Error fetching user data:", error);
           setCurrentUser(null);
@@ -275,7 +275,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("extraSkills5");
       // Clear the current user
       // Redirect to the homepage or login page
-      console.log("User signed out successfully");
+      // console.log("User signed out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -283,7 +283,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async () => {
     try {
       await sendEmailVerification(auth.currentUser);
-      console.log("Email verification sent!");
+      // console.log("Email verification sent!");
     } catch (error) {
       toast.error("Error sending email verification:", error);
     }
