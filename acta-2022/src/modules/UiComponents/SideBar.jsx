@@ -14,7 +14,7 @@ const SideBar = ({ isSidebarExpanded }) => {
   const [activeItem, setActiveItem] = useState("JobApplication");
   const navigate = useNavigate();
   const location = useLocation();
-  const [completedSections, setCompletedSections] = useState([]);
+  const [completedSections, setCompletedSections] = useState(["Section 1"]);
   const [currentSection, setCurrentSection] = useState("Section 1");
   const [completedForms, setCompletedForms] = useState(null);
   const sections = [
@@ -87,7 +87,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   useEffect(() => {
     if (completedForms) {
-      for (let i = 1; i <= 11; i++) {
+      for (let i = 0; i <= 11; i++) {
         if (completedForms >= i) {
           const section = `Section ${i + 1}`;
           if (!completedSections.includes(section)) {
@@ -109,6 +109,22 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
 
   const handleSectionClick = (section, index) => {
+    if (section === "Section 1") {
+      // Navigate to ApplicationForm1 without resetting completed sections
+      navigate("/TruckDriverLayout/ApplicationForm1");
+      // Ensure Section 1 is in the list of completed sections
+      if (!completedSections.includes(section)) {
+        setCompletedSections((prevSections) => {
+          const newSections = [...prevSections, section];
+          localStorage.setItem(
+            "completedSections",
+            JSON.stringify(newSections)
+          );
+          return newSections;
+        });
+      }
+      return;
+    }
     if (!isSaveClicked) {
       alert(
         "Please save the current form before navigating to another section."
