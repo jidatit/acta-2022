@@ -5,6 +5,7 @@ import image from "../../images/pngwing.com.png";
 import { useAuth } from "../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { toast } from "react-toastify";
 
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
@@ -73,7 +74,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   const handleSectionClick = (section, index) => {
     if (!isSaveClicked) {
-      alert(
+      toast.error(
         "Please save the current form before navigating to another section."
       );
       return;
@@ -82,7 +83,9 @@ const SideBar = ({ isSidebarExpanded }) => {
       .slice(0, index)
       .every((sec) => completedSections.includes(sec));
     if (!previousSectionsCompleted) {
-      alert("Please complete the previous sections before moving forward.");
+      toast.error(
+        "Please complete the previous sections before moving forward."
+      );
       return;
     }
 
@@ -90,7 +93,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       setCurrentSection(section);
       navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
     } else {
-      alert("Please complete the previous sections first.");
+      toast.error("Please complete the previous sections first.");
     }
   };
 

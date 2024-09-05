@@ -5,18 +5,16 @@ import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { toast } from "react-toastify";
+
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
-  const {
-    FormData,
-    saveFormData,
-    setIsSaveClicked,
-    currentUser,
-    isSaveClicked,
-  } = useAuth();
+  const { FormData, saveFormData, setIsSaveClicked, currentUser } = useAuth();
   const [localFormData, setLocalFormData] = useState(FormData || []);
-  const [errors, setErrors] = useState([]);
-
+  const initialFields = [
+    { street1: "", street2: "", city: "", state: "", zipCode: "" },
+  ];
+  const initialFieldCount = initialFields.length;
+  console.log(initialFieldCount);
   useEffect(() => {
     if (FormData) {
       setLocalFormData(FormData);
@@ -28,33 +26,20 @@ const ApplicationForm2 = () => {
     setIsSaveClicked(true);
     console.log(localFormData);
   }, [setIsSaveClicked]);
+
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const newFormData = [...localFormData];
     newFormData[index][name] = value;
     setLocalFormData(newFormData);
-
-    const allFieldsEmpty = newFormData.every((address) =>
-      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
-    );
-    console.log(localFormData);
-    setIsSaveClicked(allFieldsEmpty);
-
-    if (errors[index] && errors[index][name]) {
-      const newErrors = [...errors];
-      delete newErrors[index][name];
-      setErrors(newErrors);
-    }
+    setIsSaveClicked(false);
   };
+
   const handleBack = () => {
-    // Check if save is clicked
-    if (!isSaveClicked) {
-      alert("Please save the current form before going back.");
-      return;
-    }
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm1");
   };
+
   const saveToFirebase = async () => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
@@ -86,48 +71,20 @@ const ApplicationForm2 = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = localFormData.map((address) => {
-      const addressErrors = {};
-      Object.entries(address).forEach(([key, value]) => {
-        if (value.trim() === "") {
-          addressErrors[key] = "This field is required";
-        }
-      });
-      return addressErrors;
-    });
+    saveFormData(localFormData);
+    setIsSaveClicked(true);
 
-    setErrors(newErrors);
-
-    if (newErrors.every((address) => Object.keys(address).length === 0)) {
-      saveFormData(localFormData);
-      setIsSaveClicked(true);
-
-      await saveToFirebase();
-      navigate("/TruckDriverLayout/ApplicationForm3");
-    }
+    await saveToFirebase();
+    navigate("/TruckDriverLayout/ApplicationForm3");
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const newErrors = localFormData.map((address) => {
-      const addressErrors = {};
-      Object.entries(address).forEach(([key, value]) => {
-        if (value.trim() === "") {
-          addressErrors[key] = "This field is required";
-        }
-      });
-      return addressErrors;
-    });
+    toast.success("Form is successfully saved");
+    saveFormData(localFormData);
+    setIsSaveClicked(true);
 
-    setErrors(newErrors);
-
-    if (newErrors.every((address) => Object.keys(address).length === 0)) {
-      toast.success("Form is successfully saved");
-      saveFormData(localFormData);
-      setIsSaveClicked(true);
-
-      await saveToFirebase();
-    }
+    await saveToFirebase();
   };
 
   const addAddressFields = () => {
@@ -136,7 +93,10 @@ const ApplicationForm2 = () => {
       { street1: "", street2: "", city: "", state: "", zipCode: "" },
     ]);
   };
-
+  const removeAddressField = (index) => {
+    const updatedFormData = localFormData.filter((_, i) => i !== index);
+    setLocalFormData(updatedFormData);
+  };
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[85%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full ">
@@ -148,10 +108,7 @@ const ApplicationForm2 = () => {
             List all addresses in previous three years
           </p>
         </div>
-        <FaBell
-          size={45}
-          className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
-        />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
 
       <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
@@ -174,17 +131,8 @@ const ApplicationForm2 = () => {
                   id={`street1-${index}`}
                   value={address.street1}
                   onChange={(e) => handleChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].street1
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].street1 && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].street1}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -199,17 +147,8 @@ const ApplicationForm2 = () => {
                   id={`street2-${index}`}
                   value={address.street2}
                   onChange={(e) => handleChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].street2
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].street2 && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].street2}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -224,17 +163,8 @@ const ApplicationForm2 = () => {
                   id={`city-${index}`}
                   value={address.city}
                   onChange={(e) => handleChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].city
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].city && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].city}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -249,17 +179,8 @@ const ApplicationForm2 = () => {
                   id={`state-${index}`}
                   value={address.state}
                   onChange={(e) => handleChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].state
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].state && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].state}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -274,16 +195,19 @@ const ApplicationForm2 = () => {
                   id={`zipCode-${index}`}
                   value={address.zipCode}
                   onChange={(e) => handleChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].zipCode
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].zipCode && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].zipCode}
-                  </p>
+              </div>
+              <input type="text" value={index} />
+              <div className="flex items-center mt-4">
+                {index >= initialFieldCount && ( // Only show remove button for dynamically added fields
+                  <button
+                    type="button"
+                    onClick={() => removeAddressField(index)}
+                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
                 )}
               </div>
             </div>
@@ -302,22 +226,22 @@ const ApplicationForm2 = () => {
           <button
             type="button"
             onClick={handleBack}
-            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+            className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg"
           >
-            back
+            Back
           </button>
           <div className="flex justify-end w-full gap-x-4">
             <button
               type="submit"
               onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-600 hover:bg-green-800 rounded-lg`}
+              className="px-6 py-2 font-semibold text-white bg-green-600 hover:bg-green-800 rounded-lg"
             >
               Save
             </button>
             <button
               type="button"
               onClick={handleSubmit}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+              className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg"
             >
               Next
             </button>

@@ -166,18 +166,18 @@ export const AuthProvider = ({ children }) => {
     setIsSaveClicked(true);
   };
   const saveDriverLicensePermit = (data) => {
-    setFormData3(data);
+    setDriverLicensePermit(data);
     localStorage.setItem("driverLicensePermit5", JSON.stringify(data));
     setIsSaveClicked(true);
   };
   const saveDriverExperience = (data) => {
-    setFormData3(data);
+    setDriverExperience(data);
     localStorage.setItem("driverExperience5", JSON.stringify(data));
     setIsSaveClicked(true);
   };
 
   const saveEducationHistory = (data) => {
-    setAddressField(data);
+    setEducationHistory(data);
     localStorage.setItem("educationHistory5", JSON.stringify(data));
     setIsSaveClicked(true);
   };

@@ -25,9 +25,8 @@ const ApplicationForm5 = () => {
     currentUser,
   } = useAuth();
 
-  const [driverLicensePermit, setDriverLicensePermit] = useState(
-    DriverLicensePermit
-  );
+  const [driverLicensePermit, setDriverLicensePermit] =
+    useState(DriverLicensePermit);
   const [driverExperience, setDriverExperience] = useState(DriverExperience);
   const [educationHistory, setEducationHistory] = useState(EducationHistory);
   const [extraSkills, setExtraSkills] = useState(ExtraSkills);
@@ -53,16 +52,11 @@ const ApplicationForm5 = () => {
     const updatedFields = [...driverLicensePermit];
     updatedFields[index][name] = value;
     setDriverLicensePermit(updatedFields);
+
     const allFieldsEmpty = updatedFields.every((field) =>
       Object.values(field).every((val) => val.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
-
-    if (errors[index] && errors[index][name]) {
-      const updatedErrors = [...errors];
-      delete updatedErrors[index][name];
-      setErrors(updatedErrors);
-    }
   };
 
   const handleDriverExpChange = (e, index) => {
@@ -106,36 +100,22 @@ const ApplicationForm5 = () => {
       [name]: value,
     }));
 
-    // Check if all fields are empty
     const allFieldsEmpty = Object.values({
       ...extraSkills,
-      [name]: value, // Include the updated field value
+      [name]: value,
     }).every((val) => val.trim() === "");
 
     setIsSaveClicked(allFieldsEmpty);
-
-    // Remove error message for the updated field if it was previously set
-    if (extraSkillErrors[name]) {
-      setExtraSkillErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: undefined,
-      }));
-    }
   };
   const validateDriverLisFields = () => {
-    const newErrors = driverLicensePermit.map((field) => {
-      const fieldErrors = {};
-      Object.entries(field).forEach(([key, value]) => {
-        if (value.trim() === "") {
-          fieldErrors[key] = "This field is required";
-        }
-      });
-      return fieldErrors;
-    });
-    setErrors(newErrors);
-    return newErrors.every((err) => Object.keys(err).length === 0);
+    // No validation required, just return true
+    return true;
   };
 
+  const validateExtraSkills = () => {
+    // No validation required, just return true
+    return true;
+  };
   const validateDriverExpFields = () => {
     const newErrors = driverExperience.map((field) => {
       const fieldErrors = {};
@@ -163,17 +143,7 @@ const ApplicationForm5 = () => {
     setDriverEducationError(newErrors);
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
-  const validateExtraSkills = () => {
-    const fieldErrors = {};
-    Object.entries(extraSkills).forEach(([key, value]) => {
-      if (value.trim() === "") {
-        fieldErrors[key] = "This field is required";
-      }
-    });
 
-    setExtraSkillErrors(fieldErrors);
-    return Object.keys(fieldErrors).length === 0;
-  };
   const saveToFirebase = async () => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
@@ -212,14 +182,17 @@ const ApplicationForm5 = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Perform validations
     const isLicenseValid = validateDriverLisFields();
     const isDriverValid = validateDriverExpFields();
     const isEducationValid = validateEducationHistory();
     const isExtraSkillsValid = validateExtraSkills();
+
     if (
-      isLicenseValid ||
-      isEducationValid ||
-      isDriverValid ||
+      isLicenseValid &&
+      isEducationValid &&
+      isDriverValid &&
       isExtraSkillsValid
     ) {
       saveDriverLicensePermit(driverLicensePermit);
@@ -230,19 +203,25 @@ const ApplicationForm5 = () => {
 
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm6");
+    } else {
+      // Show a message indicating the form is incomplete
+      toast.error("Please fill out all required fields before submitting.");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+
+    // Perform validations
     const isLicenseValid = validateDriverLisFields();
     const isDriverValid = validateDriverExpFields();
     const isEducationValid = validateEducationHistory();
     const isExtraSkillsValid = validateExtraSkills();
+
     if (
-      isLicenseValid ||
-      isEducationValid ||
-      isDriverValid ||
+      isLicenseValid &&
+      isEducationValid &&
+      isDriverValid &&
       isExtraSkillsValid
     ) {
       saveDriverLicensePermit(driverLicensePermit);
@@ -253,9 +232,11 @@ const ApplicationForm5 = () => {
       setIsSaveClicked(true);
 
       await saveToFirebase();
+    } else {
+      // Show a message indicating the form is incomplete
+      toast.error("Please fill out all required fields before saving.");
     }
   };
-
   const addDriverLicenseFields = () => {
     setDriverLicensePermit([
       ...driverLicensePermit,
@@ -294,6 +275,23 @@ const ApplicationForm5 = () => {
       },
     ]);
   };
+
+  const removeDriverLicenseField = (index) => {
+    setDriverLicensePermit(driverLicensePermit.filter((_, i) => i !== index));
+    setErrors(errors.filter((_, i) => i !== index));
+  };
+
+  const removeDriverExperienceField = (index) => {
+    setDriverExperience(driverExperience.filter((_, i) => i !== index));
+    setDriverExperienceErrors(
+      driverExperienceErrors.filter((_, i) => i !== index)
+    );
+  };
+
+  const removeEducationHistoryField = (index) => {
+    setEducationHistory(educationHistory.filter((_, i) => i !== index));
+    setDriverEducationError(driverEducationError.filter((_, i) => i !== index));
+  };
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full pr-10">
@@ -305,10 +303,7 @@ const ApplicationForm5 = () => {
             Provide accident record and forfeitures record for previous 3 years
           </p>
         </div>
-        <FaBell
-          size={45}
-          className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
-        />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
 
       {/* First Form */}
@@ -338,21 +333,12 @@ const ApplicationForm5 = () => {
                   id={`LicenseNo-${index}`}
                   value={license.LicenseNo}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].LicenseNo
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].LicenseNo && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].LicenseNo}
-                  </p>
-                )}
               </div>
               <div>
                 <label
-                  htmlFor={`type*-${index}`}
+                  htmlFor={`type-${index}`}
                   className="block text-sm font-semibold text-gray-900 font-radios"
                 >
                   Type
@@ -363,17 +349,8 @@ const ApplicationForm5 = () => {
                   id={`type-${index}`}
                   value={license.type}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].type
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].type && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].type}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -388,17 +365,8 @@ const ApplicationForm5 = () => {
                   id={`state-${index}`}
                   value={license.state}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].state
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].state && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].state}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -408,21 +376,24 @@ const ApplicationForm5 = () => {
                   Expiration date
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   name="expiryDate"
                   id={`expiryDate-${index}`}
                   value={license.expiryDate}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    errors[index] && errors[index].expiryDate
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
-                {errors[index] && errors[index].expiryDate && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors[index].expiryDate}
-                  </p>
+              </div>
+              <div className="flex items-center mt-4">
+                {index !== 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeDriverLicenseField(index)}
+                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
                 )}
               </div>
             </div>
@@ -433,7 +404,7 @@ const ApplicationForm5 = () => {
               onClick={addDriverLicenseFields}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Education
+              Add DriverLisInfo
             </button>
           </div>
         </form>
@@ -538,11 +509,12 @@ const ApplicationForm5 = () => {
                   Date To*
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   name="DateTo"
                   id={`DateTo-${index}`}
                   value={experience.DateTo}
                   onChange={(e) => handleDriverExpChange(e, index)}
+                  max={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
                     driverExperienceErrors[index].DateTo
@@ -565,10 +537,11 @@ const ApplicationForm5 = () => {
                   Date From
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   name="DateFrom"
                   id={`DateFrom-${index}`}
                   value={experience.DateFrom}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -639,6 +612,17 @@ const ApplicationForm5 = () => {
                     </p>
                   )}
               </div>
+              <div className="flex items-center mt-4">
+                {index !== 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeDriverExperienceField(index)}
+                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
           ))}
           <div className="flex items-end justify-end w-full">
@@ -647,7 +631,7 @@ const ApplicationForm5 = () => {
               onClick={addDriverExperience}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Education
+              Add Experience
             </button>
           </div>
         </form>
@@ -725,11 +709,12 @@ const ApplicationForm5 = () => {
                   Date from*
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   name="DateFrom"
                   id={`DateFrom-${index}`}
                   value={education.DateFrom}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
+                  min={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
                     driverEducationError[index] &&
                     driverEducationError[index].DateFrom
@@ -752,11 +737,12 @@ const ApplicationForm5 = () => {
                   Date To*
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   name="DateTo"
                   id={`DateTo-${index}`}
                   value={education.DateTo}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
+                  max={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
                     driverEducationError[index] &&
                     driverEducationError[index].DateTo
@@ -799,6 +785,17 @@ const ApplicationForm5 = () => {
                     </p>
                   )}
               </div>
+              <div className="flex items-center mt-4">
+                {index !== 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeEducationHistoryField(index)}
+                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
           ))}
           <div className="flex items-end justify-end w-full">
@@ -816,7 +813,7 @@ const ApplicationForm5 = () => {
           <div className="grid grid-cols-1 gap-4 mb-6">
             <div>
               <label
-                htmlFor={`safeDrivingAwards`}
+                htmlFor="safeDrivingAwards"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
                 List any safe driving awards you have earned
@@ -824,24 +821,15 @@ const ApplicationForm5 = () => {
               <input
                 type="text"
                 name="safeDrivingAwards"
-                id={`safeDrivingAwards`}
+                id="safeDrivingAwards"
                 value={extraSkills.safeDrivingAwards}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className={`w-full p-2 mt-1 border ${
-                  extraSkillErrors && extraSkillErrors.safeDrivingAwards
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md`}
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />
-              {extraSkillErrors && extraSkillErrors.safeDrivingAwards && (
-                <p className="mt-1 text-xs text-red-500">
-                  {extraSkillErrors.safeDrivingAwards}
-                </p>
-              )}
             </div>
             <div>
               <label
-                htmlFor={`specialTraining`}
+                htmlFor="specialTraining"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
                 List any special training that will enable you to be a better
@@ -850,24 +838,15 @@ const ApplicationForm5 = () => {
               <input
                 type="text"
                 name="specialTraining"
-                id={`specialTraining`}
+                id="specialTraining"
                 value={extraSkills.specialTraining}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className={`w-full p-2 mt-1 border ${
-                  extraSkillErrors && extraSkillErrors.specialTraining
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md`}
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />
-              {extraSkillErrors && extraSkillErrors.specialTraining && (
-                <p className="mt-1 text-xs text-red-500">
-                  {extraSkillErrors.specialTraining}
-                </p>
-              )}
             </div>
             <div>
               <label
-                htmlFor={`otherSkills`}
+                htmlFor="otherSkills"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
                 Other Skills or Training
@@ -875,20 +854,11 @@ const ApplicationForm5 = () => {
               <input
                 type="text"
                 name="otherSkills"
-                id={`otherSkills`}
+                id="otherSkills"
                 value={extraSkills.otherSkills}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className={`w-full p-2 mt-1 border ${
-                  extraSkillErrors && extraSkillErrors.otherSkills
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md`}
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />
-              {extraSkillErrors && extraSkillErrors.otherSkills && (
-                <p className="mt-1 text-xs text-red-500">
-                  {extraSkillErrors.otherSkills}
-                </p>
-              )}
             </div>
           </div>
         </form>
