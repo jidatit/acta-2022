@@ -1,6 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "./config/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import PropTypes from "prop-types";
 import { sendEmailVerification, signOut } from "firebase/auth";
 import { toast } from "react-toastify";
@@ -9,9 +16,10 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [completedForms, setCompletedForms] = useState(null);
   const [FormData1, setFormData1] = useState({
     applicantName: "",
     appliedDate: "",
@@ -114,7 +122,47 @@ export const AuthProvider = ({ children }) => {
     },
   ]);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  useEffect(() => {
+    const fetchCompletedForms = async () => {
+      if (!currentUser) return;
 
+      try {
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const completedFormsData = data.completedForms || null;
+          localStorage.setItem("completedForms", completedFormsData);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching completed forms: ", error);
+      }
+    };
+
+    fetchCompletedForms();
+  }, [currentUser, isSaveClicked]);
+  // Trigger this effect when `isSaveClicked` or `currentUser` changes.
+  const fetchCompletedForms = async () => {
+    if (!currentUser) return;
+
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const completedFormsData = data.completedForms || null;
+        setCompletedForms(completedFormsData);
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error fetching completed forms: ", error);
+    }
+  };
   useEffect(() => {
     // Load data from local storage
     const savedFormData1 = localStorage.getItem("formData");
@@ -144,23 +192,26 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const saveFormData = (data) => {
+    fetchCompletedForms();
     setFormData(data);
     localStorage.setItem("formData2", JSON.stringify(data));
     setIsSaveClicked(true);
   };
   const saveFormData1 = (data) => {
-    console.log("heyyyyy");
+    fetchCompletedForms();
     setFormData1(data);
     localStorage.setItem("formData", JSON.stringify(data));
     setIsSaveClicked(true);
   };
   const saveFormData3 = (data) => {
+    fetchCompletedForms();
     setFormData3(data);
     localStorage.setItem("formData3", JSON.stringify(data));
     setIsSaveClicked(true);
   };
 
   const saveAddressField4 = (data) => {
+    fetchCompletedForms();
     setAddressField(data);
     localStorage.setItem("addressField4", JSON.stringify(data));
     setIsSaveClicked(true);
@@ -231,6 +282,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         try {
+          setCurrentUserId(user.uid);
           setIsEmailVerified(user.emailVerified);
           const userData = await getUserInfo(user.uid);
           setCurrentUser(userData);
@@ -317,6 +369,7 @@ export const AuthProvider = ({ children }) => {
         DriverExperience,
         setDriverExperience,
         EducationHistory,
+        completedForms,
         setEducationHistory,
         saveDriverLicensePermit,
         saveDriverExperience,

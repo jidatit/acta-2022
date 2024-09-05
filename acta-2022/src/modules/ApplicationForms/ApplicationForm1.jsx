@@ -78,6 +78,7 @@ const ApplicationForm = () => {
   const saveFormInfo = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      setIsSaveClicked(true);
       saveFormData1(formData);
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
@@ -91,12 +92,14 @@ const ApplicationForm = () => {
         if (docSnap.exists()) {
           // Document exists, update it
           await updateDoc(docRef, {
-            form1: applicationData, // Use a descriptive key for each form
+            form1: applicationData,
+            completedForms: 1, // Use a descriptive key for each form
           });
         } else {
           // Document does not exist, create it
           await setDoc(docRef, {
             form1: applicationData,
+            completedForms: 1,
           });
         }
         toast.success("Form is successfully saved");

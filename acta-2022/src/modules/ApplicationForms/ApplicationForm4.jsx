@@ -134,10 +134,12 @@ const ApplicationForm4 = () => {
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       } else {
         await setDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       }
 

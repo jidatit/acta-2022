@@ -53,12 +53,14 @@ const ApplicationForm2 = () => {
       if (docSnap.exists()) {
         // Document exists, so update it
         await updateDoc(docRef, {
-          form2: applicationData, // Update this with the specific key for this form
+          form2: applicationData,
+          completedForms: 2, // Update this with the specific key for this form
         });
       } else {
         // Document does not exist, so create it
         await setDoc(docRef, {
           form2: applicationData,
+          completedForms: 2,
         });
       }
 

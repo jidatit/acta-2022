@@ -47,11 +47,13 @@ const ApplicationForm3 = () => {
 
       if (docSnap.exists()) {
         await updateDoc(docRef, {
-          form3: applicationData, // Update this with the specific key for this form
+          form3: applicationData,
+          completedForms: 3, // Update this with the specific key for this form
         });
       } else {
         await setDoc(docRef, {
           form3: applicationData,
+          completedForms: 3,
         });
       }
     } catch (error) {

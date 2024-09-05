@@ -6,6 +6,8 @@ import { useAuth } from "../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
@@ -14,7 +16,7 @@ const SideBar = ({ isSidebarExpanded }) => {
   const location = useLocation();
   const [completedSections, setCompletedSections] = useState([]);
   const [currentSection, setCurrentSection] = useState("Section 1");
-
+  const [completedForms, setCompletedForms] = useState(null);
   const sections = [
     "Section 1",
     "Section 2",
@@ -66,15 +68,49 @@ const SideBar = ({ isSidebarExpanded }) => {
         });
       }
     }
-  }, [location.pathname, completedSections]);
 
+    const fetchCompletedForms = async () => {
+      if (!currentUser) return;
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const completedFormsData = data.completedForms || null;
+          setCompletedForms(completedFormsData);
+          localStorage.setItem("completedForms", completedFormsData);
+        }
+      });
+    };
+
+    fetchCompletedForms();
+  }, [currentUser, completedSections]);
+
+  useEffect(() => {
+    if (completedForms) {
+      for (let i = 1; i <= 11; i++) {
+        if (completedForms >= i) {
+          const section = `Section ${i + 1}`;
+          if (!completedSections.includes(section)) {
+            setCompletedSections((prevSections) => {
+              const newSections = [...prevSections, section];
+              localStorage.setItem(
+                "completedSections",
+                JSON.stringify(newSections)
+              );
+              return newSections;
+            });
+          }
+        }
+      }
+    }
+  }, [completedForms]);
   const handleItemClick = (item) => {
     setActiveItem(item);
   };
 
   const handleSectionClick = (section, index) => {
     if (!isSaveClicked) {
-      toast.error(
+      alert(
         "Please save the current form before navigating to another section."
       );
       return;
@@ -93,7 +129,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       setCurrentSection(section);
       navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
     } else {
-      toast.error("Please complete the previous sections first.");
+      alert("Please complete the previous sections first.");
     }
   };
 
