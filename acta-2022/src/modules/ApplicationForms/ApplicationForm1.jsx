@@ -14,6 +14,12 @@ const ApplicationForm = () => {
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
+
+  useEffect(() => {
+    if (FormData1) {
+      setFormData(FormData1);
+    }
+  }, [FormData1]);
   const handleChange = (e) => {
     setFormData({
       ...formData,
