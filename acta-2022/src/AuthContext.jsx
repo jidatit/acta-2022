@@ -242,7 +242,7 @@ export const AuthProvider = ({ children }) => {
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
 
     console.log(FormData1);
-  }, []);
+  }, [currentUser]);
 
   const getUserInfo = async (uid) => {
     // Define a helper function to query a collection
