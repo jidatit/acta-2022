@@ -51,7 +51,7 @@ const TruckDriverLayout = () => {
           {/* Scrollable Outlet */}
           <div
             className={`w-[95%] ${
-              isSidebarExpanded ? "md:ml-[25%] ml-[25%]" : "ml-[14%]"
+              isSidebarExpanded ? "md:ml-[25%] ml-[25%]" : "ml-[10%]"
             } md:w-[99%] md:ml-[24%] xxl:w-[85%] xxl:ml-[15%] flex flex-col h-screen overflow-y-auto transition-all duration-300 ease-in-out`}
           >
             <div className="flex items-center justify-center flex-grow w-full py-10">

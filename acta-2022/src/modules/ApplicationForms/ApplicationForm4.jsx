@@ -279,7 +279,7 @@ const ApplicationForm4 = () => {
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full pr-10">
-        <div className="flex flex-col items-start justify-start w-full">
+        <div className="flex flex-col items-start justify-start w-full ml-3 smd:ml-0">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driving background and Qualifications
           </h1>
@@ -291,7 +291,7 @@ const ApplicationForm4 = () => {
       </div>
 
       {/* First Form */}
-      <div className="flex flex-col w-[90%] md:w-[85%] gap-y-8">
+      <div className="flex flex-col w-[99%] md:w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
             <input
@@ -665,7 +665,7 @@ const ApplicationForm4 = () => {
           )}
         </form>
 
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between w-full ml-2">
           <button
             type="button"
             onClick={handleBack}
