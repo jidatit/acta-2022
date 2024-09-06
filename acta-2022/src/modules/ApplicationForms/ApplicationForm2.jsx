@@ -115,105 +115,106 @@ const ApplicationForm2 = () => {
 
       <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
-          {localFormData.map((address, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-1 gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
-            >
-              <div>
-                <label
-                  htmlFor={`street1-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Street 1
-                </label>
-                <input
-                  type="text"
-                  name="street1"
-                  id={`street1-${index}`}
-                  value={address.street1}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor={`street2-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Street 2
-                </label>
-                <input
-                  type="text"
-                  name="street2"
-                  id={`street2-${index}`}
-                  value={address.street2}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor={`city-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  id={`city-${index}`}
-                  value={address.city}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor={`state-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  State
-                </label>
-                <input
-                  type="text"
-                  name="state"
-                  id={`state-${index}`}
-                  value={address.state}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor={`zipCode-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Zip Code
-                </label>
-                <input
-                  type="text"
-                  name="zipCode"
-                  id={`zipCode-${index}`}
-                  value={address.zipCode}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div className="flex items-center mt-4">
-                {index >= initialFieldCount && ( // Only show remove button for dynamically added fields
-                  <button
-                    type="button"
-                    onClick={() => removeAddressField(index)}
-                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+          {Array.isArray(localFormData) &&
+            localFormData.map((address, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
+              >
+                <div>
+                  <label
+                    htmlFor={`street1-${index}`}
+                    className="block text-sm font-semibold text-gray-900 font-radios"
                   >
-                    Remove
-                  </button>
-                )}
+                    Street 1
+                  </label>
+                  <input
+                    type="text"
+                    name="street1"
+                    id={`street1-${index}`}
+                    value={address.street1}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`street2-${index}`}
+                    className="block text-sm font-semibold text-gray-900 font-radios"
+                  >
+                    Street 2
+                  </label>
+                  <input
+                    type="text"
+                    name="street2"
+                    id={`street2-${index}`}
+                    value={address.street2}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`city-${index}`}
+                    className="block text-sm font-semibold text-gray-900 font-radios"
+                  >
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    id={`city-${index}`}
+                    value={address.city}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`state-${index}`}
+                    className="block text-sm font-semibold text-gray-900 font-radios"
+                  >
+                    State
+                  </label>
+                  <input
+                    type="text"
+                    name="state"
+                    id={`state-${index}`}
+                    value={address.state}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`zipCode-${index}`}
+                    className="block text-sm font-semibold text-gray-900 font-radios"
+                  >
+                    Zip Code
+                  </label>
+                  <input
+                    type="text"
+                    name="zipCode"
+                    id={`zipCode-${index}`}
+                    value={address.zipCode}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div className="flex items-center mt-4">
+                  {index >= initialFieldCount && ( // Only show remove button for dynamically added fields
+                    <button
+                      type="button"
+                      onClick={() => removeAddressField(index)}
+                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           <div className="flex items-end justify-end w-full">
             <button
               type="button"

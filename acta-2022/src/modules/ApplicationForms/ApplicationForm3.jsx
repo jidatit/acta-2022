@@ -20,6 +20,13 @@ const ApplicationForm3 = () => {
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
+  useEffect(() => {
+    if (FormData3) {
+      setLocalFormData(FormData3);
+    }
+    console.log(localFormData);
+  }, [FormData3]);
+
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
@@ -174,6 +181,8 @@ const ApplicationForm3 = () => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
   };
+
+  console.log(localFormData);
   return (
     <div className="flex flex-col items-start justify-start h-full md:ml-10 gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
       <div className=" flex flex-col items-start justify-start w-full ">
@@ -200,411 +209,418 @@ const ApplicationForm3 = () => {
 
       <div className=" flex flex-col w-[99%] gap-y-8 flex-wrap">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
-          {localFormData.map((field, index) => (
-            <div key={index} className="mb-6">
-              <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
-                <div>
-                  <label
-                    htmlFor={`companyName-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Company Name
-                  </label>
-                  <input
-                    type="text"
-                    name="companyName"
-                    id={`companyName-${index}`}
-                    value={field.companyName}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.companyName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.companyName && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].companyName}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`street-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Street
-                  </label>
-                  <input
-                    type="text"
-                    name="street"
-                    id={`street-${index}`}
-                    value={field.street}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.street
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.street && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].street}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`city-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    City/State
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id={`city-${index}`}
-                    value={field.city}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.city ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.city && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].city}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`zipCode-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Zip Code
-                  </label>
-                  <input
-                    type="number"
-                    name="zipCode"
-                    id={`zipCode-${index}`}
-                    value={field.zipCode}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.zipCode
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.zipCode && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].zipCode}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`contactPerson-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Contact Person
-                  </label>
-                  <input
-                    type="text"
-                    name="contactPerson"
-                    id={`contactPerson-${index}`}
-                    value={field.contactPerson}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.contactPerson
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.contactPerson && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].contactPerson}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`phone-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Phone#
-                  </label>
-                  <input
-                    type="number"
-                    name="phone"
-                    id={`phone-${index}`}
-                    value={field.phone}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.phone
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.phone && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].phone}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`fax1-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    FAX#1
-                  </label>
-                  <input
-                    type="text"
-                    name="fax1"
-                    id={`fax1-${index}`}
-                    value={field.fax1}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.fax1 ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.fax1 && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].fax1}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`from-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    From
-                  </label>
-                  <input
-                    type="date"
-                    name="from"
-                    id={`from-${index}`}
-                    min={new Date().toISOString().split("T")[0]}
-                    value={field.from}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.from ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.from && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].from}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`to-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    To
-                  </label>
-                  <input
-                    type="date"
-                    name="to"
-                    id={`to-${index}`}
-                    value={field.to}
-                    onChange={(e) => handleInputChange(index, e)}
-                    max={new Date().toISOString().split("T")[0]}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.to ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.to && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].to}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`position-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Position
-                  </label>
-                  <input
-                    type="text"
-                    name="position"
-                    id={`position-${index}`}
-                    value={field.position}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.position
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.position && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].position}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`salary-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Salary
-                  </label>
-                  <input
-                    type="text"
-                    name="salary"
-                    id={`salary-${index}`}
-                    value={field.salary}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.salary
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.salary && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].salary}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`leavingReason-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Leaving Reason
-                  </label>
-                  <input
-                    type="text"
-                    name="leavingReason"
-                    id={`leavingReason-${index}`}
-                    value={field.leavingReason}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full p-2 mt-1 border rounded-md ${
-                      errors[index]?.leavingReason
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors[index]?.leavingReason && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].leavingReason}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col smd:w-screen w-[90%] mb-6">
-                  <div className="w-full mb-6">
+          {Array.isArray(localFormData) &&
+            localFormData.map((field, index) => (
+              <div key={index} className="mb-6">
+                <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+                  <div>
                     <label
-                      htmlFor={`company-${index}-subjectToFMCSRs`}
+                      htmlFor={`companyName-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Were you subject to the FMCSRs while employed?
+                      Company Name
                     </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name={`company-${index}-subjectToFMCSRs`}
-                          value="yes"
-                          checked={field.subjectToFMCSRs === "yes"}
-                          onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
-                        />
-                        <span className="ml-2">Yes</span>
-                      </label>
-                      <label className="inline-flex items-center ml-6">
-                        <input
-                          type="radio"
-                          name={`company-${index}-subjectToFMCSRs`}
-                          value="no"
-                          checked={field.subjectToFMCSRs === "no"}
-                          onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
-                        />
-                        <span className="ml-2">No</span>
-                      </label>
-                    </div>
-                    {errors[index]?.subjectToFMCSRs && (
+                    <input
+                      type="text"
+                      name="companyName"
+                      id={`companyName-${index}`}
+                      value={field.companyName}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.companyName
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.companyName && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].subjectToFMCSRs}
+                        {errors[index].companyName}
                       </p>
                     )}
                   </div>
 
-                  <div className="w-full mb-6">
+                  <div>
                     <label
-                      htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
+                      htmlFor={`street-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Was your job designated as a safety-sensitive function in
-                      any DOT-regulated mode subject to the drug and alcohol
-                      testing requirements?
+                      Street
                     </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name={`company-${index}-jobDesignatedAsSafetySensitive`}
-                          value="yes"
-                          checked={
-                            field.jobDesignatedAsSafetySensitive === "yes"
-                          }
-                          onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
-                        />
-                        <span className="ml-2">Yes</span>
-                      </label>
-                      <label className="inline-flex items-center ml-6">
-                        <input
-                          type="radio"
-                          name={`company-${index}-jobDesignatedAsSafetySensitive`}
-                          value="no"
-                          checked={
-                            field.jobDesignatedAsSafetySensitive === "no"
-                          }
-                          onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
-                        />
-                        <span className="ml-2">No</span>
-                      </label>
-                    </div>
-                    {errors[index]?.jobDesignatedAsSafetySensitive && (
+                    <input
+                      type="text"
+                      name="street"
+                      id={`street-${index}`}
+                      value={field.street}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.street
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.street && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].jobDesignatedAsSafetySensitive}
+                        {errors[index].street}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center mt-4">
-                    {index !== 0 && ( // Only show remove button for dynamically added fields
-                      <button
-                        type="button"
-                        onClick={() => removeCompany(index)}
-                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+
+                  <div>
+                    <label
+                      htmlFor={`city-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      City/State
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      id={`city-${index}`}
+                      value={field.city}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.city
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.city && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].city}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`zipCode-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Zip Code
+                    </label>
+                    <input
+                      type="number"
+                      name="zipCode"
+                      id={`zipCode-${index}`}
+                      value={field.zipCode}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.zipCode
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.zipCode && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].zipCode}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`contactPerson-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Contact Person
+                    </label>
+                    <input
+                      type="text"
+                      name="contactPerson"
+                      id={`contactPerson-${index}`}
+                      value={field.contactPerson}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.contactPerson
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.contactPerson && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].contactPerson}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`phone-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Phone#
+                    </label>
+                    <input
+                      type="number"
+                      name="phone"
+                      id={`phone-${index}`}
+                      value={field.phone}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.phone
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.phone && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].phone}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`fax1-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      FAX#1
+                    </label>
+                    <input
+                      type="text"
+                      name="fax1"
+                      id={`fax1-${index}`}
+                      value={field.fax1}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.fax1
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.fax1 && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].fax1}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`from-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      name="from"
+                      id={`from-${index}`}
+                      min={new Date().toISOString().split("T")[0]}
+                      value={field.from}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.from
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.from && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].from}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`to-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      name="to"
+                      id={`to-${index}`}
+                      value={field.to}
+                      onChange={(e) => handleInputChange(index, e)}
+                      max={new Date().toISOString().split("T")[0]}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.to ? "border-red-500" : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.to && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].to}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`position-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Position
+                    </label>
+                    <input
+                      type="text"
+                      name="position"
+                      id={`position-${index}`}
+                      value={field.position}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.position
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.position && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].position}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`salary-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Salary
+                    </label>
+                    <input
+                      type="text"
+                      name="salary"
+                      id={`salary-${index}`}
+                      value={field.salary}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.salary
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.salary && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].salary}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`leavingReason-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Leaving Reason
+                    </label>
+                    <input
+                      type="text"
+                      name="leavingReason"
+                      id={`leavingReason-${index}`}
+                      value={field.leavingReason}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.leavingReason
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors[index]?.leavingReason && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].leavingReason}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col smd:w-screen w-[90%] mb-6">
+                    <div className="w-full mb-6">
+                      <label
+                        htmlFor={`company-${index}-subjectToFMCSRs`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
                       >
-                        Remove
-                      </button>
-                    )}
+                        Were you subject to the FMCSRs while employed?
+                      </label>
+                      <div className="mt-2">
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name={`company-${index}-subjectToFMCSRs`}
+                            value="yes"
+                            checked={field.subjectToFMCSRs === "yes"}
+                            onChange={(e) => handleInputChange(index, e)}
+                            className="text-blue-500 form-radio"
+                          />
+                          <span className="ml-2">Yes</span>
+                        </label>
+                        <label className="inline-flex items-center ml-6">
+                          <input
+                            type="radio"
+                            name={`company-${index}-subjectToFMCSRs`}
+                            value="no"
+                            checked={field.subjectToFMCSRs === "no"}
+                            onChange={(e) => handleInputChange(index, e)}
+                            className="text-blue-500 form-radio"
+                          />
+                          <span className="ml-2">No</span>
+                        </label>
+                      </div>
+                      {errors[index]?.subjectToFMCSRs && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors[index].subjectToFMCSRs}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="w-full mb-6">
+                      <label
+                        htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Was your job designated as a safety-sensitive function
+                        in any DOT-regulated mode subject to the drug and
+                        alcohol testing requirements?
+                      </label>
+                      <div className="mt-2">
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name={`company-${index}-jobDesignatedAsSafetySensitive`}
+                            value="yes"
+                            checked={
+                              field.jobDesignatedAsSafetySensitive === "yes"
+                            }
+                            onChange={(e) => handleInputChange(index, e)}
+                            className="text-blue-500 form-radio"
+                          />
+                          <span className="ml-2">Yes</span>
+                        </label>
+                        <label className="inline-flex items-center ml-6">
+                          <input
+                            type="radio"
+                            name={`company-${index}-jobDesignatedAsSafetySensitive`}
+                            value="no"
+                            checked={
+                              field.jobDesignatedAsSafetySensitive === "no"
+                            }
+                            onChange={(e) => handleInputChange(index, e)}
+                            className="text-blue-500 form-radio"
+                          />
+                          <span className="ml-2">No</span>
+                        </label>
+                      </div>
+                      {errors[index]?.jobDesignatedAsSafetySensitive && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors[index].jobDesignatedAsSafetySensitive}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center mt-4">
+                      {index !== 0 && ( // Only show remove button for dynamically added fields
+                        <button
+                          type="button"
+                          onClick={() => removeCompany(index)}
+                          className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
           <div className="flex items-end justify-end w-full">
             <button
               type="button"
