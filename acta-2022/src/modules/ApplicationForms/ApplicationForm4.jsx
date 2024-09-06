@@ -11,27 +11,79 @@ const ApplicationForm4 = () => {
   const {
     addressField,
     trafficConvictionField,
-    saveAddressField4,
-    saveTrafficConviction4,
+
     setIsSaveClicked,
     isSaveClicked,
     currentUser,
+    noAccidentsCheckeds,
+    noTrafficConvictionsCheckeds,
   } = useAuth();
-
-  const [addressFields, setAddressFields] = useState(addressField);
-  const [trafficConvictionFields, setTrafficConvictionFields] = useState(
-    trafficConvictionField
+  const [addressFields, setAddressFields] = useState(
+    addressField.length > 0
+      ? addressField
+      : [
+          {
+            date: "",
+            accidentType: "",
+            location: "",
+            fatalities: "",
+            penalties: "",
+            comments: "",
+          },
+        ]
   );
+
+  useEffect(() => {
+    if (addressFields.length === 0) {
+      setAddressFields([
+        {
+          date: "",
+          accidentType: "",
+          location: "",
+          fatalities: "",
+          penalties: "",
+          comments: "",
+        },
+      ]);
+    }
+  }, [addressFields]);
+  const [trafficConvictionFields, setTrafficConvictionFields] = useState(
+    trafficConvictionField.length > 0
+      ? trafficConvictionField
+      : [
+          {
+            date: "",
+            offenseType: "",
+            location: "",
+            penalties: "",
+            comments: "",
+          },
+        ]
+  );
+
+  useEffect(() => {
+    if (trafficConvictionFields.length === 0) {
+      setTrafficConvictionFields([
+        {
+          date: "",
+          offenseType: "",
+          location: "",
+          penalties: "",
+          comments: "",
+        },
+      ]);
+    }
+  }, [trafficConvictionFields]);
 
   const [errors, setErrors] = useState([]);
   const [trafficErrors, setTrafficErrors] = useState([]);
 
   // State to track if the checkboxes are checked
-  const [noAccidentsChecked, setNoAccidentsChecked] = useState(false);
+  const [noAccidentsChecked, setNoAccidentsChecked] =
+    useState(noAccidentsCheckeds);
   const [noTrafficConvictionsChecked, setNoTrafficConvictionsChecked] =
-    useState(false);
-  const initialAddressCount = 1;
-  const initialTrafficCount = 1;
+    useState(noTrafficConvictionsCheckeds);
+
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -122,7 +174,7 @@ const ApplicationForm4 = () => {
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
-        previousAddresses: noAccidentsChecked ? [] : addressFields,
+        accidentRecords: noAccidentsChecked ? [] : addressFields,
         trafficConvictions: noTrafficConvictionsChecked
           ? []
           : trafficConvictionFields,
@@ -158,10 +210,6 @@ const ApplicationForm4 = () => {
       (noAccidentsChecked || isAddressValid) &&
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
-      saveAddressField4(noAccidentsChecked ? [] : addressFields);
-      saveTrafficConviction4(
-        noTrafficConvictionsChecked ? [] : trafficConvictionFields
-      );
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -180,10 +228,6 @@ const ApplicationForm4 = () => {
       (noAccidentsChecked || isAddressValid) &&
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
-      saveAddressField4(noAccidentsChecked ? [] : addressFields);
-      saveTrafficConviction4(
-        noTrafficConvictionsChecked ? [] : trafficConvictionFields
-      );
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
@@ -224,7 +268,7 @@ const ApplicationForm4 = () => {
     );
     setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
   };
-
+  console.log(trafficConvictionField);
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full pr-10">
@@ -253,7 +297,7 @@ const ApplicationForm4 = () => {
               No accidents in past 3 years
             </p>
           </div>
-          {!noAccidentsChecked && (
+          {noAccidentsChecked === false && (
             <>
               {addressFields.map((address, index) => (
                 <div

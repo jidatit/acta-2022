@@ -10,17 +10,12 @@ const ApplicationForm5 = () => {
   const navigate = useNavigate();
   const {
     DriverLicensePermit,
-
     DriverExperience,
-
     EducationHistory,
 
-    saveDriverLicensePermit,
-    saveDriverExperience,
-    saveEducationHistory,
     ExtraSkills,
     isSaveClicked,
-    saveExtraSkills,
+
     setIsSaveClicked,
     currentUser,
   } = useAuth();
@@ -32,7 +27,6 @@ const ApplicationForm5 = () => {
   const [extraSkills, setExtraSkills] = useState(ExtraSkills);
 
   const [errors, setErrors] = useState([]);
-  const [extraSkillErrors, setExtraSkillErrors] = useState();
   const [driverExperienceErrors, setDriverExperienceErrors] = useState([]);
   const [driverEducationError, setDriverEducationError] = useState([]);
   // State to track if the checkboxes are checked
@@ -197,10 +191,6 @@ const ApplicationForm5 = () => {
       isDriverValid &&
       isExtraSkillsValid
     ) {
-      saveDriverLicensePermit(driverLicensePermit);
-      saveEducationHistory(educationHistory);
-      saveDriverExperience(driverExperience);
-      saveExtraSkills(extraSkills);
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -226,10 +216,6 @@ const ApplicationForm5 = () => {
       isDriverValid &&
       isExtraSkillsValid
     ) {
-      saveDriverLicensePermit(driverLicensePermit);
-      saveEducationHistory(educationHistory);
-      saveDriverExperience(driverExperience);
-      saveExtraSkills(extraSkills);
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 

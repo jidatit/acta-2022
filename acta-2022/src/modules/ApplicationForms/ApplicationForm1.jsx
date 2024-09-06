@@ -7,7 +7,7 @@ import { db } from "../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  const { setIsSaveClicked, currentUser, FormData1, saveFormData1 } = useAuth();
+  const { setIsSaveClicked, currentUser, FormData1 } = useAuth();
   const [formData, setFormData] = useState(FormData1);
 
   const [errors, setErrors] = useState({});
@@ -42,7 +42,6 @@ const ApplicationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      saveFormData1(formData);
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
 
@@ -79,7 +78,7 @@ const ApplicationForm = () => {
     e.preventDefault();
     if (validateForm()) {
       setIsSaveClicked(true);
-      saveFormData1(formData);
+
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
 

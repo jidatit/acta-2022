@@ -10,13 +10,7 @@ import { db } from "../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();
-  const {
-    saveFormData3,
-    FormData3,
-    setIsSaveClicked,
-    currentUser,
-    isSaveClicked,
-  } = useAuth();
+  const { FormData3, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
 
   const [localFormData, setLocalFormData] = useState(FormData3);
   const [errors, setErrors] = useState([]);
@@ -41,7 +35,7 @@ const ApplicationForm3 = () => {
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
-        previousAddresses: localFormData,
+        EmploymentHistory: localFormData,
         submittedAt: new Date(),
       };
 
@@ -99,7 +93,6 @@ const ApplicationForm3 = () => {
     setIsSaveClicked(false);
 
     if (validateForm()) {
-      saveFormData3(localFormData);
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -113,7 +106,7 @@ const ApplicationForm3 = () => {
     e.preventDefault();
     if (validateForm()) {
       toast.success("Form is successfully saved");
-      saveFormData3(localFormData);
+
       setIsSaveClicked(true);
 
       await saveToFirebase();
@@ -145,9 +138,6 @@ const ApplicationForm3 = () => {
     ]);
     setErrors([...errors, {}]); // Add an empty error object for the new company
   };
-  const allFieldsEmpty = localFormData.every((address) =>
-    Object.values(address).every((fieldValue) => fieldValue.trim() === "")
-  );
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
@@ -189,7 +179,7 @@ const ApplicationForm3 = () => {
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full md:ml-4 ml-4 mb-4 text-xl font-bold text-black">
-            Previous Addresses
+            Employment History
           </h1>
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         </div>

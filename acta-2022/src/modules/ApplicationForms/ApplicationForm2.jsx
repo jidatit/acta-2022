@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 const ApplicationForm2 = () => {
   const navigate = useNavigate();
-  const { FormData, saveFormData, setIsSaveClicked, currentUser } = useAuth();
+  const { FormData, setIsSaveClicked, currentUser } = useAuth();
   const [localFormData, setLocalFormData] = useState(FormData || []);
   const initialFields = [
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
@@ -73,7 +73,7 @@ const ApplicationForm2 = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    saveFormData(localFormData);
+
     setIsSaveClicked(true);
 
     await saveToFirebase();
@@ -83,7 +83,7 @@ const ApplicationForm2 = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     toast.success("Form is successfully saved");
-    saveFormData(localFormData);
+
     setIsSaveClicked(true);
 
     await saveToFirebase();
