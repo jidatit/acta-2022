@@ -88,9 +88,16 @@ const ApplicationForm4 = () => {
     setIsSaveClicked(true);
   }, []);
   useEffect(() => {
+    setNoAccidentsChecked(noAccidentsCheckeds);
+    setNoTrafficConvictionsChecked(noTrafficConvictionsCheckeds);
     setAddressFields(addressField);
     setTrafficConvictionFields(trafficConvictionField);
-  }, [addressField, trafficConvictionField]);
+  }, [
+    addressField,
+    trafficConvictionField,
+    noAccidentsCheckeds,
+    noTrafficConvictionsCheckeds,
+  ]);
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
