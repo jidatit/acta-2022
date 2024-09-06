@@ -11,7 +11,6 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../UiComponents/Loader";
 
 const SignInPage = () => {
-  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -73,7 +72,7 @@ const SignInPage = () => {
       userData = await queryCollection("TruckDrivers");
       if (userData) {
         setLoading(false); // Stop loading
-        navigate("/TruckDriverLayout");
+        navigate("/TruckDriverLayout/applicationForm1");
       }
     } catch (error) {
       // Stop loading in case of error

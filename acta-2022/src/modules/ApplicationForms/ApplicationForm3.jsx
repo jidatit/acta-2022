@@ -175,7 +175,7 @@ const ApplicationForm3 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
+    <div className="flex flex-col items-start justify-start h-full md:ml-10 gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full md:ml-4 ml-4 mb-4 text-xl font-bold text-black">

@@ -200,7 +200,7 @@ const ApplicationForm2 = () => {
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
               </div>
-              <input type="text" value={index} />
+
               <div className="flex items-center mt-4">
                 {index >= initialFieldCount && ( // Only show remove button for dynamically added fields
                   <button

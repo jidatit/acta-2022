@@ -30,7 +30,10 @@ const ApplicationForm = () => {
     Object.keys(formData).forEach((key) => {
       // Exclude "street 2" and "who referred you" fields from validation
       if (key !== "street2" && key !== "referredBy") {
-        if (!formData[key].trim()) {
+        const value = formData[key];
+
+        // Check if the value is a string before trimming
+        if (typeof value === "string" && !value.trim()) {
           newErrors[key] = "This Field is required";
         }
       }

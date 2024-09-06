@@ -126,7 +126,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       return;
     }
     if (!isSaveClicked) {
-      alert(
+      toast(
         "Please save the current form before navigating to another section."
       );
       return;
@@ -145,7 +145,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       setCurrentSection(section);
       navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
     } else {
-      alert("Please complete the previous sections first.");
+      toast.error("Please complete the previous sections first.");
     }
   };
 
