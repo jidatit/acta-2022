@@ -7,7 +7,7 @@ import { db } from "../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm = () => {
   const navigate = useNavigate();
-  const { setIsSaveClicked, currentUser, FormData1, saveFormData1 } = useAuth();
+  const { setIsSaveClicked, currentUser, FormData1 } = useAuth();
   const [formData, setFormData] = useState(FormData1);
 
   const [errors, setErrors] = useState({});
@@ -26,19 +26,25 @@ const ApplicationForm = () => {
 
   const validateForm = () => {
     const newErrors = {};
+
     Object.keys(formData).forEach((key) => {
-      if (!formData[key].trim()) {
-        newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} is required`;
+      // Exclude "street 2" and "who referred you" fields from validation
+      if (key !== "street2" && key !== "referredBy") {
+        const value = formData[key];
+
+        // Check if the value is a string before trimming
+        if (typeof value === "string" && !value.trim()) {
+          newErrors[key] = "This Field is required";
+        }
       }
     });
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      saveFormData1(formData);
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
 
@@ -66,13 +72,16 @@ const ApplicationForm = () => {
       } catch (error) {
         console.error("Error saving application: ", error);
       }
+    } else {
+      toast.error("Form is not valid, please fill in all required fields");
     }
   };
 
   const saveFormInfo = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      saveFormData1(formData);
+      setIsSaveClicked(true);
+
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
 
@@ -85,12 +94,14 @@ const ApplicationForm = () => {
         if (docSnap.exists()) {
           // Document exists, update it
           await updateDoc(docRef, {
-            form1: applicationData, // Use a descriptive key for each form
+            form1: applicationData,
+            completedForms: 1, // Use a descriptive key for each form
           });
         } else {
           // Document does not exist, create it
           await setDoc(docRef, {
             form1: applicationData,
+            completedForms: 1,
           });
         }
         toast.success("Form is successfully saved");
@@ -98,6 +109,8 @@ const ApplicationForm = () => {
       } catch (error) {
         console.error("Error saving application: ", error);
       }
+    } else {
+      toast.error("Form is not valid, please fill in all required fields");
     }
   };
 
@@ -107,10 +120,7 @@ const ApplicationForm = () => {
         <h1 className="w-full text-xl font-bold text-center text-black">
           Application Form
         </h1>
-        <FaBell
-          size={45}
-          className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
-        />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
       <div className=" flex flex-col w-[85%] gap-y-8">
         <form className="w-full p-6 bg-white rounded-md shadow-md border-b-1 border-b-gray-400">
@@ -129,11 +139,13 @@ const ApplicationForm = () => {
               value={formData.applicantName}
               onChange={handleChange}
               className={`w-full p-2 mt-1 border rounded-md ${
-                errors.applicantName ? "border-red-500" : "border-gray-300"
+                errors.applicantName
+                  ? "border-red-500 border-2"
+                  : "border-gray-300"
               }`}
             />
             {errors.applicantName && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.applicantName}
               </p>
             )}
@@ -154,12 +166,15 @@ const ApplicationForm = () => {
                 id="appliedDate"
                 value={formData.appliedDate}
                 onChange={handleChange}
+                max={new Date().toISOString().split("T")[0]}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.appliedDate ? "border-red-500" : "border-gray-300"
+                  errors.appliedDate
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.appliedDate && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-[15px] font-radios text-red-500">
                   {errors.appliedDate}
                 </p>
               )}
@@ -176,19 +191,21 @@ const ApplicationForm = () => {
                 id="positionApplied"
                 value={formData.positionApplied}
                 onChange={handleChange}
-                className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.positionApplied ? "border-red-500" : "border-gray-300"
+                className={`w-full p-[12px] mt-1 border rounded-md ${
+                  errors.positionApplied
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               >
-                {errors.positionApplied && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.positionApplied}
-                  </p>
-                )}
                 <option value="">Select Position</option>
                 <option value="position1">Position 1</option>
                 <option value="position2">Position 2</option>
               </select>
+              {errors.positionApplied && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  This Field is required
+                </p>
+              )}
             </div>
             <div>
               <label
@@ -204,11 +221,13 @@ const ApplicationForm = () => {
                 value={formData.ssn}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.ssn ? "border-red-500" : "border-gray-300"
+                  errors.ssn ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.ssn && (
-                <p className="mt-1 text-sm text-red-500">{errors.ssn}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.ssn}
+                </p>
               )}
             </div>
           </div>
@@ -228,14 +247,18 @@ const ApplicationForm = () => {
                 id="DOB"
                 value={formData.DOB}
                 onChange={handleChange}
+                max={new Date().toISOString().split("T")[0]} // Setting max to today's date
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.DOB ? "border-red-500" : "border-gray-300"
+                  errors.DOB ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.DOB && (
-                <p className="mt-1 text-sm text-red-500">{errors.DOB}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.DOB}
+                </p>
               )}
             </div>
+
             <div>
               <label className="block text-sm font-semibold text-gray-900 font-radios">
                 Gender
@@ -249,7 +272,7 @@ const ApplicationForm = () => {
                     checked={formData.gender === "male"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
-                      errors.gender ? "border-red-500" : ""
+                      errors.gender ? "border-red-500 border-2" : ""
                     }`}
                   />
                   <span className="ml-2">Male</span>
@@ -262,14 +285,16 @@ const ApplicationForm = () => {
                     checked={formData.gender === "female"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
-                      errors.gender ? "border-red-500" : ""
+                      errors.gender ? "border-red-500 border-2" : ""
                     }`}
                   />
                   <span className="ml-2">Female</span>
                 </label>
               </div>
               {errors.gender && (
-                <p className="mt-1 text-sm text-red-500">{errors.gender}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.gender}
+                </p>
               )}
             </div>
             <div>
@@ -286,12 +311,9 @@ const ApplicationForm = () => {
                 value={formData.referredBy}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.referredBy ? "border-red-500" : "border-gray-300"
+                  errors.referredBy ? "border-gray-300" : "border-gray-300"
                 }`}
               />
-              {errors.referredBy && (
-                <p className="mt-1 text-sm text-red-500">{errors.referredBy}</p>
-              )}
             </div>
           </div>
 
@@ -310,7 +332,7 @@ const ApplicationForm = () => {
                     checked={formData.legalRightToWork === "yes"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
-                      errors.legalRightToWork ? "border-red-500" : ""
+                      errors.legalRightToWork ? "border-red-500 border-2" : ""
                     }`}
                   />
                   <span className="ml-2">Yes</span>
@@ -323,14 +345,14 @@ const ApplicationForm = () => {
                     checked={formData.legalRightToWork === "no"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
-                      errors.legalRightToWork ? "border-red-500" : ""
+                      errors.legalRightToWork ? "border-red-500 border-2" : ""
                     }`}
                   />
                   <span className="ml-2">No</span>
                 </label>
               </div>
               {errors.legalRightToWork && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
                   {errors.legalRightToWork}
                 </p>
               )}
@@ -350,11 +372,13 @@ const ApplicationForm = () => {
                 value={formData.payExpected}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.payExpected ? "border-red-500" : "border-gray-300"
+                  errors.payExpected
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.payExpected && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
                   {errors.payExpected}
                 </p>
               )}
@@ -377,11 +401,13 @@ const ApplicationForm = () => {
                 value={formData.street1}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.street1 ? "border-red-500" : "border-gray-300"
+                  errors.street1 ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.street1 && (
-                <p className="mt-1 text-sm text-red-500">{errors.street1}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.street1}
+                </p>
               )}
             </div>
             <div>
@@ -397,13 +423,8 @@ const ApplicationForm = () => {
                 id="street2"
                 value={formData.street2}
                 onChange={handleChange}
-                className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.street2 ? "border-red-500" : "border-gray-300"
-                }`}
+                className="w-full p-2 mt-1 border rounded-md border-gray-300"
               />
-              {errors.street2 && (
-                <p className="mt-1 text-sm text-red-500">{errors.street2}</p>
-              )}
             </div>
             <div>
               <label
@@ -419,11 +440,13 @@ const ApplicationForm = () => {
                 value={formData.city}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.city ? "border-red-500" : "border-gray-300"
+                  errors.city ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.city && (
-                <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.city}
+                </p>
               )}
             </div>
             <div>
@@ -440,11 +463,13 @@ const ApplicationForm = () => {
                 value={formData.state}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.state ? "border-red-500" : "border-gray-300"
+                  errors.state ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.state && (
-                <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.state}
+                </p>
               )}
             </div>
             <div>
@@ -455,17 +480,19 @@ const ApplicationForm = () => {
                 Zip Code
               </label>
               <input
-                type="text"
+                type="number"
                 name="zipCode"
                 id="zipCode"
                 value={formData.zipCode}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.zipCode ? "border-red-500" : "border-gray-300"
+                  errors.zipCode ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.zipCode && (
-                <p className="mt-1 text-sm text-red-500">{errors.zipCode}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.zipCode}
+                </p>
               )}
             </div>
             <div>
@@ -476,17 +503,21 @@ const ApplicationForm = () => {
                 Cell Phone
               </label>
               <input
-                type="text"
+                type="number"
                 name="cellPhone"
                 id="cellPhone"
                 value={formData.cellPhone}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.cellPhone ? "border-red-500" : "border-gray-300"
+                  errors.cellPhone
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.cellPhone && (
-                <p className="mt-1 text-sm text-red-500">{errors.cellPhone}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.cellPhone}
+                </p>
               )}
             </div>
             <div>
@@ -503,11 +534,13 @@ const ApplicationForm = () => {
                 value={formData.Email}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.Email ? "border-red-500" : "border-gray-300"
+                  errors.Email ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.Email && (
-                <p className="mt-1 text-sm text-red-500">{errors.Email}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.Email}
+                </p>
               )}
             </div>
             <div>
@@ -524,11 +557,13 @@ const ApplicationForm = () => {
                 value={formData.EmergencyContact}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.EmergencyContact ? "border-red-500" : "border-gray-300"
+                  errors.EmergencyContact
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.EmergencyContact && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
                   {errors.EmergencyContact}
                 </p>
               )}
@@ -548,11 +583,13 @@ const ApplicationForm = () => {
                 value={formData.Relationship}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.Relationship ? "border-red-500" : "border-gray-300"
+                  errors.Relationship
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.Relationship && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
                   {errors.Relationship}
                 </p>
               )}
@@ -572,11 +609,13 @@ const ApplicationForm = () => {
                 value={formData.CDL}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.CDL ? "border-red-500" : "border-gray-300"
+                  errors.CDL ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
               {errors.CDL && (
-                <p className="mt-1 text-sm text-red-500">{errors.CDL}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDL}
+                </p>
               )}
             </div>
 
@@ -594,11 +633,15 @@ const ApplicationForm = () => {
                 value={formData.CDLState}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.CDLState ? "border-red-500" : "border-gray-300"
+                  errors.CDLState
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.CDLState && (
-                <p className="mt-1 text-sm text-red-500">{errors.CDLState}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDLState}
+                </p>
               )}
             </div>
 
@@ -616,11 +659,15 @@ const ApplicationForm = () => {
                 value={formData.CDLClass}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.CDLClass ? "border-red-500" : "border-gray-300"
+                  errors.CDLClass
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
                 }`}
               />
               {errors.CDLClass && (
-                <p className="mt-1 text-sm text-red-500">{errors.CDLClass}</p>
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDLClass}
+                </p>
               )}
             </div>
           </div>
@@ -639,12 +686,15 @@ const ApplicationForm = () => {
               id="CDLExpirationDate"
               value={formData.CDLExpirationDate}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               className={`w-full p-2 mt-1 border rounded-md ${
-                errors.CDLExpirationDate ? "border-red-500" : "border-gray-300"
+                errors.CDLExpirationDate
+                  ? "border-red-500 border-2"
+                  : "border-gray-300"
               }`}
             />
             {errors.CDLExpirationDate && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.CDLExpirationDate}
               </p>
             )}
@@ -663,7 +713,9 @@ const ApplicationForm = () => {
                   checked={formData.EverBeenDeniedALicense === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.EverBeenDeniedALicense ? "border-red-500" : ""
+                    errors.EverBeenDeniedALicense
+                      ? "border-red-500 border-2"
+                      : ""
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -676,14 +728,16 @@ const ApplicationForm = () => {
                   checked={formData.EverBeenDeniedALicense === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.EverBeenDeniedALicense ? "border-red-500" : ""
+                    errors.EverBeenDeniedALicense
+                      ? "border-red-500 border-2"
+                      : ""
                   }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
             {errors.EverBeenDeniedALicense && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.EverBeenDeniedALicense}
               </p>
             )}
@@ -703,7 +757,9 @@ const ApplicationForm = () => {
                   checked={formData.PermitPrivilegeOfLicense === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.PermitPrivilegeOfLicense ? "border-red-500" : ""
+                    errors.PermitPrivilegeOfLicense
+                      ? "border-red-500 border-2"
+                      : ""
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -716,14 +772,16 @@ const ApplicationForm = () => {
                   checked={formData.PermitPrivilegeOfLicense === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.PermitPrivilegeOfLicense ? "border-red-500" : ""
+                    errors.PermitPrivilegeOfLicense
+                      ? "border-red-500 border-2"
+                      : ""
                   }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
             {errors.PermitPrivilegeOfLicense && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.PermitPrivilegeOfLicense}
               </p>
             )}
@@ -745,7 +803,7 @@ const ApplicationForm = () => {
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
-                      ? "border-red-500"
+                      ? "border-red-500 border-2"
                       : ""
                   }`}
                 />
@@ -760,7 +818,7 @@ const ApplicationForm = () => {
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
-                      ? "border-red-500"
+                      ? "border-red-500 border-2"
                       : ""
                   }`}
                 />
@@ -768,7 +826,7 @@ const ApplicationForm = () => {
               </label>
             </div>
             {errors.TestedPositiveOrRefusedDotDrug && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.TestedPositiveOrRefusedDotDrug}
               </p>
             )}
@@ -787,7 +845,9 @@ const ApplicationForm = () => {
                   checked={formData.EverConvictedOfFelony === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.EverConvictedOfFelony ? "border-red-500" : ""
+                    errors.EverConvictedOfFelony
+                      ? "border-red-500 border-2 "
+                      : ""
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -800,14 +860,16 @@ const ApplicationForm = () => {
                   checked={formData.EverConvictedOfFelony === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
-                    errors.EverConvictedOfFelony ? "border-red-500" : ""
+                    errors.EverConvictedOfFelony
+                      ? "border-red-500 border-2"
+                      : ""
                   }`}
                 />
                 <span className="ml-2">No</span>
               </label>
             </div>
             {errors.EverConvictedOfFelony && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.EverConvictedOfFelony}
               </p>
             )}

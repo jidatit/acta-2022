@@ -1,6 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "./config/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import PropTypes from "prop-types";
 import { sendEmailVerification, signOut } from "firebase/auth";
 import { toast } from "react-toastify";
@@ -9,9 +17,13 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [completedForms, setCompletedForms] = useState(null);
+  const [noAccidentsCheckeds, setNoAccidentsChecked] = useState(false);
+  const [noTrafficConvictionsCheckeds, setNoTrafficConvictionsChecked] =
+    useState(false);
   const [FormData1, setFormData1] = useState({
     applicantName: "",
     appliedDate: "",
@@ -114,6 +126,95 @@ export const AuthProvider = ({ children }) => {
     },
   ]);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+
+    const unsubscribe = onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const completedFormsData = data.completedForms || null;
+          setCompletedForms(completedFormsData);
+          localStorage.setItem(
+            "completedForms",
+            JSON.stringify(completedFormsData)
+          );
+
+          if (data.form1) {
+            localStorage.setItem("formData", JSON.stringify(data.form1));
+            setFormData1(data.form1);
+          }
+          if (data.form2) {
+            localStorage.setItem("formData2", JSON.stringify(data.form2));
+            console.log(data.form2.previousAddresses);
+            setFormData(data.form2.previousAddresses);
+          }
+          if (data.form3) {
+            localStorage.setItem("formData3", JSON.stringify(data.form3));
+            console.log(data.form3.EmploymentHistory);
+            setFormData3(data.form3.EmploymentHistory);
+          }
+          if (data.form4) {
+            const { accidentRecords, trafficConvictions } = data.form4;
+            localStorage.setItem(
+              "addressField4",
+              JSON.stringify(accidentRecords)
+            );
+            setAddressField(accidentRecords);
+            localStorage.setItem(
+              "trafficConvictionField4",
+              JSON.stringify(trafficConvictions)
+            );
+            setTrafficConvictionField(trafficConvictions);
+            localStorage.setItem(
+              "noAccidentsChecked",
+              JSON.stringify(data.form4.noAccidents)
+            );
+            setNoAccidentsChecked(data.form4.noAccidents);
+            localStorage.setItem(
+              "noTrafficConvictions",
+              JSON.stringify(data.form4.noTrafficConvictions)
+            );
+            setNoTrafficConvictionsChecked(data.form4.noTrafficConvictions);
+          }
+          if (data.form5) {
+            localStorage.setItem(
+              "driverLicensePermit5",
+              JSON.stringify(data.form5.driverLicensePermit)
+            );
+            setDriverLicensePermit(data.form5.driverLicensePermit);
+            localStorage.setItem(
+              "driverExperience5",
+              JSON.stringify(data.form5.driverExperience)
+            );
+            setDriverExperience(data.form5.driverExperience);
+            localStorage.setItem(
+              "educationHistory5",
+              JSON.stringify(data.form5.educationHistory)
+            );
+            setEducationHistory(data.form5.educationHistory);
+            localStorage.setItem(
+              "extraSkills5",
+              JSON.stringify(data.form5.extraSkills)
+            );
+            setExtraSkills(data.form5.extraSkills);
+          }
+        } else {
+          console.log("No such document!");
+        }
+      },
+      (error) => {
+        console.error("Error fetching completed forms: ", error);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [currentUser]);
+  // Trigger this effect when `isSaveClicked` or `currentUser` changes.
 
   useEffect(() => {
     // Load data from local storage
@@ -140,61 +241,10 @@ export const AuthProvider = ({ children }) => {
     if (savedTrafficConvictionField)
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
 
-    // console.log(FormData1);
+    console.log(FormData1);
   }, []);
 
-  const saveFormData = (data) => {
-    setFormData(data);
-    localStorage.setItem("formData2", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveFormData1 = (data) => {
-    // console.log("heyyyyy");
-    setFormData1(data);
-    localStorage.setItem("formData", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveFormData3 = (data) => {
-    setFormData3(data);
-    localStorage.setItem("formData3", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-
-  const saveAddressField4 = (data) => {
-    setAddressField(data);
-    localStorage.setItem("addressField4", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveDriverLicensePermit = (data) => {
-    setFormData3(data);
-    localStorage.setItem("driverLicensePermit5", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveDriverExperience = (data) => {
-    setFormData3(data);
-    localStorage.setItem("driverExperience5", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-
-  const saveEducationHistory = (data) => {
-    setAddressField(data);
-    localStorage.setItem("educationHistory5", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveExtraSkills = (data) => {
-    setExtraSkills(data);
-    localStorage.setItem("extraSkills5", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  const saveTrafficConviction4 = (data) => {
-    setTrafficConvictionField(data);
-    localStorage.setItem("trafficConvictionField4", JSON.stringify(data));
-    setIsSaveClicked(true);
-  };
-  // console.log(FormData3);
   const getUserInfo = async (uid) => {
-    // console.log(uid);
-
     // Define a helper function to query a collection
     const queryCollection = async (collectionName) => {
       const q = query(collection(db, collectionName), where("uid", "==", uid));
@@ -212,18 +262,16 @@ export const AuthProvider = ({ children }) => {
     // Check in "admins" collection
     let userData = await queryCollection("admin");
     if (userData) {
-      // console.log("User Data from admins:", userData);
       return userData;
     }
 
     // Check in "employees" collection
     userData = await queryCollection("TruckDrivers");
     if (userData) {
-      // console.log("User Data from employees:", userData);
       return userData;
     }
 
-    // console.log("No such document!");
+    console.log("No such document!");
     return null;
   };
 
@@ -231,6 +279,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         try {
+          setCurrentUserId(user.uid);
           setIsEmailVerified(user.emailVerified);
           const userData = await getUserInfo(user.uid);
           setCurrentUser(userData);
@@ -240,7 +289,7 @@ export const AuthProvider = ({ children }) => {
             JSON.stringify(user.emailVerified)
           );
           setLoading(false);
-          // console.log(userData);
+          console.log(userData);
         } catch (error) {
           console.error("Error fetching user data:", error);
           setCurrentUser(null);
@@ -264,18 +313,10 @@ export const AuthProvider = ({ children }) => {
       setIsEmailVerified(null);
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isEmailVerified");
-      localStorage.removeItem("formData");
-      localStorage.removeItem("formData2");
-      localStorage.removeItem("formData3");
-      localStorage.removeItem("addressField4");
-      localStorage.removeItem("trafficConvictionField4");
-      localStorage.removeItem("driverLicensePermit5");
-      localStorage.removeItem("driverExperience5");
-      localStorage.removeItem("educationHistory5");
-      localStorage.removeItem("extraSkills5");
+
       // Clear the current user
       // Redirect to the homepage or login page
-      // console.log("User signed out successfully");
+      console.log("User signed out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -283,7 +324,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async () => {
     try {
       await sendEmailVerification(auth.currentUser);
-      // console.log("Email verification sent!");
+      console.log("Email verification sent!");
     } catch (error) {
       toast.error("Error sending email verification:", error);
     }
@@ -296,13 +337,11 @@ export const AuthProvider = ({ children }) => {
         handleLogout,
         loading,
         verifyEmail,
-        saveFormData,
+
         FormData,
         FormData1,
         setFormData1,
-        saveFormData1,
-        setFormData,
-        saveFormData3,
+
         FormData3,
         setFormData3,
         isSaveClicked,
@@ -311,19 +350,17 @@ export const AuthProvider = ({ children }) => {
         trafficConvictionField,
         setAddressField,
         setTrafficConvictionField,
-        saveAddressField4,
+        noAccidentsCheckeds,
+        noTrafficConvictionsCheckeds,
         DriverLicensePermit,
         setDriverLicensePermit,
         DriverExperience,
         setDriverExperience,
         EducationHistory,
+        completedForms,
         setEducationHistory,
-        saveDriverLicensePermit,
-        saveDriverExperience,
-        saveEducationHistory,
-        saveTrafficConviction4,
+
         ExtraSkills,
-        saveExtraSkills,
       }}
     >
       {children}

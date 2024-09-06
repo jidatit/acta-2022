@@ -11,27 +11,79 @@ const ApplicationForm4 = () => {
   const {
     addressField,
     trafficConvictionField,
-    saveAddressField4,
-    saveTrafficConviction4,
+
     setIsSaveClicked,
     isSaveClicked,
     currentUser,
+    noAccidentsCheckeds,
+    noTrafficConvictionsCheckeds,
   } = useAuth();
-
-  const [addressFields, setAddressFields] = useState(addressField);
-  const [trafficConvictionFields, setTrafficConvictionFields] = useState(
-    trafficConvictionField
+  const [addressFields, setAddressFields] = useState(
+    addressField.length > 0
+      ? addressField
+      : [
+          {
+            date: "",
+            accidentType: "",
+            location: "",
+            fatalities: "",
+            penalties: "",
+            comments: "",
+          },
+        ]
   );
+
+  useEffect(() => {
+    if (addressFields.length === 0) {
+      setAddressFields([
+        {
+          date: "",
+          accidentType: "",
+          location: "",
+          fatalities: "",
+          penalties: "",
+          comments: "",
+        },
+      ]);
+    }
+  }, [addressFields]);
+  const [trafficConvictionFields, setTrafficConvictionFields] = useState(
+    trafficConvictionField.length > 0
+      ? trafficConvictionField
+      : [
+          {
+            date: "",
+            offenseType: "",
+            location: "",
+            penalties: "",
+            comments: "",
+          },
+        ]
+  );
+
+  useEffect(() => {
+    if (trafficConvictionFields.length === 0) {
+      setTrafficConvictionFields([
+        {
+          date: "",
+          offenseType: "",
+          location: "",
+          penalties: "",
+          comments: "",
+        },
+      ]);
+    }
+  }, [trafficConvictionFields]);
 
   const [errors, setErrors] = useState([]);
   const [trafficErrors, setTrafficErrors] = useState([]);
 
   // State to track if the checkboxes are checked
-  const [noAccidentsChecked, setNoAccidentsChecked] = useState(false);
-  const [
-    noTrafficConvictionsChecked,
-    setNoTrafficConvictionsChecked,
-  ] = useState(false);
+  const [noAccidentsChecked, setNoAccidentsChecked] =
+    useState(noAccidentsCheckeds);
+  const [noTrafficConvictionsChecked, setNoTrafficConvictionsChecked] =
+    useState(noTrafficConvictionsCheckeds);
+
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -122,7 +174,7 @@ const ApplicationForm4 = () => {
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
-        previousAddresses: noAccidentsChecked ? [] : addressFields,
+        accidentRecords: noAccidentsChecked ? [] : addressFields,
         trafficConvictions: noTrafficConvictionsChecked
           ? []
           : trafficConvictionFields,
@@ -134,10 +186,12 @@ const ApplicationForm4 = () => {
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       } else {
         await setDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       }
 
@@ -156,14 +210,12 @@ const ApplicationForm4 = () => {
       (noAccidentsChecked || isAddressValid) &&
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
-      saveAddressField4(noAccidentsChecked ? [] : addressFields);
-      saveTrafficConviction4(
-        noTrafficConvictionsChecked ? [] : trafficConvictionFields
-      );
       setIsSaveClicked(true);
 
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm5");
+    } else {
+      toast.error("Form is not valid, please fill in all required fields");
     }
   };
 
@@ -176,14 +228,12 @@ const ApplicationForm4 = () => {
       (noAccidentsChecked || isAddressValid) &&
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
-      saveAddressField4(noAccidentsChecked ? [] : addressFields);
-      saveTrafficConviction4(
-        noTrafficConvictionsChecked ? [] : trafficConvictionFields
-      );
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
       await saveToFirebase();
+    } else {
+      toast.error("Form is not valid, please fill in all required fields");
     }
   };
 
@@ -207,6 +257,18 @@ const ApplicationForm4 = () => {
       { date: "", offenseType: "", location: "", penalties: "", comments: "" },
     ]);
   };
+  const removeAddressField = (index) => {
+    setAddressFields(addressFields.filter((_, i) => i !== index));
+    setErrors(errors.filter((_, i) => i !== index));
+  };
+
+  const removeTrafficField = (index) => {
+    setTrafficConvictionFields(
+      trafficConvictionFields.filter((_, i) => i !== index)
+    );
+    setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
+  };
+  console.log(trafficConvictionField);
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full pr-10">
@@ -218,10 +280,7 @@ const ApplicationForm4 = () => {
             Provide accident record and forfeitures record for previous 3 years
           </p>
         </div>
-        <FaBell
-          size={45}
-          className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
-        />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
 
       {/* First Form */}
@@ -238,7 +297,7 @@ const ApplicationForm4 = () => {
               No accidents in past 3 years
             </p>
           </div>
-          {!noAccidentsChecked && (
+          {noAccidentsChecked === false && (
             <>
               {addressFields.map((address, index) => (
                 <div
@@ -253,7 +312,7 @@ const ApplicationForm4 = () => {
                       Date
                     </label>
                     <input
-                      type="text"
+                      type="date"
                       name="date"
                       id={`date-${index}`}
                       value={address.date}
@@ -395,6 +454,17 @@ const ApplicationForm4 = () => {
                       </p>
                     )}
                   </div>
+                  <div className="flex items-center mt-4">
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        onClick={() => removeAddressField(index)}
+                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
               <div className="flex items-end justify-end w-full">
@@ -444,7 +514,7 @@ const ApplicationForm4 = () => {
                       Date
                     </label>
                     <input
-                      type="text"
+                      type="date"
                       name="date"
                       id={`date-${index}`}
                       value={traffic.date}
@@ -560,6 +630,17 @@ const ApplicationForm4 = () => {
                       <p className="mt-1 text-xs text-red-500">
                         {trafficErrors[index].comments}
                       </p>
+                    )}
+                  </div>
+                  <div className="flex items-center mt-4">
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        onClick={() => removeTrafficField(index)}
+                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
                     )}
                   </div>
                 </div>
