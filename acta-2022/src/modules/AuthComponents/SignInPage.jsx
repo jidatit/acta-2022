@@ -83,7 +83,7 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-screen p-3 bg-blue-500">
+    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-blue-500">
       <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
@@ -105,7 +105,7 @@ const SignInPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[50%] h-full bg-white">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[50%] h-[70%] md:h-full bg-white">
         <h1 className="w-full text-3xl font-bold text-center text-black">
           Login to Your Account
         </h1>
