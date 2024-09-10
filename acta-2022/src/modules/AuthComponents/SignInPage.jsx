@@ -44,7 +44,7 @@ const SignInPage = () => {
         formData.password
       );
       const user = userCredential.user;
-      console.log("User signed in:", user);
+      //console.log("User signed in:", user);
 
       const queryCollection = async (collectionName) => {
         const q = query(
@@ -76,8 +76,8 @@ const SignInPage = () => {
       }
     } catch (error) {
       // Stop loading in case of error
-      console.error("Error signing in:", error.message);
-      toast.error("Sign-in failed: " + error.message);
+
+      toast.error("Sign-in failed: Your Email or password is incorrect ");
       setLoading(false);
     }
   };

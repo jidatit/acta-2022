@@ -149,12 +149,12 @@ export const AuthProvider = ({ children }) => {
           }
           if (data.form2) {
             localStorage.setItem("formData2", JSON.stringify(data.form2));
-            console.log(data.form2.previousAddresses);
+            //console.log(data.form2.previousAddresses);
             setFormData(data.form2.previousAddresses);
           }
           if (data.form3) {
             localStorage.setItem("formData3", JSON.stringify(data.form3));
-            console.log(data.form3.EmploymentHistory);
+            //console.log(data.form3.EmploymentHistory);
             setFormData3(data.form3.EmploymentHistory);
           }
           if (data.form4) {
@@ -203,7 +203,7 @@ export const AuthProvider = ({ children }) => {
             setExtraSkills(data.form5.extraSkills);
           }
         } else {
-          console.log("No such document!");
+          //console.log("No such document!");
         }
       },
       (error) => {
@@ -241,7 +241,7 @@ export const AuthProvider = ({ children }) => {
     if (savedTrafficConvictionField)
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
 
-    console.log(FormData1);
+    //console.log(FormData1);
   }, [currentUser]);
 
   const getUserInfo = async (uid) => {
@@ -271,7 +271,7 @@ export const AuthProvider = ({ children }) => {
       return userData;
     }
 
-    console.log("No such document!");
+    //console.log("No such document!");
     return null;
   };
 
@@ -289,7 +289,7 @@ export const AuthProvider = ({ children }) => {
             JSON.stringify(user.emailVerified)
           );
           setLoading(false);
-          console.log(userData);
+          //console.log(userData);
         } catch (error) {
           console.error("Error fetching user data:", error);
           setCurrentUser(null);
@@ -316,7 +316,7 @@ export const AuthProvider = ({ children }) => {
 
       // Clear the current user
       // Redirect to the homepage or login page
-      console.log("User signed out successfully");
+      //console.log("User signed out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -324,7 +324,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async () => {
     try {
       await sendEmailVerification(auth.currentUser);
-      console.log("Email verification sent!");
+      //console.log("Email verification sent!");
     } catch (error) {
       toast.error("Error sending email verification:", error);
     }

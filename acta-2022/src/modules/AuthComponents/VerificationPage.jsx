@@ -14,10 +14,10 @@ const VerificationPage = () => {
 
   useEffect(() => {
     if (currentUser) {
-      console.log(currentUser);
+      //console.log(currentUser);
       setLoading(false);
       if (isEmailVerified) {
-        console.log("emailVerified");
+        //console.log("emailVerified");
 
         if (currentUser.userType === "TruckDriver") {
           toast.success("redirecting to TruckDriver dashboard");
@@ -26,7 +26,7 @@ const VerificationPage = () => {
           }, 3000);
         }
       } else {
-        console.log("email not Verified");
+        //console.log("email not Verified");
       }
     }
   }, []);

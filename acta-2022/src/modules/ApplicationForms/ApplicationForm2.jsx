@@ -14,17 +14,17 @@ const ApplicationForm2 = () => {
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
   ];
   const initialFieldCount = initialFields.length;
-  console.log(initialFieldCount);
+  //console.log(initialFieldCount);
   useEffect(() => {
     if (FormData) {
       setLocalFormData(FormData);
     }
-    console.log(localFormData);
+    //console.log(localFormData);
   }, [FormData]);
 
   useEffect(() => {
     setIsSaveClicked(true);
-    console.log(localFormData);
+    //console.log(localFormData);
   }, [setIsSaveClicked]);
 
   const handleChange = (e, index) => {
@@ -64,7 +64,7 @@ const ApplicationForm2 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      //console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
       // Optionally, handle specific error cases or show user feedback
@@ -77,6 +77,7 @@ const ApplicationForm2 = () => {
     setIsSaveClicked(true);
 
     await saveToFirebase();
+
     navigate("/TruckDriverLayout/ApplicationForm3");
   };
 
@@ -221,7 +222,7 @@ const ApplicationForm2 = () => {
               onClick={addAddressFields}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add
+              Add More
             </button>
           </div>
         </form>

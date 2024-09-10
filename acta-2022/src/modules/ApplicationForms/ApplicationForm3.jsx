@@ -24,7 +24,7 @@ const ApplicationForm3 = () => {
     if (FormData3) {
       setLocalFormData(FormData3);
     }
-    console.log(localFormData);
+    //console.log(localFormData);
   }, [FormData3]);
 
   const handleBack = () => {
@@ -105,7 +105,7 @@ const ApplicationForm3 = () => {
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm4");
     } else {
-      toast.error("Form is not valid, please fill in all required fields");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -117,9 +117,9 @@ const ApplicationForm3 = () => {
       setIsSaveClicked(true);
 
       await saveToFirebase();
-      console.log(localFormData);
+      //console.log(localFormData);
     } else {
-      toast.error("Form is not valid, please fill in all required fields");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -182,13 +182,13 @@ const ApplicationForm3 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
 
-  console.log(localFormData);
+  //console.log(localFormData);
   return (
     <div className="flex flex-col items-start justify-start h-full md:ml-10 gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full md:ml-4 ml-6 mb-4 text-xl font-bold text-black">
-            Employment History
+            Employment History*
           </h1>
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         </div>
@@ -218,7 +218,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`companyName-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Company Name
+                      Company Name*
                     </label>
                     <input
                       type="text"
@@ -244,7 +244,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`street-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Street
+                      Street*
                     </label>
                     <input
                       type="text"
@@ -270,7 +270,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`city-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      City/State
+                      City/State*
                     </label>
                     <input
                       type="text"
@@ -296,7 +296,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`zipCode-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Zip Code
+                      Zip Code*
                     </label>
                     <input
                       type="number"
@@ -322,7 +322,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`contactPerson-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Contact Person
+                      Contact Person*
                     </label>
                     <input
                       type="text"
@@ -348,7 +348,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`phone-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Phone#
+                      Phone #*
                     </label>
                     <input
                       type="number"
@@ -374,7 +374,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`fax1-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      FAX#1
+                      Fax #
                     </label>
                     <input
                       type="text"
@@ -400,7 +400,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`from-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      From
+                      From*
                     </label>
                     <input
                       type="date"
@@ -427,7 +427,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`to-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      To
+                      To*
                     </label>
                     <input
                       type="date"
@@ -452,7 +452,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`position-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Position
+                      Position*
                     </label>
                     <input
                       type="text"
@@ -504,7 +504,7 @@ const ApplicationForm3 = () => {
                       htmlFor={`leavingReason-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Leaving Reason
+                      Reason for Leaving*
                     </label>
                     <input
                       type="text"
@@ -530,7 +530,7 @@ const ApplicationForm3 = () => {
                         htmlFor={`company-${index}-subjectToFMCSRs`}
                         className="block text-sm font-semibold text-gray-900 font-radios"
                       >
-                        Were you subject to the FMCSRs while employed?
+                        Were you subject to the FMCSRs while employed?*
                       </label>
                       <div className="mt-2">
                         <label className="inline-flex items-center">
@@ -570,7 +570,7 @@ const ApplicationForm3 = () => {
                       >
                         Was your job designated as a safety-sensitive function
                         in any DOT-regulated mode subject to the drug and
-                        alcohol testing requirements?
+                        alcohol testing requirements?*
                       </label>
                       <div className="mt-2">
                         <label className="inline-flex items-center">
@@ -627,7 +627,7 @@ const ApplicationForm3 = () => {
               onClick={handleAddCompany}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Company
+              Add More
             </button>
           </div>
         </form>

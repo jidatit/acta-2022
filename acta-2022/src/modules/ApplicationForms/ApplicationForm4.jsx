@@ -202,7 +202,7 @@ const ApplicationForm4 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      //console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
     }
@@ -222,7 +222,7 @@ const ApplicationForm4 = () => {
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm5");
     } else {
-      toast.error("Form is not valid, please fill in all required fields");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -240,7 +240,7 @@ const ApplicationForm4 = () => {
 
       await saveToFirebase();
     } else {
-      toast.error("Form is not valid, please fill in all required fields");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -275,7 +275,7 @@ const ApplicationForm4 = () => {
     );
     setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
   };
-  console.log(trafficConvictionField);
+  //console.log(trafficConvictionField);
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full pr-10">
@@ -316,7 +316,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`date-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Date
+                      Date*
                     </label>
                     <input
                       type="date"
@@ -341,7 +341,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`accidentType-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Type of Accident
+                      Type of Accident*
                     </label>
                     <input
                       type="text"
@@ -366,7 +366,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`location-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Location
+                      Location*
                     </label>
                     <input
                       type="text"
@@ -391,7 +391,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`fatalities-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Fatalities
+                      Fatalities*
                     </label>
                     <input
                       type="text"
@@ -416,7 +416,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`penalties-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Penalties
+                      Penalties*
                     </label>
                     <input
                       type="text"
@@ -441,7 +441,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`comments-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Comments
+                      Comments*
                     </label>
                     <input
                       type="text"
@@ -480,7 +480,7 @@ const ApplicationForm4 = () => {
                   onClick={addAddressFields}
                   className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Add Address
+                  Add More
                 </button>
               </div>
             </>
@@ -518,7 +518,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`date-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Date
+                      Date*
                     </label>
                     <input
                       type="date"
@@ -543,7 +543,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`offenseType-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Type of Offense
+                      Type of Offense*
                     </label>
                     <input
                       type="text"
@@ -569,7 +569,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`location-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Location
+                      Location*
                     </label>
                     <input
                       type="text"
@@ -594,7 +594,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`penalties-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Penalties
+                      Penalties*
                     </label>
                     <input
                       type="text"
@@ -619,7 +619,7 @@ const ApplicationForm4 = () => {
                       htmlFor={`comments-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Comments
+                      Comments*
                     </label>
                     <input
                       type="text"
@@ -658,7 +658,7 @@ const ApplicationForm4 = () => {
                   onClick={addTrafficFields}
                   className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Add Traffic Conviction
+                  Add More
                 </button>
               </div>
             </>

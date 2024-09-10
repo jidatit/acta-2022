@@ -162,7 +162,7 @@ const ApplicationForm5 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      //console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
     }
@@ -170,7 +170,7 @@ const ApplicationForm5 = () => {
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
-      alert("Please save the current form before going back.");
+      toast.error("Please save the current form before going back.");
       return;
     }
     // Navigate back to the previous form
@@ -197,7 +197,7 @@ const ApplicationForm5 = () => {
       navigate("/TruckDriverLayout/ApplicationForm6");
     } else {
       // Show a message indicating the form is incomplete
-      toast.error("Please fill out all required fields before submitting.");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -222,7 +222,7 @@ const ApplicationForm5 = () => {
       await saveToFirebase();
     } else {
       // Show a message indicating the form is incomplete
-      toast.error("Please fill out all required fields before saving.");
+      toast.error("Please complete all required fields to continue");
     }
   };
   const addDriverLicenseFields = () => {
@@ -392,14 +392,14 @@ const ApplicationForm5 = () => {
               onClick={addDriverLicenseFields}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add DriverLisInfo
+              Add More
             </button>
           </div>
         </form>
         <form className="w-full p-6 bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
             <h1 className="text-lg text-black font-radios">
-              Driving Experience
+              Driving Experience*
             </h1>
           </div>
 
@@ -522,7 +522,7 @@ const ApplicationForm5 = () => {
                   htmlFor={`DateFrom-${index}`}
                   className="block text-sm font-semibold text-gray-900 font-radios"
                 >
-                  Date From
+                  Date From*
                 </label>
                 <input
                   type="date"
@@ -578,7 +578,7 @@ const ApplicationForm5 = () => {
                   htmlFor={`comments-${index}`}
                   className="block text-sm font-semibold text-gray-900 font-radios"
                 >
-                  Comments
+                  Comments*
                 </label>
                 <input
                   type="text"
@@ -619,14 +619,14 @@ const ApplicationForm5 = () => {
               onClick={addDriverExperience}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Experience
+              Add More
             </button>
           </div>
         </form>
         <form className="w-full p-6 bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
             <h1 className="text-lg text-black font-radios">
-              Education History
+              Education History*
             </h1>
           </div>
 
@@ -751,7 +751,7 @@ const ApplicationForm5 = () => {
                   htmlFor={`comments-${index}`}
                   className="block text-sm font-semibold text-gray-900 font-radios"
                 >
-                  Comments
+                  Comments*
                 </label>
                 <input
                   type="text"
@@ -792,7 +792,7 @@ const ApplicationForm5 = () => {
               onClick={addEducationHistory}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Education
+              Add More
             </button>
           </div>
         </form>
