@@ -193,12 +193,10 @@ const ApplicationForm4 = () => {
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           form4: applicationData,
-          completedForms: 4,
         });
       } else {
         await setDoc(docRef, {
           form4: applicationData,
-          completedForms: 4,
         });
       }
 
@@ -238,7 +236,35 @@ const ApplicationForm4 = () => {
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      try {
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        const applicationData = {
+          accidentRecords: noAccidentsChecked ? [] : addressFields,
+          trafficConvictions: noTrafficConvictionsChecked
+            ? []
+            : trafficConvictionFields,
+          submittedAt: new Date(),
+          noAccidents: noAccidentsChecked,
+          noTrafficConvictions: noTrafficConvictionsChecked,
+        };
+
+        if (docSnap.exists()) {
+          await updateDoc(docRef, {
+            form4: applicationData,
+            completedForms: 4,
+          });
+        } else {
+          await setDoc(docRef, {
+            form4: applicationData,
+          });
+        }
+
+        //console.log("Data successfully saved to Firebase");
+      } catch (error) {
+        console.error("Error saving application: ", error);
+      }
     } else {
       toast.error("Please complete all required fields to continue");
     }

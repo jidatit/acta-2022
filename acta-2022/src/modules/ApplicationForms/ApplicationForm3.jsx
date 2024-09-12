@@ -116,7 +116,28 @@ const ApplicationForm3 = () => {
 
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      try {
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        const applicationData = {
+          EmploymentHistory: localFormData,
+          submittedAt: new Date(),
+        };
+
+        if (docSnap.exists()) {
+          await updateDoc(docRef, {
+            form3: applicationData,
+            // Update this with the specific key for this form
+          });
+        } else {
+          await setDoc(docRef, {
+            form3: applicationData,
+          });
+        }
+      } catch (error) {
+        console.error("Error saving application: ", error);
+      }
       //console.log(localFormData);
     } else {
       toast.error("Please complete all required fields to continue");

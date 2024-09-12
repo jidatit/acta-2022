@@ -71,7 +71,6 @@ const ApplicationForm = () => {
             form1: applicationData,
           });
         }
-        //console.log(formData);
 
         setIsSaveClicked(true);
         navigate("/TruckDriverLayout/ApplicationForm2");
@@ -86,8 +85,6 @@ const ApplicationForm = () => {
   const saveFormInfo = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setIsSaveClicked(true);
-
       try {
         const applicationData = { ...formData, submittedAt: new Date() };
 
@@ -101,17 +98,15 @@ const ApplicationForm = () => {
           // Document exists, update it
           await updateDoc(docRef, {
             form1: applicationData,
-            completedForms: 1, // Use a descriptive key for each form
+            // Use a descriptive key for each form
           });
         } else {
           // Document does not exist, create it
           await setDoc(docRef, {
             form1: applicationData,
-            completedForms: 1,
           });
         }
         toast.success("Form is successfully saved");
-        setIsSaveClicked(true);
       } catch (error) {
         console.error("Error saving application: ", error);
       }

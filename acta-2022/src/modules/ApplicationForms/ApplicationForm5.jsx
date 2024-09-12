@@ -219,7 +219,29 @@ const ApplicationForm5 = () => {
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      try {
+        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        const applicationData = {
+          driverLicensePermit: driverLicensePermit,
+          driverExperience: driverExperience,
+          educationHistory: educationHistory,
+          extraSkills: extraSkills,
+        };
+
+        if (docSnap.exists()) {
+          await updateDoc(docRef, {
+            form5: applicationData,
+          });
+        } else {
+          await setDoc(docRef, {
+            form5: applicationData,
+          });
+        }
+      } catch (error) {
+        console.error("Error saving application: ", error);
+      }
     } else {
       // Show a message indicating the form is incomplete
       toast.error("Please complete all required fields to continue");

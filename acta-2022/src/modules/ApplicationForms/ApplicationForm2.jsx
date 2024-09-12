@@ -87,7 +87,31 @@ const ApplicationForm2 = () => {
 
     setIsSaveClicked(true);
 
-    await saveToFirebase();
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        previousAddresses: localFormData,
+        submittedAt: new Date(),
+      };
+
+      if (docSnap.exists()) {
+        // Document exists, so update it
+        await updateDoc(docRef, {
+          form2: applicationData,
+          // Update this with the specific key for this form
+        });
+      } else {
+        // Document does not exist, so create it
+        await setDoc(docRef, {
+          form2: applicationData,
+        });
+      }
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      // Optionally, handle specific error cases or show user feedback
+    }
   };
 
   const addAddressFields = () => {
