@@ -34,16 +34,17 @@ const ApplicationForm = () => {
     const newErrors = {};
 
     Object.keys(formData).forEach((key) => {
-      // Exclude "street 2" and "who referred you" fields from validation
-      if (key !== "street2" && key !== "referredBy") {
-        const value = formData[key];
+      const value = formData[key];
 
-        // Check if the value is a string before trimming
-        if (typeof value === "string" && !value.trim()) {
-          newErrors[key] = "This Field is required";
+      // Check if the value is a string before trimming
+      if (typeof value === "string" && !value.trim()) {
+        if (key !== "street2" && key !== "referredBy" && key !== "Email") {
+          newErrors[key] = "This field is required";
         }
       }
     });
+
+    // Specifically check for the email field
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -84,34 +85,43 @@ const ApplicationForm = () => {
 
   const saveFormInfo = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const applicationData = { ...formData, submittedAt: new Date() };
 
-        // Reference to the specific document in the collection
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+    // Check if at least one field is filled
+    const isAnyFieldFilled = Object.values(formData).some(
+      (value) => value.trim() !== ""
+    );
 
-        // Check if the document exists
-        const docSnap = await getDoc(docRef);
+    if (!isAnyFieldFilled) {
+      toast.error("At least one field must be filled before saving");
+      return;
+    }
 
-        if (docSnap.exists()) {
-          // Document exists, update it
-          await updateDoc(docRef, {
-            form1: applicationData,
-            // Use a descriptive key for each form
-          });
-        } else {
-          // Document does not exist, create it
-          await setDoc(docRef, {
-            form1: applicationData,
-          });
-        }
-        toast.success("Form is successfully saved");
-      } catch (error) {
-        console.error("Error saving application: ", error);
+    try {
+      const applicationData = { ...formData, submittedAt: new Date() };
+
+      // Reference to the specific document in the collection
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+
+      // Check if the document exists
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Document exists, update it
+        await updateDoc(docRef, {
+          form1: applicationData,
+          // Use a descriptive key for each form
+        });
+      } else {
+        // Document does not exist, create it
+        await setDoc(docRef, {
+          form1: applicationData,
+        });
       }
-    } else {
-      toast.error("Please complete all required fields to continue");
+
+      toast.success("Form is successfully saved");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the form, please try again");
     }
   };
 
@@ -533,6 +543,7 @@ const ApplicationForm = () => {
                 required
                 name="Email"
                 id="Email"
+                disabled={true}
                 value={currentUser.email}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md text-gray-400 ${

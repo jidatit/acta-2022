@@ -204,18 +204,30 @@ const ApplicationForm5 = () => {
   const handleSave = async (e) => {
     e.preventDefault();
 
-    // Perform validations
-    const isLicenseValid = validateDriverLisFields();
-    const isDriverValid = validateDriverExpFields();
-    const isEducationValid = validateEducationHistory();
-    const isExtraSkillsValid = validateExtraSkills();
+    // Check if there is at least one field filled out
+    const hasDriverLicensePermitData = driverLicensePermit.some((field) =>
+      Object.values(field).some((val) => val.trim() !== "")
+    );
+
+    const hasDriverExperienceData = driverExperience.some((field) =>
+      Object.values(field).some((val) => val.trim() !== "")
+    );
+
+    const hasEducationHistoryData = educationHistory.some((field) =>
+      Object.values(field).some((val) => val.trim() !== "")
+    );
+
+    const hasExtraSkillsData = Object.values(extraSkills).some(
+      (val) => val.trim() !== ""
+    );
 
     if (
-      isLicenseValid &&
-      isEducationValid &&
-      isDriverValid &&
-      isExtraSkillsValid
+      hasDriverLicensePermitData ||
+      hasDriverExperienceData ||
+      hasEducationHistoryData ||
+      hasExtraSkillsData
     ) {
+      // Perform save
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
@@ -243,8 +255,7 @@ const ApplicationForm5 = () => {
         console.error("Error saving application: ", error);
       }
     } else {
-      // Show a message indicating the form is incomplete
-      toast.error("Please complete all required fields to continue");
+      toast.error("Please complete at least one field before saving.");
     }
   };
   const addDriverLicenseFields = () => {

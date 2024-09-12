@@ -111,36 +111,43 @@ const ApplicationForm3 = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      toast.success("Form is successfully saved");
 
-      setIsSaveClicked(true);
+    // Check if at least one field is filled
+    const isAnyFieldFilled = localFormData.some((field) =>
+      Object.values(field).some((value) => value.trim() !== "")
+    );
 
-      try {
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
-        const docSnap = await getDoc(docRef);
+    if (!isAnyFieldFilled) {
+      toast.error("At least one field must be filled before saving");
+      return;
+    }
 
-        const applicationData = {
-          EmploymentHistory: localFormData,
-          submittedAt: new Date(),
-        };
+    toast.success("Form is successfully saved");
 
-        if (docSnap.exists()) {
-          await updateDoc(docRef, {
-            form3: applicationData,
-            // Update this with the specific key for this form
-          });
-        } else {
-          await setDoc(docRef, {
-            form3: applicationData,
-          });
-        }
-      } catch (error) {
-        console.error("Error saving application: ", error);
+    setIsSaveClicked(true);
+
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        EmploymentHistory: localFormData,
+        submittedAt: new Date(),
+      };
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          form3: applicationData,
+          // Update this with the specific key for this form
+        });
+      } else {
+        await setDoc(docRef, {
+          form3: applicationData,
+        });
       }
-      //console.log(localFormData);
-    } else {
-      toast.error("Please complete all required fields to continue");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the form, please try again");
     }
   };
 
@@ -372,7 +379,7 @@ const ApplicationForm3 = () => {
                       Phone #*
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       name="phone"
                       id={`phone-${index}`}
                       value={field.phone}

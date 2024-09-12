@@ -193,10 +193,12 @@ const ApplicationForm4 = () => {
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       } else {
         await setDoc(docRef, {
           form4: applicationData,
+          completedForms: 4,
         });
       }
 
@@ -226,13 +228,27 @@ const ApplicationForm4 = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const isAddressValid = validateAddressFields();
-    const isTrafficValid = validateTrafficFields();
+
+    // Check if there is at least one field filled out
+    const hasAddressData =
+      !noAccidentsChecked &&
+      addressFields.some((field) =>
+        Object.values(field).some((val) => val.trim() !== "")
+      );
+
+    const hasTrafficData =
+      !noTrafficConvictionsChecked &&
+      trafficConvictionFields.some((field) =>
+        Object.values(field).some((val) => val.trim() !== "")
+      );
 
     if (
-      (noAccidentsChecked || isAddressValid) &&
-      (noTrafficConvictionsChecked || isTrafficValid)
+      noAccidentsChecked ||
+      hasAddressData ||
+      noTrafficConvictionsChecked ||
+      hasTrafficData
     ) {
+      // Perform save
       toast.success("Form is successfully saved");
       setIsSaveClicked(true);
 
@@ -253,20 +269,17 @@ const ApplicationForm4 = () => {
         if (docSnap.exists()) {
           await updateDoc(docRef, {
             form4: applicationData,
-            completedForms: 4,
           });
         } else {
           await setDoc(docRef, {
             form4: applicationData,
           });
         }
-
-        //console.log("Data successfully saved to Firebase");
       } catch (error) {
         console.error("Error saving application: ", error);
       }
     } else {
-      toast.error("Please complete all required fields to continue");
+      toast.error("Please complete at least one field before saving.");
     }
   };
 
