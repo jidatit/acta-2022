@@ -122,7 +122,7 @@ const SignUpPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[60%]h-full bg-white">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[60%] h-full bg-white">
         <h1 className="w-full text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
