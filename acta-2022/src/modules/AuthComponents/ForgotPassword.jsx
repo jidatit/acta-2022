@@ -77,7 +77,7 @@ const ForgotPassword = () => {
         role="main"
         className="flex items-center justify-center w-screen h-screen p-6 bg-blue-600"
       >
-        <div className="bg-white w-[30%] border-2 border-indigo-300 shadow-lg mt-7 rounded-xl dark:bg-white dark:border-gray-700">
+        <div className="bg-white w-[90%] md:w-[50%] lg:w-[30%] border-2 border-indigo-300 shadow-lg mt-7 rounded-xl dark:bg-white dark:border-gray-700">
           <div className="p-4 sm:p-7">
             <div className="text-center">
               <h1 className="block text-2xl font-bold text-gray-800 dark:text-gray-800">
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-600">
                 Remember your password?
                 <Link
-                  className="font-medium text-blue-600 decoration-2 hover:underline"
+                  className="font-medium text-blue-600 decoration-2 ml-2 hover:underline"
                   to={"/signIn"}
                 >
                   Login here

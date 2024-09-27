@@ -122,7 +122,7 @@ const SignUpPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[60%] h-full bg-white">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-full bg-white">
         <h1 className="w-full text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
@@ -203,7 +203,7 @@ const SignUpPage = () => {
           </div>
           <input
             type="submit"
-            className="inline-block px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios w-96 shadow-indigo-500/20 hover:bg-indigo-700"
+            className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
             value="Sign Up"
           />
           <div className="flex flex-row items-center justify-center gap-x-1">
