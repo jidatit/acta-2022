@@ -83,7 +83,7 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-blue-500">
+    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO

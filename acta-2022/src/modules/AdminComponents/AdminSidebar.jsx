@@ -17,7 +17,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={`bg-[#2257e7] h-full w-full ${
+      className={`bg-[#2257e7] h-full z-50 w-full ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >

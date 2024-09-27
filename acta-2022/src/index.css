@@ -1,19 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Satisfy&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.slick-slide>div {
-
+.slick-slide > div {
   padding-top: 20px;
   padding-bottom: 20px;
 }
 
 .slick-dots li.slick-active button:before {
   color: rgb(17, 255, 17) !important;
-
 }
 
 .slick-dots li button:before {
@@ -23,4 +21,8 @@
 .sidebar-cont .sidebar {
   height: 100vh;
   background-color: aqua !important;
+}
+
+body {
+  background-color: #3b82f6;
 }

@@ -160,7 +160,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={`bg-[#2257e7] h-full w-full ${
+      className={`bg-[#2257e7] z-50 h-full w-full ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >
@@ -181,7 +181,7 @@ const SideBar = ({ isSidebarExpanded }) => {
               <p className="text-[14px] text-white font-radios">
                 {currentUser ? currentUser.firstName : "Guest"}
               </p>
-              <p className="text-[12px] text-white font-radios">
+              <p className="text-[12px] md:text-start text-center text-white w-full font-radios">
                 {"Welcome Back"}
               </p>
             </div>

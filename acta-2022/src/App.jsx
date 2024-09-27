@@ -46,7 +46,7 @@ function App() {
     }
   };
   return (
-    <div className="w-full h-auto overflow-hidden bg-white">
+    <div className="w-full h-auto overflow-hidden">
       <Router>
         <AuthProvider>
           {loading ? (

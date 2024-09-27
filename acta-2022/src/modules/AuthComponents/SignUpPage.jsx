@@ -101,7 +101,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-blue-500">
+    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-6 justify-center items-center w-[50%] h-full">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
@@ -122,7 +122,7 @@ const SignUpPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-full bg-white">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-[90%] smd:h-full bg-white">
         <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>

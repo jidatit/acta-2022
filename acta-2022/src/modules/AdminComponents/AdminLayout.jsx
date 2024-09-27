@@ -28,12 +28,12 @@ const AdminLayout = () => {
 
   return (
     <>
-      <div className="flex flex-row w-full">
+      <div className="flex flex-row w-full bg-white">
         {/* Sidebar */}
         <div
           className={`${
             isSidebarExpanded
-              ? "ssm:w-[32%] smd:w-[25%] w-[45%]"
+              ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
               : "w-[14%] ssm:w-[8%]"
           } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-y-auto transition-all duration-300 ease-in-out`}
         >
