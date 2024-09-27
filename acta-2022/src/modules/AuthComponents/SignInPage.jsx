@@ -105,8 +105,8 @@ const SignInPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[50%] h-[70%] md:h-full bg-white">
-        <h1 className="w-full text-3xl font-bold text-center text-black">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[90%] md:w-[50%] h-[70%] md:h-full bg-white">
+        <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
           Login to Your Account
         </h1>
         <form

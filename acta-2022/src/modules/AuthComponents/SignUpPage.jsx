@@ -123,7 +123,7 @@ const SignUpPage = () => {
       </div>
 
       <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-full bg-white">
-        <h1 className="w-full text-3xl font-bold text-center text-black">
+        <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
         <form

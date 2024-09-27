@@ -75,7 +75,7 @@ const ForgotPassword = () => {
       <main
         id="content"
         role="main"
-        className="flex items-center justify-center w-screen h-screen p-6 bg-blue-600"
+        className="flex items-center justify-center w-screen h-[93.9vh] ssm:h-screen p-3 bg-blue-600"
       >
         <div className="bg-white w-[90%] md:w-[50%] lg:w-[30%] border-2 border-indigo-300 shadow-lg mt-7 rounded-xl dark:bg-white dark:border-gray-700">
           <div className="p-4 sm:p-7">
