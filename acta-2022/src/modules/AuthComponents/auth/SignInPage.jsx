@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../AuthContext";
-import { auth, db } from "../../config/firebaseConfig";
+import { useAuth } from "../../../AuthContext";
+import { auth, db } from "../../../config/firebaseConfig";
 import image from "../../images/rafiki.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { IoMdEye } from "react-icons/io";

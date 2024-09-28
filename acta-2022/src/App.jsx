@@ -6,27 +6,27 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { ToastContainer } from "react-toastify";
-
 import { AuthProvider, useAuth } from "./AuthContext";
-import VerificationPage from "./modules/AuthComponents/VerificationPage";
-import SignUpPage from "./modules/AuthComponents/SignUpPage";
-import SignInPage from "./modules/AuthComponents/SignInPage";
-import AuthLayout from "./modules/AuthComponents/AuthLayout";
-import TruckDriverLayout from "./modules/TruckDriverComponents/TruckDriverLayout";
-import TruckDriverDashboard from "./modules/TruckDriverComponents/TruckDriverDashboard";
-import AdminLayout from "./modules/AdminComponents/AdminLayout";
-import AdminDashboard from "./modules/AdminComponents/AdminDashboard";
-import AllUsers from "./modules/AdminComponents/AllUsers";
-import ApplicationForm from "./modules/ApplicationForms/ApplicationForm1";
-import ApplicationForm2 from "./modules/ApplicationForms/ApplicationForm2";
-import ApplicationForm3 from "./modules/ApplicationForms/ApplicationForm3";
-import ApplicationForm4 from "./modules/ApplicationForms/ApplicationForm4";
-import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
-import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
-import ForgotPassword from "./modules/AuthComponents/ForgotPassword";
-import ChangePassword from "./modules/AuthComponents/ChangePassword";
+
 import "react-toastify/dist/ReactToastify.css";
+import SignUpPage from "./modules/AuthComponents/auth/SignUpPage";
+import AuthLayout from "./modules/AuthComponents/layout/AuthLayout";
+import SignInPage from "./modules/AuthComponents/auth/SignInPage";
+import VerificationPage from "./modules/AuthComponents/components/VerificationPage";
+import ForgotPassword from "./modules/AuthComponents/components/ForgotPassword";
+import TruckDriverLayout from "./modules/TruckDriverComponents/layout/TruckDriverLayout";
+import ApplicationForm from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm1";
+import ApplicationForm2 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm2";
+import ApplicationForm3 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm3";
+import ApplicationForm4 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm4";
+import ApplicationForm5 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm5";
+import ApplicationForm6 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm6";
+import ChangePassword from "./modules/AuthComponents/components/ChangePassword";
+import TruckDriverDashboard from "./modules/TruckDriverComponents/pages/TruckDriverDashboard";
+import AdminLayout from "./modules/AdminComponents/layout/AdminLayout";
+import AdminDashboard from "./modules/AdminComponents/pages/AdminDashboard";
+import AllUsers from "./modules/AdminComponents/components/AllUsers";
+
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
     {/* Spinner */}

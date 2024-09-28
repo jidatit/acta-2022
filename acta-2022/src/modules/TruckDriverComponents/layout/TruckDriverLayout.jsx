@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
-import SideBar from "../UiComponents/SideBar";
-import { useAuth } from "../../AuthContext";
+import SideBar from "../../SharedUiComponents/SideBar";
+import { useAuth } from "../../../AuthContext";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

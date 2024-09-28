@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { auth, db } from "../../config/firebaseConfig";
+import { auth, db } from "../../../config/firebaseConfig";
 import {
   collection,
   doc,

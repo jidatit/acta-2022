@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../index.css";
 import image from "../../images/pngwing.com.png";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 const AdminSidebar = ({ isSidebarExpanded }) => {

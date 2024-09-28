@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../AuthContext";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { db } from "../../config/firebaseConfig";
+import { db } from "../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();

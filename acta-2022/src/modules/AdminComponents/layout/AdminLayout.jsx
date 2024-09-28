@@ -1,8 +1,7 @@
 import { Outlet, useNavigate } from "react-router";
 import "../../index.css";
-import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../AuthContext";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
