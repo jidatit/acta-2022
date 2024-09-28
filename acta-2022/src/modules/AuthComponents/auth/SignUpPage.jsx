@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoMdEye } from "react-icons/io";
-import image from "../../images/Group 1000006084.png";
+import image from "../../../images/Group 1000006084.png";
 import bcrypt from "bcryptjs";
 import {
   createUserWithEmailAndPassword,

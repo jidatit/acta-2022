@@ -1,13 +1,12 @@
-import { Outlet, useNavigate } from "react-router";
-import "../../index.css";
+import "../../../index.css"
 import { useState, useEffect } from "react";
-import { useAuth } from "../../../AuthContext";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminSidebar from "../UI/AdminSidebar";
+import { Outlet } from "react-router";
+
 const AdminLayout = () => {
-  const navigate = useNavigate();
-  const { isEmailVerified } = useAuth();
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
 

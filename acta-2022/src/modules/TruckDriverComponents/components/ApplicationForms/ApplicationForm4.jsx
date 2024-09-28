@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../../AuthContext";
+import { useAuth } from "../../../../AuthContext";
 import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 
 const ApplicationForm4 = () => {

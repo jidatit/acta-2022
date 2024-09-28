@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import { auth, db } from "../../../config/firebaseConfig";
-import image from "../../images/rafiki.png";
+import image from "../../../images/rafiki.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { IoMdEye } from "react-icons/io";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
-import Loader from "../UiComponents/Loader";
+import Loader from "../../SharedUiComponents/Loader";
+
 
 const SignInPage = () => {
   const navigate = useNavigate();

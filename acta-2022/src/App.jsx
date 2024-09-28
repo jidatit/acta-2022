@@ -15,17 +15,18 @@ import SignInPage from "./modules/AuthComponents/auth/SignInPage";
 import VerificationPage from "./modules/AuthComponents/components/VerificationPage";
 import ForgotPassword from "./modules/AuthComponents/components/ForgotPassword";
 import TruckDriverLayout from "./modules/TruckDriverComponents/layout/TruckDriverLayout";
-import ApplicationForm from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm1";
-import ApplicationForm2 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm2";
-import ApplicationForm3 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm3";
-import ApplicationForm4 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm4";
-import ApplicationForm5 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm5";
-import ApplicationForm6 from "./modules/TruckDriverComponents/ApplicationForms/ApplicationForm6";
+
 import ChangePassword from "./modules/AuthComponents/components/ChangePassword";
 import TruckDriverDashboard from "./modules/TruckDriverComponents/pages/TruckDriverDashboard";
 import AdminLayout from "./modules/AdminComponents/layout/AdminLayout";
 import AdminDashboard from "./modules/AdminComponents/pages/AdminDashboard";
 import AllUsers from "./modules/AdminComponents/components/AllUsers";
+import ApplicationForm from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm1";
+import ApplicationForm2 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm2";
+import ApplicationForm3 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm3";
+import ApplicationForm4 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm4";
+import ApplicationForm5 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm5";
+import ApplicationForm6 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm6";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
