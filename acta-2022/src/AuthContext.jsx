@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completedForms, setCompletedForms] = useState(null);
+  const [noViolationChecked, setNoViolationChecked] = useState(false);
   const [noAccidentsCheckeds, setNoAccidentsChecked] = useState(false);
   const [noTrafficConvictionsCheckeds, setNoTrafficConvictionsChecked] =
     useState(false);
@@ -60,6 +61,14 @@ export const AuthProvider = ({ children }) => {
       fatalities: "",
       penalties: "",
       comments: "",
+    },
+  ]);
+  const [violationField, setViolationField] = useState([
+    {
+      date: "",
+      offense: "",
+      location: "",
+      vehicleOperated: "",
     },
   ]);
   const [trafficConvictionField, setTrafficConvictionField] = useState([
@@ -202,6 +211,20 @@ export const AuthProvider = ({ children }) => {
             );
             setExtraSkills(data.form5.extraSkills);
           }
+          if (data.form6) {
+            const { violationsRecord } = data.form6;
+            localStorage.setItem(
+              "violationField5",
+              JSON.stringify(violationsRecord)
+            );
+            setViolationField(violationsRecord);
+
+            localStorage.setItem(
+              "noViolationChecked",
+              JSON.stringify(data.form6.noViolation)
+            );
+            setNoViolationChecked(data.form6.noViolation);
+          }
         } else {
           //console.log("No such document!");
         }
@@ -229,6 +252,7 @@ export const AuthProvider = ({ children }) => {
     const driverExperience = localStorage.getItem("driverExperience5");
     const educationHistory = localStorage.getItem("educationHistory5");
     const extraSkills = localStorage.getItem("extraSkills5");
+    const savedViolationField = localStorage.getItem("violationField5");
     if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
     if (savedFormData) setFormData(JSON.parse(savedFormData));
     if (savedFormData3) setFormData3(JSON.parse(savedFormData3));
@@ -240,7 +264,7 @@ export const AuthProvider = ({ children }) => {
     if (extraSkills) setExtraSkills(JSON.parse(extraSkills));
     if (savedTrafficConvictionField)
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
-
+    if (savedViolationField) setViolationField(JSON.parse(savedViolationField));
     //console.log(FormData1);
   }, [currentUser]);
 
@@ -337,11 +361,9 @@ export const AuthProvider = ({ children }) => {
         handleLogout,
         loading,
         verifyEmail,
-
         FormData,
         FormData1,
         setFormData1,
-
         FormData3,
         setFormData3,
         isSaveClicked,
@@ -359,8 +381,11 @@ export const AuthProvider = ({ children }) => {
         EducationHistory,
         completedForms,
         setEducationHistory,
-
         ExtraSkills,
+        violationField,
+        setViolationField,
+        noViolationChecked,
+        setNoViolationChecked,
       }}
     >
       {children}
