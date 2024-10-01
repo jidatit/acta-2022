@@ -314,9 +314,9 @@ const ApplicationForm5 = () => {
     setDriverEducationError(driverEducationError.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[89%] md:w-[80%]">
-      <div className="flex flex-row items-start justify-start w-full pr-10">
-        <div className="flex flex-col items-start justify-start w-full">
+    <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-[89%] md:w-[80%]">
+      <div className="flex flex-row items-start justify-center gap-x-4 w-full pr-10">
+        <div className="flex flex-col ml-5 items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driving background and Qualifications
           </h1>

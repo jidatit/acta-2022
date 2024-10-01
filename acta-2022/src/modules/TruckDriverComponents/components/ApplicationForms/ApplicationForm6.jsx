@@ -58,7 +58,7 @@ const ApplicationForm6 = () => {
       return;
     }
     // Navigate back to the previous form
-    navigate("/TruckDriverLayout/ApplicationForm3");
+    navigate("/TruckDriverLayout/ApplicationForm5");
   };
   const handleVolationFieldChange = (e, index) => {
     if (noViolationCheckeds) return;
@@ -196,29 +196,12 @@ const ApplicationForm6 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-4 w-[86%] md:w-[80%] flex-wrap overflow-x-hidden">
-      <div className="flex flex-row items-start justify-start w-full ">
+    <div className="flex flex-col items-start justify-start h-full gap-y-4 ml-5 smd:ml-0 w-[86%] md:w-[80%] flex-wrap overflow-x-hidden">
+      <div className="flex flex-row items-start justify-start w-full gap-x-1 ">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Certifications of violations
           </h1>
-          <p className="mt-3 text-lg text-black font-radios">
-            Each driver shall furnish the list required in accordance with
-            paragraph (a) of this section. If the driver has not been convicted
-            of, or forfeited bond or collateral on account of, any violation
-            which must be listed he/she shall so certify.I certify that the
-            following is a true and complete list of traffic violations (other
-            than parking violations) for which I have been convicted or
-            forfeited bond or collateral during the past 12 months.
-          </p>
-          <div className="flex flex-col gap-y-1">
-            <p className="mt-3 text-lg text-black font-radios">
-              §391.27 Record of violations
-            </p>
-            <p className="text-lg text-black font-radios">
-              DRIVER'S CERTIFICATION
-            </p>
-          </div>
         </div>
 
         <FaBell
@@ -226,12 +209,26 @@ const ApplicationForm6 = () => {
           className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
         />
       </div>
-
+      <p className="mt-3 text-sm smd:text-lg text-black font-radios">
+        Each driver shall furnish the list required in accordance with paragraph
+        (a) of this section. If the driver has not been convicted of, or
+        forfeited bond or collateral on account of, any violation which must be
+        listed he/she shall so certify.I certify that the following is a true
+        and complete list of traffic violations (other than parking violations)
+        for which I have been convicted or forfeited bond or collateral during
+        the past 12 months.
+      </p>
+      <div className="flex flex-col gap-y-1">
+        <p className="mt-3 text-lg text-black font-radios">
+          §391.27 Record of violations
+        </p>
+        <p className="text-lg text-black font-radios">DRIVER'S CERTIFICATION</p>
+      </div>
       <div className="flex flex-col w-[90%] md:w-[85%] gap-y-8">
-        <div className="flex flex-col gap-y-2">
+        <div className="flex flex-col ">
           <p className="text-lg text-black font-radios">Check this box if</p>
-          <form className="w-full py-6 bg-white shadow-md">
-            <div className="flex flex-row mb-6 gap-x-2">
+          <form className="w-full py-4  bg-white shadow-md ">
+            <div className="flex flex-row mb-8 gap-x-2">
               <input
                 type="checkbox"
                 checked={noViolationCheckeds}
@@ -365,7 +362,7 @@ const ApplicationForm6 = () => {
                   <button
                     type="button"
                     onClick={addViolationFields}
-                    className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                    className="px-6 py-2 mb-4 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
                   >
                     Add More
                   </button>
@@ -373,7 +370,7 @@ const ApplicationForm6 = () => {
               </>
             )}
           </form>
-          <div className="flex items-center justify-between w-full ml-2">
+          <div className="flex items-center justify-between w-full ml-2 gap-x-2">
             <button
               type="button"
               onClick={handleBack}

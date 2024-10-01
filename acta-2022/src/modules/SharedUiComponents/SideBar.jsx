@@ -28,7 +28,6 @@ const SideBar = ({ isSidebarExpanded }) => {
     "Section 8",
     "Section 9",
     "Section 10",
-    "Section 11",
   ];
 
   const routeToSectionMap = {
@@ -42,7 +41,6 @@ const SideBar = ({ isSidebarExpanded }) => {
     "/TruckDriverLayout/ApplicationForm8": "Section 8",
     "/TruckDriverLayout/ApplicationForm9": "Section 9",
     "/TruckDriverLayout/ApplicationForm10": "Section 10",
-    "/TruckDriverLayout/ApplicationForm11": "Section 11",
   };
 
   useEffect(() => {

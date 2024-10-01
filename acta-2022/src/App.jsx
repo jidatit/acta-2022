@@ -26,7 +26,12 @@ import ApplicationForm2 from "./modules/TruckDriverComponents/components/Applica
 import ApplicationForm3 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm3";
 import ApplicationForm4 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm4";
 import ApplicationForm5 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm5";
+import NewApplicationForm6 from "./modules/TruckDriverComponents/components/ApplicationForms/NewApplicationForm6";
 import ApplicationForm6 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm6";
+import ApplicationForm7 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm7";
+import ApplicationForm8 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm8";
+import ApplicationForm9 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm9";
+import ApplicationForm10 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm10";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -111,6 +116,30 @@ function App() {
                   path="ApplicationForm6"
                   element={
                     currentUser ? <ApplicationForm6 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm7"
+                  element={
+                    currentUser ? <ApplicationForm7 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm8"
+                  element={
+                    currentUser ? <ApplicationForm8 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm9"
+                  element={
+                    currentUser ? <ApplicationForm9 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm10"
+                  element={
+                    currentUser ? <ApplicationForm10 /> : <Navigate to="/" />
                   }
                 />
                 <Route

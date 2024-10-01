@@ -126,7 +126,7 @@ const ApplicationForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-y-12">
+    <div className="flex flex-col items-center justify-center w-full overflow-x-hidden h-full gap-y-12">
       <div className="flex flex-row items-center justify-center w-full pr-10">
         <h1 className="w-full text-xl font-bold text-center text-black">
           Application Form

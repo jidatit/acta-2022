@@ -53,6 +53,31 @@ export const AuthProvider = ({ children }) => {
     TestedPositiveOrRefusedDotDrug: "",
     EverConvictedOfFelony: "",
   });
+  const [formData8, setFormData8] = useState({
+    driverName: "", // Driver's Name
+    socialSecurityNumber: "", // Social Security Number
+    driverLicenseNumber: "", // Driver's License #
+    state: "", // State
+    expDate: "", // Exp. Date (MM/DD/YYYY)
+    typeOfLicense: "", // Type of License
+    restrictions: "", // Restrictions
+    endorsement: "",
+    day1: "",
+    day2: "",
+    day3: "",
+    day4: "",
+    day5: "",
+    day6: "",
+    day7: "", // Endorsement
+    day1HoursWorked: "",
+    day2HoursWorked: "",
+    day3HoursWorked: "",
+    day4HoursWorked: "",
+    day5HoursWorked: "",
+    day6HoursWorked: "",
+    day7HoursWorked: "",
+    TotalHours: "",
+  });
   const [addressField, setAddressField] = useState([
     {
       date: "",
@@ -69,6 +94,12 @@ export const AuthProvider = ({ children }) => {
       offense: "",
       location: "",
       vehicleOperated: "",
+    },
+  ]);
+  const [alcoholDrugTesting, setAlcoholDrugTesting] = useState([
+    {
+      testedPositiveEver: "",
+      DOTCompletion: "",
     },
   ]);
   const [trafficConvictionField, setTrafficConvictionField] = useState([
@@ -134,6 +165,12 @@ export const AuthProvider = ({ children }) => {
       jobDesignatedAsSafetySensitive: "",
     },
   ]);
+  const [formData9, setFormData9] = useState([
+    {
+      currentlyWorking: "",
+      workingForAnotherEmployer: "",
+    },
+  ]);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   useEffect(() => {
     if (!currentUser) return;
@@ -155,6 +192,14 @@ export const AuthProvider = ({ children }) => {
           if (data.form1) {
             localStorage.setItem("formData", JSON.stringify(data.form1));
             setFormData1(data.form1);
+          }
+          if (data.form8) {
+            localStorage.setItem("formData8", JSON.stringify(data.form8));
+            setFormData8(data.form8.onDutyHours);
+          }
+          if (data.form9) {
+            localStorage.setItem("formData9", JSON.stringify(data.form9));
+            setFormData9(data.form9.compensatedWork);
           }
           if (data.form2) {
             localStorage.setItem("formData2", JSON.stringify(data.form2));
@@ -212,18 +257,26 @@ export const AuthProvider = ({ children }) => {
             setExtraSkills(data.form5.extraSkills);
           }
           if (data.form6) {
-            const { violationsRecord } = data.form6;
+            const { violationRecords } = data.form6;
             localStorage.setItem(
-              "violationField5",
-              JSON.stringify(violationsRecord)
+              "violationField6",
+              JSON.stringify(violationRecords)
             );
-            setViolationField(violationsRecord);
+            setViolationField(violationRecords);
 
             localStorage.setItem(
               "noViolationChecked",
-              JSON.stringify(data.form6.noViolation)
+              JSON.stringify(data.form6.noViolations)
             );
-            setNoViolationChecked(data.form6.noViolation);
+            setNoViolationChecked(data.form6.noViolations);
+          }
+          if (data.form7) {
+            const { AlcoholDrugTest } = data.form7;
+            localStorage.setItem(
+              "AlcoholDrugTest7",
+              JSON.stringify(AlcoholDrugTest)
+            );
+            setAlcoholDrugTesting(AlcoholDrugTest);
           }
         } else {
           //console.log("No such document!");
@@ -242,6 +295,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Load data from local storage
     const savedFormData1 = localStorage.getItem("formData");
+    const savedFormData8 = localStorage.getItem("formData8");
+    const savedFormData9 = localStorage.getItem("formData9");
     const savedFormData = localStorage.getItem("formData2");
     const savedFormData3 = localStorage.getItem("formData3");
     const savedAddressField = localStorage.getItem("addressField4");
@@ -252,9 +307,12 @@ export const AuthProvider = ({ children }) => {
     const driverExperience = localStorage.getItem("driverExperience5");
     const educationHistory = localStorage.getItem("educationHistory5");
     const extraSkills = localStorage.getItem("extraSkills5");
-    const savedViolationField = localStorage.getItem("violationField5");
+    const savedViolationField = localStorage.getItem("violationField6");
+    const alcoholDrugTesting7 = localStorage.getItem("AlcoholDrugTest7");
     if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
     if (savedFormData) setFormData(JSON.parse(savedFormData));
+    if (savedFormData8) setFormData8(JSON.parse(savedFormData8));
+    if (savedFormData9) setFormData8(JSON.parse(savedFormData9));
     if (savedFormData3) setFormData3(JSON.parse(savedFormData3));
     if (driverLicensePermit)
       setDriverLicensePermit(JSON.parse(driverLicensePermit));
@@ -265,6 +323,7 @@ export const AuthProvider = ({ children }) => {
     if (savedTrafficConvictionField)
       setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
     if (savedViolationField) setViolationField(JSON.parse(savedViolationField));
+    if (alcoholDrugTesting7) setViolationField(JSON.parse(alcoholDrugTesting7));
     //console.log(FormData1);
   }, [currentUser]);
 
@@ -386,6 +445,12 @@ export const AuthProvider = ({ children }) => {
         setViolationField,
         noViolationChecked,
         setNoViolationChecked,
+        alcoholDrugTesting,
+        setAlcoholDrugTesting,
+        formData8,
+        setFormData8,
+        formData9,
+        setFormData9,
       }}
     >
       {children}
