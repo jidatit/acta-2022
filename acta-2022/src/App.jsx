@@ -44,7 +44,7 @@ function App() {
   const getDashboardPath = (userType) => {
     switch (userType) {
       case "TruckDriver":
-        return "/TruckDriverLayout";
+        return "/TruckDriverLayout/ApplicationForm1";
       case "admin":
         return "/AdminLayout";
       default:
@@ -136,12 +136,12 @@ function App() {
                     currentUser ? <ApplicationForm9 /> : <Navigate to="/" />
                   }
                 />
-                <Route
+                {/* <Route
                   path="ApplicationForm10"
                   element={
                     currentUser ? <ApplicationForm10 /> : <Navigate to="/" />
                   }
-                />
+                /> */}
                 <Route
                   path="ChangePassword"
                   element={

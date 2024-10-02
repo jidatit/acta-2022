@@ -34,12 +34,15 @@ const TruckDriverLayout = () => {
             className={`${
               isSidebarExpanded
                 ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
-                : "w-[14%] ssm:w-[8%]"
-            } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-y-auto transition-all duration-300 ease-in-out`}
+                : "w-[10%] ssm:w-[8%] flex items-start justify-center "
+            } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-hidden transition-all duration-300 ease-in-out`}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
-              <button onClick={toggleSidebar} className="text-white">
-                <GiHamburgerMenu size={24} />
+              <button
+                onClick={toggleSidebar}
+                className="text-white smd:text-xl"
+              >
+                <GiHamburgerMenu />
               </button>
             </div>
             {/* Only show the sidebar content when expanded or on md and larger screens */}

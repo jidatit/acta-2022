@@ -9,10 +9,9 @@ import { toast } from "react-toastify";
 const ApplicationForm9 = () => {
   const navigate = useNavigate();
   const { formData9, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
-
   const [localFormData, setLocalFormData] = useState(formData9);
   const [errors, setErrors] = useState([]);
-
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -86,9 +85,9 @@ const ApplicationForm9 = () => {
 
     if (validateForm()) {
       setIsSaveClicked(true);
-
       await saveToFirebase();
-      navigate("/TruckDriverLayout/ApplicationForm10");
+      setShowModal(true); // Show modal after successful submission
+      // navigate("/TruckDriverLayout/ApplicationForm1");
     } else {
       toast.error("Please complete all required fields to continue");
     }
@@ -275,6 +274,41 @@ const ApplicationForm9 = () => {
               </div>
             ))}
         </form>
+        {showModal && (
+          <div
+            id="successModal"
+            className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50 z-50"
+          >
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+              <div className="w-32 h-32 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg
+                  className="w-24 h-24 text-green-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p className="text-lg font-bold font-radios text-center mb-4">
+                Form Submitted Successfully!
+              </p>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  navigate("/TruckDriverLayout/ApplicationForm1"); // Continue to next form
+                }}
+                className="py-2 px-3 text-white bg-blue-500 hover:bg-blue-700 rounded-lg w-full"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
         <div className="flex items-center justify-between w-full gap-x-2">
           <button
             type="button"
@@ -296,7 +330,7 @@ const ApplicationForm9 = () => {
               onClick={handleSubmit}
               className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg"
             >
-              Next
+              Submit
             </button>
           </div>
         </div>
