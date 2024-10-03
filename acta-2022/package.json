@@ -27,6 +27,7 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@remix-run/router": "^1.15.1",
+    "@rtdui/signature-pad": "^4.9.6",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",
     "@tailwindcss/line-clamp": "^0.4.4",

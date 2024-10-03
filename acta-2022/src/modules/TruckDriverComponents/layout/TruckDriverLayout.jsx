@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
-import SideBar from "../UiComponents/SideBar";
-import { useAuth } from "../../AuthContext";
+import SideBar from "../../SharedUiComponents/SideBar";
+import { useAuth } from "../../../AuthContext";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,18 +28,21 @@ const TruckDriverLayout = () => {
   return (
     <>
       {isEmailVerified ? (
-        <div className="flex flex-row w-full">
+        <div className="flex flex-row w-full bg-white">
           {/* Sidebar */}
           <div
             className={`${
               isSidebarExpanded
-                ? "ssm:w-[32%] smd:w-[25%] w-[45%]"
-                : "w-[14%] ssm:w-[8%]"
-            } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-y-auto transition-all duration-300 ease-in-out`}
+                ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
+                : "w-[10%] ssm:w-[8%] flex items-start justify-center "
+            } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-hidden transition-all duration-300 ease-in-out`}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
-              <button onClick={toggleSidebar} className="text-white">
-                <GiHamburgerMenu size={24} />
+              <button
+                onClick={toggleSidebar}
+                className="text-white smd:text-xl"
+              >
+                <GiHamburgerMenu />
               </button>
             </div>
             {/* Only show the sidebar content when expanded or on md and larger screens */}

@@ -6,27 +6,33 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { ToastContainer } from "react-toastify";
-
 import { AuthProvider, useAuth } from "./AuthContext";
-import VerificationPage from "./modules/AuthComponents/VerificationPage";
-import SignUpPage from "./modules/AuthComponents/SignUpPage";
-import SignInPage from "./modules/AuthComponents/SignInPage";
-import AuthLayout from "./modules/AuthComponents/AuthLayout";
-import TruckDriverLayout from "./modules/TruckDriverComponents/TruckDriverLayout";
-import TruckDriverDashboard from "./modules/TruckDriverComponents/TruckDriverDashboard";
-import AdminLayout from "./modules/AdminComponents/AdminLayout";
-import AdminDashboard from "./modules/AdminComponents/AdminDashboard";
-import AllUsers from "./modules/AdminComponents/AllUsers";
-import ApplicationForm from "./modules/ApplicationForms/ApplicationForm1";
-import ApplicationForm2 from "./modules/ApplicationForms/ApplicationForm2";
-import ApplicationForm3 from "./modules/ApplicationForms/ApplicationForm3";
-import ApplicationForm4 from "./modules/ApplicationForms/ApplicationForm4";
-import ApplicationForm5 from "./modules/ApplicationForms/ApplicationForm5";
-import ApplicationForm6 from "./modules/ApplicationForms/ApplicationForm6";
-import ForgotPassword from "./modules/AuthComponents/ForgotPassword";
-import ChangePassword from "./modules/AuthComponents/ChangePassword";
+
 import "react-toastify/dist/ReactToastify.css";
+import SignUpPage from "./modules/AuthComponents/auth/SignUpPage";
+import AuthLayout from "./modules/AuthComponents/layout/AuthLayout";
+import SignInPage from "./modules/AuthComponents/auth/SignInPage";
+import VerificationPage from "./modules/AuthComponents/components/VerificationPage";
+import ForgotPassword from "./modules/AuthComponents/components/ForgotPassword";
+import TruckDriverLayout from "./modules/TruckDriverComponents/layout/TruckDriverLayout";
+
+import ChangePassword from "./modules/AuthComponents/components/ChangePassword";
+import TruckDriverDashboard from "./modules/TruckDriverComponents/pages/TruckDriverDashboard";
+import AdminLayout from "./modules/AdminComponents/layout/AdminLayout";
+import AdminDashboard from "./modules/AdminComponents/pages/AdminDashboard";
+import AllUsers from "./modules/AdminComponents/components/AllUsers";
+import ApplicationForm from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm1";
+import ApplicationForm2 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm2";
+import ApplicationForm3 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm3";
+import ApplicationForm4 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm4";
+import ApplicationForm5 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm5";
+import NewApplicationForm6 from "./modules/TruckDriverComponents/components/ApplicationForms/NewApplicationForm6";
+import ApplicationForm6 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm6";
+import ApplicationForm7 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm7";
+import ApplicationForm8 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm8";
+import ApplicationForm9 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm9";
+import ApplicationForm10 from "./modules/TruckDriverComponents/components/ApplicationForms/ApplicationForm10";
+
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
     {/* Spinner */}
@@ -38,7 +44,7 @@ function App() {
   const getDashboardPath = (userType) => {
     switch (userType) {
       case "TruckDriver":
-        return "/TruckDriverLayout";
+        return "/TruckDriverLayout/ApplicationForm1";
       case "admin":
         return "/AdminLayout";
       default:
@@ -46,7 +52,7 @@ function App() {
     }
   };
   return (
-    <div className="w-full h-auto overflow-hidden bg-white">
+    <div className="w-full h-auto overflow-hidden">
       <Router>
         <AuthProvider>
           {loading ? (
@@ -112,6 +118,30 @@ function App() {
                     currentUser ? <ApplicationForm6 /> : <Navigate to="/" />
                   }
                 />
+                <Route
+                  path="ApplicationForm7"
+                  element={
+                    currentUser ? <ApplicationForm7 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm8"
+                  element={
+                    currentUser ? <ApplicationForm8 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm9"
+                  element={
+                    currentUser ? <ApplicationForm9 /> : <Navigate to="/" />
+                  }
+                />
+                {/* <Route
+                  path="ApplicationForm10"
+                  element={
+                    currentUser ? <ApplicationForm10 /> : <Navigate to="/" />
+                  }
+                /> */}
                 <Route
                   path="ChangePassword"
                   element={

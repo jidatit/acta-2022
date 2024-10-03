@@ -1,14 +1,12 @@
-import { Outlet, useNavigate } from "react-router";
-import "../../index.css";
-import AdminSidebar from "./AdminSidebar";
+import "../../../index.css"
 import { useState, useEffect } from "react";
-import { useAuth } from "../../AuthContext";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminSidebar from "../UI/AdminSidebar";
+import { Outlet } from "react-router";
+
 const AdminLayout = () => {
-  const navigate = useNavigate();
-  const { isEmailVerified } = useAuth();
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
 
@@ -28,12 +26,12 @@ const AdminLayout = () => {
 
   return (
     <>
-      <div className="flex flex-row w-full">
+      <div className="flex flex-row w-full bg-white">
         {/* Sidebar */}
         <div
           className={`${
             isSidebarExpanded
-              ? "ssm:w-[32%] smd:w-[25%] w-[45%]"
+              ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
               : "w-[14%] ssm:w-[8%]"
           } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-y-auto transition-all duration-300 ease-in-out`}
         >

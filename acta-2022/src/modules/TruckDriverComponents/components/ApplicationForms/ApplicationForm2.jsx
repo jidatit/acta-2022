@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../../AuthContext";
 import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 
 const ApplicationForm2 = () => {
@@ -14,17 +14,17 @@ const ApplicationForm2 = () => {
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
   ];
   const initialFieldCount = initialFields.length;
-  console.log(initialFieldCount);
+  //console.log(initialFieldCount);
   useEffect(() => {
     if (FormData) {
       setLocalFormData(FormData);
     }
-    console.log(localFormData);
+    //console.log(localFormData);
   }, [FormData]);
 
   useEffect(() => {
     setIsSaveClicked(true);
-    console.log(localFormData);
+    //console.log(localFormData);
   }, [setIsSaveClicked]);
 
   const handleChange = (e, index) => {
@@ -64,7 +64,7 @@ const ApplicationForm2 = () => {
         });
       }
 
-      console.log("Data successfully saved to Firebase");
+      //console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
       // Optionally, handle specific error cases or show user feedback
@@ -77,6 +77,7 @@ const ApplicationForm2 = () => {
     setIsSaveClicked(true);
 
     await saveToFirebase();
+
     navigate("/TruckDriverLayout/ApplicationForm3");
   };
 
@@ -86,7 +87,31 @@ const ApplicationForm2 = () => {
 
     setIsSaveClicked(true);
 
-    await saveToFirebase();
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        previousAddresses: localFormData,
+        submittedAt: new Date(),
+      };
+
+      if (docSnap.exists()) {
+        // Document exists, so update it
+        await updateDoc(docRef, {
+          form2: applicationData,
+          // Update this with the specific key for this form
+        });
+      } else {
+        // Document does not exist, so create it
+        await setDoc(docRef, {
+          form2: applicationData,
+        });
+      }
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      // Optionally, handle specific error cases or show user feedback
+    }
   };
 
   const addAddressFields = () => {
@@ -100,7 +125,7 @@ const ApplicationForm2 = () => {
     setLocalFormData(updatedFormData);
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[85%] md:w-[80%]">
+    <div className="flex flex-col items-start justify-start h-full overflow-x-hidden gap-y-12 w-[85%] md:w-[80%]">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className=" ml-3 smd:ml-0 flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -221,7 +246,7 @@ const ApplicationForm2 = () => {
               onClick={addAddressFields}
               className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add
+              Add More
             </button>
           </div>
         </form>

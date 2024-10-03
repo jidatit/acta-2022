@@ -1,6 +1,6 @@
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../AuthContext";
 
-const VirtualAssistantDashboard = () => {
+const TruckDriverDashboard = () => {
   const { currentUser } = useAuth();
   if (!currentUser) {
     return (
@@ -22,4 +22,4 @@ const VirtualAssistantDashboard = () => {
   );
 };
 
-export default VirtualAssistantDashboard;
+export default TruckDriverDashboard;

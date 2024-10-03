@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../AuthContext";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import Loader from "../UiComponents/Loader";
+import Loader from "../../SharedUiComponents/Loader"
 
 const VerificationPage = () => {
   const navigate = useNavigate();
@@ -14,10 +14,10 @@ const VerificationPage = () => {
 
   useEffect(() => {
     if (currentUser) {
-      // console.log(currentUser);
+      //console.log(currentUser);
       setLoading(false);
       if (isEmailVerified) {
-        // console.log("emailVerified");
+        //console.log("emailVerified");
 
         if (currentUser.userType === "TruckDriver") {
           toast.success("redirecting to TruckDriver dashboard");
@@ -26,7 +26,7 @@ const VerificationPage = () => {
           }, 3000);
         }
       } else {
-        // console.log("email not Verified");
+        //console.log("email not Verified");
       }
     }
   }, []);

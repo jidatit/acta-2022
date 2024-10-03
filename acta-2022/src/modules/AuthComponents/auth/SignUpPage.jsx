@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoMdEye } from "react-icons/io";
-import image from "../../images/Group 1000006084.png";
+import image from "../../../images/Group 1000006084.png";
 import bcrypt from "bcryptjs";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import { db, auth } from "../../config/firebaseConfig";
+import { db, auth } from "../../../config/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { toast } from "react-toastify";
 
@@ -101,7 +101,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-screen p-3 bg-blue-500">
+    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-6 justify-center items-center w-[50%] h-full">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
@@ -122,8 +122,8 @@ const SignUpPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[90%] md:w-[50%] h-full bg-white">
-        <h1 className="w-full text-3xl font-bold text-center text-black">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-[90%] smd:h-full bg-white">
+        <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
         <form
@@ -203,7 +203,7 @@ const SignUpPage = () => {
           </div>
           <input
             type="submit"
-            className="inline-block px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios w-96 shadow-indigo-500/20 hover:bg-indigo-700"
+            className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
             value="Sign Up"
           />
           <div className="flex flex-row items-center justify-center gap-x-1">

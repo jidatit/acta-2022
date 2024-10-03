@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../../../AuthContext";
 import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
-import { db } from "../../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm = () => {
   const navigate = useNavigate();
@@ -34,16 +34,17 @@ const ApplicationForm = () => {
     const newErrors = {};
 
     Object.keys(formData).forEach((key) => {
-      // Exclude "street 2" and "who referred you" fields from validation
-      if (key !== "street2" && key !== "referredBy") {
-        const value = formData[key];
+      const value = formData[key];
 
-        // Check if the value is a string before trimming
-        if (typeof value === "string" && !value.trim()) {
-          newErrors[key] = "This Field is required";
+      // Check if the value is a string before trimming
+      if (typeof value === "string" && !value.trim()) {
+        if (key !== "street2" && key !== "referredBy" && key !== "Email") {
+          newErrors[key] = "This field is required";
         }
       }
     });
+
+    // Specifically check for the email field
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -71,7 +72,6 @@ const ApplicationForm = () => {
             form1: applicationData,
           });
         }
-        // console.log(formData);
 
         setIsSaveClicked(true);
         navigate("/TruckDriverLayout/ApplicationForm2");
@@ -79,49 +79,54 @@ const ApplicationForm = () => {
         console.error("Error saving application: ", error);
       }
     } else {
-      toast.error("Form is not valid, please fill in all required fields");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
   const saveFormInfo = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsSaveClicked(true);
 
-      try {
-        const applicationData = { ...formData, submittedAt: new Date() };
+    // Check if at least one field is filled
+    const isAnyFieldFilled = Object.values(formData).some(
+      (value) => value.trim() !== ""
+    );
 
-        // Reference to the specific document in the collection
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+    if (!isAnyFieldFilled) {
+      toast.error("At least one field must be filled before saving");
+      return;
+    }
 
-        // Check if the document exists
-        const docSnap = await getDoc(docRef);
+    try {
+      const applicationData = { ...formData, submittedAt: new Date() };
 
-        if (docSnap.exists()) {
-          // Document exists, update it
-          await updateDoc(docRef, {
-            form1: applicationData,
-            completedForms: 1, // Use a descriptive key for each form
-          });
-        } else {
-          // Document does not exist, create it
-          await setDoc(docRef, {
-            form1: applicationData,
-            completedForms: 1,
-          });
-        }
-        toast.success("Form is successfully saved");
-        setIsSaveClicked(true);
-      } catch (error) {
-        console.error("Error saving application: ", error);
+      // Reference to the specific document in the collection
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+
+      // Check if the document exists
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Document exists, update it
+        await updateDoc(docRef, {
+          form1: applicationData,
+          // Use a descriptive key for each form
+        });
+      } else {
+        // Document does not exist, create it
+        await setDoc(docRef, {
+          form1: applicationData,
+        });
       }
-    } else {
-      toast.error("Form is not valid, please fill in all required fields");
+
+      toast.success("Form is successfully saved");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the form, please try again");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-y-12">
+    <div className="flex flex-col items-center justify-center w-full overflow-x-hidden h-full gap-y-12">
       <div className="flex flex-row items-center justify-center w-full pr-10">
         <h1 className="w-full text-xl font-bold text-center text-black">
           Application Form
@@ -136,7 +141,7 @@ const ApplicationForm = () => {
               htmlFor="applicantName"
               className="block text-sm font-semibold text-gray-900 font-radios"
             >
-              Applicant Name
+              Applicant Name*
             </label>
             <input
               type="text"
@@ -164,7 +169,7 @@ const ApplicationForm = () => {
                 htmlFor="appliedDate"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Application Date
+                Application Date*
               </label>
               <input
                 type="date"
@@ -190,7 +195,7 @@ const ApplicationForm = () => {
                 htmlFor="positionApplied"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Position Applied For
+                Position Applied For*
               </label>
               <select
                 name="positionApplied"
@@ -218,7 +223,7 @@ const ApplicationForm = () => {
                 htmlFor="ssn"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                SSN
+                SSN*
               </label>
               <input
                 type="text"
@@ -245,7 +250,7 @@ const ApplicationForm = () => {
                 htmlFor="DOB"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Date of Birth
+                Date of Birth*
               </label>
               <input
                 type="date"
@@ -267,7 +272,7 @@ const ApplicationForm = () => {
 
             <div>
               <label className="block text-sm font-semibold text-gray-900 font-radios">
-                Gender
+                Gender*
               </label>
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
@@ -327,7 +332,7 @@ const ApplicationForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <label className="block text-sm font-semibold text-gray-900 font-radios">
-                Do You Have Legal Right to Work in the United States?
+                Do You Have Legal Right to Work in the United States?*
               </label>
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
@@ -369,7 +374,7 @@ const ApplicationForm = () => {
                 htmlFor="payExpected"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Rate of Pay Expected
+                Rate of Pay Expected*
               </label>
               <input
                 type="text"
@@ -398,7 +403,7 @@ const ApplicationForm = () => {
                 htmlFor="street1"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Street 1
+                Street 1*
               </label>
               <input
                 type="text"
@@ -437,7 +442,7 @@ const ApplicationForm = () => {
                 htmlFor="city"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                City
+                City*
               </label>
               <input
                 type="text"
@@ -460,7 +465,7 @@ const ApplicationForm = () => {
                 htmlFor="state"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                State
+                State*
               </label>
               <input
                 type="text"
@@ -483,7 +488,7 @@ const ApplicationForm = () => {
                 htmlFor="zipCode"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Zip Code
+                Zip Code*
               </label>
               <input
                 type="number"
@@ -506,10 +511,10 @@ const ApplicationForm = () => {
                 htmlFor="cellPhone"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Cell Phone
+                Cell Phone*
               </label>
               <input
-                type="number"
+                type="text"
                 name="cellPhone"
                 id="cellPhone"
                 value={formData.cellPhone}
@@ -531,15 +536,17 @@ const ApplicationForm = () => {
                 htmlFor="Email"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Email
+                Email*
               </label>
               <input
                 type="email"
+                required
                 name="Email"
                 id="Email"
-                value={formData.Email}
+                disabled={true}
+                value={currentUser.email}
                 onChange={handleChange}
-                className={`w-full p-2 mt-1 border rounded-md ${
+                className={`w-full p-2 mt-1 border rounded-md text-gray-400 ${
                   errors.Email ? "border-red-500 border-2" : "border-gray-300"
                 }`}
               />
@@ -554,7 +561,7 @@ const ApplicationForm = () => {
                 htmlFor="EmergencyContact"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Emergency Contact
+                Emergency Contact*
               </label>
               <input
                 type="text"
@@ -580,7 +587,7 @@ const ApplicationForm = () => {
                 htmlFor="Relationship"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                Relationship
+                Relationship*
               </label>
               <input
                 type="text"
@@ -606,7 +613,7 @@ const ApplicationForm = () => {
                 htmlFor="CDL"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                CDL#
+                CDL #*
               </label>
               <input
                 type="text"
@@ -630,7 +637,7 @@ const ApplicationForm = () => {
                 htmlFor="CDLState"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                CDL State
+                CDL State*
               </label>
               <input
                 type="text"
@@ -656,7 +663,7 @@ const ApplicationForm = () => {
                 htmlFor="CDLClass"
                 className="block text-sm font-semibold text-gray-900 font-radios"
               >
-                CDL Class
+                CDL Class*
               </label>
               <input
                 type="text"
@@ -684,7 +691,7 @@ const ApplicationForm = () => {
               htmlFor="CDLExpirationDate"
               className="block text-sm font-semibold text-gray-900 font-radios"
             >
-              CDL Expiration Date
+              CDL Expiration Date*
             </label>
             <input
               type="date"
@@ -708,7 +715,7 @@ const ApplicationForm = () => {
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 font-radios">
               Have you ever been denied a license, permit or privilege to
-              operate a motor vehicle?
+              operate a motor vehicle?*
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -752,7 +759,7 @@ const ApplicationForm = () => {
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 font-radios">
               Have any license, permit or privilege ever been suspended or
-              revoked?
+              revoked?*
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -797,7 +804,7 @@ const ApplicationForm = () => {
             <label className="block text-sm font-semibold text-gray-900 font-radios">
               Have you ever tested positive or refused a DOT drug or alcohol
               pre-employment test within the past 3 years from an employer who
-              did not hire you?
+              did not hire you?*
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -840,7 +847,7 @@ const ApplicationForm = () => {
 
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 font-radios">
-              Have you ever been convicted of a felony?
+              Have you ever been convicted of a felony?*
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">

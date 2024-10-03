@@ -27,8 +27,6 @@ const SideBar = ({ isSidebarExpanded }) => {
     "Section 7",
     "Section 8",
     "Section 9",
-    "Section 10",
-    "Section 11",
   ];
 
   const routeToSectionMap = {
@@ -41,8 +39,6 @@ const SideBar = ({ isSidebarExpanded }) => {
     "/TruckDriverLayout/ApplicationForm7": "Section 7",
     "/TruckDriverLayout/ApplicationForm8": "Section 8",
     "/TruckDriverLayout/ApplicationForm9": "Section 9",
-    "/TruckDriverLayout/ApplicationForm10": "Section 10",
-    "/TruckDriverLayout/ApplicationForm11": "Section 11",
   };
 
   useEffect(() => {
@@ -150,7 +146,7 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
 
   const handleEdit = () => {
-    // console.log("edit item");
+    //console.log("edit item");
   };
 
   const handleLogoutClick = () => {
@@ -160,28 +156,28 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={`bg-[#2257e7] h-full w-full ${
+      className={`bg-[#2257e7] z-50 h-full w-full overflow-hidden ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >
-      <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-10">
+      <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-4 smd:gap-y-10">
         <div className="flex w-full">
-          <h1 className="w-full p-3 text-2xl font-bold text-black bg-white rounded-lg">
+          <h1 className="w-full p-2 smd:p-3 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
             Logo
           </h1>
         </div>
         <div className="flex flex-row justify-between w-full md:items-center">
-          <div className="flex flex-col items-center justify-center w-full md:justify-start md:items-start md:flex-row gap-x-2 gap-y-2 ">
+          <div className="flex items-center justify-center w-full md:justify-start md:items-start flex-row gap-x-2 gap-y-2 ">
             <img
               src={image}
               alt="..."
               className="object-cover w-10 h-10 rounded-full"
             />
-            <div className="flex flex-col items-center justify-center w-full md:justify-start md:items-start ">
+            <div className="flex flex-col w-full md:justify-start md:items-start ">
               <p className="text-[14px] text-white font-radios">
                 {currentUser ? currentUser.firstName : "Guest"}
               </p>
-              <p className="text-[12px] text-white font-radios">
+              <p className="text-[12px] md:block hidden text-start text-white w-full font-radios">
                 {"Welcome Back"}
               </p>
             </div>
@@ -247,7 +243,7 @@ const SideBar = ({ isSidebarExpanded }) => {
             onClick={() => handleItemClick("JobApplication")}
           >
             <p
-              className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 ${
+              className={`w-full p-2 smd:p-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
                 activeItem === "JobApplication" ? "text-blue-800" : "text-white"
               }`}
             >
@@ -256,9 +252,21 @@ const SideBar = ({ isSidebarExpanded }) => {
           </Link>
           <div className="w-full h-full overflow-hidden">
             <div
-              className="absolute border-l-2 border-white left-[1.9rem]"
+              className={`block smd:hidden absolute border-l-2 border-white left-[1.9rem] `}
               style={{
-                height: `calc(${sections.length} * 3.38rem - 0.75rem)`, // Adjust the multiplier and subtractor based on spacing needs
+                height: `calc(${sections.length} * 3.38rem - 2.9rem)`, // Adjust the multiplier and subtractor based on spacing needs
+              }}
+            ></div>
+            <div
+              className=" block smd:hidden absolute border-l-2 border-white left-[1.9rem]"
+              style={{
+                height: `calc(${sections.length} * 3rem - 0.75rem)`, // Height for small screens and above
+              }}
+            ></div>
+            <div
+              className="hidden smd:block absolute border-l-2 border-white left-[1.9rem]"
+              style={{
+                height: `calc(${sections.length} * 6.8rem - 32.1rem)`, // Height for medium screens and above
               }}
             ></div>
             <ul className="relative space-y-7 md:space-y-8">

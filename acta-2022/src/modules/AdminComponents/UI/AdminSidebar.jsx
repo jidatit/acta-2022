@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../../index.css";
-import image from "../../images/pngwing.com.png";
-import { useAuth } from "../../AuthContext";
+import "../../../index.css";
+import image from "../../../images/pngwing.com.png";
+import { useAuth } from "../../../AuthContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 const AdminSidebar = ({ isSidebarExpanded }) => {
@@ -12,12 +12,12 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
     setActiveItem(item);
   };
   const handleEdit = () => {
-    // console.log("edit item");
+    //console.log("edit item");
   };
 
   return (
     <div
-      className={`bg-[#2257e7] h-full w-full ${
+      className={`bg-[#2257e7] h-full z-50 w-full ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >

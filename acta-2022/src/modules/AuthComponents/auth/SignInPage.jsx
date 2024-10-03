@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../AuthContext";
-import { auth, db } from "../../config/firebaseConfig";
-import image from "../../images/rafiki.png";
+import { useAuth } from "../../../AuthContext";
+import { auth, db } from "../../../config/firebaseConfig";
+import image from "../../../images/rafiki.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { IoMdEye } from "react-icons/io";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
-import Loader from "../UiComponents/Loader";
+import Loader from "../../SharedUiComponents/Loader";
+
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const SignInPage = () => {
         formData.password
       );
       const user = userCredential.user;
-      // console.log("User signed in:", user);
+      //console.log("User signed in:", user);
 
       const queryCollection = async (collectionName) => {
         const q = query(
@@ -76,14 +77,14 @@ const SignInPage = () => {
       }
     } catch (error) {
       // Stop loading in case of error
-      console.error("Error signing in:", error.message);
-      toast.error("Sign-in failed: " + error.message);
+
+      toast.error("Sign-in failed: Your Email or password is incorrect ");
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-blue-500">
+    <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <h1 className="w-full text-3xl font-extrabold text-center text-white">
           LOGO
@@ -105,8 +106,8 @@ const SignInPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[80%] md:w-[50%] h-[70%] md:h-full bg-white">
-        <h1 className="w-full text-3xl font-bold text-center text-black">
+      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[90%] md:w-[50%] h-[70%] md:h-full bg-white">
+        <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
           Login to Your Account
         </h1>
         <form
