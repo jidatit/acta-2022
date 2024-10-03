@@ -175,7 +175,7 @@ const ApplicationForm7 = () => {
 
   return (
     <div className="flex flex-col ml-5 smd:ml-0 items-start justify-start overflow-x-hidden h-full gap-y-12 w-[85%] md:w-[80%]">
-      <div className="flex flex-row items-start justify-start w-full gap-x-4 ">
+      <div className="flex flex-row items-start justify-start w-full gap-x-2 ">
         <div className=" ml-1 smd:ml-0 flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-[17px] smd:text-xl font-bold text-black">
             Previous Pre-Employment Employee Alcohol and Drug Testing Statement
@@ -297,7 +297,7 @@ const ApplicationForm7 = () => {
           >
             Back
           </button>
-          <div className="flex justify-end w-full gap-x-4">
+          <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
               onClick={handleSave}

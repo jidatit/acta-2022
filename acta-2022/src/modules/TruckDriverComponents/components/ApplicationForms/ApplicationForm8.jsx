@@ -234,7 +234,7 @@ const ApplicationForm8 = () => {
   };
 
   return (
-    <div className="flex flex-col items-start justify-start h-full md:ml-10 gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
+    <div className="flex flex-col px-10 items-start justify-start h-full md:ml-10 gap-y-12 w-[100%] md:w-[100%] flex-wrap overflow-x-hidden">
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full md:ml-4 ml-6 mb-4 text-xl font-bold text-black">
@@ -458,7 +458,7 @@ const ApplicationForm8 = () => {
 
                   <br />
 
-                  <div className="flex flex-col gap-y-6 mt-7 smd:w-screen w-[90%] mb-6">
+                  <div className="flex flex-col gap-y-6 mt-7 smd:w-screen w-[100%] mb-6">
                     <p className="text-black font-radios text-[18px] smd:text-lg w-[100%] smd:w-[80%] lg:w-[90%]">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
@@ -930,7 +930,7 @@ const ApplicationForm8 = () => {
           >
             back
           </button>
-          <div className="flex justify-end w-full gap-x-4">
+          <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
               onClick={handleSave}

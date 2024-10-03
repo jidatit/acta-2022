@@ -667,7 +667,7 @@ const ApplicationForm3 = () => {
           >
             back
           </button>
-          <div className="flex justify-end w-full gap-x-4">
+          <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
               onClick={handleSave}

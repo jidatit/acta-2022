@@ -315,7 +315,7 @@ const ApplicationForm5 = () => {
   };
   return (
     <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-[89%] md:w-[80%]">
-      <div className="flex flex-row items-start justify-center gap-x-4 w-full pr-10">
+      <div className="flex flex-row items-start justify-center gap-x-2 w-full pr-10">
         <div className="flex flex-col ml-5 items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driving background and Qualifications
@@ -891,7 +891,7 @@ const ApplicationForm5 = () => {
           >
             back
           </button>
-          <div className="flex justify-end w-full gap-x-4">
+          <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
               onClick={handleSave}
