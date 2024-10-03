@@ -167,16 +167,16 @@ const ApplicationForm9 = () => {
     setIsSaveClicked(allFieldsEmpty);
   };
   return (
-    <div className="flex flex-col ml-5 smd:ml-0 items-start justify-start overflow-x-hidden h-full gap-y-12 w-[85%] md:w-[80%]">
+    <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-full">
       <div className="flex flex-row items-start justify-start w-full ">
-        <div className=" ml-1 smd:ml-0 flex flex-col items-start justify-start w-full">
+        <div className=" flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driver Certification for Other Compensated Work
           </h1>
         </div>
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
-      <div className="flex flex-col gap-y-5 w-full md:w-[95%]">
+      <div className="flex flex-col gap-y-5 w-full">
         <p className="text-black font-radios text-lg">
           INSTRUCTIONS: When employed by a motor carrier, a driver must report
           to the carrier all on-duty time including time working for other
@@ -187,7 +187,7 @@ const ApplicationForm9 = () => {
           performing any compensated work for any non motor carrier entity.
         </p>
       </div>
-      <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
+      <div className=" flex flex-col w-full gap-y-8">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
@@ -309,7 +309,7 @@ const ApplicationForm9 = () => {
             </div>
           </div>
         )}
-        <div className="flex items-center justify-between w-full gap-x-2">
+        <div className="flex items-center justify-between px-1">
           <button
             type="button"
             onClick={handleBack}

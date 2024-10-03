@@ -28,14 +28,14 @@ const TruckDriverLayout = () => {
   return (
     <>
       {isEmailVerified ? (
-        <div className="flex flex-row w-full bg-white">
+        <div className="flex flex-row w-screen h-screen bg-white">
           {/* Sidebar */}
           <div
             className={`${
               isSidebarExpanded
                 ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
-                : "w-[10%] ssm:w-[8%] flex items-start justify-center "
-            } md:w-[25%] xxl:w-[19%] bg-[#2257e7] h-screen fixed overflow-hidden transition-all duration-300 ease-in-out`}
+                : "w-[10%] ssm:w-[8%] flex items-start justify-center"
+            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-full transition-all duration-300 ease-in-out`}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
               <button
@@ -51,14 +51,17 @@ const TruckDriverLayout = () => {
             )}
           </div>
 
-          {/* Scrollable Outlet */}
+          {/* Main Content Area */}
           <div
-            className={`w-[95%] ${
-              isSidebarExpanded ? "md:ml-[25%] ml-[25%]" : "ml-[10%]"
-            } md:w-[99%] md:ml-[24%] xxl:w-[85%] xxl:ml-[15%] flex flex-col h-screen overflow-y-auto transition-all duration-300 ease-in-out`}
+            className={`flex flex-col justify-start items-start overflow-y-auto ${
+              isSidebarExpanded ? "ml-[25%]" : ""
+            } w-full h-screen transition-all duration-300 ease-in-out`}
           >
-            <div className="flex items-center justify-center flex-grow w-full py-10">
-              <Outlet />
+            <div className="flex-grow w-full p-6">
+              {/* Forms/Content */}
+              <div className="w-full">
+                <Outlet />
+              </div>
             </div>
           </div>
         </div>

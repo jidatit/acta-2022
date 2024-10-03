@@ -174,16 +174,16 @@ const ApplicationForm7 = () => {
   };
 
   return (
-    <div className="flex flex-col ml-5 smd:ml-0 items-start justify-start overflow-x-hidden h-full gap-y-12 w-[85%] md:w-[80%]">
-      <div className="flex flex-row items-start justify-start w-full gap-x-2 ">
-        <div className=" ml-1 smd:ml-0 flex flex-col items-start justify-start w-full">
+    <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-full">
+      <div className="flex flex-row items-start justify-start w-full ">
+        <div className="  flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-[17px] smd:text-xl font-bold text-black">
             Previous Pre-Employment Employee Alcohol and Drug Testing Statement
           </h1>
         </div>
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
-      <div className="flex flex-col gap-y-5 w-[95%] smd:w-[95%]">
+      <div className="flex flex-col gap-y-5 w-full">
         <p className="text-black font-radios w-full text-[16px] smd:text-lg">
           Sec. 40.25() As the employer, you must also ask the employee whether
           he or she has tested positive, or refused to test, on any pre-
@@ -200,18 +200,15 @@ const ApplicationForm7 = () => {
           (e))
         </p>
       </div>
-      <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
-        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400">
+      <div className=" flex flex-col w-full gap-y-8">
+        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
-              <div
-                className="flex flex-col smd:w-screen w-[90%] mb-6"
-                key={index}
-              >
+              <div className="flex flex-col w-full mb-6" key={index}>
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-testedPositiveEver`}
-                    className="block text-sm smd:text-lg text-gray-900 font-radios"
+                    className="block w-full text-sm smd:text-lg text-gray-900 font-radios"
                   >
                     Have you ever been tested positive or refused to be tested
                     on any pre-employment drug test in which you were not hired
@@ -251,7 +248,7 @@ const ApplicationForm7 = () => {
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-DOTCompletion`}
-                    className="block text-sm smd:text-lg text-gray-900 font-radios"
+                    className="block w-full text-sm smd:text-lg text-gray-900 font-radios"
                   >
                     Can you provide or obtain on our request proof that you have
                     successfully completed the DOT return-to-duty requirement?*
@@ -289,7 +286,7 @@ const ApplicationForm7 = () => {
               </div>
             ))}
         </form>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between px-1">
           <button
             type="button"
             onClick={handleBack}

@@ -196,8 +196,8 @@ const ApplicationForm6 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-4 ml-5 smd:ml-0 w-[86%] md:w-[80%] flex-wrap overflow-x-hidden">
-      <div className="flex flex-row items-start justify-start w-full gap-x-1 ">
+    <div className="flex flex-col items-start justify-start h-full gap-y-4 w-full flex-wrap overflow-x-hidden">
+      <div className="flex flex-row items-start justify-start w-full ">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Certifications of violations
@@ -224,10 +224,10 @@ const ApplicationForm6 = () => {
         </p>
         <p className="text-lg text-black font-radios">DRIVER'S CERTIFICATION</p>
       </div>
-      <div className="flex flex-col w-[90%] md:w-[85%] gap-y-8">
+      <div className="flex flex-col w-full gap-y-8">
         <div className="flex flex-col ">
           <p className="text-lg text-black font-radios">Check this box if</p>
-          <form className="w-full py-4  bg-white shadow-md ">
+          <form className="w-full p-6 bg-white shadow-md ">
             <div className="flex flex-row mb-8 gap-x-2">
               <input
                 type="checkbox"
@@ -370,7 +370,7 @@ const ApplicationForm6 = () => {
               </>
             )}
           </form>
-          <div className="flex items-center justify-between w-full ml-2 gap-x-2">
+          <div className="flex items-center justify-between px-1">
             <button
               type="button"
               onClick={handleBack}

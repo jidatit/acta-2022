@@ -156,7 +156,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={`bg-[#2257e7] z-50 h-full w-full overflow-hidden ${
+      className={` z-50 h-full w-full overflow-hidden bg-blue-[#0086D9] ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >

@@ -234,21 +234,21 @@ const ApplicationForm8 = () => {
   };
 
   return (
-    <div className="flex flex-col px-10 items-start justify-start h-full md:ml-10 gap-y-12 w-[100%] md:w-[100%] flex-wrap overflow-x-hidden">
-      <div className=" flex flex-col items-start justify-start w-full ">
+    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[100%] md:w-[100%] flex-wrap overflow-x-hidden">
+      <div className=" flex flex-col items-start justify-start w-full">
         <div className="flex flex-row items-start justify-between w-full">
-          <h1 className="w-full md:ml-4 ml-6 mb-4 text-xl font-bold text-black">
+          <h1 className="w-full mb-4 text-xl font-bold text-black">
             Statement of On-Duty Hours*
           </h1>
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         </div>
       </div>
 
-      <div className=" flex flex-col w-[99%] gap-y-8 flex-wrap">
+      <div className=" flex flex-col w-full gap-y-8 flex-wrap">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
-              <div key={index} className="mb-6">
+              <div key={index} className="mb-6 w-full">
                 <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
                   <div>
                     <label
@@ -458,8 +458,8 @@ const ApplicationForm8 = () => {
 
                   <br />
 
-                  <div className="flex flex-col gap-y-6 mt-7 smd:w-screen w-[100%] mb-6">
-                    <p className="text-black font-radios text-[18px] smd:text-lg w-[100%] smd:w-[80%] lg:w-[90%]">
+                  <div className="flex flex-col gap-y-6 mt-7 w-screen mb-6">
+                    <p className="text-black font-radios text-[16px] smd:text-lg w-[70%] xxl:w-[70%]">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
                       giving the total time on- duty during the immediately
@@ -473,7 +473,7 @@ const ApplicationForm8 = () => {
                       carrier entity, must be recorded on this form.
                     </p>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day1-${index}`}
                           className="block w-full text-sm font-semibold text-gray-900 font-radios"
@@ -506,7 +506,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day1HoursWorked-${index}`}
                           className="block w-full text-sm font-semibold text-gray-900 font-radios"
@@ -533,7 +533,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day2-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -566,7 +566,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day2HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -593,7 +593,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day3-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -626,7 +626,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day3HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -653,7 +653,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day4-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -686,7 +686,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day4HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -713,7 +713,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day5-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -746,7 +746,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day5HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -773,7 +773,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day6-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -806,7 +806,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day6HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -833,7 +833,7 @@ const ApplicationForm8 = () => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day7-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -866,7 +866,7 @@ const ApplicationForm8 = () => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[80%]">
+                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
                         <label
                           htmlFor={`day7HoursWorked-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
@@ -922,7 +922,7 @@ const ApplicationForm8 = () => {
               </div>
             ))}
         </form>
-        <div className="flex items-center justify-between w-[90%] smd:w-full ml-4 ">
+        <div className="flex items-center justify-between px-1">
           <button
             type="button"
             onClick={handleBack}

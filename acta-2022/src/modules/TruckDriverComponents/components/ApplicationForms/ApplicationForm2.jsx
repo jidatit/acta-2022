@@ -125,7 +125,7 @@ const ApplicationForm2 = () => {
     setLocalFormData(updatedFormData);
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full overflow-x-hidden gap-y-12 w-[85%] md:w-[80%]">
+    <div className="flex flex-col items-start justify-start h-full overflow-x-hidden gap-y-12 w-full">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className=" ml-3 smd:ml-0 flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -138,7 +138,7 @@ const ApplicationForm2 = () => {
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
 
-      <div className=" flex flex-col w-[95%] smd:w-[85%] gap-y-8">
+      <div className=" flex flex-col w-full gap-y-8 ">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((address, index) => (
@@ -250,7 +250,7 @@ const ApplicationForm2 = () => {
             </button>
           </div>
         </form>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between px-1">
           <button
             type="button"
             onClick={handleBack}

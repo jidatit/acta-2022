@@ -212,15 +212,15 @@ const ApplicationForm3 = () => {
 
   //console.log(localFormData);
   return (
-    <div className="flex flex-col items-start justify-start h-full md:ml-10 gap-y-12 w-[96%] md:w-[90%] flex-wrap overflow-x-hidden">
+    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-full overflow-x-hidden">
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
-          <h1 className="w-full md:ml-4 ml-6 mb-4 text-xl font-bold text-black">
+          <h1 className="w-full mb-4 text-xl font-bold text-black">
             Employment History*
           </h1>
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         </div>
-        <p className="mt-3 md:ml-4 ml-4 text-sm md:text-lg px-4 smd:p-0 text-justify text-black font-radios">
+        <p className="mt-3 text-sm md:text-lg px-4 smd:p-0 text-justify text-black font-radios">
           *The Federal Motor Carrier Safety Regulations (49 CFR 391.21) require
           that all applicants wishing to drive a commercial vehicle list all
           employment for the last three (3) years. In addition, if you have
@@ -235,7 +235,7 @@ const ApplicationForm3 = () => {
         </p>
       </div>
 
-      <div className=" flex flex-col w-[99%] gap-y-8 flex-wrap">
+      <div className=" flex flex-col gap-y-8 flex-wrap">
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
@@ -659,7 +659,7 @@ const ApplicationForm3 = () => {
             </button>
           </div>
         </form>
-        <div className="flex items-center justify-between w-[90%] smd:w-full ml-4 ">
+        <div className="flex items-center justify-between px-1">
           <button
             type="button"
             onClick={handleBack}
