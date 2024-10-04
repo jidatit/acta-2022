@@ -52,7 +52,7 @@ function App() {
     }
   };
   return (
-    <div className="w-screen h-auto overflow-hidden">
+    <div className=" h-auto overflow-hidden">
       <Router>
         <AuthProvider>
           {loading ? (

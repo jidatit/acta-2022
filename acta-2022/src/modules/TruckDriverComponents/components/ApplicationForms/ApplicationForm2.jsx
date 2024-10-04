@@ -129,7 +129,7 @@ const ApplicationForm2 = () => {
     setLocalFormData(updatedFormData);
   };
   return (
-    <div className="flex flex-col items-start justify-start h-[100vh] overflow-x-hidden gap-y-12 w-full">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className=" ml-3 smd:ml-0 flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">

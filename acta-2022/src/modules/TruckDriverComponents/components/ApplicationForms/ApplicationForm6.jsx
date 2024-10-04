@@ -199,7 +199,7 @@ const ApplicationForm6 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-4 w-full flex-wrap overflow-x-hidden">
+    <div className="flex flex-col min-h-screen items-start justify-start overflow-x-hidden w-full gap-y-4">
       <div className="flex flex-row items-start justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -222,7 +222,7 @@ const ApplicationForm6 = () => {
         the past 12 months.
       </p>
       <div className="flex flex-col gap-y-1">
-        <p className="mt-3 text-lg text-black font-radios">
+        <p className="text-lg text-black font-radios">
           §391.27 Record of violations
         </p>
         <p className="text-[17px] smd:text-lg text-black font-radios">

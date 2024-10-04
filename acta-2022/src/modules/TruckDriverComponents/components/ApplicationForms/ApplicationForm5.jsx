@@ -319,7 +319,7 @@ const ApplicationForm5 = () => {
   return (
     <div className=" flex flex-col items-start justify-start overflow-x-hidden h-full w-full gap-y-12">
       <div className="flex flex-row items-start justify-center w-full ">
-        <div className="flex flex-col items-start justify-start w-[85%] smd:w-[95%]">
+        <div className="flex flex-col items-start justify-start w-[98%]">
           <h1 className="w-full mb-4 text-lg smd:text-xl font-bold text-black">
             List all driver licenses or permits held in the past 3 years
           </h1>

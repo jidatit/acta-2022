@@ -177,7 +177,7 @@ const ApplicationForm7 = () => {
   };
 
   return (
-    <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-full">
+    <div className="flex flex-col min-h-screen items-start justify-start overflow-x-hidden w-full gap-y-12">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className="  flex flex-col items-start justify-start w-full">
           <h1 className="smd:w-full mb-4 w-[97%] text-[17px] smd:text-xl font-bold text-black">
