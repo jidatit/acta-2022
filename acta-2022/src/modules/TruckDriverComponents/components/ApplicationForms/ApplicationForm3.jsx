@@ -220,7 +220,7 @@ const ApplicationForm3 = () => {
           </h1>
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         </div>
-        <p className="mt-3 text-sm md:text-lg px-4 smd:p-0 text-justify text-black font-radios">
+        <p className="mt-3 text-sm md:text-lg px-1 smd:p-0 text-justify text-black font-radios">
           *The Federal Motor Carrier Safety Regulations (49 CFR 391.21) require
           that all applicants wishing to drive a commercial vehicle list all
           employment for the last three (3) years. In addition, if you have
@@ -236,7 +236,7 @@ const ApplicationForm3 = () => {
       </div>
 
       <div className=" flex flex-col gap-y-8 flex-wrap">
-        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div key={index} className="mb-6">

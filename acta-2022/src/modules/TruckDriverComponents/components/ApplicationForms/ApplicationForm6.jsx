@@ -197,7 +197,7 @@ const ApplicationForm6 = () => {
   };
   return (
     <div className="flex flex-col items-start justify-start h-full gap-y-4 w-full flex-wrap overflow-x-hidden">
-      <div className="flex flex-row items-start justify-start w-full ">
+      <div className="flex flex-row items-start justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Certifications of violations
@@ -224,19 +224,21 @@ const ApplicationForm6 = () => {
         </p>
         <p className="text-lg text-black font-radios">DRIVER'S CERTIFICATION</p>
       </div>
-      <div className="flex flex-col w-full gap-y-8">
+      <div className="flex flex-col w-full gap-y-8 ">
         <div className="flex flex-col ">
           <p className="text-lg text-black font-radios">Check this box if</p>
-          <form className="w-full p-6 bg-white shadow-md ">
-            <div className="flex flex-row mb-8 gap-x-2">
-              <input
-                type="checkbox"
-                checked={noViolationCheckeds}
-                onChange={() => setNoViolationChecked(!noViolationCheckeds)}
-                className="p-3"
-              />
-              <p className="text-lg text-black font-radios">No Violation</p>
-            </div>
+          <div className="flex flex-row gap-x-3">
+            <input
+              type="checkbox"
+              checked={noViolationCheckeds}
+              onChange={() => setNoViolationChecked(!noViolationCheckeds)}
+              className="border-2"
+            />
+            <p className="text-lg text-black font-radios">No Violation</p>
+          </div>
+
+          <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 ">
+            <div className="flex flex-row mb-8 gap-x-2"></div>
             {noViolationCheckeds === false && (
               <>
                 {violationFields.map((address, index) => (
@@ -370,7 +372,7 @@ const ApplicationForm6 = () => {
               </>
             )}
           </form>
-          <div className="flex items-center justify-between px-1">
+          <div className="flex items-center justify-between px-1 mt-2">
             <button
               type="button"
               onClick={handleBack}

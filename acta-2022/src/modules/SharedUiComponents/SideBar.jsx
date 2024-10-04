@@ -167,7 +167,7 @@ const SideBar = ({ isSidebarExpanded }) => {
           </h1>
         </div>
         <div className="flex flex-row justify-between w-full md:items-center">
-          <div className="flex items-center justify-center w-full md:justify-start md:items-start flex-row gap-x-2 gap-y-2 ">
+          <div className="flex items-center -ml-3 xxl:ml-0 justify-center w-full md:justify-start md:items-start flex-row gap-x-2 gap-y-2 ">
             <img
               src={image}
               alt="..."
@@ -182,7 +182,7 @@ const SideBar = ({ isSidebarExpanded }) => {
               </p>
             </div>
           </div>
-          <div className="flex md:items-center md:justify-center gap-x-3">
+          <div className="flex md:items-center md:justify-center gap-x-3 ">
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50">
@@ -194,7 +194,7 @@ const SideBar = ({ isSidebarExpanded }) => {
               </div>
               <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                className="absolute -right-3 snd:right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
                 <div className="py-1">
                   <MenuItem>
@@ -258,13 +258,13 @@ const SideBar = ({ isSidebarExpanded }) => {
               }}
             ></div>
             <div
-              className=" block smd:hidden absolute border-l-2 border-white left-[1.9rem]"
+              className=" block md:hidden absolute border-l-2 border-white left-[1.9rem]"
               style={{
                 height: `calc(${sections.length} * 3rem - 0.75rem)`, // Height for small screens and above
               }}
             ></div>
             <div
-              className="hidden smd:block absolute border-l-2 border-white left-[1.9rem]"
+              className="hidden md:block absolute border-l-2 border-white left-[1.9rem]"
               style={{
                 height: `calc(${sections.length} * 6.8rem - 32.1rem)`, // Height for medium screens and above
               }}

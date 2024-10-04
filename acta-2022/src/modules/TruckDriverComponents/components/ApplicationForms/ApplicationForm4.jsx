@@ -331,7 +331,7 @@ const ApplicationForm4 = () => {
 
       {/* First Form */}
       <div className="flex flex-col gap-y-8 w-full">
-        <form className="w-full p-6 bg-white shadow-md">
+        <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
             <input
               type="checkbox"
@@ -527,7 +527,7 @@ const ApplicationForm4 = () => {
         </form>
 
         {/* Second Form */}
-        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           <p className="mb-4 text-lg text-black font-radios">
             Provide traffic convictions and forfeitures record for previous 3
             years

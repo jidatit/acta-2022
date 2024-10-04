@@ -139,7 +139,7 @@ const ApplicationForm2 = () => {
       </div>
 
       <div className=" flex flex-col w-full gap-y-8 ">
-        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           {Array.isArray(localFormData) &&
             localFormData.map((address, index) => (
               <div
@@ -250,7 +250,7 @@ const ApplicationForm2 = () => {
             </button>
           </div>
         </form>
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1 ">
           <button
             type="button"
             onClick={handleBack}

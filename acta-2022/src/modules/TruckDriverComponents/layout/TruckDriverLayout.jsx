@@ -28,14 +28,14 @@ const TruckDriverLayout = () => {
   return (
     <>
       {isEmailVerified ? (
-        <div className="flex flex-row w-screen h-screen bg-white">
+        <div className="flex flex-row w-screen bg-white">
           {/* Sidebar */}
           <div
             className={`${
               isSidebarExpanded
                 ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
-                : "w-[10%] ssm:w-[8%] flex items-start justify-center"
-            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-full transition-all duration-300 ease-in-out`}
+                : "w-[8%] ssm:w-[6%] flex items-start justify-center"
+            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-screen transition-all duration-300 ease-in-out fixed md:relative`}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
               <button
@@ -54,7 +54,7 @@ const TruckDriverLayout = () => {
           {/* Main Content Area */}
           <div
             className={`flex flex-col justify-start items-start overflow-y-auto ${
-              isSidebarExpanded ? "ml-[25%]" : ""
+              isSidebarExpanded ? "" : "md:ml-0 ml-[5%]"
             } w-full h-screen transition-all duration-300 ease-in-out`}
           >
             <div className="flex-grow w-full p-6">

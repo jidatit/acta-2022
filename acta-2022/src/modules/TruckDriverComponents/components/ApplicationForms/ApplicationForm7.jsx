@@ -177,7 +177,7 @@ const ApplicationForm7 = () => {
     <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-full">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className="  flex flex-col items-start justify-start w-full">
-          <h1 className="w-full mb-4 text-[17px] smd:text-xl font-bold text-black">
+          <h1 className="smd:w-full mb-4 w-[97%] text-[17px] smd:text-xl font-bold text-black">
             Previous Pre-Employment Employee Alcohol and Drug Testing Statement
           </h1>
         </div>
@@ -201,7 +201,7 @@ const ApplicationForm7 = () => {
         </p>
       </div>
       <div className=" flex flex-col w-full gap-y-8">
-        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div className="flex flex-col w-full mb-6" key={index}>

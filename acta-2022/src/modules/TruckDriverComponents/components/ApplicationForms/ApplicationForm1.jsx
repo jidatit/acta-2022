@@ -134,7 +134,7 @@ const ApplicationForm = () => {
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
       <div className=" flex flex-col w-full gap-y-8">
-        <form className="w-full p-6 rounded-md shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full rounded-md shadow-md border-b-1 border-b-gray-400">
           {/* Line 1: Applicant Name */}
           <div className="mb-6">
             <label

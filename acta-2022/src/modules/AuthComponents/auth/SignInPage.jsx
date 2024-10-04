@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../../SharedUiComponents/Loader";
 
-
 const SignInPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
