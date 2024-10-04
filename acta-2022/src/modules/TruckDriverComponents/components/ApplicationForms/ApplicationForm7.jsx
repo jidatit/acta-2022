@@ -18,7 +18,10 @@ const ApplicationForm7 = () => {
 
   const [localFormData, setLocalFormData] = useState(alcoholDrugTesting);
   const [errors, setErrors] = useState([]);
-
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -208,7 +211,7 @@ const ApplicationForm7 = () => {
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-testedPositiveEver`}
-                    className="block w-full text-sm smd:text-lg text-gray-900 font-radios"
+                    className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
                   >
                     Have you ever been tested positive or refused to be tested
                     on any pre-employment drug test in which you were not hired
@@ -248,7 +251,7 @@ const ApplicationForm7 = () => {
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-DOTCompletion`}
-                    className="block w-full text-sm smd:text-lg text-gray-900 font-radios"
+                    className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
                   >
                     Can you provide or obtain on our request proof that you have
                     successfully completed the DOT return-to-duty requirement?*

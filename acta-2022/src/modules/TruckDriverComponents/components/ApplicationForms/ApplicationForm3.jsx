@@ -15,8 +15,10 @@ const ApplicationForm3 = () => {
   const [localFormData, setLocalFormData] = useState(FormData3);
   const [errors, setErrors] = useState([]);
 
-  const [initialFieldsCount, setInitialFieldsCount] = useState(0);
-
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);

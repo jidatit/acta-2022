@@ -30,7 +30,10 @@ const ApplicationForm5 = () => {
   const [driverExperienceErrors, setDriverExperienceErrors] = useState([]);
   const [driverEducationError, setDriverEducationError] = useState([]);
   // State to track if the checkboxes are checked
-
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -320,7 +323,7 @@ const ApplicationForm5 = () => {
           <h1 className="w-full mb-4 text-lg smd:text-xl font-bold text-black">
             List all driver licenses or permits held in the past 3 years
           </h1>
-          <p className="text-lg text-black font-radios">
+          <p className="text-[17px] smd:text-lg text-black font-radios">
             Provide accident record and forfeitures record for previous 3 years
           </p>
         </div>
@@ -328,10 +331,10 @@ const ApplicationForm5 = () => {
       </div>
 
       {/* First Form */}
-      <div className="flex flex-col w-full gap-y-8">
+      <div className="flex flex-col w-full gap-y-8 -mt-4">
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
-            <h1 className="text-lg text-black font-radios">
+            <h1 className="text-[17px] smd:text-lg text-black font-radios">
               List all driver licenses or permits held in the past 3 years
             </h1>
           </div>

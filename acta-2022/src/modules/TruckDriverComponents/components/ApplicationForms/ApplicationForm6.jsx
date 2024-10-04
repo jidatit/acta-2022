@@ -29,7 +29,10 @@ const ApplicationForm6 = () => {
           },
         ]
   );
-
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -222,19 +225,25 @@ const ApplicationForm6 = () => {
         <p className="mt-3 text-lg text-black font-radios">
           §391.27 Record of violations
         </p>
-        <p className="text-lg text-black font-radios">DRIVER'S CERTIFICATION</p>
+        <p className="text-[17px] smd:text-lg text-black font-radios">
+          DRIVER'S CERTIFICATION
+        </p>
       </div>
       <div className="flex flex-col w-full gap-y-8 ">
         <div className="flex flex-col ">
-          <p className="text-lg text-black font-radios">Check this box if</p>
-          <div className="flex flex-row gap-x-3">
+          <p className="text-[17px] smd:text-lg text-black font-radios">
+            Check this box if
+          </p>
+          <div className="flex flex-row gap-x-3 items-center">
             <input
               type="checkbox"
               checked={noViolationCheckeds}
               onChange={() => setNoViolationChecked(!noViolationCheckeds)}
-              className="border-2"
+              className=""
             />
-            <p className="text-lg text-black font-radios">No Violation</p>
+            <p className="text-[17px] smd:text-lg text-black font-radios">
+              No Violation
+            </p>
           </div>
 
           <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 ">

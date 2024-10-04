@@ -13,6 +13,10 @@ const ApplicationForm9 = () => {
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
+  useEffect(() => {
     setIsSaveClicked(true);
   }, []);
   useEffect(() => {
@@ -29,7 +33,7 @@ const ApplicationForm9 = () => {
       return;
     }
     // Navigate back to the previous form
-    navigate("/TruckDriverLayout/ApplicationForm9");
+    navigate("/TruckDriverLayout/ApplicationForm8");
   };
   const saveToFirebase = async () => {
     try {
@@ -177,7 +181,7 @@ const ApplicationForm9 = () => {
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
       <div className="flex flex-col gap-y-5 w-full">
-        <p className="text-black font-radios text-lg">
+        <p className="text-black font-radios text-[16px] smd:text-lg">
           INSTRUCTIONS: When employed by a motor carrier, a driver must report
           to the carrier all on-duty time including time working for other
           employers. The definition of on-duty time found in Section 395.2
@@ -198,7 +202,7 @@ const ApplicationForm9 = () => {
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-currentlyWorking`}
-                    className="block text-lg text-gray-900 font-radios"
+                    className="block text-[15px] smd:text-lg text-gray-900 font-radios"
                   >
                     Are you currently working for another employer?*
                   </label>
@@ -236,7 +240,7 @@ const ApplicationForm9 = () => {
                 <div className="w-full mb-6">
                   <label
                     htmlFor={`company-${index}-workingForAnotherEmployer`}
-                    className="block text-lg text-gray-900 font-radios"
+                    className="block text-[15px] smd:text-lg text-gray-900 font-radios"
                   >
                     At this time do you intend to work for another employer
                     while still employed by this company?*

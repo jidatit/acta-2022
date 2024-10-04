@@ -35,7 +35,7 @@ const TruckDriverLayout = () => {
               isSidebarExpanded
                 ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
                 : "w-[8%] ssm:w-[6%] flex items-start justify-center"
-            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-screen transition-all duration-300 ease-in-out fixed md:relative`}
+            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-[100vh] transition-all overflow-hidden duration-300 ease-in-out fixed md:relative`}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
               <button
@@ -55,7 +55,7 @@ const TruckDriverLayout = () => {
           <div
             className={`flex flex-col justify-start items-start overflow-y-auto ${
               isSidebarExpanded ? "" : "md:ml-0 ml-[5%]"
-            } w-full h-screen transition-all duration-300 ease-in-out`}
+            } w-full transition-all duration-300 ease-in-out`}
           >
             <div className="flex-grow w-full p-6">
               {/* Forms/Content */}

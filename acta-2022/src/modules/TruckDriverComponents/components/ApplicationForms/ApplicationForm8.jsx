@@ -39,7 +39,10 @@ const ApplicationForm8 = () => {
     formData8 || defaultFormData
   );
   const [errors, setErrors] = useState([]);
-
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -459,7 +462,7 @@ const ApplicationForm8 = () => {
                   <br />
 
                   <div className="flex flex-col gap-y-6 mt-7 w-screen mb-6">
-                    <p className="text-black font-radios text-[16px] smd:text-lg w-[70%] xxl:w-[70%]">
+                    <p className="text-black font-radios text-[15px] smd:text-lg w-[70%] xxl:w-[70%]">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
                       giving the total time on- duty during the immediately

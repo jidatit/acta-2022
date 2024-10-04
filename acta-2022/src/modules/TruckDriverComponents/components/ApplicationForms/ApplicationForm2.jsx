@@ -13,6 +13,10 @@ const ApplicationForm2 = () => {
   const initialFields = [
     { street1: "", street2: "", city: "", state: "", zipCode: "" },
   ];
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   const initialFieldCount = initialFields.length;
   //console.log(initialFieldCount);
   useEffect(() => {
@@ -125,7 +129,7 @@ const ApplicationForm2 = () => {
     setLocalFormData(updatedFormData);
   };
   return (
-    <div className="flex flex-col items-start justify-start h-full overflow-x-hidden gap-y-12 w-full">
+    <div className="flex flex-col items-start justify-start h-[100vh] overflow-x-hidden gap-y-12 w-full">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className=" ml-3 smd:ml-0 flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">

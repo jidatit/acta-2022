@@ -8,6 +8,10 @@ import { toast } from "react-toastify";
 
 const ApplicationForm4 = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []); // Empty dependency array means this effect runs once, on mount
   const {
     addressField,
     trafficConvictionField,
@@ -316,15 +320,12 @@ const ApplicationForm4 = () => {
   };
   //console.log(trafficConvictionField);
   return (
-    <div className="flex flex-col items-start justify-start overflow-x-hidden h-full gap-y-12 w-full">
+    <div className="flex flex-col items-start justify-start overflow-x-hidden h-[100vh] gap-y-12 w-full">
       <div className="flex flex-row items-start gap-x-2 justify-start w-full ">
-        <div className="flex flex-col items-start justify-start w-full ml-3 smd:ml-0">
+        <div className="flex flex-col items-start justify-start w-full smd:ml-0">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driving background and Qualifications
           </h1>
-          <p className="text-lg text-black font-radios">
-            Provide accident record and forfeitures record for previous 3 years
-          </p>
         </div>
         <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
@@ -332,17 +333,24 @@ const ApplicationForm4 = () => {
       {/* First Form */}
       <div className="flex flex-col gap-y-8 w-full">
         <form className="w-full bg-white shadow-md">
-          <div className="flex flex-row mb-6 gap-x-2">
-            <input
-              type="checkbox"
-              checked={noAccidentsChecked}
-              onChange={() => setNoAccidentsChecked(!noAccidentsChecked)}
-              className="p-3"
-            />
-            <p className="text-lg text-black font-radios">
-              No accidents in past 3 years
+          <div className="flex flex-col gap-y-3.5">
+            <p className="text-[17px] smd:text-lg text-black font-radios">
+              Provide accident record and forfeitures record for previous 3
+              years
             </p>
+            <div className="flex flex-row mb-6 gap-x-2">
+              <input
+                type="checkbox"
+                checked={noAccidentsChecked}
+                onChange={() => setNoAccidentsChecked(!noAccidentsChecked)}
+                className="p-3"
+              />
+              <p className="text-[17px] smd:text-lg text-black ">
+                No accidents in past 3 years
+              </p>
+            </div>
           </div>
+
           {noAccidentsChecked === false && (
             <>
               {addressFields.map((address, index) => (
@@ -528,7 +536,7 @@ const ApplicationForm4 = () => {
 
         {/* Second Form */}
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
-          <p className="mb-4 text-lg text-black font-radios">
+          <p className="mb-4 text-[17px] smd:text-lg text-black font-radios">
             Provide traffic convictions and forfeitures record for previous 3
             years
           </p>
@@ -541,7 +549,7 @@ const ApplicationForm4 = () => {
               }
               className="p-3"
             />
-            <p className="text-lg text-black font-radios">
+            <p className="text-[17px] smd:text-lg text-black ">
               No traffic convictions in past 3 years
             </p>
           </div>
