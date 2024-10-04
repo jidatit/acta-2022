@@ -220,7 +220,7 @@ const ApplicationForm3 = () => {
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Employment History*
           </h1>
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
         </div>
         <p className="mt-3 text-sm md:text-lg px-1 smd:p-0 text-justify text-black font-radios">
           *The Federal Motor Carrier Safety Regulations (49 CFR 391.21) require

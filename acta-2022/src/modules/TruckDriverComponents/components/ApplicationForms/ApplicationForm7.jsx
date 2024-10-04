@@ -184,7 +184,7 @@ const ApplicationForm7 = () => {
             Previous Pre-Employment Employee Alcohol and Drug Testing Statement
           </h1>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
       </div>
       <div className="flex flex-col gap-y-5 w-full">
         <p className="text-black font-radios w-full text-[16px] smd:text-lg">

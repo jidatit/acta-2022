@@ -139,7 +139,7 @@ const ApplicationForm2 = () => {
             List all addresses in previous three years
           </p>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
       </div>
 
       <div className=" flex flex-col w-full gap-y-8 ">

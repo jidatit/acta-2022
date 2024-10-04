@@ -55,7 +55,7 @@ const TruckDriverLayout = () => {
           <div
             className={`flex flex-col justify-start items-start overflow-y-auto ${
               isSidebarExpanded ? "" : "md:ml-0 ml-[5%]"
-            } w-full transition-all duration-300 ease-in-out`}
+            } w-full transition-all h-auto duration-300 ease-in-out`}
           >
             <div className="flex-grow w-full p-6">
               {/* Forms/Content */}

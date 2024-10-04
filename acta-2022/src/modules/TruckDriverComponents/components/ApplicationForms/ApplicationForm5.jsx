@@ -327,7 +327,7 @@ const ApplicationForm5 = () => {
             Provide accident record and forfeitures record for previous 3 years
           </p>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
       </div>
 
       {/* First Form */}

@@ -209,7 +209,7 @@ const ApplicationForm6 = () => {
 
         <FaBell
           size={45}
-          className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer"
+          className="p-2 text-white bg-blue-700 rounded-md cursor-pointer"
         />
       </div>
       <p className="mt-3 text-sm smd:text-lg text-black font-radios">

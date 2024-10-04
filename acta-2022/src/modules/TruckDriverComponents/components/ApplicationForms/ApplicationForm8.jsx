@@ -243,7 +243,7 @@ const ApplicationForm8 = () => {
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Statement of On-Duty Hours*
           </h1>
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
         </div>
       </div>
 

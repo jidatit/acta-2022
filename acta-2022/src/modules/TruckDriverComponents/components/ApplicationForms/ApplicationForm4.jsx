@@ -320,14 +320,14 @@ const ApplicationForm4 = () => {
   };
   //console.log(trafficConvictionField);
   return (
-    <div className="flex flex-col items-start justify-start overflow-x-hidden h-[100vh] gap-y-12 w-full">
-      <div className="flex flex-row items-start gap-x-2 justify-start w-full ">
+    <div className="flex flex-col min-h-screen items-start justify-start overflow-x-hidden w-full gap-y-12">
+      <div className="flex flex-row items-start gap-x-2 justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full smd:ml-0">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Driving background and Qualifications
           </h1>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
       </div>
 
       {/* First Form */}
