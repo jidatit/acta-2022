@@ -462,7 +462,7 @@ const ApplicationForm8 = () => {
                   <br />
 
                   <div className="flex flex-col gap-y-6 mt-7 w-screen mb-6">
-                    <p className="text-black font-radios text-[15px] smd:text-lg w-[70%] xxl:w-[70%]">
+                    <p className="text-black font-radios text-[15px] smd:text-lg w-[79%] sssm:w-[79%] smd:w-[79%] md:w-[70%] xxl:w-[70%] ">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
                       giving the total time on- duty during the immediately
