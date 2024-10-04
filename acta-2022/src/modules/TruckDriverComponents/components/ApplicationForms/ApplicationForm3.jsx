@@ -214,7 +214,7 @@ const ApplicationForm3 = () => {
 
   //console.log(localFormData);
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-full overflow-x-hidden">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -237,7 +237,7 @@ const ApplicationForm3 = () => {
         </p>
       </div>
 
-      <div className=" flex flex-col gap-y-8 flex-wrap">
+      <div className=" flex flex-col gap-y-4 flex-wrap">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (

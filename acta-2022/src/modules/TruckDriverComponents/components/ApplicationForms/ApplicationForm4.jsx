@@ -320,7 +320,7 @@ const ApplicationForm4 = () => {
   };
   //console.log(trafficConvictionField);
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6">
       <div className="flex flex-row items-start gap-x-2 justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full smd:ml-0">
           <h1 className="w-full mb-4 text-xl font-bold text-black">

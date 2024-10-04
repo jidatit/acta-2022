@@ -171,7 +171,7 @@ const ApplicationForm9 = () => {
     setIsSaveClicked(allFieldsEmpty);
   };
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6">
       <div className="flex flex-row items-start justify-start w-full ">
         <div className=" flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -180,7 +180,7 @@ const ApplicationForm9 = () => {
         </div>
         <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
       </div>
-      <div className="flex flex-col gap-y-5 w-full">
+      <div className="flex flex-col w-full">
         <p className="text-black font-radios text-[16px] smd:text-lg">
           INSTRUCTIONS: When employed by a motor carrier, a driver must report
           to the carrier all on-duty time including time working for other

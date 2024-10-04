@@ -199,7 +199,7 @@ const ApplicationForm6 = () => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col min-h-screen items-start justify-start overflow-x-hidden w-full gap-y-4">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6">
       <div className="flex flex-row items-start justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -212,7 +212,7 @@ const ApplicationForm6 = () => {
           className="p-2 text-white bg-blue-700 rounded-md cursor-pointer"
         />
       </div>
-      <p className="mt-3 text-sm smd:text-lg text-black font-radios">
+      <p className=" text-[16px] smd:text-lg text-black font-radios">
         Each driver shall furnish the list required in accordance with paragraph
         (a) of this section. If the driver has not been convicted of, or
         forfeited bond or collateral on account of, any violation which must be
@@ -381,7 +381,7 @@ const ApplicationForm6 = () => {
               </>
             )}
           </form>
-          <div className="flex items-center justify-between px-1 mt-2">
+          <div className="flex items-center justify-between px-1 mt-4">
             <button
               type="button"
               onClick={handleBack}

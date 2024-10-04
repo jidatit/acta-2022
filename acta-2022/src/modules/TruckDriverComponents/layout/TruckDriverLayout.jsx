@@ -35,7 +35,7 @@ const TruckDriverLayout = () => {
               isSidebarExpanded
                 ? "ssm:w-[37%] smd:w-[25%] w-[58%]"
                 : "w-[8%] ssm:w-[6%] flex items-start justify-center"
-            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-[100vh] transition-all overflow-hidden duration-300 ease-in-out fixed `}
+            } md:w-[25%] xxl:w-[19%] bg-blue-500 h-[100vh] z-30 transition-all overflow-hidden duration-300 ease-in-out fixed `}
           >
             <div className="flex items-center justify-between p-4 md:hidden">
               <button

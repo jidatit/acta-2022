@@ -66,8 +66,12 @@ const ChangePassword = () => {
   };
 
   return (
-    <>
-      <div className="w-[80%] smd:w-[60%] flex flex-col justify-center items-center mt-8 mb-20 bg-white shadow-lg rounded-md">
+    <div className="flex flex-col min-h-[94.9vh] justify-center items-center overflow-x-hidden w-full gap-y-12 z-20">
+      {" "}
+      {/* Increase z-index to 20 */}
+      <div className="w-[90%] smd:w-[80%] lg:w-[60%] flex flex-col justify-center items-center mt-8 mb-20 bg-white shadow-lg rounded-md z-10">
+        {" "}
+        {/* Ensure the form has a lower z-index than sidebar */}
         <ToastContainer />
         <div className="py-12 text-2xl font-semibold"> Change Password </div>
         <div className="w-[85%] lg:w-[70%] flex flex-col justify-center items-center gap-4 mb-10">
@@ -99,14 +103,14 @@ const ChangePassword = () => {
             fullWidth
           />
           <button
-            className="lg:w-[30%] w-full rounded-xl cursor-pointer bg-[#4501ff] text-white font-semibold p-3"
+            className=" w-full rounded-xl cursor-pointer bg-[#4501ff] text-white font-semibold p-3"
             onClick={handleSubmit}
           >
-            {isUpdating ? "Updating" : "Update Password"}
+            {isUpdating ? "Updating..." : "Update Password"}
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -237,7 +237,7 @@ const ApplicationForm8 = () => {
   };
 
   return (
-    <div className="flex flex-col items-start justify-start h-full gap-y-12 w-[100%] md:w-[100%] flex-wrap overflow-x-hidden">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
       <div className=" flex flex-col items-start justify-start w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -248,7 +248,7 @@ const ApplicationForm8 = () => {
       </div>
 
       <div className=" flex flex-col w-full gap-y-8 flex-wrap">
-        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pr-2">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div key={index} className="mb-6 w-full">
@@ -258,7 +258,7 @@ const ApplicationForm8 = () => {
                       htmlFor={`driverName-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Driver Name*
+                      Driver Name
                     </label>
                     <input
                       type="text"
@@ -284,7 +284,7 @@ const ApplicationForm8 = () => {
                       htmlFor={`socialSecurityNumber-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Social Security Number*
+                      Social Security Number
                     </label>
                     <input
                       type="text"
@@ -310,7 +310,7 @@ const ApplicationForm8 = () => {
                       htmlFor={`driverLicenseNumber-${index}`}
                       className="block text-sm font-semibold text-gray-900 font-radios"
                     >
-                      Driver's License Number # *
+                      Driver's License Number #
                     </label>
                     <input
                       type="text"
@@ -897,7 +897,7 @@ const ApplicationForm8 = () => {
                     </div>
                   </div>
                 </div>
-                <div className="lg:w-[21%] md:w-[35%] w-[80%]">
+                <div className="lg:w-[21%] md:w-[35%] w-[80%] -mt-2">
                   <label
                     htmlFor={`TotalHours-${index}`}
                     className="block text-sm font-semibold text-gray-900 font-radios"
