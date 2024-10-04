@@ -248,7 +248,7 @@ const ApplicationForm8 = () => {
       </div>
 
       <div className=" flex flex-col w-full gap-y-8 flex-wrap">
-        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pr-2">
+        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pr-4">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div key={index} className="mb-6 w-full">
