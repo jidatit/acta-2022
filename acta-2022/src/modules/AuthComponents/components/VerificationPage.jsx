@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../../AuthContext";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import Loader from "../../SharedUiComponents/Loader"
+import Loader from "../../SharedUiComponents/Loader";
 
 const VerificationPage = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const VerificationPage = () => {
         if (currentUser.userType === "TruckDriver") {
           toast.success("redirecting to TruckDriver dashboard");
           setTimeout(() => {
-            navigate("/TruckDriverLayout");
+            navigate("/TruckDriverLayout/ApplicationForm1");
           }, 3000);
         }
       } else {

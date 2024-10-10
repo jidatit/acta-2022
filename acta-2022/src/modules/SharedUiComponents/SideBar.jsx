@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../index.css";
 import image from "../../images/pngwing.com.png";
 import { useAuth } from "../../AuthContext";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import {
+  BsChevronDown,
+  BsChevronUp,
+  BsThreeDotsVertical,
+} from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
@@ -17,6 +20,26 @@ const SideBar = ({ isSidebarExpanded }) => {
   const [completedSections, setCompletedSections] = useState(["Section 1"]);
   const [currentSection, setCurrentSection] = useState("Section 1");
   const [completedForms, setCompletedForms] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [isSectionsVisible, setIsSectionsVisible] = useState(false); // State to manage section visibility
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown if clicked outside
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const sections = [
     "Section 1",
     "Section 2",
@@ -51,8 +74,25 @@ const SideBar = ({ isSidebarExpanded }) => {
   useEffect(() => {
     const currentPath = location.pathname;
     const correspondingSection = routeToSectionMap[currentPath];
+
     if (correspondingSection) {
       setCurrentSection(correspondingSection);
+
+      // Add this to ensure "Section 1" is always marked correctly
+      if (
+        correspondingSection === "Section 1" &&
+        !completedSections.includes("Section 1")
+      ) {
+        setCompletedSections((prevSections) => {
+          const newSections = [...prevSections, "Section 1"];
+          localStorage.setItem(
+            "completedSections",
+            JSON.stringify(newSections)
+          );
+          return newSections;
+        });
+      }
+
       if (!completedSections.includes(correspondingSection)) {
         setCompletedSections((prevSections) => {
           const newSections = [...prevSections, correspondingSection];
@@ -79,7 +119,7 @@ const SideBar = ({ isSidebarExpanded }) => {
     };
 
     fetchCompletedForms();
-  }, [currentUser, completedSections]);
+  }, [location.pathname, currentUser, completedSections]);
 
   useEffect(() => {
     if (completedForms) {
@@ -101,6 +141,9 @@ const SideBar = ({ isSidebarExpanded }) => {
     }
   }, [completedForms]);
   const handleItemClick = (item) => {
+    if (item === "JobApplication") {
+      setIsSectionsVisible(!isSectionsVisible); // Toggle section visibility
+    }
     setActiveItem(item);
   };
 
@@ -119,6 +162,8 @@ const SideBar = ({ isSidebarExpanded }) => {
           return newSections;
         });
       }
+      // Set the current section
+      setCurrentSection("Section 1");
       return;
     }
     if (!isSaveClicked) {
@@ -156,13 +201,13 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={` z-50 h-full w-full overflow-hidden bg-blue-[#0086D9] ${
+      className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >
-      <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-4 smd:gap-y-10">
+      <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-4 smd:gap-y-4">
         <div className="flex w-full">
-          <h1 className="w-full p-2 smd:p-3 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
+          <h1 className="w-full p-2 smd:px-3 smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
             Logo
           </h1>
         </div>
@@ -182,124 +227,125 @@ const SideBar = ({ isSidebarExpanded }) => {
               </p>
             </div>
           </div>
-          <div className="flex md:items-center md:justify-center gap-x-3 ">
-            <Menu as="div" className="relative inline-block text-left">
-              <div>
-                <MenuButton className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50">
-                  <BsThreeDotsVertical
-                    aria-hidden="true"
-                    className="w-5 h-5 "
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute -right-3 snd:right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
+          <div className="relative inline-block text-left" ref={dropdownRef}>
+            <button
+              onClick={toggleDropdown}
+              className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50"
+            >
+              <BsThreeDotsVertical className="w-5 h-5" />
+            </button>
+
+            {/* Dropdown menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="py-1">
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
-                      onClick={handleEdit}
-                    >
-                      Edit
-                    </a>
-                  </MenuItem>
+                  <a
+                    href="#"
+                    onClick={handleEdit}
+                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                  >
+                    Edit
+                  </a>
                 </div>
-                <div className="">
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
-                      onClick={handleLogoutClick}
-                    >
-                      Logout
-                    </a>
-                  </MenuItem>
+                <div>
+                  <a
+                    href="#"
+                    onClick={handleLogoutClick}
+                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                  >
+                    Logout
+                  </a>
                 </div>
-                <div className="">
-                  <MenuItem>
-                    <Link
-                      to={"/TruckDriverLayout/ChangePassword"}
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
-                    >
-                      Change Password
-                    </Link>
-                  </MenuItem>
+                <div>
+                  <Link
+                    to="/TruckDriverLayout/ChangePassword"
+                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                  >
+                    Change Password
+                  </Link>
                 </div>
-              </MenuItems>
-            </Menu>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col w-full gap-y-4">
           <Link
-            to="/TruckDriverLayout/ApplicationForm1"
             className={`w-full transition-all duration-300 ease-in-out rounded-md ${
               activeItem === "JobApplication"
-                ? "bg-white rounded-md shadow-lg"
+                ? "bg-white rounded-md "
                 : "hover:bg-white rounded-md hover:text-blue-900"
             }`}
             onClick={() => handleItemClick("JobApplication")}
           >
             <p
-              className={`w-full p-2 smd:p-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
+              className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
                 activeItem === "JobApplication" ? "text-blue-800" : "text-white"
               }`}
             >
               Job Application
+              <span className="ml-2">
+                {isSectionsVisible ? (
+                  <BsChevronUp className="inline" />
+                ) : (
+                  <BsChevronDown className="inline" />
+                )}
+              </span>
             </p>
           </Link>
-          <div className="w-full h-full overflow-hidden">
-            <div
-              className={`block smd:hidden absolute border-l-2 border-white left-[1.9rem] `}
-              style={{
-                height: `calc(${sections.length} * 3.38rem - 2.9rem)`, // Adjust the multiplier and subtractor based on spacing needs
-              }}
-            ></div>
-            <div
-              className=" block md:hidden absolute border-l-2 border-white left-[1.9rem]"
-              style={{
-                height: `calc(${sections.length} * 3rem - 0.75rem)`, // Height for small screens and above
-              }}
-            ></div>
-            <div
-              className="hidden md:block absolute border-l-2 border-white left-[1.9rem]"
-              style={{
-                height: `calc(${sections.length} * 6.8rem - 32.1rem)`, // Height for medium screens and above
-              }}
-            ></div>
-            <ul className="relative space-y-7 md:space-y-8">
-              {sections.map((section, index) => (
-                <li
-                  key={index}
-                  className="flex items-center text-white cursor-pointer"
-                  onClick={() => handleSectionClick(section, index)}
-                >
-                  <div
-                    className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
-                      completedSections.includes(section)
-                        ? "bg-white border-2 border-blue-500"
-                        : "bg-blue-500 border-2 border-white"
-                    }`}
-                  >
-                    {completedSections.includes(section) && index === 0 && (
-                      <div className="w-3 h-3 bg-white rounded-full"></div>
-                    )}
-                  </div>
-                  <span
-                    className={`ml-4 ${
-                      completedSections.includes(section)
-                        ? "text-white"
-                        : "text-gray-300"
-                    }`}
-                  >
-                    {section}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {isSectionsVisible && ( // Conditional rendering of sections
+            <div className="flex flex-col w-full gap-y-2">
+              <div className="w-full h-full overflow-hidden">
+                <div
+                  className={`block smd:hidden absolute border-l-2 border-white left-[1.9rem] `}
+                  style={{
+                    height: `calc(${sections.length} * 2rem - 2.9rem)`, // Adjust the multiplier and subtractor based on spacing needs
+                  }}
+                ></div>
+                <div
+                  className=" block md:hidden absolute border-l-2 border-white left-[1.9rem]"
+                  style={{
+                    height: `calc(${sections.length} * 2.42rem - 0.75rem)`, // Height for small screens and above
+                  }}
+                ></div>
+                <div
+                  className="hidden md:block absolute border-l-2 border-white left-[1.9rem]"
+                  style={{
+                    height: `calc(${sections.length} * 6.12rem - 32.1rem)`, // Height for medium screens and above
+                  }}
+                ></div>
+                <ul className="relative space-y-4 md:space-y-5">
+                  {sections.map((section, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center text-white cursor-pointer"
+                      onClick={() => handleSectionClick(section, index)}
+                    >
+                      <div
+                        className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
+                          completedSections.includes(section)
+                            ? "bg-white border-2 border-blue-500"
+                            : "bg-blue-500 border-2 border-white"
+                        }`}
+                      >
+                        {currentSection === section && (
+                          <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
+                        )}
+                      </div>
+                      <span
+                        className={`ml-4 ${
+                          completedSections.includes(section)
+                            ? "text-white"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        {section}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -8,13 +8,8 @@ import { toast } from "react-toastify";
 
 const ApplicationForm7 = () => {
   const navigate = useNavigate();
-  const {
-    alcoholDrugTesting,
-    setAlcoholDrugTesting,
-    setIsSaveClicked,
-    currentUser,
-    isSaveClicked,
-  } = useAuth();
+  const { alcoholDrugTesting, setIsSaveClicked, currentUser, isSaveClicked } =
+    useAuth();
 
   const [localFormData, setLocalFormData] = useState(alcoholDrugTesting);
   const [errors, setErrors] = useState([]);
@@ -70,15 +65,21 @@ const ApplicationForm7 = () => {
     const newErrors = localFormData.map((field) => {
       const fieldErrors = {};
 
-      // Only required fields should be validated
-      const requiredFields = ["testedPositiveEver", "DOTCompletion"];
+      // Validate 'testedPositiveEver'
+      if (
+        !field.testedPositiveEver ||
+        (field.testedPositiveEver && field.testedPositiveEver.trim() === "")
+      ) {
+        fieldErrors.testedPositiveEver = "This field is required";
+      }
 
-      requiredFields.forEach((key) => {
-        if (field[key].trim() === "") {
-          fieldErrors[key] = "This field is required";
-        }
-      });
-
+      if (
+        field.testedPositiveEver === "yes" &&
+        (!field.DOTCompletion ||
+          (field.DOTCompletion && field.DOTCompletion.trim() === ""))
+      ) {
+        fieldErrors.DOTCompletion = "This field is required";
+      }
       return fieldErrors;
     });
 
@@ -107,7 +108,7 @@ const ApplicationForm7 = () => {
 
     // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.trim() !== "")
+      Object.values(field).some((value) => value && value.trim() !== "")
     );
 
     if (!isAnyFieldFilled) {
@@ -146,11 +147,20 @@ const ApplicationForm7 = () => {
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedFields = localFormData.map((field, i) =>
-      i === index
-        ? { ...field, [name.replace(`company-${index}-`, "")]: value }
-        : field
-    );
+    const updatedFields = localFormData.map((field, i) => {
+      // If 'testedPositiveEver' is "no", set 'DOTCompletion' to null
+      if (name.includes("testedPositiveEver") && value === "no") {
+        return {
+          ...field,
+          [name.replace(`company-${index}-`, "")]: value,
+          DOTCompletion: null, // Reset DOTCompletion to null if testedPositiveEver is 'no'
+        };
+      } else {
+        return i === index
+          ? { ...field, [name.replace(`company-${index}-`, "")]: value }
+          : field;
+      }
+    });
 
     setLocalFormData(updatedFields);
 
@@ -247,45 +257,48 @@ const ApplicationForm7 = () => {
                     </p>
                   )}
                 </div>
-
-                <div className="w-full mb-6">
-                  <label
-                    htmlFor={`company-${index}-DOTCompletion`}
-                    className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
-                  >
-                    Can you provide or obtain on our request proof that you have
-                    successfully completed the DOT return-to-duty requirement?*
-                  </label>
-                  <div className="mt-2">
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        name={`company-${index}-DOTCompletion`}
-                        value="yes"
-                        checked={field.DOTCompletion === "yes"}
-                        onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
-                      />
-                      <span className="ml-2">Yes</span>
+                {field.testedPositiveEver === "yes" && (
+                  <div className="w-full mb-6">
+                    <label
+                      htmlFor={`company-${index}-DOTCompletion`}
+                      className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
+                    >
+                      If yes, have you successfully completed the DOT return to
+                      duty process?*
                     </label>
-                    <label className="inline-flex items-center ml-6">
-                      <input
-                        type="radio"
-                        name={`company-${index}-DOTCompletion`}
-                        value="no"
-                        checked={field.DOTCompletion === "no"}
-                        onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
-                      />
-                      <span className="ml-2">No</span>
-                    </label>
+                    <div className="mt-2">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          name={`company-${index}-DOTCompletion`}
+                          value="yes"
+                          checked={field.DOTCompletion === "yes"}
+                          onChange={(e) => handleInputChange(index, e)}
+                          className="text-blue-500 form-radio"
+                          disabled={field.testedPositiveEver !== "yes"} // Disable if testedPositiveEver is not "yes"
+                        />
+                        <span className="ml-2">Yes</span>
+                      </label>
+                      <label className="inline-flex items-center ml-6">
+                        <input
+                          type="radio"
+                          name={`company-${index}-DOTCompletion`}
+                          value="no"
+                          checked={field.DOTCompletion === "no"}
+                          onChange={(e) => handleInputChange(index, e)}
+                          className="text-blue-500 form-radio"
+                          disabled={field.testedPositiveEver !== "yes"} // Disable if testedPositiveEver is not "yes"
+                        />
+                        <span className="ml-2">No</span>
+                      </label>
+                    </div>
+                    {errors[index]?.DOTCompletion && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors[index].DOTCompletion}
+                      </p>
+                    )}
                   </div>
-                  {errors[index]?.DOTCompletion && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors[index].DOTCompletion}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
             ))}
         </form>

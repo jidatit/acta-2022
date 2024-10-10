@@ -335,7 +335,7 @@ const ApplicationForm6 = () => {
                         htmlFor={`vehicleOperated-${index}`}
                         className="block text-sm font-semibold text-gray-900 font-radios"
                       >
-                        vehicleOperated*
+                        Type of Vehicle Operated*
                       </label>
                       <input
                         type="text"

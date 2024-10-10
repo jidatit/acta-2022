@@ -77,6 +77,8 @@ export const AuthProvider = ({ children }) => {
     day6HoursWorked: "",
     day7HoursWorked: "",
     TotalHours: "",
+    relievedTime: "00:00",
+    relievedDate: "",
   });
   const [addressField, setAddressField] = useState([
     {

@@ -31,6 +31,8 @@ const ApplicationForm8 = () => {
       day7: "", // Day 7
       day7HoursWorked: "", // Hours worked on Day 7
       TotalHours: "", // Total hours worked
+      relievedTime: "00:00",
+      relievedDate: "",
     },
   ];
   const navigate = useNavigate();
@@ -39,6 +41,23 @@ const ApplicationForm8 = () => {
     formData8 || defaultFormData
   );
   const [errors, setErrors] = useState([]);
+  const convertTimeToAMPM = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    const hour24 = parseInt(hours, 10);
+    const ampm = hour24 >= 12 ? "PM" : "AM";
+    const hour12 = hour24 % 12 || 12; // Convert to 12-hour format
+
+    return `${hour12}:${minutes}:00 ${ampm}`; // Format as 'hh:mm:ss AM/PM'
+  };
+
+  const formatTimeForInput = (time) => {
+    if (!time) return ""; // Return empty if no time is set
+    const [hour, minute, , period] = time.split(/[:\s]/); // Split on ':' and space
+    const hour24 = period === "PM" && hour < 12 ? parseInt(hour) + 12 : hour; // Convert to 24-hour format
+    return `${String(hour24).padStart(2, "0")}:${minute}`; // Return in 24-hour format for input
+  };
+  // Handler function for when the time input changes
+
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
@@ -111,6 +130,8 @@ const ApplicationForm8 = () => {
         "day6HoursWorked",
         "day7HoursWorked",
         "TotalHours",
+        "relievedTime",
+        "relievedDate",
       ];
 
       requiredFields.forEach((key) => {
@@ -188,14 +209,17 @@ const ApplicationForm8 = () => {
       toast.error("Error saving the form, please try again");
     }
   };
-
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
+
+    // Convert input value to desired format
+    const timeFormatted = convertTimeToAMPM(value); // Convert the time to AM/PM format
+
     const updatedFields = localFormData.map((field, i) =>
-      i === index
-        ? { ...field, [name.replace(`company-${index}-`, "")]: value }
-        : field
+      i === index ? { ...field, [name]: timeFormatted } : field
     );
+
+    // Calculate total hours as before...
     const totalHours = [
       "day1HoursWorked",
       "day2HoursWorked",
@@ -213,16 +237,12 @@ const ApplicationForm8 = () => {
     updatedFields[index].TotalHours = totalHours;
     setLocalFormData(updatedFields);
 
+    // Update errors based on new input
     const updatedErrors = errors.map((error, i) =>
       i === index
         ? {
             ...error,
-            [name.replace(`company-${index}-`, "")]:
-              (name.includes("subjectToFMCSRs") ||
-                name.includes("jobDesignatedAsSafetySensitive")) &&
-              value.trim() === ""
-                ? "This field is required"
-                : "",
+            [name]: timeFormatted.trim() === "" ? "This field is required" : "",
           }
         : error
     );
@@ -483,7 +503,8 @@ const ApplicationForm8 = () => {
                         >
                           Day 1 (yesterday)*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day1"
                           id={`day1-${index}`}
                           value={field.day1}
@@ -493,16 +514,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day1 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day1}
@@ -522,7 +534,7 @@ const ApplicationForm8 = () => {
                           id={`day1HoursWorked-${index}`}
                           value={field.day1HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day1HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -543,7 +555,8 @@ const ApplicationForm8 = () => {
                         >
                           Day 2*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day2"
                           id={`day2-${index}`}
                           value={field.day2}
@@ -553,16 +566,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day2 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day2}
@@ -582,7 +586,7 @@ const ApplicationForm8 = () => {
                           id={`day2HoursWorked-${index}`}
                           value={field.day2HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day2HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -603,7 +607,8 @@ const ApplicationForm8 = () => {
                         >
                           Day 3*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day3"
                           id={`day3-${index}`}
                           value={field.day3}
@@ -613,16 +618,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day3 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day3}
@@ -642,7 +638,7 @@ const ApplicationForm8 = () => {
                           id={`day3HoursWorked-${index}`}
                           value={field.day3HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day3HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -663,7 +659,8 @@ const ApplicationForm8 = () => {
                         >
                           Day 4*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day4"
                           id={`day4-${index}`}
                           value={field.day4}
@@ -673,16 +670,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day4 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day4}
@@ -702,7 +690,7 @@ const ApplicationForm8 = () => {
                           id={`day4HoursWorked-${index}`}
                           value={field.day4HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day4HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -721,9 +709,10 @@ const ApplicationForm8 = () => {
                           htmlFor={`day5-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
                         >
-                          Day 1 (yesterday)*
+                          Day 5*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day5"
                           id={`day5-${index}`}
                           value={field.day5}
@@ -733,16 +722,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day5 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day5}
@@ -762,7 +742,7 @@ const ApplicationForm8 = () => {
                           id={`day5HoursWorked-${index}`}
                           value={field.day5HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day5HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -781,9 +761,10 @@ const ApplicationForm8 = () => {
                           htmlFor={`day6-${index}`}
                           className="block text-sm font-semibold text-gray-900 font-radios"
                         >
-                          Day 6 *
+                          Day 6*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day6"
                           id={`day6-${index}`}
                           value={field.day6}
@@ -793,16 +774,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day6 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day6}
@@ -822,7 +794,7 @@ const ApplicationForm8 = () => {
                           id={`day6HoursWorked-${index}`}
                           value={field.day6HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day6HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -843,7 +815,8 @@ const ApplicationForm8 = () => {
                         >
                           Day 7*
                         </label>
-                        <select
+                        <input
+                          type="date"
                           name="day7"
                           id={`day7-${index}`}
                           value={field.day7}
@@ -853,16 +826,7 @@ const ApplicationForm8 = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                        />
                         {errors[index]?.day7 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day7}
@@ -882,7 +846,7 @@ const ApplicationForm8 = () => {
                           id={`day7HoursWorked-${index}`}
                           value={field.day7HoursWorked}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day7HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -919,6 +883,87 @@ const ApplicationForm8 = () => {
                   {errors[index]?.TotalHours && (
                     <p className="mt-1 text-sm text-red-500">
                       {errors[index].TotalHours}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-x-4 lg:w-[21%] md:w-[35%] w-[80%] mt-7">
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor={`time-${index}`}
+                      className="block text-sm font-semibold text-gray-900 font-radios"
+                    >
+                      Relieved Time*
+                    </label>
+                    <form className="w-full mx-auto">
+                      <label
+                        htmlFor={`time-${index}`}
+                        className="block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Select time:
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                          <svg
+                            className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <input
+                          type="time"
+                          id={`time-${index}`} // Unique ID for accessibility
+                          name={`relievedTime`} // Ensure this name matches in validation
+                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+                            errors[index]?.relievedTime
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                          min="09:00"
+                          max="18:00"
+                          required
+                          value={formatTimeForInput(field.relievedTime)} // Format the time for input
+                          onChange={(e) => handleInputChange(index, e)} // Call handler on change
+                        />
+                      </div>
+                      {errors[index]?.relievedTime && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors[index].relievedTime}
+                        </p>
+                      )}
+                    </form>
+                  </div>
+                </div>
+                <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%] mt-3">
+                  <label
+                    htmlFor={`relievedDate-${index}`}
+                    className="block text-sm mb-3 font-semibold text-gray-900 font-radios"
+                  >
+                    Relieved Date*
+                  </label>
+                  <input
+                    type="date"
+                    name="relievedDate"
+                    id={`relievedDate-${index}`}
+                    value={field.relievedDate}
+                    onChange={(e) => handleInputChange(index, e)}
+                    className={`w-full p-2.5 mt-1 border rounded-md ${
+                      errors[index]?.relievedDate
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  {errors[index]?.relievedDate && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors[index].relievedDate}
                     </p>
                   )}
                 </div>
