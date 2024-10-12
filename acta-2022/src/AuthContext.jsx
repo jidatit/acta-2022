@@ -54,14 +54,6 @@ export const AuthProvider = ({ children }) => {
     EverConvictedOfFelony: "",
   });
   const [formData8, setFormData8] = useState({
-    driverName: "", // Driver's Name
-    socialSecurityNumber: "", // Social Security Number
-    driverLicenseNumber: "", // Driver's License #
-    state: "", // State
-    expDate: "", // Exp. Date (MM/DD/YYYY)
-    typeOfLicense: "", // Type of License
-    restrictions: "", // Restrictions
-    endorsement: "",
     day1: "",
     day2: "",
     day3: "",

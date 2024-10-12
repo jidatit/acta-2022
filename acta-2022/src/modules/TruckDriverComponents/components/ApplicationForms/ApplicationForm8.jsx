@@ -8,14 +8,6 @@ import { FaBell } from "react-icons/fa";
 const ApplicationForm8 = () => {
   const defaultFormData = [
     {
-      driverName: "", // Driver's Name
-      socialSecurityNumber: "", // Social Security Number
-      driverLicenseNumber: "", // Driver's License #
-      state: "", // State
-      expDate: "", // Exp. Date (MM/DD/YYYY)
-      typeOfLicense: "", // Type of License
-      restrictions: "", // Restrictions
-      endorsement: "", // Endorsement
       day1: "", // Day 1 (Yesterday)
       day1HoursWorked: "", // Hours worked on Day 1 (Yesterday)
       day2: "", // Day 2
@@ -112,9 +104,6 @@ const ApplicationForm8 = () => {
 
       // Only required fields should be validated
       const requiredFields = [
-        "state", // State
-        "expDate", // Exp. Date (MM/DD/YYYY)
-        "typeOfLicense", // Type of License
         "day1",
         "day2",
         "day3",
@@ -257,7 +246,7 @@ const ApplicationForm8 = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full ">
       <div className=" flex flex-col items-start justify-start w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -267,218 +256,12 @@ const ApplicationForm8 = () => {
         </div>
       </div>
 
-      <div className=" flex flex-col w-full gap-y-8 flex-wrap">
+      <div className=" flex flex-col w-full flex-wrap">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pr-4">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div key={index} className="mb-6 w-full">
-                <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
-                  <div>
-                    <label
-                      htmlFor={`driverName-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Driver Name
-                    </label>
-                    <input
-                      type="text"
-                      name="driverName"
-                      id={`driverName-${index}`}
-                      value={field.driverName}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.driverName
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.driverName && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].driverName}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor={`socialSecurityNumber-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Social Security Number
-                    </label>
-                    <input
-                      type="text"
-                      name="socialSecurityNumber"
-                      id={`socialSecurityNumber-${index}`}
-                      value={field.socialSecurityNumber}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.socialSecurityNumber
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.socialSecurityNumber && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].socialSecurityNumber}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor={`driverLicenseNumber-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Driver's License Number #
-                    </label>
-                    <input
-                      type="text"
-                      name="driverLicenseNumber"
-                      id={`driverLicenseNumber-${index}`}
-                      value={field.driverLicenseNumber}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.driverLicenseNumber
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.driverLicenseNumber && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].driverLicenseNumber}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor={`state-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      State*
-                    </label>
-                    <input
-                      type="text"
-                      name="state"
-                      id={`state-${index}`}
-                      value={field.state}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.state
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.state && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].state}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`expDate-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      ExpDate*
-                    </label>
-                    <input
-                      type="date"
-                      name="expDate"
-                      id={`expDate-${index}`}
-                      value={field.expDate}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.expDate
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.expDate && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].expDate}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`typeOfLicense-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Type Of License*
-                    </label>
-                    <input
-                      type="text"
-                      name="typeOfLicense"
-                      id={`typeOfLicense-${index}`}
-                      value={field.typeOfLicense}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.typeOfLicense
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.typeOfLicense && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].typeOfLicense}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor={`restrictions-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Restrictions*
-                    </label>
-                    <input
-                      type="text"
-                      name="restrictions"
-                      id={`restrictions-${index}`}
-                      value={field.restrictions}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.restrictions
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.restrictions && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].restrictions}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor={`endorsement-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Endorsement*
-                    </label>
-                    <input
-                      type="text"
-                      name="endorsement"
-                      id={`endorsement-${index}`}
-                      value={field.endorsement}
-                      onChange={(e) => handleInputChange(index, e)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.endorsement
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.endorsement && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].endorsement}
-                      </p>
-                    )}
-                  </div>
-
+                <div className="grid w-full grid-cols-1 md:grid-cols-1">
                   <br />
 
                   <div className="flex flex-col gap-y-6 mt-7 w-screen mb-6">
@@ -970,7 +753,7 @@ const ApplicationForm8 = () => {
               </div>
             ))}
         </form>
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1 pt-3">
           <button
             type="button"
             onClick={handleBack}
