@@ -678,17 +678,11 @@ const ApplicationForm8 = () => {
                     >
                       Relieved Time*
                     </label>
-                    <form className="w-full mx-auto">
-                      <label
-                        htmlFor={`time-${index}`}
-                        className="block text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Select time:
-                      </label>
+                    <form className="w-full mx-auto mt-3">
                       <div className="relative">
-                        <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                        <div className="absolute inset-y-0 end-0 top-0 flex items-center p-3.5  pointer-events-none">
                           <svg
-                            className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                            className="w-4 h-4 text-gray-500 mr-1 smd:mr-0"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
@@ -705,7 +699,7 @@ const ApplicationForm8 = () => {
                           type="time"
                           id={`time-${index}`} // Unique ID for accessibility
                           name={`relievedTime`} // Ensure this name matches in validation
-                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full p-3.5 smd:p-2.5 ${
                             errors[index]?.relievedTime
                               ? "border-red-500"
                               : "border-gray-300"
