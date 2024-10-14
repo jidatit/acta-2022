@@ -262,9 +262,7 @@ const ApplicationForm8 = () => {
             localFormData.map((field, index) => (
               <div key={index} className="mb-6 w-full">
                 <div className="grid w-full grid-cols-1 md:grid-cols-1">
-                  <br />
-
-                  <div className="flex flex-col gap-y-6 mt-7 w-screen mb-6">
+                  <div className="flex flex-col gap-y-6 mt-4 w-screen mb-6">
                     <p className="text-black font-radios text-[15px] smd:text-lg w-[79%] sssm:w-[79%] smd:w-[79%] md:w-[70%] xxl:w-[70%] ">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
