@@ -122,12 +122,12 @@ const SignUpPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-[90%] smd:h-full bg-white">
-        <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
+      <div className="flex flex-col gap-y-5 ssm:gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-[92%] smd:h-full bg-white ">
+        <h1 className="w-full text-lg ssm:text-2xl md:text-3xl font-bold text-center text-black">
           Sign Up Your Account
         </h1>
         <form
-          className="flex flex-col gap-y-5 justify-center items-center w-[90%] smd:w-[80%]"
+          className="flex flex-col gap-y-3 ssm:gap-y-5 justify-center items-center w-[90%] smd:w-[80%]"
           onSubmit={RegisterUser}
         >
           <div className="flex flex-col w-full gap-4 md:flex-row">
