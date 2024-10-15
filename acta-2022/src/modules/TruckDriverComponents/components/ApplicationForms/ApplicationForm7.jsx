@@ -67,16 +67,18 @@ const ApplicationForm7 = () => {
 
       // Validate 'testedPositiveEver'
       if (
-        !field.testedPositiveEver ||
-        (field.testedPositiveEver && field.testedPositiveEver.trim() === "")
+        !field.testedPositiveEver.value ||
+        (field.testedPositiveEver.value &&
+          field.testedPositiveEver.value.trim() === "")
       ) {
         fieldErrors.testedPositiveEver = "This field is required";
       }
 
       if (
-        field.testedPositiveEver === "yes" &&
-        (!field.DOTCompletion ||
-          (field.DOTCompletion && field.DOTCompletion.trim() === ""))
+        field.testedPositiveEver.value === "yes" &&
+        (!field.DOTCompletion.value ||
+          (field.DOTCompletion.value &&
+            field.DOTCompletion.value.trim() === ""))
       ) {
         fieldErrors.DOTCompletion = "This field is required";
       }
@@ -108,9 +110,10 @@ const ApplicationForm7 = () => {
 
     // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value && value.trim() !== "")
+      Object.values(field).some(
+        (input) => input.value && input.value.trim() !== ""
+      )
     );
-
     if (!isAnyFieldFilled) {
       toast.error("At least one field must be filled before saving");
       return;
@@ -148,18 +151,25 @@ const ApplicationForm7 = () => {
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     const updatedFields = localFormData.map((field, i) => {
-      // If 'testedPositiveEver' is "no", set 'DOTCompletion' to null
-      if (name.includes("testedPositiveEver") && value === "no") {
-        return {
+      if (i === index) {
+        const updatedField = {
           ...field,
-          [name.replace(`company-${index}-`, "")]: value,
-          DOTCompletion: null, // Reset DOTCompletion to null if testedPositiveEver is 'no'
+          [name]: {
+            ...field[name],
+            value: value,
+          },
         };
-      } else {
-        return i === index
-          ? { ...field, [name.replace(`company-${index}-`, "")]: value }
-          : field;
+        // If 'testedPositiveEver' is "no", set 'DOTCompletion' to an empty string
+        if (name === "testedPositiveEver" && value === "no") {
+          updatedField.DOTCompletion = {
+            value: "",
+            status: "pending",
+            note: "",
+          };
+        }
+        return updatedField;
       }
+      return field;
     });
 
     setLocalFormData(updatedFields);
@@ -168,20 +178,15 @@ const ApplicationForm7 = () => {
       i === index
         ? {
             ...error,
-            [name.replace(`company-${index}-`, "")]:
-              (name.includes("testedPositiveEver") ||
-                name.includes("DOTCompletion")) &&
-              value.trim() === ""
-                ? "This field is required"
-                : "",
+            [name]: value.trim() === "" ? "This field is required" : "",
           }
         : error
     );
 
     setErrors(updatedErrors);
 
-    const allFieldsEmpty = updatedFields.every((address) =>
-      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+    const allFieldsEmpty = updatedFields.every((field) =>
+      Object.values(field).every((input) => input.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
   };
@@ -214,7 +219,10 @@ const ApplicationForm7 = () => {
         </p>
       </div>
       <div className=" flex flex-col w-full gap-y-8">
-        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400">
+        <form
+          className="w-full bg-white shadow-md border-b-1 border-b-gray-400"
+          onSubmit={handleSubmit}
+        >
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div className="flex flex-col w-full mb-6" key={index}>
@@ -231,9 +239,9 @@ const ApplicationForm7 = () => {
                     <label className="inline-flex items-center">
                       <input
                         type="radio"
-                        name={`company-${index}-testedPositiveEver`}
+                        name={`testedPositiveEver`}
                         value="yes"
-                        checked={field.testedPositiveEver === "yes"}
+                        checked={field.testedPositiveEver.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />
@@ -242,9 +250,9 @@ const ApplicationForm7 = () => {
                     <label className="inline-flex items-center ml-6">
                       <input
                         type="radio"
-                        name={`company-${index}-testedPositiveEver`}
+                        name={`testedPositiveEver`}
                         value="no"
-                        checked={field.testedPositiveEver === "no"}
+                        checked={field.testedPositiveEver.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />
@@ -257,7 +265,7 @@ const ApplicationForm7 = () => {
                     </p>
                   )}
                 </div>
-                {field.testedPositiveEver === "yes" && (
+                {field.testedPositiveEver.value === "yes" && (
                   <div className="w-full mb-6">
                     <label
                       htmlFor={`company-${index}-DOTCompletion`}
@@ -270,24 +278,22 @@ const ApplicationForm7 = () => {
                       <label className="inline-flex items-center">
                         <input
                           type="radio"
-                          name={`company-${index}-DOTCompletion`}
+                          name={`DOTCompletion`}
                           value="yes"
-                          checked={field.DOTCompletion === "yes"}
+                          checked={field.DOTCompletion.value === "yes"}
                           onChange={(e) => handleInputChange(index, e)}
                           className="text-blue-500 form-radio"
-                          disabled={field.testedPositiveEver !== "yes"} // Disable if testedPositiveEver is not "yes"
                         />
                         <span className="ml-2">Yes</span>
                       </label>
                       <label className="inline-flex items-center ml-6">
                         <input
                           type="radio"
-                          name={`company-${index}-DOTCompletion`}
+                          name={`DOTCompletion`}
                           value="no"
-                          checked={field.DOTCompletion === "no"}
+                          checked={field.DOTCompletion.value === "no"}
                           onChange={(e) => handleInputChange(index, e)}
                           className="text-blue-500 form-radio"
-                          disabled={field.testedPositiveEver !== "yes"} // Disable if testedPositiveEver is not "yes"
                         />
                         <span className="ml-2">No</span>
                       </label>

@@ -64,12 +64,10 @@ const ApplicationForm9 = () => {
     const newErrors = localFormData.map((field) => {
       const fieldErrors = {};
 
-      // Only required fields should be validated
-
       const requiredFields = ["currentlyWorking", "workingForAnotherEmployer"];
 
       requiredFields.forEach((key) => {
-        if (field[key].trim() === "") {
+        if (field[key].value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -82,7 +80,6 @@ const ApplicationForm9 = () => {
       (fieldErrors) => Object.keys(fieldErrors).length === 0
     );
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveClicked(false);
@@ -102,7 +99,7 @@ const ApplicationForm9 = () => {
 
     // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.trim() !== "")
+      Object.values(field).some((value) => value.value.trim() !== "")
     );
 
     if (!isAnyFieldFilled) {
@@ -143,7 +140,14 @@ const ApplicationForm9 = () => {
     const { name, value } = e.target;
     const updatedFields = localFormData.map((field, i) =>
       i === index
-        ? { ...field, [name.replace(`company-${index}-`, "")]: value }
+        ? {
+            ...field,
+            [name.replace(`company-${index}-`, "")]: {
+              ...field[name.replace(`company-${index}-`, "")],
+              value: value,
+              status: "pending",
+            },
+          }
         : field
     );
 
@@ -165,8 +169,8 @@ const ApplicationForm9 = () => {
 
     setErrors(updatedErrors);
 
-    const allFieldsEmpty = updatedFields.every((address) =>
-      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+    const allFieldsEmpty = updatedFields.every((field) =>
+      Object.values(field).every((fieldValue) => fieldValue.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
   };
@@ -212,7 +216,7 @@ const ApplicationForm9 = () => {
                         type="radio"
                         name={`company-${index}-currentlyWorking`}
                         value="yes"
-                        checked={field.currentlyWorking === "yes"}
+                        checked={field.currentlyWorking.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />
@@ -223,7 +227,7 @@ const ApplicationForm9 = () => {
                         type="radio"
                         name={`company-${index}-currentlyWorking`}
                         value="no"
-                        checked={field.currentlyWorking === "no"}
+                        checked={field.currentlyWorking.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />
@@ -251,7 +255,9 @@ const ApplicationForm9 = () => {
                         type="radio"
                         name={`company-${index}-workingForAnotherEmployer`}
                         value="yes"
-                        checked={field.workingForAnotherEmployer === "yes"}
+                        checked={
+                          field.workingForAnotherEmployer.value === "yes"
+                        }
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />
@@ -262,7 +268,7 @@ const ApplicationForm9 = () => {
                         type="radio"
                         name={`company-${index}-workingForAnotherEmployer`}
                         value="no"
-                        checked={field.workingForAnotherEmployer === "no"}
+                        checked={field.workingForAnotherEmployer.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
                         className="text-blue-500 form-radio"
                       />

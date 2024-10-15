@@ -47,11 +47,11 @@ const ApplicationForm5 = () => {
   const handleDriverLicenseChange = (e, index) => {
     const { name, value } = e.target;
     const updatedFields = [...driverLicensePermit];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value; // Update the value property
     setDriverLicensePermit(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
   };
@@ -59,11 +59,11 @@ const ApplicationForm5 = () => {
   const handleDriverExpChange = (e, index) => {
     const { name, value } = e.target;
     const updatedFields = [...driverExperience];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value; // Update the value property
     setDriverExperience(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
 
@@ -73,14 +73,15 @@ const ApplicationForm5 = () => {
       setDriverExperienceErrors(updatedErrors);
     }
   };
+
   const handleEducationHistoryChange = (e, index) => {
     const { name, value } = e.target;
     const updatedFields = [...educationHistory];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value; // Update the value property
     setEducationHistory(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
 
@@ -90,17 +91,18 @@ const ApplicationForm5 = () => {
       setDriverEducationError(updatedErrors);
     }
   };
+
   const handleExtraSkillChange = (e) => {
     const { name, value } = e.target;
     setExtraSkills((prevSkills) => ({
       ...prevSkills,
-      [name]: value,
+      [name]: { value, status: "pending", note: "" }, // Update to match new structure
     }));
 
     const allFieldsEmpty = Object.values({
       ...extraSkills,
-      [name]: value,
-    }).every((val) => val.trim() === "");
+      [name]: { value, status: "pending", note: "" },
+    }).every((val) => val.value.trim() === "");
 
     setIsSaveClicked(allFieldsEmpty);
   };
@@ -116,7 +118,7 @@ const ApplicationForm5 = () => {
   const validateDriverExpFields = () => {
     const newErrors = driverExperience.map((field) => {
       const fieldErrors = {};
-      Object.entries(field).forEach(([key, value]) => {
+      Object.entries(field).forEach(([key, { value }]) => {
         if (value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
@@ -130,7 +132,7 @@ const ApplicationForm5 = () => {
   const validateEducationHistory = () => {
     const newErrors = educationHistory.map((field) => {
       const fieldErrors = {};
-      Object.entries(field).forEach(([key, value]) => {
+      Object.entries(field).forEach(([key, { value }]) => {
         if (value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
@@ -209,19 +211,19 @@ const ApplicationForm5 = () => {
 
     // Check if there is at least one field filled out
     const hasDriverLicensePermitData = driverLicensePermit.some((field) =>
-      Object.values(field).some((val) => val.trim() !== "")
+      Object.values(field).some((val) => val.value.trim() !== "")
     );
 
     const hasDriverExperienceData = driverExperience.some((field) =>
-      Object.values(field).some((val) => val.trim() !== "")
+      Object.values(field).some((val) => val.value.trim() !== "")
     );
 
     const hasEducationHistoryData = educationHistory.some((field) =>
-      Object.values(field).some((val) => val.trim() !== "")
+      Object.values(field).some((val) => val.value.trim() !== "")
     );
 
     const hasExtraSkillsData = Object.values(extraSkills).some(
-      (val) => val.trim() !== ""
+      (val) => val.value.trim() !== ""
     );
 
     if (
@@ -265,10 +267,10 @@ const ApplicationForm5 = () => {
     setDriverLicensePermit([
       ...driverLicensePermit,
       {
-        LicenseNo: "",
-        type: "",
-        state: "",
-        expiryDate: "",
+        LicenseNo: { value: "", status: "pending", note: "" },
+        type: { value: "", status: "pending", note: "" },
+        state: { value: "", status: "pending", note: "" },
+        expiryDate: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -277,25 +279,26 @@ const ApplicationForm5 = () => {
     setDriverExperience([
       ...driverExperience,
       {
-        statesOperated: "",
-        ClassEquipment: "",
-        EquipmentType: "",
-        DateFrom: "",
-        DateTo: "",
-        ApproximatelyMiles: "",
-        comments: "",
+        statesOperated: { value: "", status: "pending", note: "" },
+        ClassEquipment: { value: "", status: "pending", note: "" },
+        EquipmentType: { value: "", status: "pending", note: "" },
+        DateFrom: { value: "", status: "pending", note: "" },
+        DateTo: { value: "", status: "pending", note: "" },
+        ApproximatelyMiles: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
       },
     ]);
   };
+
   const addEducationHistory = () => {
     setEducationHistory([
       ...educationHistory,
       {
-        school: "",
-        educationLevel: "",
-        DateFrom: "",
-        DateTo: "",
-        comments: "",
+        school: { value: "", status: "pending", note: "" },
+        educationLevel: { value: "", status: "pending", note: "" },
+        DateFrom: { value: "", status: "pending", note: "" },
+        DateTo: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -355,7 +358,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="LicenseNo"
                   id={`LicenseNo-${index}`}
-                  value={license.LicenseNo}
+                  value={license.LicenseNo.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
@@ -371,7 +374,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="type"
                   id={`type-${index}`}
-                  value={license.type}
+                  value={license.type.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
@@ -387,7 +390,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="state"
                   id={`state-${index}`}
-                  value={license.state}
+                  value={license.state.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
@@ -403,7 +406,7 @@ const ApplicationForm5 = () => {
                   type="date"
                   name="expiryDate"
                   id={`expiryDate-${index}`}
-                  value={license.expiryDate}
+                  value={license.expiryDate.value}
                   min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
@@ -455,7 +458,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="statesOperated"
                   id={`statesOperated-${index}`}
-                  value={experience.statesOperated}
+                  value={experience.statesOperated.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -482,7 +485,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="ClassEquipment"
                   id={`ClassEquipment-${index}`}
-                  value={experience.ClassEquipment}
+                  value={experience.ClassEquipment.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -509,7 +512,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="EquipmentType"
                   id={`EquipmentType-${index}`}
-                  value={experience.EquipmentType}
+                  value={experience.EquipmentType.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -536,7 +539,7 @@ const ApplicationForm5 = () => {
                   type="date"
                   name="DateTo"
                   id={`DateTo-${index}`}
-                  value={experience.DateTo}
+                  value={experience.DateTo.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
@@ -564,7 +567,7 @@ const ApplicationForm5 = () => {
                   type="date"
                   name="DateFrom"
                   id={`DateFrom-${index}`}
-                  value={experience.DateFrom}
+                  value={experience.DateFrom.value}
                   min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
@@ -593,7 +596,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="ApproximatelyMiles"
                   id={`ApproximatelyMiles-${index}`}
-                  value={experience.ApproximatelyMiles}
+                  value={experience.ApproximatelyMiles.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -620,7 +623,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="comments"
                   id={`comments-${index}`}
-                  value={experience.comments}
+                  value={experience.comments.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverExperienceErrors[index] &&
@@ -682,7 +685,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="school"
                   id={`school-${index}`}
-                  value={education.school}
+                  value={education.school.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverEducationError[index] &&
@@ -709,7 +712,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="educationLevel"
                   id={`educationLevel-${index}`}
-                  value={education.educationLevel}
+                  value={education.educationLevel.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverEducationError[index] &&
@@ -736,7 +739,7 @@ const ApplicationForm5 = () => {
                   type="date"
                   name="DateFrom"
                   id={`DateFrom-${index}`}
-                  value={education.DateFrom}
+                  value={education.DateFrom.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   min={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
@@ -764,7 +767,7 @@ const ApplicationForm5 = () => {
                   type="date"
                   name="DateTo"
                   id={`DateTo-${index}`}
-                  value={education.DateTo}
+                  value={education.DateTo.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
                   className={`w-full p-2 mt-1 border ${
@@ -793,7 +796,7 @@ const ApplicationForm5 = () => {
                   type="text"
                   name="comments"
                   id={`comments-${index}`}
-                  value={education.comments}
+                  value={education.comments.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   className={`w-full p-2 mt-1 border ${
                     driverEducationError[index] &&
@@ -846,7 +849,7 @@ const ApplicationForm5 = () => {
                 type="text"
                 name="safeDrivingAwards"
                 id="safeDrivingAwards"
-                value={extraSkills.safeDrivingAwards}
+                value={extraSkills.safeDrivingAwards.value}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />
@@ -863,7 +866,7 @@ const ApplicationForm5 = () => {
                 type="text"
                 name="specialTraining"
                 id="specialTraining"
-                value={extraSkills.specialTraining}
+                value={extraSkills.specialTraining.value}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />
@@ -879,7 +882,7 @@ const ApplicationForm5 = () => {
                 type="text"
                 name="otherSkills"
                 id="otherSkills"
-                value={extraSkills.otherSkills}
+                value={extraSkills.otherSkills.value}
                 onChange={(e) => handleExtraSkillChange(e)}
                 className="w-full p-2 mt-1 border border-gray-300 rounded-md"
               />

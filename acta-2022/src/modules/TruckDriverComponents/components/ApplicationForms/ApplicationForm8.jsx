@@ -8,23 +8,23 @@ import { FaBell } from "react-icons/fa";
 const ApplicationForm8 = () => {
   const defaultFormData = [
     {
-      day1: "", // Day 1 (Yesterday)
-      day1HoursWorked: "", // Hours worked on Day 1 (Yesterday)
-      day2: "", // Day 2
-      day2HoursWorked: "", // Hours worked on Day 2
-      day3: "", // Day 3
-      day3HoursWorked: "", // Hours worked on Day 3
-      day4: "", // Day 4
-      day4HoursWorked: "", // Hours worked on Day 4
-      day5: "", // Day 5
-      day5HoursWorked: "", // Hours worked on Day 5
-      day6: "", // Day 6
-      day6HoursWorked: "", // Hours worked on Day 6
-      day7: "", // Day 7
-      day7HoursWorked: "", // Hours worked on Day 7
-      TotalHours: "", // Total hours worked
-      relievedTime: "00:00",
-      relievedDate: "",
+      day1: { value: "", status: "pending", note: "" },
+      day2: { value: "", status: "pending", note: "" },
+      day3: { value: "", status: "pending", note: "" },
+      day4: { value: "", status: "pending", note: "" },
+      day5: { value: "", status: "pending", note: "" },
+      day6: { value: "", status: "pending", note: "" },
+      day7: { value: "", status: "pending", note: "" },
+      day1HoursWorked: { value: "", status: "pending", note: "" },
+      day2HoursWorked: { value: "", status: "pending", note: "" },
+      day3HoursWorked: { value: "", status: "pending", note: "" },
+      day4HoursWorked: { value: "", status: "pending", note: "" },
+      day5HoursWorked: { value: "", status: "pending", note: "" },
+      day6HoursWorked: { value: "", status: "pending", note: "" },
+      day7HoursWorked: { value: "", status: "pending", note: "" },
+      TotalHours: { value: "", status: "pending", note: "" },
+      relievedTime: { value: "00:00", status: "pending", note: "" },
+      relievedDate: { value: "", status: "pending", note: "" },
     },
   ];
   const navigate = useNavigate();
@@ -34,20 +34,31 @@ const ApplicationForm8 = () => {
   );
   const [errors, setErrors] = useState([]);
   const convertTimeToAMPM = (timeString) => {
+    if (!timeString) return "";
     const [hours, minutes] = timeString.split(":");
     const hour24 = parseInt(hours, 10);
     const ampm = hour24 >= 12 ? "PM" : "AM";
     const hour12 = hour24 % 12 || 12; // Convert to 12-hour format
 
-    return `${hour12}:${minutes}:00 ${ampm}`; // Format as 'hh:mm:ss AM/PM'
+    return `${hour12.toString().padStart(2, "0")}:${minutes} ${ampm}`; // Format as 'hh:mm AM/PM'
   };
 
+  // Update the formatTimeForInput function
   const formatTimeForInput = (time) => {
-    if (!time) return ""; // Return empty if no time is set
-    const [hour, minute, , period] = time.split(/[:\s]/); // Split on ':' and space
-    const hour24 = period === "PM" && hour < 12 ? parseInt(hour) + 12 : hour; // Convert to 24-hour format
-    return `${String(hour24).padStart(2, "0")}:${minute}`; // Return in 24-hour format for input
+    if (!time || typeof time !== "object" || !time.value) return "";
+    const [hourMinute, period] = time.value.split(" ");
+    const [hour, minute] = hourMinute.split(":");
+    let hour24 = parseInt(hour, 10);
+
+    if (period === "PM" && hour24 !== 12) {
+      hour24 += 12;
+    } else if (period === "AM" && hour24 === 12) {
+      hour24 = 0;
+    }
+
+    return `${hour24.toString().padStart(2, "0")}:${minute}`; // Return in 24-hour format for input (HH:mm)
   };
+
   // Handler function for when the time input changes
 
   useEffect(() => {
@@ -99,10 +110,9 @@ const ApplicationForm8 = () => {
     }
   };
   const validateForm = () => {
-    const newErrors = localFormData.map((field) => {
+    const newErrors = localFormData.map((formEntry) => {
       const fieldErrors = {};
 
-      // Only required fields should be validated
       const requiredFields = [
         "day1",
         "day2",
@@ -124,12 +134,13 @@ const ApplicationForm8 = () => {
       ];
 
       requiredFields.forEach((key) => {
-        if (typeof field[key] === "string") {
-          if (field[key].trim() === "") {
-            fieldErrors[key] = "This field is required";
-          }
-        } else if (field[key] == null || field[key] === "") {
-          // If the value is null or undefined or empty (for non-string fields like numbers)
+        const value = formEntry[key].value;
+        if (
+          value === null ||
+          value === undefined ||
+          (typeof value === "string" && value.trim() === "") ||
+          (typeof value === "number" && isNaN(value))
+        ) {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -161,8 +172,10 @@ const ApplicationForm8 = () => {
     e.preventDefault();
 
     // Check if at least one field is filled
-    const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.trim() !== "")
+    const isAnyFieldFilled = localFormData.some((formEntry) =>
+      Object.values(formEntry).some(
+        (field) => field.value && field.value.trim() !== ""
+      )
     );
 
     if (!isAnyFieldFilled) {
@@ -201,45 +214,85 @@ const ApplicationForm8 = () => {
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
 
-    // Convert input value to desired format
-    const timeFormatted = convertTimeToAMPM(value); // Convert the time to AM/PM format
+    if (
+      name === "day1" ||
+      name === "day2" ||
+      name === "day3" ||
+      name === "day4" ||
+      name === "day5" ||
+      name === "day6" ||
+      name === "day7" ||
+      name === "relievedDate"
+    ) {
+      const updatedFields = localFormData.map((field, i) =>
+        i === index
+          ? {
+              ...field,
+              [name]: { value: value, status: "pending", note: "" },
+            }
+          : field
+      );
+      setLocalFormData(updatedFields);
+    } else if (name === "relievedTime") {
+      const timeFormatted = convertTimeToAMPM(value); // Convert to AM/PM format
+      const updatedFields = localFormData.map((field, i) =>
+        i === index
+          ? {
+              ...field,
+              [name]: { value: timeFormatted, status: "pending", note: "" },
+            }
+          : field
+      );
+      setLocalFormData(updatedFields);
+    } else {
+      const updatedFields = localFormData.map((field, i) =>
+        i === index
+          ? {
+              ...field,
+              [name]: { value: value, status: "pending", note: "" },
+            }
+          : field
+      );
 
-    const updatedFields = localFormData.map((field, i) =>
-      i === index ? { ...field, [name]: timeFormatted } : field
-    );
+      // Calculate total hours as before...
+      const totalHours = [
+        "day1HoursWorked",
+        "day2HoursWorked",
+        "day3HoursWorked",
+        "day4HoursWorked",
+        "day5HoursWorked",
+        "day6HoursWorked",
+        "day7HoursWorked",
+      ].reduce((sum, dayField) => {
+        const hours = parseFloat(updatedFields[index][dayField].value) || 0; // Handle empty fields or NaN
+        return sum + hours;
+      }, 0);
 
-    // Calculate total hours as before...
-    const totalHours = [
-      "day1HoursWorked",
-      "day2HoursWorked",
-      "day3HoursWorked",
-      "day4HoursWorked",
-      "day5HoursWorked",
-      "day6HoursWorked",
-      "day7HoursWorked",
-    ].reduce((sum, dayField) => {
-      const hours = parseFloat(updatedFields[index][dayField]) || 0; // Handle empty fields or NaN
-      return sum + hours;
-    }, 0);
-
-    // Update the TotalHours field with the calculated sum
-    updatedFields[index].TotalHours = totalHours;
-    setLocalFormData(updatedFields);
+      // Update the TotalHours field with the calculated sum
+      updatedFields[index].TotalHours = {
+        value: totalHours,
+        status: "pending",
+        note: "",
+      };
+      setLocalFormData(updatedFields);
+    }
 
     // Update errors based on new input
     const updatedErrors = errors.map((error, i) =>
       i === index
         ? {
             ...error,
-            [name]: timeFormatted.trim() === "" ? "This field is required" : "",
+            [name]: value.trim() === "" ? "This field is required" : "",
           }
         : error
     );
 
     setErrors(updatedErrors);
 
-    const allFieldsEmpty = updatedFields.every((address) =>
-      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+    const allFieldsEmpty = localFormData.every((address) =>
+      Object.values(address).every(
+        (fieldValue) => fieldValue.value.trim() === ""
+      )
     );
 
     setIsSaveClicked(allFieldsEmpty);
@@ -288,7 +341,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day1"
                           id={`day1-${index}`}
-                          value={field.day1}
+                          value={field.day1.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day1
@@ -313,7 +366,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day1HoursWorked"
                           id={`day1HoursWorked-${index}`}
-                          value={field.day1HoursWorked}
+                          value={field.day1HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day1HoursWorked
@@ -340,7 +393,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day2"
                           id={`day2-${index}`}
-                          value={field.day2}
+                          value={field.day2.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day2
@@ -365,7 +418,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day2HoursWorked"
                           id={`day2HoursWorked-${index}`}
-                          value={field.day2HoursWorked}
+                          value={field.day2HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day2HoursWorked
@@ -392,7 +445,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day3"
                           id={`day3-${index}`}
-                          value={field.day3}
+                          value={field.day3.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day3
@@ -417,7 +470,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day3HoursWorked"
                           id={`day3HoursWorked-${index}`}
-                          value={field.day3HoursWorked}
+                          value={field.day3HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day3HoursWorked
@@ -444,7 +497,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day4"
                           id={`day4-${index}`}
-                          value={field.day4}
+                          value={field.day4.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day4
@@ -469,7 +522,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day4HoursWorked"
                           id={`day4HoursWorked-${index}`}
-                          value={field.day4HoursWorked}
+                          value={field.day4HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day4HoursWorked
@@ -496,7 +549,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day5"
                           id={`day5-${index}`}
-                          value={field.day5}
+                          value={field.day5.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day5
@@ -521,7 +574,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day5HoursWorked"
                           id={`day5HoursWorked-${index}`}
-                          value={field.day5HoursWorked}
+                          value={field.day5HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day5HoursWorked
@@ -548,7 +601,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day6"
                           id={`day6-${index}`}
-                          value={field.day6}
+                          value={field.day6.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day6
@@ -573,7 +626,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day6HoursWorked"
                           id={`day6HoursWorked-${index}`}
-                          value={field.day6HoursWorked}
+                          value={field.day6HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day6HoursWorked
@@ -600,7 +653,7 @@ const ApplicationForm8 = () => {
                           type="date"
                           name="day7"
                           id={`day7-${index}`}
-                          value={field.day7}
+                          value={field.day7.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day7
@@ -625,7 +678,7 @@ const ApplicationForm8 = () => {
                           type="number"
                           name="day7HoursWorked"
                           id={`day7HoursWorked-${index}`}
-                          value={field.day7HoursWorked}
+                          value={field.day7HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
                           className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day7HoursWorked
@@ -653,7 +706,7 @@ const ApplicationForm8 = () => {
                     type="number"
                     name="TotalHours"
                     id={`TotalHours-${index}`}
-                    value={field.TotalHours}
+                    value={field.TotalHours.value}
                     onChange={(e) => handleInputChange(index, e)}
                     className={`w-full p-2 mt-1 border rounded-md ${
                       errors[index]?.TotalHours
@@ -695,9 +748,9 @@ const ApplicationForm8 = () => {
                         </div>
                         <input
                           type="time"
-                          id={`time-${index}`} // Unique ID for accessibility
-                          name={`relievedTime`} // Ensure this name matches in validation
-                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full p-3.5 smd:p-2.5 ${
+                          id={`time-${index}`}
+                          name="relievedTime"
+                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
                             errors[index]?.relievedTime
                               ? "border-red-500"
                               : "border-gray-300"
@@ -705,8 +758,8 @@ const ApplicationForm8 = () => {
                           min="09:00"
                           max="18:00"
                           required
-                          value={formatTimeForInput(field.relievedTime)} // Format the time for input
-                          onChange={(e) => handleInputChange(index, e)} // Call handler on change
+                          value={formatTimeForInput(field.relievedTime)}
+                          onChange={(e) => handleInputChange(index, e)}
                         />
                       </div>
                       {errors[index]?.relievedTime && (
@@ -728,7 +781,7 @@ const ApplicationForm8 = () => {
                     type="date"
                     name="relievedDate"
                     id={`relievedDate-${index}`}
-                    value={field.relievedDate}
+                    value={field.relievedDate.value}
                     onChange={(e) => handleInputChange(index, e)}
                     className={`w-full p-2.5 mt-1 border rounded-md ${
                       errors[index]?.relievedDate

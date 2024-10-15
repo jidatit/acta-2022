@@ -3,9 +3,10 @@ import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { FaRegTimesCircle } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { FaRegCheckCircle } from "react-icons/fa";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 const ApplicationForm3 = () => {
@@ -16,28 +17,27 @@ const ApplicationForm3 = () => {
   const [errors, setErrors] = useState([]);
 
   useEffect(() => {
-    // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
-  }, []); // Empty dependency array means this effect runs once, on mount
+  }, []);
+
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
+
   useEffect(() => {
     if (FormData3) {
       setLocalFormData(FormData3);
     }
-    //console.log(localFormData);
   }, [FormData3]);
 
   const handleBack = () => {
-    // Check if save is clicked
     if (!isSaveClicked) {
       alert("Please save the current form before going back.");
       return;
     }
-    // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm2");
   };
+
   const saveToFirebase = async () => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
@@ -51,7 +51,7 @@ const ApplicationForm3 = () => {
       if (docSnap.exists()) {
         await updateDoc(docRef, {
           form3: applicationData,
-          completedForms: 3, // Update this with the specific key for this form
+          completedForms: 3,
         });
       } else {
         await setDoc(docRef, {
@@ -61,13 +61,13 @@ const ApplicationForm3 = () => {
       }
     } catch (error) {
       console.error("Error saving application: ", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
+
   const validateForm = () => {
     const newErrors = localFormData.map((field) => {
       const fieldErrors = {};
-
-      // Only required fields should be validated
       const requiredFields = [
         "companyName",
         "city",
@@ -83,7 +83,7 @@ const ApplicationForm3 = () => {
       ];
 
       requiredFields.forEach((key) => {
-        if (field[key].trim() === "") {
+        if (field[key].value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -103,20 +103,18 @@ const ApplicationForm3 = () => {
 
     if (validateForm()) {
       setIsSaveClicked(true);
-
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm4");
     } else {
-      toast.error("Please complete all required fields to continue");
+      toast.error("Please complete all required fields to continue.");
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
 
-    // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.trim() !== "")
+      Object.values(field).some((value) => value.value.trim() !== "")
     );
 
     if (!isAnyFieldFilled) {
@@ -125,52 +123,32 @@ const ApplicationForm3 = () => {
     }
 
     toast.success("Form is successfully saved");
-
     setIsSaveClicked(true);
-
-    try {
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
-      const docSnap = await getDoc(docRef);
-
-      const applicationData = {
-        EmploymentHistory: localFormData,
-        submittedAt: new Date(),
-      };
-
-      if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form3: applicationData,
-          // Update this with the specific key for this form
-        });
-      } else {
-        await setDoc(docRef, {
-          form3: applicationData,
-        });
-      }
-    } catch (error) {
-      console.error("Error saving application: ", error);
-      toast.error("Error saving the form, please try again");
-    }
+    await saveToFirebase();
   };
 
   const handleAddCompany = () => {
     setLocalFormData([
       ...localFormData,
       {
-        companyName: "",
-        street: "",
-        city: "",
-        zipCode: "",
-        contactPerson: "",
-        phone: "",
-        fax1: "",
-        from: "",
-        to: "",
-        position: "",
-        salary: "",
-        leavingReason: "",
-        subjectToFMCSRs: "",
-        jobDesignatedAsSafetySensitive: "",
+        companyName: { value: "", status: "pending", note: "" },
+        street: { value: "", status: "pending", note: "" },
+        city: { value: "", status: "pending", note: "" },
+        zipCode: { value: "", status: "pending", note: "" },
+        contactPerson: { value: "", status: "pending", note: "" },
+        phone: { value: "", status: "pending", note: "" },
+        fax1: { value: "", status: "pending", note: "" },
+        from: { value: "", status: "pending", note: "" },
+        to: { value: "", status: "pending", note: "" },
+        position: { value: "", status: "pending", note: "" },
+        salary: { value: "", status: "pending", note: "" },
+        leavingReason: { value: "", status: "pending", note: "" },
+        subjectToFMCSRs: { value: "", status: "pending", note: "" },
+        jobDesignatedAsSafetySensitive: {
+          value: "",
+          status: "pending",
+          note: "",
+        },
       },
     ]);
     setErrors([...errors, {}]); // Add an empty error object for the new company
@@ -180,7 +158,13 @@ const ApplicationForm3 = () => {
     const { name, value } = e.target;
     const updatedFields = localFormData.map((field, i) =>
       i === index
-        ? { ...field, [name.replace(`company-${index}-`, "")]: value }
+        ? {
+            ...field,
+            [name.replace(`company-${index}-`, "")]: {
+              ...field[name.replace(`company-${index}-`, "")],
+              value,
+            },
+          }
         : field
     );
 
@@ -203,16 +187,17 @@ const ApplicationForm3 = () => {
     setErrors(updatedErrors);
 
     const allFieldsEmpty = updatedFields.every((address) =>
-      Object.values(address).every((fieldValue) => fieldValue.trim() === "")
+      Object.values(address).every(
+        (fieldValue) => fieldValue.value.trim() === ""
+      )
     );
     setIsSaveClicked(allFieldsEmpty);
   };
+
   const removeCompany = (index) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
   };
-
-  //console.log(localFormData);
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className=" flex flex-col items-start justify-start w-full ">
@@ -244,17 +229,66 @@ const ApplicationForm3 = () => {
               <div key={index} className="mb-6">
                 <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
                   <div>
-                    <label
-                      htmlFor={`companyName-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Company Name*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`companyName-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Company Name*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.companyName.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.companyName.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.companyName.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-company-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-company-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.companyName.note
+                                    ? field.companyName.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="companyName"
                       id={`companyName-${index}`}
-                      value={field.companyName}
+                      value={field.companyName.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.companyName
@@ -270,17 +304,66 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`street-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Street*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`street-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Street*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.street.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.street.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.street.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-street-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-street-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.street.note
+                                    ? field.street.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="street"
                       id={`street-${index}`}
-                      value={field.street}
+                      value={field.street.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.street
@@ -296,17 +379,66 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`city-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      City/State*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`city-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        City/State*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.city.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.city.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.city.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-city-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-city-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.city.note
+                                    ? field.city.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="city"
                       id={`city-${index}`}
-                      value={field.city}
+                      value={field.city.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.city
@@ -322,17 +454,67 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`zipCode-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Zip Code*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`zipCode-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Zip Code*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.zipCode.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.zipCode.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.zipCode.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-zipCode-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-zipCode-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.zipCode.note
+                                    ? field.zipCode.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+
                     <input
                       type="number"
                       name="zipCode"
                       id={`zipCode-${index}`}
-                      value={field.zipCode}
+                      value={field.zipCode.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.zipCode
@@ -348,17 +530,67 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`contactPerson-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Contact Person*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`contactPerson-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Contact Person*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.contactPerson.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.contactPerson.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.contactPerson.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-contactPerson-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-contactPerson-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.contactPerson.note
+                                    ? field.contactPerson.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+
                     <input
                       type="text"
                       name="contactPerson"
                       id={`contactPerson-${index}`}
-                      value={field.contactPerson}
+                      value={field.contactPerson.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.contactPerson
@@ -374,17 +606,67 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`phone-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Phone #*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`phone-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Phone #*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.phone.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.phone.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.phone.status === "rejected" ? (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-phone-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-phone-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.phone.note
+                                    ? field.phone.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+
                     <input
                       type="text"
                       name="phone"
                       id={`phone-${index}`}
-                      value={field.phone}
+                      value={field.phone.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.phone
@@ -400,17 +682,61 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`fax1-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Fax #
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`fax1-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Fax #
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.fax1.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.fax1.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.fax1.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-fax-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog id={`modal-fax-${index}`} className="modal">
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.fax1.note
+                                    ? field.fax1.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="fax1"
                       id={`fax1-${index}`}
-                      value={field.fax1}
+                      value={field.fax1.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.fax1
@@ -426,18 +752,65 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`from-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      From*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`from-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        From*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.from.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.from.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.from.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-from-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-from-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.from.note
+                                    ? field.from.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="date"
                       name="from"
                       id={`from-${index}`}
                       min={new Date().toISOString().split("T")[0]}
-                      value={field.from}
+                      value={field.from.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.from
@@ -453,17 +826,61 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`to-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      To*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`to-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        To*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.to.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.to.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.to.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-to-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog id={`modal-to-${index}`} className="modal">
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.to.note
+                                    ? field.to.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="date"
                       name="to"
                       id={`to-${index}`}
-                      value={field.to}
+                      value={field.to.value}
                       onChange={(e) => handleInputChange(index, e)}
                       max={new Date().toISOString().split("T")[0]}
                       className={`w-full p-2 mt-1 border rounded-md ${
@@ -478,17 +895,64 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`position-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Position*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`position-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Position*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.position.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.position.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.position.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-position-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-position-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.position.note
+                                    ? field.position.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="position"
                       id={`position-${index}`}
-                      value={field.position}
+                      value={field.position.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.position
@@ -504,17 +968,64 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`salary-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Salary
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`salary-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Salary*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.salary.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.salary.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.salary.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-salary-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-salary-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.salary.note
+                                    ? field.salary.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="salary"
                       id={`salary-${index}`}
-                      value={field.salary}
+                      value={field.salary.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.salary
@@ -530,17 +1041,64 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <label
-                      htmlFor={`leavingReason-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Reason for Leaving*
-                    </label>
+                    <div className="flex flex-row items-center gap-x-3 mb-1">
+                      <label
+                        htmlFor={`leavingReason-${index}`}
+                        className="block text-sm font-semibold text-gray-900 font-radios"
+                      >
+                        Reason for leaving*
+                      </label>
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex flex-row gap-x-1">
+                          {field.leavingReason.status === "rejected" ? (
+                            <FaRegTimesCircle className="text-red-500" />
+                          ) : field.leavingReason.status === "approved" ? (
+                            <FaRegCheckCircle className="text-green-500" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {field.leavingReason.status === "rejected" && (
+                          <div
+                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                            onClick={() =>
+                              document
+                                .getElementById(`modal-leavingReason-${index}`)
+                                .showModal()
+                            }
+                          >
+                            <FaPencil size={10} />
+                            <p className="text-xs font-radios">View note</p>
+
+                            <dialog
+                              id={`modal-leavingReason-${index}`}
+                              className="modal"
+                            >
+                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="font-bold text-lg">Note</h3>
+                                <p className="py-4">
+                                  {field.leavingReason.note
+                                    ? field.leavingReason.note
+                                    : "No note added"}
+                                </p>
+                                <div className="modal-action">
+                                  <form method="dialog">
+                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                      Close
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </dialog>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <input
                       type="text"
                       name="leavingReason"
                       id={`leavingReason-${index}`}
-                      value={field.leavingReason}
+                      value={field.leavingReason.value}
                       onChange={(e) => handleInputChange(index, e)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.leavingReason
@@ -556,19 +1114,68 @@ const ApplicationForm3 = () => {
                   </div>
                   <div className="flex flex-col smd:w-screen w-[90%] mb-6">
                     <div className="w-full mb-6">
-                      <label
-                        htmlFor={`company-${index}-subjectToFMCSRs`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Were you subject to the FMCSRs while employed?*
-                      </label>
+                      <div className="flex flex-row items-center gap-x-3 mb-1">
+                        <label
+                          htmlFor={`company-${index}-subjectToFMCSRs`}
+                          className="block text-sm font-semibold text-gray-900 font-radios"
+                        >
+                          Were you subject to the FMCSRs* while employed?*
+                        </label>
+                        <div className="flex flex-row items-center gap-x-2">
+                          <div className="flex flex-row gap-x-1">
+                            {field.subjectToFMCSRs.status === "rejected" ? (
+                              <FaRegTimesCircle className="text-red-500" />
+                            ) : field.subjectToFMCSRs.status === "approved" ? (
+                              <FaRegCheckCircle className="text-green-500" />
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          {field.subjectToFMCSRs.status === "rejected" && (
+                            <div
+                              className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                              onClick={() =>
+                                document
+                                  .getElementById(
+                                    `modal-company-${index}-subjectToFMCSRs`
+                                  )
+                                  .showModal()
+                              }
+                            >
+                              <FaPencil size={10} />
+                              <p className="text-xs font-radios">View note</p>
+
+                              <dialog
+                                id={`modal-company-${index}-subjectToFMCSRs`}
+                                className="modal"
+                              >
+                                <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                  <h3 className="font-bold text-lg">Note</h3>
+                                  <p className="py-4">
+                                    {field.subjectToFMCSRs.note
+                                      ? field.subjectToFMCSRs.note
+                                      : "No note added"}
+                                  </p>
+                                  <div className="modal-action">
+                                    <form method="dialog">
+                                      <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                        Close
+                                      </button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </dialog>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       <div className="mt-2">
                         <label className="inline-flex items-center">
                           <input
                             type="radio"
                             name={`company-${index}-subjectToFMCSRs`}
                             value="yes"
-                            checked={field.subjectToFMCSRs === "yes"}
+                            checked={field.subjectToFMCSRs.value === "yes"}
                             onChange={(e) => handleInputChange(index, e)}
                             className="text-blue-500 form-radio"
                           />
@@ -579,7 +1186,7 @@ const ApplicationForm3 = () => {
                             type="radio"
                             name={`company-${index}-subjectToFMCSRs`}
                             value="no"
-                            checked={field.subjectToFMCSRs === "no"}
+                            checked={field.subjectToFMCSRs.value === "no"}
                             onChange={(e) => handleInputChange(index, e)}
                             className="text-blue-500 form-radio"
                           />
@@ -594,14 +1201,67 @@ const ApplicationForm3 = () => {
                     </div>
 
                     <div className="w-full mb-6">
-                      <label
-                        htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Was your job designated as a safety-sensitive function
-                        in any DOT-regulated mode subject to the drug and
-                        alcohol testing requirements?*
-                      </label>
+                      <div className="flex flex-row items-center gap-x-3 mb-1">
+                        <label
+                          htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
+                          className="block text-sm font-semibold text-gray-900 font-radios"
+                        >
+                          Was your job designated as a safety-sensitive function
+                          in any DOT-regulated mode subject to the drug and
+                          alcohol testing requirements.*
+                        </label>
+                        <div className="flex flex-row items-center gap-x-2">
+                          <div className="flex flex-row gap-x-1">
+                            {field.jobDesignatedAsSafetySensitive.status ===
+                            "rejected" ? (
+                              <FaRegTimesCircle className="text-red-500" />
+                            ) : field.jobDesignatedAsSafetySensitive.status ===
+                              "approved" ? (
+                              <FaRegCheckCircle className="text-green-500" />
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          {field.jobDesignatedAsSafetySensitive.status ===
+                            "rejected" && (
+                            <div
+                              className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                              onClick={() =>
+                                document
+                                  .getElementById(
+                                    `modal-company-${index}-jobDesignatedAsSafetySensitive`
+                                  )
+                                  .showModal()
+                              }
+                            >
+                              <FaPencil size={10} />
+                              <p className="text-xs font-radios">View note</p>
+
+                              <dialog
+                                id={`modal-company-${index}-jobDesignatedAsSafetySensitive`}
+                                className="modal"
+                              >
+                                <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                                  <h3 className="font-bold text-lg">Note</h3>
+                                  <p className="py-4">
+                                    {field.jobDesignatedAsSafetySensitive.note
+                                      ? field.jobDesignatedAsSafetySensitive
+                                          .note
+                                      : "No note added"}
+                                  </p>
+                                  <div className="modal-action">
+                                    <form method="dialog">
+                                      <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                        Close
+                                      </button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </dialog>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       <div className="mt-2">
                         <label className="inline-flex items-center">
                           <input
@@ -609,7 +1269,8 @@ const ApplicationForm3 = () => {
                             name={`company-${index}-jobDesignatedAsSafetySensitive`}
                             value="yes"
                             checked={
-                              field.jobDesignatedAsSafetySensitive === "yes"
+                              field.jobDesignatedAsSafetySensitive.value ===
+                              "yes"
                             }
                             onChange={(e) => handleInputChange(index, e)}
                             className="text-blue-500 form-radio"
@@ -622,7 +1283,8 @@ const ApplicationForm3 = () => {
                             name={`company-${index}-jobDesignatedAsSafetySensitive`}
                             value="no"
                             checked={
-                              field.jobDesignatedAsSafetySensitive === "no"
+                              field.jobDesignatedAsSafetySensitive.value ===
+                              "no"
                             }
                             onChange={(e) => handleInputChange(index, e)}
                             className="text-blue-500 form-radio"

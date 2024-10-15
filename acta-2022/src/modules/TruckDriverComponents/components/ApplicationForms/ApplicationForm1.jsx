@@ -5,6 +5,9 @@ import { useAuth } from "../../../../AuthContext";
 import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import { FaRegTimesCircle } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { FaRegCheckCircle } from "react-icons/fa";
 const ApplicationForm = () => {
   const navigate = useNavigate();
   const { setIsSaveClicked, currentUser, FormData1 } = useAuth();
@@ -25,12 +28,16 @@ const ApplicationForm = () => {
     }
   }, [FormData1]);
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    if (e.target.value.trim() !== "") {
-      setErrors((prevErrors) => ({ ...prevErrors, [e.target.name]: "" }));
+    const { name, value } = e.target;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: { ...prevFormData[name], value: value }, // Update only the value property
+    }));
+
+    // Clear the error if input is not empty
+    if (value.trim() !== "") {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
   };
 
@@ -38,7 +45,7 @@ const ApplicationForm = () => {
     const newErrors = {};
 
     Object.keys(formData).forEach((key) => {
-      const value = formData[key];
+      const value = formData[key].value; // Access the value property here
 
       // Check if the value is a string before trimming
       if (typeof value === "string" && !value.trim()) {
@@ -53,6 +60,7 @@ const ApplicationForm = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -92,7 +100,7 @@ const ApplicationForm = () => {
 
     // Check if at least one field is filled
     const isAnyFieldFilled = Object.values(formData).some(
-      (value) => value.trim() !== ""
+      (field) => field.value.trim() !== "" // Access the value property here
     );
 
     if (!isAnyFieldFilled) {
@@ -141,17 +149,63 @@ const ApplicationForm = () => {
         <form className="w-full rounded-md shadow-md border-b-1 border-b-gray-400">
           {/* Line 1: Applicant Name */}
           <div className="mb-6">
-            <label
-              htmlFor="applicantName"
-              className="block text-sm font-semibold text-gray-900 font-radios"
-            >
-              Applicant Name*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="applicantName"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                Applicant Name*
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.applicantName.status === "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.applicantName.status === "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.applicantName.status === "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.applicantName.note
+                            ? formData.applicantName.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <input
               type="text"
               name="applicantName"
               id="applicantName"
-              value={formData.applicantName}
+              value={formData.applicantName.value}
               onChange={handleChange}
               className={`w-full p-2 mt-1 border rounded-md ${
                 errors.applicantName
@@ -169,17 +223,63 @@ const ApplicationForm = () => {
           {/* Line 2: Applied Date, Position Applied For, SSN */}
           <div className="grid grid-cols-1 gap-4 mb-6 md md:grid-cols-3">
             <div>
-              <label
-                htmlFor="appliedDate"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Application Date*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="appliedDate"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Applied Date*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.appliedDate.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.appliedDate.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.appliedDate.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.appliedDate.note
+                              ? formData.appliedDate.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="date"
                 name="appliedDate"
                 id="appliedDate"
-                value={formData.appliedDate}
+                value={formData.appliedDate.value}
                 onChange={handleChange}
                 max={new Date().toISOString().split("T")[0]}
                 className={`w-full p-2 mt-1 border rounded-md ${
@@ -195,16 +295,62 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="positionApplied"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Position Applied For*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="positionApplied"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Position Applied*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.positionApplied.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.positionApplied.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.positionApplied.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.positionApplied.note
+                              ? formData.positionApplied.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <select
                 name="positionApplied"
                 id="positionApplied"
-                value={formData.positionApplied}
+                value={formData.positionApplied.value}
                 onChange={handleChange}
                 className={`w-full p-[12px] mt-1 border rounded-md ${
                   errors.positionApplied
@@ -223,17 +369,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="ssn"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                SSN*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="ssn"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  SSN*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.ssn.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.ssn.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.ssn.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.ssn.note
+                              ? formData.ssn.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="ssn"
                 id="ssn"
-                value={formData.ssn}
+                value={formData.ssn.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.ssn ? "border-red-500 border-2" : "border-gray-300"
@@ -250,17 +442,63 @@ const ApplicationForm = () => {
           {/* Line 3: Date of Birth, Gender, Who Referred You */}
           <div className="grid justify-center grid-cols-1 gap-4 mb-6 md:grid-cols-3">
             <div>
-              <label
-                htmlFor="DOB"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Date of Birth*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="DOB"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Date Of Birth*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.DOB.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.DOB.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.DOB.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.DOB.note
+                              ? formData.DOB.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="date"
                 name="DOB"
                 id="DOB"
-                value={formData.DOB}
+                value={formData.DOB.value}
                 onChange={handleChange}
                 max={new Date().toISOString().split("T")[0]} // Setting max to today's date
                 className={`w-full p-2 mt-1 border rounded-md ${
@@ -275,16 +513,65 @@ const ApplicationForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-900 font-radios">
-                Gender*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="gender"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Gender*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.gender.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.gender.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.gender.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.gender.note
+                              ? formData.gender.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
                   <input
                     type="radio"
                     name="gender"
                     value="male"
-                    checked={formData.gender === "male"}
+                    checked={formData.gender?.value === "male"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -297,7 +584,7 @@ const ApplicationForm = () => {
                     type="radio"
                     name="gender"
                     value="female"
-                    checked={formData.gender === "female"}
+                    checked={formData.gender?.value === "female"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -313,17 +600,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="referredBy"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Who Referred You
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="referredBy"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Referred By*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.referredBy.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.referredBy.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.referredBy.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.referredBy.note
+                              ? formData.referredBy.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="referredBy"
                 id="referredBy"
-                value={formData.referredBy}
+                value={formData.referredBy.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.referredBy ? "border-gray-300" : "border-gray-300"
@@ -335,16 +668,65 @@ const ApplicationForm = () => {
           {/* Line 4: Legal Right to Work, Pay Expected */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 font-radios">
-                Do You Have Legal Right to Work in the United States?*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="legalRightToWork"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Do you have the legal right to work in the United States?*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.legalRightToWork.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.legalRightToWork.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.legalRightToWork.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.legalRightToWork.note
+                              ? formData.legalRightToWork.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
                   <input
                     type="radio"
                     name="legalRightToWork"
                     value="yes"
-                    checked={formData.legalRightToWork === "yes"}
+                    checked={formData.legalRightToWork?.value === "yes"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -357,7 +739,7 @@ const ApplicationForm = () => {
                     type="radio"
                     name="legalRightToWork"
                     value="no"
-                    checked={formData.legalRightToWork === "no"}
+                    checked={formData.legalRightToWork?.value === "no"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -374,17 +756,63 @@ const ApplicationForm = () => {
             </div>
 
             <div>
-              <label
-                htmlFor="payExpected"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Rate of Pay Expected*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="payExpected"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Rate of pay expected*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.payExpected.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.payExpected.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.payExpected.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.payExpected.note
+                              ? formData.payExpected.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="payExpected"
                 id="payExpected"
-                value={formData.payExpected}
+                value={formData.payExpected.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.payExpected
@@ -403,17 +831,63 @@ const ApplicationForm = () => {
           {/* Line 5-8: Address Details */}
           <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
             <div>
-              <label
-                htmlFor="street1"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Street 1*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="street1"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Street 1*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.street1.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.street1.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.street1.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.street1.note
+                              ? formData.street1.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="street1"
                 id="street1"
-                value={formData.street1}
+                value={formData.street1.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street1 ? "border-red-500 border-2" : "border-gray-300"
@@ -426,33 +900,125 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="street2"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Street 2
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="street2"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Street 2*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.street2.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.street2.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.street2.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.street2.note
+                              ? formData.street2.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="street2"
                 id="street2"
-                value={formData.street2}
+                value={formData.street2.value}
                 onChange={handleChange}
                 className="w-full p-2 mt-1 border rounded-md border-gray-300"
               />
             </div>
             <div>
-              <label
-                htmlFor="city"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                City*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  city*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.city.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.city.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.city.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.city.note
+                              ? formData.city.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="city"
                 id="city"
-                value={formData.city}
+                value={formData.city.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.city ? "border-red-500 border-2" : "border-gray-300"
@@ -465,17 +1031,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="state"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                State*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  State*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.state.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.state.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.state.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.state.note
+                              ? formData.state.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="state"
                 id="state"
-                value={formData.state}
+                value={formData.state.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.state ? "border-red-500 border-2" : "border-gray-300"
@@ -488,17 +1100,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="zipCode"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Zip Code*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="zipCode"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Zip Code*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.zipCode.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.zipCode.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.zipCode.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.zipCode.note
+                              ? formData.zipCode.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="number"
                 name="zipCode"
                 id="zipCode"
-                value={formData.zipCode}
+                value={formData.zipCode.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.zipCode ? "border-red-500 border-2" : "border-gray-300"
@@ -511,17 +1169,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="cellPhone"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Cell Phone*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="cellPhone"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Cell Phone*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.cellPhone.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.cellPhone.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.cellPhone.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.cellPhone.note
+                              ? formData.cellPhone.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="cellPhone"
                 id="cellPhone"
-                value={formData.cellPhone}
+                value={formData.cellPhone.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.cellPhone
@@ -536,12 +1240,58 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="Email"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Email*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="Email"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Email*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.Email.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.Email.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.Email.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.Email.note
+                              ? formData.Email.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="email"
                 required
@@ -561,17 +1311,63 @@ const ApplicationForm = () => {
               )}
             </div>
             <div>
-              <label
-                htmlFor="EmergencyContact"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Emergency Contact*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="EmergencyContact"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  EmergencyContact*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.EmergencyContact.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.EmergencyContact.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.EmergencyContact.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.EmergencyContact.note
+                              ? formData.EmergencyContact.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="EmergencyContact"
                 id="EmergencyContact"
-                value={formData.EmergencyContact}
+                value={formData.EmergencyContact.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.EmergencyContact
@@ -587,17 +1383,63 @@ const ApplicationForm = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="Relationship"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Relationship*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="Relationship"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  Relationship*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.Relationship.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.Relationship.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.Relationship.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.Relationship.note
+                              ? formData.Relationship.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="Relationship"
                 id="Relationship"
-                value={formData.Relationship}
+                value={formData.Relationship.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.Relationship
@@ -613,17 +1455,63 @@ const ApplicationForm = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="CDL"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                CDL #*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="CDL"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  CDL*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.CDL.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.CDL.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.CDL.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.CDL.note
+                              ? formData.CDL.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="CDL"
                 id="CDL"
-                value={formData.CDL}
+                value={formData.CDL.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDL ? "border-red-500 border-2" : "border-gray-300"
@@ -637,17 +1525,63 @@ const ApplicationForm = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="CDLState"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                CDL State*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="CDLState"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  CDL State*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.CDLState.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.CDLState.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.CDLState.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.CDLState.note
+                              ? formData.CDLState.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="CDLState"
                 id="CDLState"
-                value={formData.CDLState}
+                value={formData.CDLState.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLState
@@ -663,17 +1597,63 @@ const ApplicationForm = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="CDLClass"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                CDL Class*
-              </label>
+              <div className="flex flex-row items-center gap-x-3 mb-1">
+                <label
+                  htmlFor="CDLClass"
+                  className="block text-sm font-semibold text-gray-900 font-radios"
+                >
+                  CDL Class*
+                </label>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="flex flex-row gap-x-1">
+                    {formData.CDLClass.status === "rejected" ? (
+                      <FaRegTimesCircle className="text-red-500" />
+                    ) : formData.CDLClass.status === "approved" ? (
+                      <FaRegCheckCircle className="text-green-500" />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {formData.CDLClass.status === "rejected" ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      <FaPencil size={10} />
+                      <p className="text-xs font-radios">View note</p>
+
+                      <dialog id="my_modal_1" className="modal">
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                          <h3 className="font-bold text-lg">Hello!</h3>
+                          <p className="py-4">
+                            {formData.CDLClass.note
+                              ? formData.CDLClass.note
+                              : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                                Close
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+
               <input
                 type="text"
                 name="CDLClass"
                 id="CDLClass"
-                value={formData.CDLClass}
+                value={formData.CDLClass.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLClass
@@ -691,17 +1671,63 @@ const ApplicationForm = () => {
 
           {/* Line 9: Additional Questions */}
           <div className="mb-6">
-            <label
-              htmlFor="CDLExpirationDate"
-              className="block text-sm font-semibold text-gray-900 font-radios"
-            >
-              CDL Expiration Date*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="CDLExpirationDate"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                CDL Expiration Date*
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.CDLExpirationDate.status === "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.CDLExpirationDate.status === "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.CDLExpirationDate.status === "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.CDLExpirationDate.note
+                            ? formData.CDLExpirationDate.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <input
               type="date"
               name="CDLExpirationDate"
               id="CDLExpirationDate"
-              value={formData.CDLExpirationDate}
+              value={formData.CDLExpirationDate.value}
               onChange={handleChange}
               min={new Date().toISOString().split("T")[0]}
               className={`w-full p-2 mt-1 border rounded-md ${
@@ -717,17 +1743,66 @@ const ApplicationForm = () => {
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-900 font-radios">
-              Have you ever been denied a license, permit or privilege to
-              operate a motor vehicle?*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="EverBeenDeniedALicense"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                Have you ever been denied a license, permit or privilege to
+                operate a motor vehicle?*
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.EverBeenDeniedALicense.status === "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.EverBeenDeniedALicense.status === "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.EverBeenDeniedALicense.status === "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.EverBeenDeniedALicense.note
+                            ? formData.EverBeenDeniedALicense.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="EverBeenDeniedALicense"
                   value="yes"
-                  checked={formData.EverBeenDeniedALicense === "yes"}
+                  checked={formData.EverBeenDeniedALicense?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
@@ -742,7 +1817,7 @@ const ApplicationForm = () => {
                   type="radio"
                   name="EverBeenDeniedALicense"
                   value="no"
-                  checked={formData.EverBeenDeniedALicense === "no"}
+                  checked={formData.EverBeenDeniedALicense?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
@@ -761,17 +1836,67 @@ const ApplicationForm = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-900 font-radios">
-              Have any license, permit or privilege ever been suspended or
-              revoked?*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="PermitPrivilegeOfLicense"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                Have any license, permit or privilege ever been suspended or
+                revoked?
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.PermitPrivilegeOfLicense.status === "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.PermitPrivilegeOfLicense.status ===
+                    "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.PermitPrivilegeOfLicense.status === "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.PermitPrivilegeOfLicense.note
+                            ? formData.PermitPrivilegeOfLicense.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="PermitPrivilegeOfLicense"
                   value="yes"
-                  checked={formData.PermitPrivilegeOfLicense === "yes"}
+                  checked={formData.PermitPrivilegeOfLicense?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
@@ -786,7 +1911,7 @@ const ApplicationForm = () => {
                   type="radio"
                   name="PermitPrivilegeOfLicense"
                   value="no"
-                  checked={formData.PermitPrivilegeOfLicense === "no"}
+                  checked={formData.PermitPrivilegeOfLicense?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
@@ -805,18 +1930,72 @@ const ApplicationForm = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-900 font-radios">
-              Have you ever tested positive or refused a DOT drug or alcohol
-              pre-employment test within the past 3 years from an employer who
-              did not hire you?*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="TestedPositiveOrRefusedDotDrug"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                Have you ever tested positive or refused a DOT drug or alcohol
+                pre employment test within the past 3 years from an employer who
+                did not hire you?
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.TestedPositiveOrRefusedDotDrug.status ===
+                  "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.TestedPositiveOrRefusedDotDrug.status ===
+                    "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.TestedPositiveOrRefusedDotDrug.status ===
+                "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.TestedPositiveOrRefusedDotDrug.note
+                            ? formData.TestedPositiveOrRefusedDotDrug.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="TestedPositiveOrRefusedDotDrug"
                   value="yes"
-                  checked={formData.TestedPositiveOrRefusedDotDrug === "yes"}
+                  checked={
+                    formData.TestedPositiveOrRefusedDotDrug?.value === "yes"
+                  }
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
@@ -831,7 +2010,10 @@ const ApplicationForm = () => {
                   type="radio"
                   name="TestedPositiveOrRefusedDotDrug"
                   value="no"
-                  checked={formData.TestedPositiveOrRefusedDotDrug === "no"}
+                  checked={
+                    formData.TestedPositiveOrRefusedDotDrug?.value ===
+                    "no".value
+                  }
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
@@ -850,16 +2032,65 @@ const ApplicationForm = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-900 font-radios">
-              Have you ever been convicted of a felony?*
-            </label>
+            <div className="flex flex-row items-center gap-x-3 mb-1">
+              <label
+                htmlFor="EverConvictedOfFelony"
+                className="block text-sm font-semibold text-gray-900 font-radios"
+              >
+                Have you ever been convicted of a felony?*
+              </label>
+              <div className="flex flex-row items-center gap-x-2">
+                <div className="flex flex-row gap-x-1">
+                  {formData.EverConvictedOfFelony.status === "rejected" ? (
+                    <FaRegTimesCircle className="text-red-500" />
+                  ) : formData.EverConvictedOfFelony.status === "approved" ? (
+                    <FaRegCheckCircle className="text-green-500" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                {formData.EverConvictedOfFelony.status === "rejected" ? (
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    <FaPencil size={10} />
+                    <p className="text-xs font-radios">View note</p>
+
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <p className="py-4">
+                          {formData.EverConvictedOfFelony.note
+                            ? formData.EverConvictedOfFelony.note
+                            : "No note added"}
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="EverConvictedOfFelony"
                   value="yes"
-                  checked={formData.EverConvictedOfFelony === "yes"}
+                  checked={formData.EverConvictedOfFelony?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony
@@ -874,7 +2105,7 @@ const ApplicationForm = () => {
                   type="radio"
                   name="EverConvictedOfFelony"
                   value="no"
-                  checked={formData.EverConvictedOfFelony === "no"}
+                  checked={formData.EverConvictedOfFelony?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony

@@ -22,10 +22,10 @@ const ApplicationForm6 = () => {
       ? violationField
       : [
           {
-            date: "",
-            offense: "",
-            location: "",
-            vehicleOperated: "",
+            date: { value: "", status: "pending", note: "" },
+            offense: { value: "", status: "pending", note: "" },
+            location: { value: "", status: "pending", note: "" },
+            vehicleOperated: { value: "", status: "pending", note: "" },
           },
         ]
   );
@@ -45,15 +45,14 @@ const ApplicationForm6 = () => {
     if (violationFields.length === 0) {
       setViolationFields([
         {
-          date: "",
-          offense: "",
-          location: "",
-          vehicleOperated: "",
+          date: { value: "", status: "pending", note: "" },
+          offense: { value: "", status: "pending", note: "" },
+          location: { value: "", status: "pending", note: "" },
+          vehicleOperated: { value: "", status: "pending", note: "" },
         },
       ]);
     }
   }, [violationFields]);
-
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
@@ -63,16 +62,16 @@ const ApplicationForm6 = () => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm5");
   };
-  const handleVolationFieldChange = (e, index) => {
+  const handleViolationFieldChange = (e, index) => {
     if (noViolationCheckeds) return;
 
     const { name, value } = e.target;
     const updatedFields = [...violationFields];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value; // Update the value in the structure
     setViolationFields(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
 
@@ -82,11 +81,12 @@ const ApplicationForm6 = () => {
       setErrors(updatedErrors);
     }
   };
+
   const validateViolationFields = () => {
     const newErrors = violationFields.map((field) => {
       const fieldErrors = {};
       Object.entries(field).forEach(([key, value]) => {
-        if (value.trim() === "") {
+        if (value.value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -147,7 +147,7 @@ const ApplicationForm6 = () => {
     const hasViolationData =
       !noViolationCheckeds &&
       violationFields.some((field) =>
-        Object.values(field).some((val) => val.trim() !== "")
+        Object.values(field).some((val) => val.value.trim() !== "")
       );
 
     if (noViolationCheckeds || hasViolationData) {
@@ -187,13 +187,14 @@ const ApplicationForm6 = () => {
     setViolationFields([
       ...violationFields,
       {
-        date: "",
-        offense: "",
-        location: "",
-        vehicleOperated: "",
+        date: { value: "", status: "pending", note: "" },
+        offense: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        vehicleOperated: { value: "", status: "pending", note: "" },
       },
     ]);
   };
+
   const removeViolationField = (index) => {
     setViolationFields(violationFields.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
@@ -266,8 +267,8 @@ const ApplicationForm6 = () => {
                         type="date"
                         name="date"
                         id={`date-${index}`}
-                        value={address.date}
-                        onChange={(e) => handleVolationFieldChange(e, index)}
+                        value={address.date?.value}
+                        onChange={(e) => handleViolationFieldChange(e, index)}
                         className={`w-full p-2 mt-1 border ${
                           errors[index] && errors[index].date
                             ? "border-red-500"
@@ -291,8 +292,8 @@ const ApplicationForm6 = () => {
                         type="text"
                         name="offense"
                         id={`offense-${index}`}
-                        value={address.offense}
-                        onChange={(e) => handleVolationFieldChange(e, index)}
+                        value={address.offense?.value}
+                        onChange={(e) => handleViolationFieldChange(e, index)}
                         className={`w-full p-2 mt-1 border ${
                           errors[index] && errors[index].offense
                             ? "border-red-500"
@@ -316,8 +317,8 @@ const ApplicationForm6 = () => {
                         type="text"
                         name="location"
                         id={`location-${index}`}
-                        value={address.location}
-                        onChange={(e) => handleVolationFieldChange(e, index)}
+                        value={address.location?.value}
+                        onChange={(e) => handleViolationFieldChange(e, index)}
                         className={`w-full p-2 mt-1 border ${
                           errors[index] && errors[index].location
                             ? "border-red-500"
@@ -341,8 +342,8 @@ const ApplicationForm6 = () => {
                         type="text"
                         name="vehicleOperated"
                         id={`vehicleOperated-${index}`}
-                        value={address.vehicleOperated}
-                        onChange={(e) => handleVolationFieldChange(e, index)}
+                        value={address.vehicleOperated?.value}
+                        onChange={(e) => handleViolationFieldChange(e, index)}
                         className={`w-full p-2 mt-1 border ${
                           errors[index] && errors[index].vehicleOperated
                             ? "border-red-500"

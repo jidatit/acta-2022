@@ -27,12 +27,12 @@ const ApplicationForm4 = () => {
       ? addressField
       : [
           {
-            date: "",
-            accidentType: "",
-            location: "",
-            fatalities: "",
-            penalties: "",
-            comments: "",
+            date: { value: "", status: "pending", note: "" },
+            accidentType: { value: "", status: "pending", note: "" },
+            location: { value: "", status: "pending", note: "" },
+            fatalities: { value: "", status: "pending", note: "" },
+            penalties: { value: "", status: "pending", note: "" },
+            comments: { value: "", status: "pending", note: "" },
           },
         ]
   );
@@ -41,12 +41,12 @@ const ApplicationForm4 = () => {
     if (addressFields.length === 0) {
       setAddressFields([
         {
-          date: "",
-          accidentType: "",
-          location: "",
-          fatalities: "",
-          penalties: "",
-          comments: "",
+          date: { value: "", status: "pending", note: "" },
+          accidentType: { value: "", status: "pending", note: "" },
+          location: { value: "", status: "pending", note: "" },
+          fatalities: { value: "", status: "pending", note: "" },
+          penalties: { value: "", status: "pending", note: "" },
+          comments: { value: "", status: "pending", note: "" },
         },
       ]);
     }
@@ -56,11 +56,11 @@ const ApplicationForm4 = () => {
       ? trafficConvictionField
       : [
           {
-            date: "",
-            offenseType: "",
-            location: "",
-            penalties: "",
-            comments: "",
+            date: { value: "", status: "pending", note: "" },
+            offenseType: { value: "", status: "pending", note: "" },
+            location: { value: "", status: "pending", note: "" },
+            penalties: { value: "", status: "pending", note: "" },
+            comments: { value: "", status: "pending", note: "" },
           },
         ]
   );
@@ -69,11 +69,11 @@ const ApplicationForm4 = () => {
     if (trafficConvictionFields.length === 0) {
       setTrafficConvictionFields([
         {
-          date: "",
-          offenseType: "",
-          location: "",
-          penalties: "",
-          comments: "",
+          date: { value: "", status: "pending", note: "" },
+          offenseType: { value: "", status: "pending", note: "" },
+          location: { value: "", status: "pending", note: "" },
+          penalties: { value: "", status: "pending", note: "" },
+          comments: { value: "", status: "pending", note: "" },
         },
       ]);
     }
@@ -116,19 +116,13 @@ const ApplicationForm4 = () => {
 
     const { name, value } = e.target;
     const updatedFields = [...addressFields];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value;
     setAddressFields(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
-
-    if (errors[index] && errors[index][name]) {
-      const updatedErrors = [...errors];
-      delete updatedErrors[index][name];
-      setErrors(updatedErrors);
-    }
   };
 
   const handleTrafficChange = (e, index) => {
@@ -136,26 +130,20 @@ const ApplicationForm4 = () => {
 
     const { name, value } = e.target;
     const updatedFields = [...trafficConvictionFields];
-    updatedFields[index][name] = value;
+    updatedFields[index][name].value = value;
     setTrafficConvictionFields(updatedFields);
 
     const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.trim() === "")
+      Object.values(field).every((val) => val.value.trim() === "")
     );
     setIsSaveClicked(allFieldsEmpty);
-
-    if (trafficErrors[index] && trafficErrors[index][name]) {
-      const updatedErrors = [...trafficErrors];
-      delete updatedErrors[index][name];
-      setTrafficErrors(updatedErrors);
-    }
   };
 
   const validateAddressFields = () => {
     const newErrors = addressFields.map((field) => {
       const fieldErrors = {};
       Object.entries(field).forEach(([key, value]) => {
-        if (value.trim() === "") {
+        if (value.value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -169,7 +157,7 @@ const ApplicationForm4 = () => {
     const newErrors = trafficConvictionFields.map((field) => {
       const fieldErrors = {};
       Object.entries(field).forEach(([key, value]) => {
-        if (value.trim() === "") {
+        if (value.value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -205,13 +193,10 @@ const ApplicationForm4 = () => {
           completedForms: 4,
         });
       }
-
-      //console.log("Data successfully saved to Firebase");
     } catch (error) {
       console.error("Error saving application: ", error);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isAddressValid = validateAddressFields();
@@ -222,11 +207,10 @@ const ApplicationForm4 = () => {
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
       setIsSaveClicked(true);
-
       await saveToFirebase();
       navigate("/TruckDriverLayout/ApplicationForm5");
     } else {
-      toast.error("Please complete all required fields to continue");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
@@ -237,13 +221,13 @@ const ApplicationForm4 = () => {
     const hasAddressData =
       !noAccidentsChecked &&
       addressFields.some((field) =>
-        Object.values(field).some((val) => val.trim() !== "")
+        Object.values(field).some((val) => val.value.trim() !== "")
       );
 
     const hasTrafficData =
       !noTrafficConvictionsChecked &&
       trafficConvictionFields.some((field) =>
-        Object.values(field).some((val) => val.trim() !== "")
+        Object.values(field).some((val) => val.value.trim() !== "")
       );
 
     if (
@@ -291,12 +275,12 @@ const ApplicationForm4 = () => {
     setAddressFields([
       ...addressFields,
       {
-        date: "",
-        accidentType: "",
-        location: "",
-        fatalities: "",
-        penalties: "",
-        comments: "",
+        date: { value: "", status: "pending", note: "" },
+        accidentType: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        fatalities: { value: "", status: "pending", note: "" },
+        penalties: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -304,7 +288,13 @@ const ApplicationForm4 = () => {
   const addTrafficFields = () => {
     setTrafficConvictionFields([
       ...trafficConvictionFields,
-      { date: "", offenseType: "", location: "", penalties: "", comments: "" },
+      {
+        date: { value: "", status: "pending", note: "" },
+        offenseType: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        penalties: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
+      },
     ]);
   };
   const removeAddressField = (index) => {
@@ -318,7 +308,7 @@ const ApplicationForm4 = () => {
     );
     setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
   };
-  //console.log(trafficConvictionField);
+
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4">
       <div className="flex flex-row items-start gap-x-2 justify-start w-full">
@@ -369,7 +359,7 @@ const ApplicationForm4 = () => {
                       type="date"
                       name="date"
                       id={`date-${index}`}
-                      value={address.date}
+                      value={address.date.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].date
@@ -394,7 +384,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="accidentType"
                       id={`accidentType-${index}`}
-                      value={address.accidentType}
+                      value={address.accidentType.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].accidentType
@@ -419,7 +409,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="location"
                       id={`location-${index}`}
-                      value={address.location}
+                      value={address.location.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].location
@@ -444,7 +434,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="fatalities"
                       id={`fatalities-${index}`}
-                      value={address.fatalities}
+                      value={address.fatalities.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].fatalities
@@ -469,7 +459,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="penalties"
                       id={`penalties-${index}`}
-                      value={address.penalties}
+                      value={address.penalties.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].penalties
@@ -494,7 +484,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="comments"
                       id={`comments-${index}`}
-                      value={address.comments}
+                      value={address.comments.value}
                       onChange={(e) => handleAddressChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         errors[index] && errors[index].comments
@@ -571,7 +561,7 @@ const ApplicationForm4 = () => {
                       type="date"
                       name="date"
                       id={`date-${index}`}
-                      value={traffic.date}
+                      value={traffic.date.value}
                       onChange={(e) => handleTrafficChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         trafficErrors[index] && trafficErrors[index].date
@@ -596,7 +586,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="offenseType"
                       id={`offenseType-${index}`}
-                      value={traffic.offenseType}
+                      value={traffic.offenseType.value}
                       onChange={(e) => handleTrafficChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         trafficErrors[index] && trafficErrors[index].offenseType
@@ -622,7 +612,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="location"
                       id={`location-${index}`}
-                      value={traffic.location}
+                      value={traffic.location.value}
                       onChange={(e) => handleTrafficChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         trafficErrors[index] && trafficErrors[index].location
@@ -647,7 +637,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="penalties"
                       id={`penalties-${index}`}
-                      value={traffic.penalties}
+                      value={traffic.penalties.value}
                       onChange={(e) => handleTrafficChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         trafficErrors[index] && trafficErrors[index].penalties
@@ -672,7 +662,7 @@ const ApplicationForm4 = () => {
                       type="text"
                       name="comments"
                       id={`comments-${index}`}
-                      value={traffic.comments}
+                      value={traffic.comments.value}
                       onChange={(e) => handleTrafficChange(e, index)}
                       className={`w-full p-2 mt-1 border ${
                         trafficErrors[index] && trafficErrors[index].comments

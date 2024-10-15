@@ -26,145 +26,168 @@ export const AuthProvider = ({ children }) => {
   const [noTrafficConvictionsCheckeds, setNoTrafficConvictionsChecked] =
     useState(false);
   const [FormData1, setFormData1] = useState({
-    applicantName: "",
-    appliedDate: "",
-    positionApplied: "",
-    ssn: "",
-    DOB: "",
-    gender: "",
-    referredBy: "",
-    legalRightToWork: "",
-    payExpected: "",
-    street1: "",
-    street2: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    cellPhone: "",
-    Email: "",
-    EmergencyContact: "",
-    Relationship: "",
-    CDL: "",
-    CDLState: "",
-    CDLClass: "",
-    CDLExpirationDate: "",
-    EverBeenDeniedALicense: "",
-    PermitPrivilegeOfLicense: "",
-    TestedPositiveOrRefusedDotDrug: "",
-    EverConvictedOfFelony: "",
+    applicantName: { value: "", status: "pending", note: "" },
+    appliedDate: { value: "", status: "pending", note: "" },
+    positionApplied: { value: "", status: "pending", note: "" },
+    ssn: { value: "", status: "pending", note: "" },
+    DOB: { value: "", status: "pending", note: "" },
+    gender: { value: "", status: "pending", note: "" },
+    referredBy: { value: "", status: "pending", note: "" },
+    legalRightToWork: { value: "", status: "pending", note: "" },
+    payExpected: { value: "", status: "pending", note: "" },
+    street1: { value: "", status: "pending", note: "" },
+    street2: { value: "", status: "pending", note: "" },
+    city: { value: "", status: "pending", note: "" },
+    state: { value: "", status: "pending", note: "" },
+    zipCode: { value: "", status: "pending", note: "" },
+    cellPhone: { value: "", status: "pending", note: "" },
+    Email: { value: "", status: "pending", note: "" },
+    EmergencyContact: { value: "", status: "pending", note: "" },
+    Relationship: { value: "", status: "pending", note: "" },
+    CDL: { value: "", status: "pending", note: "" },
+    CDLState: { value: "", status: "pending", note: "" },
+    CDLClass: { value: "", status: "pending", note: "" },
+    CDLExpirationDate: { value: "", status: "pending", note: "" },
+    EverBeenDeniedALicense: { value: "", status: "pending", note: "" },
+    PermitPrivilegeOfLicense: { value: "", status: "pending", note: "" },
+    TestedPositiveOrRefusedDotDrug: { value: "", status: "pending", note: "" },
+    EverConvictedOfFelony: { value: "", status: "pending", note: "" },
   });
+
   const [formData8, setFormData8] = useState({
-    day1: "",
-    day2: "",
-    day3: "",
-    day4: "",
-    day5: "",
-    day6: "",
-    day7: "", // Endorsement
-    day1HoursWorked: "",
-    day2HoursWorked: "",
-    day3HoursWorked: "",
-    day4HoursWorked: "",
-    day5HoursWorked: "",
-    day6HoursWorked: "",
-    day7HoursWorked: "",
-    TotalHours: "",
-    relievedTime: "00:00",
-    relievedDate: "",
+    day1: { value: "", status: "pending", note: "" },
+    day2: { value: "", status: "pending", note: "" },
+    day3: { value: "", status: "pending", note: "" },
+    day4: { value: "", status: "pending", note: "" },
+    day5: { value: "", status: "pending", note: "" },
+    day6: { value: "", status: "pending", note: "" },
+    day7: { value: "", status: "pending", note: "" },
+    day1HoursWorked: { value: "", status: "pending", note: "" },
+    day2HoursWorked: { value: "", status: "pending", note: "" },
+    day3HoursWorked: { value: "", status: "pending", note: "" },
+    day4HoursWorked: { value: "", status: "pending", note: "" },
+    day5HoursWorked: { value: "", status: "pending", note: "" },
+    day6HoursWorked: { value: "", status: "pending", note: "" },
+    day7HoursWorked: { value: "", status: "pending", note: "" },
+    TotalHours: { value: "", status: "pending", note: "" },
+    relievedTime: { value: "00:00", status: "pending", note: "" },
+    relievedDate: { value: "", status: "pending", note: "" },
   });
+
   const [addressField, setAddressField] = useState([
     {
-      date: "",
-      accidentType: "",
-      location: "",
-      fatalities: "",
-      penalties: "",
-      comments: "",
+      date: { value: "", status: "pending", note: "" },
+      accidentType: { value: "", status: "pending", note: "" },
+      location: { value: "", status: "pending", note: "" },
+      fatalities: { value: "", status: "pending", note: "" },
+      penalties: { value: "", status: "pending", note: "" },
+      comments: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [violationField, setViolationField] = useState([
     {
-      date: "",
-      offense: "",
-      location: "",
-      vehicleOperated: "",
+      date: { value: "", status: "pending", note: "" },
+      offense: { value: "", status: "pending", note: "" },
+      location: { value: "", status: "pending", note: "" },
+      vehicleOperated: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [alcoholDrugTesting, setAlcoholDrugTesting] = useState([
     {
-      testedPositiveEver: "",
-      DOTCompletion: "",
+      testedPositiveEver: { value: "", status: "pending", note: "" },
+      DOTCompletion: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [trafficConvictionField, setTrafficConvictionField] = useState([
     {
-      date: "",
-      offenseType: "",
-      location: "",
-      penalties: "",
-      comments: "",
+      date: { value: "", status: "pending", note: "" },
+      offenseType: { value: "", status: "pending", note: "" },
+      location: { value: "", status: "pending", note: "" },
+      penalties: { value: "", status: "pending", note: "" },
+      comments: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [DriverLicensePermit, setDriverLicensePermit] = useState([
     {
-      LicenseNo: "",
-      type: "",
-      state: "",
-      expiryDate: "",
+      LicenseNo: { value: "", status: "pending", note: "" },
+      type: { value: "", status: "pending", note: "" },
+      state: { value: "", status: "pending", note: "" },
+      expiryDate: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [DriverExperience, setDriverExperience] = useState([
     {
-      statesOperated: "",
-      ClassEquipment: "",
-      EquipmentType: "",
-      DateFrom: "",
-      DateTo: "",
-      ApproximatelyMiles: "",
-      comments: "",
+      statesOperated: { value: "", status: "pending", note: "" },
+      ClassEquipment: { value: "", status: "pending", note: "" },
+      EquipmentType: { value: "", status: "pending", note: "" },
+      DateFrom: { value: "", status: "pending", note: "" },
+      DateTo: { value: "", status: "pending", note: "" },
+      ApproximatelyMiles: { value: "", status: "pending", note: "" },
+      comments: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [EducationHistory, setEducationHistory] = useState([
     {
-      school: "",
-      educationLevel: "",
-      DateFrom: "",
-      DateTo: "",
-      comments: "",
+      school: { value: "", status: "pending", note: "" },
+      educationLevel: { value: "", status: "pending", note: "" },
+      DateFrom: { value: "", status: "pending", note: "" },
+      DateTo: { value: "", status: "pending", note: "" },
+      comments: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [FormData, setFormData] = useState([
-    { street1: "", street2: "", city: "", state: "", zipCode: "" },
+    {
+      street1: { value: "", status: "pending", note: "" },
+      street2: { value: "", status: "pending", note: "" },
+      city: { value: "", status: "pending", note: "" },
+      state: { value: "", status: "pending", note: "" },
+      zipCode: { value: "", status: "pending", note: "" },
+    },
   ]);
+
   const [ExtraSkills, setExtraSkills] = useState({
-    safeDrivingAwards: "",
-    specialTraining: "",
-    otherSkills: "",
+    safeDrivingAwards: { value: "", status: "pending", note: "" },
+    specialTraining: { value: "", status: "pending", note: "" },
+    otherSkills: { value: "", status: "pending", note: "" },
   });
+
   const [FormData3, setFormData3] = useState([
     {
-      companyName: "",
-      street: "",
-      city: "",
-      zipCode: "",
-      contactPerson: "",
-      phone: "",
-      fax1: "",
-      from: "",
-      to: "",
-      position: "",
-      salary: "",
-      leavingReason: "",
-      subjectToFMCSRs: "",
-      jobDesignatedAsSafetySensitive: "",
+      companyName: { value: "", status: "pending", note: "" },
+      street: { value: "", status: "pending", note: "" },
+      city: { value: "", status: "pending", note: "" },
+      zipCode: { value: "", status: "pending", note: "" },
+      contactPerson: { value: "", status: "pending", note: "" },
+      phone: { value: "", status: "pending", note: "" },
+      fax1: { value: "", status: "pending", note: "" },
+      from: { value: "", status: "pending", note: "" },
+      to: { value: "", status: "pending", note: "" },
+      position: { value: "", status: "pending", note: "" },
+      salary: { value: "", status: "pending", note: "" },
+      leavingReason: { value: "", status: "pending", note: "" },
+      subjectToFMCSRs: { value: "", status: "pending", note: "" },
+      jobDesignatedAsSafetySensitive: {
+        value: "",
+        status: "pending",
+        note: "",
+      },
     },
   ]);
+
   const [formData9, setFormData9] = useState([
     {
-      currentlyWorking: "",
-      workingForAnotherEmployer: "",
+      currentlyWorking: { value: "", status: "pending", note: "" },
+      workingForAnotherEmployer: { value: "", status: "pending", note: "" },
     },
   ]);
+
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   useEffect(() => {
     if (!currentUser) return;

@@ -11,7 +11,7 @@ const AdminDashboard = () => {
     ); // or you can display a fallback UI or redirect
   }
   return (
-    <div className="flex items-start justify-start h-full p-6">
+    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-col items-center justify-center">
         <h1>Login As : {currentUser.userType} </h1>
         <p>Email : {currentUser.email}</p>
