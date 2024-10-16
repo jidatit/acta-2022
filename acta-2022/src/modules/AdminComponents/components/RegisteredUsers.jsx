@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { useState, useEffect } from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import { db } from "../../../config/firebaseConfig";
+import FormShowingModal from "./FormShowingModal";
 
 const RegisteredUsers = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -41,8 +46,25 @@ const RegisteredUsers = () => {
     // More rows can be added here...
   ]);
 
+  const [truckDrivers, setTruckDrivers] = useState([]); // State for truck driver data
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // Store the selected user for deletion
+
+  useEffect(() => {
+    // Mock API call to fetch truck drivers data
+    const fetchTruckDrivers = async () => {
+      // Simulate fetching data from the database
+      const querySnapshot = await getDocs(collection(db, "TruckDrivers"));
+      const drivers = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setTruckDrivers(drivers);
+    };
+
+    fetchTruckDrivers();
+  }, []);
 
   // Function to handle status change
   const handleStatusChange = (id, newStatus) => {
@@ -51,7 +73,12 @@ const RegisteredUsers = () => {
     );
     setTableData(updatedData);
   };
-
+  const handleStatusChange2 = (id, newStatus) => {
+    const updatedData = truckDrivers.map((row) =>
+      row.email === id ? { ...row, status: newStatus } : row
+    );
+    setTableData(updatedData);
+  };
   // Function to determine status background color
   const getStatusColor = (status) => {
     switch (status) {
@@ -71,22 +98,99 @@ const RegisteredUsers = () => {
   };
 
   // Function to select a row via checkbox
-  const handleSelectRow = (id) => {
-    console.log(`Row ${id} selected`);
-  };
 
   // Function to handle delete click
-  const handleDeleteClick = (user) => {
-    setSelectedUser(user);
-    setShowDeleteModal(true); // Show the modal
+  const deleteUserByUid = async (uid) => {
+    try {
+      await deleteDoc(doc(db, "TruckDrivers", uid));
+      console.log(`User with UID ${uid} deleted successfully.`);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
   // Function to confirm delete
-  const handleConfirmDelete = () => {
-    setTableData((prevData) =>
-      prevData.filter((user) => user.id !== selectedUser.id)
+  const handleSelectRow = (uid) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
     );
-    setShowDeleteModal(false); // Close the modal
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedUserIds.length > 0) {
+      setShowDeleteModal(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const truckDriversRef = collection(db, "TruckDrivers");
+      const querySnapshot = await getDocs(truckDriversRef);
+
+      const deletePromises = selectedUserIds.map(async (selectedUid) => {
+        const docToDelete = querySnapshot.docs.find(
+          (doc) => doc.data().uid === selectedUid
+        );
+        if (docToDelete) {
+          await deleteDoc(doc(db, "TruckDrivers", docToDelete.id));
+        }
+      });
+
+      await Promise.all(deletePromises);
+
+      setTruckDrivers((prevDrivers) =>
+        prevDrivers.filter((driver) => !selectedUserIds.includes(driver.uid))
+      );
+
+      setSelectedUserIds([]);
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting users:", error);
+    }
+  };
+  const formatDate = (timestamp) => {
+    // Check if the timestamp is an object with seconds and nanoseconds
+    if (
+      typeof timestamp !== "object" ||
+      !timestamp.seconds ||
+      !timestamp.nanoseconds
+    ) {
+      console.error("Invalid timestamp format:", timestamp);
+      return "Invalid date"; // Return a default value in case of error
+    }
+
+    // Convert Firestore timestamp to milliseconds
+    const milliseconds =
+      timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
+    const date = new Date(milliseconds);
+
+    // Check for valid date
+    if (isNaN(date.getTime())) {
+      console.error("Failed to parse date:", milliseconds);
+      return "Invalid date"; // Return a default value in case of error
+    }
+
+    // Get the day with its ordinal suffix
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
+    const suffix = (day) => {
+      if (day > 3 && day < 21) return "th"; // For 4-20
+      switch (day % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
+    };
+
+    return `${day}${suffix(day)} ${month} ${year}`;
   };
 
   return (
@@ -112,7 +216,63 @@ const RegisteredUsers = () => {
           </tr>
         </thead>
         <tbody>
-          {tableData.map((row) => (
+          {truckDrivers.map((driver) => (
+            <tr key={driver.uid} className="hover:bg-gray-100 ">
+              <td className="px-4 py-2">
+                <input
+                  type="checkbox"
+                  className="form-checkbox"
+                  onChange={() => handleSelectRow(driver.uid)}
+                />
+              </td>
+              <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
+              <td className="px-2 py-3">
+                <select
+                  value={driver.status || "Pending"} // Default to "Pending" if status is not set
+                  onChange={(e) =>
+                    handleStatusChange2(driver.email, e.target.value)
+                  }
+                  className={`p-2 rounded ${getStatusColor(
+                    driver.status || "Pending"
+                  )}`} // Use the current status for color
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Declined">Declined</option>
+                  <option value="Future Lead">Future Lead</option>
+                  <option value="Need Review">Need Review</option>
+                </select>
+              </td>
+              {/* Default status or you can modify this */}
+              <td className="px-2 py-3">{formatDate(driver.dateCreated)}</td>
+              <td className=" px-2 py-3">--</td>{" "}
+              {/* Placeholder for time or remove this column */}
+              <td className=" px-2 py-3">
+                {/* <button className="bg-blue-500 text-white py-1 px-3 rounded mr-2">
+                  View
+                </button> */}
+                <button
+                  className="bg-blue-500 text-white py-1 px-10 rounded"
+                  onClick={() => {
+                    console.log("driver.uid", driver.uid);
+                    setCurrentUserId(driver.uid);
+                    setOpenModal(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <>
+                  <FormShowingModal
+                    uid={currentUserId}
+                    openModal={openModal}
+                    setOpenModal={setOpenModal}
+                  />
+                </>
+              </td>
+            </tr>
+          ))}
+
+          {/* {tableData.map((row) => (
             <tr key={row.id} className="hover:bg-gray-100 ">
               <td className="px-4 py-2">
                 <input
@@ -121,6 +281,7 @@ const RegisteredUsers = () => {
                   onChange={() => handleSelectRow(row.id)}
                 />
               </td>
+
               <td className=" px-2 py-3">{row.name}</td>
               <td className=" px-2 py-3">
                 <select
@@ -146,7 +307,7 @@ const RegisteredUsers = () => {
                 </button>
               </td>
             </tr>
-          ))}
+          ))} */}
         </tbody>
       </table>
 
@@ -184,39 +345,27 @@ const RegisteredUsers = () => {
                   />
                 </svg>
               </button>
-              <div className="space-y-2 p-2">
-                <div className="p-4 space-y-6 text-center ">
-                  <p className="text-black text-xl font-radios">
-                    Are you sure you want to delete this driver?
-                  </p>
-                  <h2
-                    className="text-lg text-gray-500 tracking-tight"
-                    id="page-action.heading"
-                  >
-                    "Delete Hassan Iqbal"
-                  </h2>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div aria-hidden="true" className=" px-2" />
-                <div className="px-6 py-2">
-                  <div className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center py-3 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50"
-                      onClick={() => setShowDeleteModal(false)} // Close on cancel
-                    >
-                      <span>Cancel</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center py-3 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2.25rem] px-4 text-sm text-white bg-[#0086D9] border-transparent hover:bg-[#1c5f88]"
-                      onClick={handleConfirmDelete} // Confirm delete action
-                    >
-                      <span>Delete</span>
-                    </button>
-                  </div>
-                </div>
+
+              <h1 className="text-center text-lg font-bold">
+                Confirm Deletion
+              </h1>
+              <p className="text-center">
+                Are you sure you want to delete{" "}
+                {selectedUser ? selectedUser.name : ""}?
+              </p>
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  onClick={handleConfirmDelete}
+                  className="bg-red-500 text-white py-1 px-3 rounded"
+                >
+                  Yes, Delete
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="bg-gray-500 text-white py-1 px-3 rounded"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>

@@ -82,7 +82,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
         <div className="flex flex-col justify-between w-full h-full mt-4">
           <div className="flex flex-col w-full gap-y-4">
             <Link
-              to=""
+              to={"/AdminLayout/users"}
               className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "RegisteredDrivers"
                   ? "bg-white rounded-md shadow-lg"

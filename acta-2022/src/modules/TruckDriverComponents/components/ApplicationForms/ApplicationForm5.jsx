@@ -5,6 +5,8 @@ import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
+import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 
 const ApplicationForm5 = () => {
   const navigate = useNavigate();
@@ -348,12 +350,13 @@ const ApplicationForm5 = () => {
               className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
             >
               <div>
-                <label
-                  htmlFor={`LicenseNo-${index}`}
-                  className="w-full text-sm font-semibold text-gray-900 font-radios"
-                >
-                  License no.
-                </label>
+                <FormLabelWithStatus
+                  label="License no."
+                  id={`LicenseNo`}
+                  status={license.LicenseNo.status} // Adjust as necessary based on your state
+                  note={license.LicenseNo.note} // Adjust as necessary based on your state
+                  index={index}
+                />
                 <input
                   type="text"
                   name="LicenseNo"
@@ -364,12 +367,13 @@ const ApplicationForm5 = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor={`type-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Type
-                </label>
+                <FormLabelWithStatus
+                  label="Type"
+                  id={`type`}
+                  status={license.type.status} // Adjust as necessary based on your state
+                  note={license.type.note} // Adjust as necessary based on your state
+                  index={index}
+                />
                 <input
                   type="text"
                   name="type"
@@ -380,12 +384,13 @@ const ApplicationForm5 = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor={`state-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  State
-                </label>
+                <FormLabelWithStatus
+                  label="State"
+                  id={`state`}
+                  status={license.state.status} // Adjust as necessary based on your state
+                  note={license.state.note} // Adjust as necessary based on your state
+                  index={index}
+                />
                 <input
                   type="text"
                   name="state"
@@ -396,12 +401,13 @@ const ApplicationForm5 = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor={`expiryDate-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Expiration date
-                </label>
+                <FormLabelWithStatus
+                  label="Expiration date"
+                  id={`expiryDate`}
+                  status={license.expiryDate.status} // Adjust as necessary based on your state
+                  note={license.expiryDate.note} // Adjust as necessary based on your state
+                  index={index}
+                />
                 <input
                   type="date"
                   name="expiryDate"
@@ -448,12 +454,13 @@ const ApplicationForm5 = () => {
               className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
             >
               <div>
-                <label
-                  htmlFor={`statesOperated-${index}`}
-                  className="w-full text-sm font-semibold text-gray-900 font-radios"
-                >
-                  States Operated In For Last 5 Years*
-                </label>
+                <FormLabelWithStatus
+                  label="States Operated In For Last 5 Years"
+                  id={`statesOperated`}
+                  status={experience.statesOperated.status}
+                  note={experience.statesOperated.note}
+                  index={index}
+                />
                 <input
                   type="text"
                   name="statesOperated"
@@ -475,12 +482,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`ClassEquipment*-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Class of Equipment*
-                </label>
+                <FormLabelWithStatus
+                  label="Class of Equipment"
+                  id={`ClassEquipment`}
+                  status={experience.ClassEquipment.status}
+                  note={experience.ClassEquipment.note}
+                  index={index}
+                />
                 <input
                   type="text"
                   name="ClassEquipment"
@@ -502,12 +510,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`EquipmentType-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Type of Equipment*
-                </label>
+                <FormLabelWithStatus
+                  label="Type of Equipment"
+                  id={`EquipmentType`}
+                  status={experience.EquipmentType.status}
+                  note={experience.EquipmentType.note}
+                  index={index}
+                />
                 <input
                   type="text"
                   name="EquipmentType"
@@ -529,12 +538,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`DateTo-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Date To*
-                </label>
+                <FormLabelWithStatus
+                  label="Date To"
+                  id={`DateTo`}
+                  status={experience.DateTo.status}
+                  note={experience.DateTo.note}
+                  index={index}
+                />
                 <input
                   type="date"
                   name="DateTo"
@@ -557,12 +567,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`DateFrom-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Date From*
-                </label>
+                <FormLabelWithStatus
+                  label="Date From"
+                  id={`DateFrom`}
+                  status={experience.DateFrom.status}
+                  note={experience.DateFrom.note}
+                  index={index}
+                />
                 <input
                   type="date"
                   name="DateFrom"
@@ -586,12 +597,14 @@ const ApplicationForm5 = () => {
               </div>
 
               <div>
-                <label
-                  htmlFor={`ApproximatelyMiles*-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Approximately no of miles*
-                </label>
+                <FormLabelWithStatus
+                  label=" Approximately no of miles"
+                  id={`ApproximatelyMiles`}
+                  status={experience.ApproximatelyMiles.status}
+                  note={experience.ApproximatelyMiles.note}
+                  index={index}
+                />
+
                 <input
                   type="text"
                   name="ApproximatelyMiles"
@@ -613,12 +626,14 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`comments-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Comments*
-                </label>
+                <FormLabelWithStatus
+                  label="Comments"
+                  id={`comments`}
+                  status={experience.comments.status}
+                  note={experience.comments.note}
+                  index={index}
+                />
+
                 <input
                   type="text"
                   name="comments"
@@ -675,12 +690,13 @@ const ApplicationForm5 = () => {
               className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
             >
               <div>
-                <label
-                  htmlFor={`school-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  School (Name, City, State)*
-                </label>
+                <FormLabelWithStatus
+                  label="School (Name, City, State)"
+                  id={`school`}
+                  status={education.school.status} // Adjust the status logic as needed
+                  note={education.school.note} // Adjust the note logic as needed
+                  index={index}
+                />
                 <input
                   type="text"
                   name="school"
@@ -702,12 +718,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`educationLevel-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Educational Level*
-                </label>
+                <FormLabelWithStatus
+                  label="Educational Level"
+                  id={`educationLevel`}
+                  status={education.educationLevel.status} // Adjust the status logic as needed
+                  note={education.educationLevel.note} // Adjust the note logic as needed
+                  index={index}
+                />
                 <input
                   type="text"
                   name="educationLevel"
@@ -729,12 +746,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`DateFrom-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Date from*
-                </label>
+                <FormLabelWithStatus
+                  label="Date from"
+                  id={`DateFrom`}
+                  status={education.DateFrom.status} // Adjust the status logic as needed
+                  note={education.DateFrom.note} // Adjust the note logic as needed
+                  index={index}
+                />
                 <input
                   type="date"
                   name="DateFrom"
@@ -757,12 +775,13 @@ const ApplicationForm5 = () => {
                   )}
               </div>
               <div>
-                <label
-                  htmlFor={`DateTo-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Date To*
-                </label>
+                <FormLabelWithStatus
+                  label="Date To"
+                  id={`DateTo`}
+                  status={education.DateTo.status} // Adjust the status logic as needed
+                  note={education.DateTo.note} // Adjust the note logic as needed
+                  index={index}
+                />
                 <input
                   type="date"
                   name="DateTo"
@@ -786,12 +805,13 @@ const ApplicationForm5 = () => {
               </div>
 
               <div>
-                <label
-                  htmlFor={`comments-${index}`}
-                  className="block text-sm font-semibold text-gray-900 font-radios"
-                >
-                  Comments*
-                </label>
+                <FormLabelWithStatus
+                  label="Comments"
+                  id={`comments`}
+                  status={education.comments.status} // Adjust the status logic as needed
+                  note={education.comments.note} // Adjust the note logic as needed
+                  index={index}
+                />
                 <input
                   type="text"
                   name="comments"
@@ -839,12 +859,12 @@ const ApplicationForm5 = () => {
         <form className="w-full bg-white shadow-md">
           <div className="grid grid-cols-1 gap-4 mb-6">
             <div>
-              <label
+              <SingleLabelLogic
                 htmlFor="safeDrivingAwards"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                List any safe driving awards you have earned
-              </label>
+                labelName="List any safe driving awards you have earned"
+                status={extraSkills.safeDrivingAwards.status} // Adjust the status accordingly
+                note={extraSkills.safeDrivingAwards.note} // Adjust the note accordingly
+              />
               <input
                 type="text"
                 name="safeDrivingAwards"
@@ -855,13 +875,12 @@ const ApplicationForm5 = () => {
               />
             </div>
             <div>
-              <label
+              <SingleLabelLogic
                 htmlFor="specialTraining"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                List any special training that will enable you to be a better
-                driver
-              </label>
+                labelName="List any special training that will enable you to be a better driver"
+                status={extraSkills.specialTraining.status} // Adjust the status accordingly
+                note={extraSkills.specialTraining.note} // Adjust the note accordingly
+              />
               <input
                 type="text"
                 name="specialTraining"
@@ -872,12 +891,12 @@ const ApplicationForm5 = () => {
               />
             </div>
             <div>
-              <label
+              <SingleLabelLogic
                 htmlFor="otherSkills"
-                className="block text-sm font-semibold text-gray-900 font-radios"
-              >
-                Other Skills or Training
-              </label>
+                labelName="Other Skills or Training"
+                status={extraSkills.otherSkills.status} // Adjust the status accordingly
+                note={extraSkills.otherSkills.note} // Adjust the note accordingly
+              />
               <input
                 type="text"
                 name="otherSkills"

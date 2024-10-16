@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../../AuthContext";
 import { useNavigate } from "react-router";
 import { FaBell } from "react-icons/fa";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 const ApplicationForm8 = () => {
   const defaultFormData = [
     {
@@ -331,12 +332,13 @@ const ApplicationForm8 = () => {
                     </p>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day1-${index}`}
-                          className="block w-full text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 1 (yesterday)*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 1 (yesterday)"
+                          id={`day1`}
+                          status={field.day1?.status}
+                          note={field.day1?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day1"
@@ -356,12 +358,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day1HoursWorked-${index}`}
-                          className="block w-full text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day1HoursWorked`}
+                          status={field.day1HoursWorked?.status}
+                          note={field.day1HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day1HoursWorked"
@@ -383,12 +386,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day2-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 2*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 2"
+                          id={`day2`}
+                          status={field.day2?.status}
+                          note={field.day2?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day2"
@@ -408,12 +412,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day2HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day2HoursWorked`}
+                          status={field.day2HoursWorked?.status}
+                          note={field.day2HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day2HoursWorked"
@@ -435,12 +440,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day3-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 3*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 3"
+                          id={`day3`}
+                          status={field.day3?.status}
+                          note={field.day3?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day3"
@@ -460,12 +466,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day3HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day3HoursWorked`}
+                          status={field.day3HoursWorked?.status}
+                          note={field.day3HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day3HoursWorked"
@@ -487,12 +494,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day4-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 4*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 4"
+                          id={`day4`}
+                          status={field.day4?.status}
+                          note={field.day4?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day4"
@@ -512,12 +520,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day4HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day4HoursWorked`}
+                          status={field.day4HoursWorked?.status}
+                          note={field.day4HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day4HoursWorked"
@@ -539,12 +548,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day5-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 5*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 5"
+                          id={`day5`}
+                          status={field.day5?.status}
+                          note={field.day5?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day5"
@@ -564,12 +574,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day5HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day5HoursWorked`}
+                          status={field.day5HoursWorked?.status}
+                          note={field.day5HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day5HoursWorked"
@@ -591,12 +602,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day6-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 6*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 6"
+                          id={`day6`}
+                          status={field.day6?.status}
+                          note={field.day6?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day6"
@@ -616,12 +628,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day6HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day6HoursWorked`}
+                          status={field.day6HoursWorked?.status}
+                          note={field.day6HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day6HoursWorked"
@@ -643,12 +656,13 @@ const ApplicationForm8 = () => {
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day7-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Day 7*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Day 7"
+                          id={`day7`}
+                          status={field.day7?.status}
+                          note={field.day7?.note}
+                          index={index}
+                        />
                         <input
                           type="date"
                           name="day7"
@@ -668,12 +682,13 @@ const ApplicationForm8 = () => {
                         )}
                       </div>
                       <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
-                        <label
-                          htmlFor={`day7HoursWorked-${index}`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Hours Worked*
-                        </label>
+                        <FormLabelWithStatus
+                          label="Hours Worked"
+                          id={`day7HoursWorked`}
+                          status={field.day7HoursWorked?.status}
+                          note={field.day7HoursWorked?.note}
+                          index={index}
+                        />
                         <input
                           type="number"
                           name="day7HoursWorked"
@@ -696,12 +711,13 @@ const ApplicationForm8 = () => {
                   </div>
                 </div>
                 <div className="lg:w-[21%] md:w-[35%] w-[80%] -mt-2">
-                  <label
-                    htmlFor={`TotalHours-${index}`}
-                    className="block text-sm font-semibold text-gray-900 font-radios"
-                  >
-                    Total Hours*
-                  </label>
+                  <FormLabelWithStatus
+                    label="Total Hours"
+                    id={`TotalHours`}
+                    status={field.TotalHours?.status}
+                    note={field.TotalHours?.note}
+                    index={index}
+                  />
                   <input
                     type="number"
                     name="TotalHours"
@@ -723,12 +739,13 @@ const ApplicationForm8 = () => {
 
                 <div className="flex items-center gap-x-4 lg:w-[21%] md:w-[35%] w-[80%] mt-7">
                   <div className="flex flex-col">
-                    <label
-                      htmlFor={`time-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Relieved Time*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Relieved Time"
+                      id={`relievedTime`}
+                      status={field.relievedTime?.status}
+                      note={field.relievedTime?.note}
+                      index={index}
+                    />
                     <form className="w-full mx-auto mt-3">
                       <div className="relative">
                         <div className="absolute inset-y-0 end-0 top-0 flex items-center p-3.5  pointer-events-none">
@@ -771,12 +788,13 @@ const ApplicationForm8 = () => {
                   </div>
                 </div>
                 <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%] mt-3">
-                  <label
-                    htmlFor={`relievedDate-${index}`}
-                    className="block text-sm mb-3 font-semibold text-gray-900 font-radios"
-                  >
-                    Relieved Date*
-                  </label>
+                  <FormLabelWithStatus
+                    label="Relieved Date"
+                    id={`relievedDate`}
+                    status={field.relievedDate?.status}
+                    note={field.relievedDate?.note}
+                    index={index}
+                  />
                   <input
                     type="date"
                     name="relievedDate"

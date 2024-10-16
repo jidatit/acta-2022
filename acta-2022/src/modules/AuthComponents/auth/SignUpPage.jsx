@@ -87,7 +87,7 @@ const SignUpPage = () => {
       toast.success("You registered successfully!");
       if (collectionName === "admin") {
         setTimeout(() => {
-          navigate("/AdminLayout");
+          navigate("/AdminLayout/users");
         }, 3000);
       } else {
         setTimeout(() => {

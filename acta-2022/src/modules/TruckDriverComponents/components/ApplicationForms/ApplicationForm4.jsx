@@ -5,6 +5,7 @@ import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 
 const ApplicationForm4 = () => {
   const navigate = useNavigate();
@@ -349,12 +350,13 @@ const ApplicationForm4 = () => {
                   className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
                 >
                   <div>
-                    <label
-                      htmlFor={`date-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Date*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Date"
+                      id={`date`}
+                      status={address.date.status}
+                      note={address.date.note}
+                      index={index}
+                    />
                     <input
                       type="date"
                       name="date"
@@ -374,12 +376,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`accidentType-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Type of Accident*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Type of Accident"
+                      id={`accidentType`}
+                      status={address.accidentType.status}
+                      note={address.accidentType.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="accidentType"
@@ -399,12 +402,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`location-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Location*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Location"
+                      id={`location`}
+                      status={address.location.status}
+                      note={address.location.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="location"
@@ -424,12 +428,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`fatalities-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Fatalities*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Fatalities"
+                      id={`fatalities`}
+                      status={address.fatalities.status}
+                      note={address.fatalities.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="fatalities"
@@ -449,12 +454,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`penalties-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Penalties*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Penalties"
+                      id={`penalties`}
+                      status={address.penalties.status}
+                      note={address.penalties.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="penalties"
@@ -474,12 +480,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`comments-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Comments*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Comments"
+                      id={`comments`}
+                      status={address.comments.status}
+                      note={address.comments.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="comments"
@@ -551,12 +558,13 @@ const ApplicationForm4 = () => {
                   className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
                 >
                   <div>
-                    <label
-                      htmlFor={`date-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Date*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Date"
+                      id={`date`}
+                      status={traffic.date.status}
+                      note={traffic.date.note}
+                      index={index}
+                    />
                     <input
                       type="date"
                       name="date"
@@ -576,12 +584,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`offenseType-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Type of Offense*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Type of Offense"
+                      id={`offenseType`}
+                      status={traffic.offenseType.status}
+                      note={traffic.offenseType.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="offenseType"
@@ -602,12 +611,13 @@ const ApplicationForm4 = () => {
                       )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`location-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Location*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Location"
+                      id={`location`}
+                      status={traffic.location.status}
+                      note={traffic.location.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="location"
@@ -627,12 +637,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`penalties-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Penalties*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Penalties"
+                      id={`penalties`}
+                      status={traffic.penalties.status}
+                      note={traffic.penalties.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="penalties"
@@ -652,12 +663,13 @@ const ApplicationForm4 = () => {
                     )}
                   </div>
                   <div>
-                    <label
-                      htmlFor={`comments-${index}`}
-                      className="block text-sm font-semibold text-gray-900 font-radios"
-                    >
-                      Comments*
-                    </label>
+                    <FormLabelWithStatus
+                      label="Comments"
+                      id={`comments`}
+                      status={traffic.comments.status}
+                      note={traffic.comments.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="comments"

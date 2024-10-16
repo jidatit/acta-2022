@@ -9,6 +9,9 @@ import { FaPencil } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
+import IndexLabelLogic from "../../../SharedComponents/components/IndexLableLogic";
+import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 const ApplicationForm3 = () => {
   const navigate = useNavigate();
   const { FormData3, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
@@ -229,61 +232,13 @@ const ApplicationForm3 = () => {
               <div key={index} className="mb-6">
                 <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`companyName-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Company Name*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.companyName.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.companyName.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.companyName.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-company-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-company-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.companyName.note
-                                    ? field.companyName.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Company Name"
+                      id="companyName"
+                      status={field.companyName.status}
+                      note={field.companyName.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="companyName"
@@ -304,61 +259,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`street-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Street*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.street.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.street.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.street.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-street-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-street-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.street.note
-                                    ? field.street.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Street"
+                      id="street"
+                      status={field.street.status}
+                      note={field.street.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="street"
@@ -379,61 +286,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`city-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        City/State*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.city.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.city.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.city.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-city-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-city-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.city.note
-                                    ? field.city.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="City,State"
+                      id="city"
+                      status={field.city.status}
+                      note={field.city.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="city"
@@ -454,62 +313,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`zipCode-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Zip Code*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.zipCode.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.zipCode.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.zipCode.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-zipCode-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-zipCode-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.zipCode.note
-                                    ? field.zipCode.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
-
+                    <FormLabelWithStatus
+                      label="Zip Code"
+                      id="zipCode"
+                      status={field.zipCode.status}
+                      note={field.zipCode.note}
+                      index={index}
+                    />
                     <input
                       type="number"
                       name="zipCode"
@@ -530,62 +340,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`contactPerson-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Contact Person*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.contactPerson.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.contactPerson.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.contactPerson.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-contactPerson-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-contactPerson-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.contactPerson.note
-                                    ? field.contactPerson.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
-
+                    <FormLabelWithStatus
+                      label="Contact Person"
+                      id="contactPerson"
+                      status={field.contactPerson.status}
+                      note={field.contactPerson.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="contactPerson"
@@ -606,62 +367,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`phone-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Phone #*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.phone.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.phone.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.phone.status === "rejected" ? (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-phone-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-phone-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.phone.note
-                                    ? field.phone.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
-
+                    <FormLabelWithStatus
+                      label="Phone #"
+                      id="phone"
+                      status={field.phone.status}
+                      note={field.phone.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="phone"
@@ -682,56 +394,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`fax1-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Fax #
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.fax1.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.fax1.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.fax1.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-fax-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog id={`modal-fax-${index}`} className="modal">
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.fax1.note
-                                    ? field.fax1.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Fax #"
+                      id="fax1"
+                      status={field.fax1.status}
+                      note={field.fax1.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="fax1"
@@ -752,59 +421,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`from-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        From*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.from.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.from.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.from.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-from-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-from-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.from.note
-                                    ? field.from.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="From"
+                      id="from"
+                      status={field.from.status}
+                      note={field.from.note}
+                      index={index}
+                    />
                     <input
                       type="date"
                       name="from"
@@ -826,56 +449,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`to-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        To*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.to.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.to.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.to.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-to-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog id={`modal-to-${index}`} className="modal">
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.to.note
-                                    ? field.to.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="To"
+                      id="to"
+                      status={field.to.status}
+                      note={field.to.note}
+                      index={index}
+                    />
                     <input
                       type="date"
                       name="to"
@@ -895,59 +475,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`position-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Position*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.position.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.position.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.position.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-position-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-position-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.position.note
-                                    ? field.position.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Position"
+                      id="position"
+                      status={field.position.status}
+                      note={field.position.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="position"
@@ -968,59 +502,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`salary-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Salary*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.salary.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.salary.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.salary.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-salary-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-salary-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.salary.note
-                                    ? field.salary.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Salary"
+                      id="salary"
+                      status={field.salary.status}
+                      note={field.salary.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="salary"
@@ -1041,59 +529,13 @@ const ApplicationForm3 = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-row items-center gap-x-3 mb-1">
-                      <label
-                        htmlFor={`leavingReason-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Reason for leaving*
-                      </label>
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex flex-row gap-x-1">
-                          {field.leavingReason.status === "rejected" ? (
-                            <FaRegTimesCircle className="text-red-500" />
-                          ) : field.leavingReason.status === "approved" ? (
-                            <FaRegCheckCircle className="text-green-500" />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        {field.leavingReason.status === "rejected" && (
-                          <div
-                            className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                            onClick={() =>
-                              document
-                                .getElementById(`modal-leavingReason-${index}`)
-                                .showModal()
-                            }
-                          >
-                            <FaPencil size={10} />
-                            <p className="text-xs font-radios">View note</p>
-
-                            <dialog
-                              id={`modal-leavingReason-${index}`}
-                              className="modal"
-                            >
-                              <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="font-bold text-lg">Note</h3>
-                                <p className="py-4">
-                                  {field.leavingReason.note
-                                    ? field.leavingReason.note
-                                    : "No note added"}
-                                </p>
-                                <div className="modal-action">
-                                  <form method="dialog">
-                                    <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                      Close
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </dialog>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormLabelWithStatus
+                      label="Reason For Leaving"
+                      id="leavingReason"
+                      status={field.leavingReason.status}
+                      note={field.leavingReason.note}
+                      index={index}
+                    />
                     <input
                       type="text"
                       name="leavingReason"
@@ -1114,61 +556,12 @@ const ApplicationForm3 = () => {
                   </div>
                   <div className="flex flex-col smd:w-screen w-[90%] mb-6">
                     <div className="w-full mb-6">
-                      <div className="flex flex-row items-center gap-x-3 mb-1">
-                        <label
-                          htmlFor={`company-${index}-subjectToFMCSRs`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Were you subject to the FMCSRs* while employed?*
-                        </label>
-                        <div className="flex flex-row items-center gap-x-2">
-                          <div className="flex flex-row gap-x-1">
-                            {field.subjectToFMCSRs.status === "rejected" ? (
-                              <FaRegTimesCircle className="text-red-500" />
-                            ) : field.subjectToFMCSRs.status === "approved" ? (
-                              <FaRegCheckCircle className="text-green-500" />
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                          {field.subjectToFMCSRs.status === "rejected" && (
-                            <div
-                              className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                              onClick={() =>
-                                document
-                                  .getElementById(
-                                    `modal-company-${index}-subjectToFMCSRs`
-                                  )
-                                  .showModal()
-                              }
-                            >
-                              <FaPencil size={10} />
-                              <p className="text-xs font-radios">View note</p>
-
-                              <dialog
-                                id={`modal-company-${index}-subjectToFMCSRs`}
-                                className="modal"
-                              >
-                                <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                  <h3 className="font-bold text-lg">Note</h3>
-                                  <p className="py-4">
-                                    {field.subjectToFMCSRs.note
-                                      ? field.subjectToFMCSRs.note
-                                      : "No note added"}
-                                  </p>
-                                  <div className="modal-action">
-                                    <form method="dialog">
-                                      <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                        Close
-                                      </button>
-                                    </form>
-                                  </div>
-                                </div>
-                              </dialog>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                      <SingleLabelLogic
+                        htmlFor="subjectToFMCSRs"
+                        labelName="Were you subject to the FMCSRs* while employed?"
+                        status={field.subjectToFMCSRs.status} // Adjust the status accordingly
+                        note={field.subjectToFMCSRs.note} // Adjust the note accordingly
+                      />
                       <div className="mt-2">
                         <label className="inline-flex items-center">
                           <input
@@ -1201,67 +594,12 @@ const ApplicationForm3 = () => {
                     </div>
 
                     <div className="w-full mb-6">
-                      <div className="flex flex-row items-center gap-x-3 mb-1">
-                        <label
-                          htmlFor={`company-${index}-jobDesignatedAsSafetySensitive`}
-                          className="block text-sm font-semibold text-gray-900 font-radios"
-                        >
-                          Was your job designated as a safety-sensitive function
-                          in any DOT-regulated mode subject to the drug and
-                          alcohol testing requirements.*
-                        </label>
-                        <div className="flex flex-row items-center gap-x-2">
-                          <div className="flex flex-row gap-x-1">
-                            {field.jobDesignatedAsSafetySensitive.status ===
-                            "rejected" ? (
-                              <FaRegTimesCircle className="text-red-500" />
-                            ) : field.jobDesignatedAsSafetySensitive.status ===
-                              "approved" ? (
-                              <FaRegCheckCircle className="text-green-500" />
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                          {field.jobDesignatedAsSafetySensitive.status ===
-                            "rejected" && (
-                            <div
-                              className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                              onClick={() =>
-                                document
-                                  .getElementById(
-                                    `modal-company-${index}-jobDesignatedAsSafetySensitive`
-                                  )
-                                  .showModal()
-                              }
-                            >
-                              <FaPencil size={10} />
-                              <p className="text-xs font-radios">View note</p>
-
-                              <dialog
-                                id={`modal-company-${index}-jobDesignatedAsSafetySensitive`}
-                                className="modal"
-                              >
-                                <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                                  <h3 className="font-bold text-lg">Note</h3>
-                                  <p className="py-4">
-                                    {field.jobDesignatedAsSafetySensitive.note
-                                      ? field.jobDesignatedAsSafetySensitive
-                                          .note
-                                      : "No note added"}
-                                  </p>
-                                  <div className="modal-action">
-                                    <form method="dialog">
-                                      <button className="btn bg-gray-300 text-gray-700 rounded-xl p-2.5">
-                                        Close
-                                      </button>
-                                    </form>
-                                  </div>
-                                </div>
-                              </dialog>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                      <SingleLabelLogic
+                        htmlFor="jobDesignatedAsSafetySensitive"
+                        labelName="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
+                        status={field.jobDesignatedAsSafetySensitive.status} // Adjust the status accordingly
+                        note={field.jobDesignatedAsSafetySensitive.note} // Adjust the note accordingly
+                      />
                       <div className="mt-2">
                         <label className="inline-flex items-center">
                           <input

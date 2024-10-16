@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 
 const ApplicationForm9 = () => {
   const navigate = useNavigate();
@@ -204,12 +205,12 @@ const ApplicationForm9 = () => {
                 key={index}
               >
                 <div className="w-full mb-6">
-                  <label
-                    htmlFor={`company-${index}-currentlyWorking`}
-                    className="block text-[15px] smd:text-lg text-gray-900 font-radios"
-                  >
-                    Are you currently working for another employer?*
-                  </label>
+                  <SingleLabelLogic
+                    htmlFor="currentlyWorking"
+                    labelName="Are you currently working for another employer?"
+                    status={field.currentlyWorking.status} // Adjust the status accordingly
+                    note={field.currentlyWorking.note} // Adjust the note accordingly
+                  />
                   <div className="mt-2">
                     <label className="inline-flex items-center">
                       <input
@@ -242,13 +243,13 @@ const ApplicationForm9 = () => {
                 </div>
 
                 <div className="w-full mb-6">
-                  <label
-                    htmlFor={`company-${index}-workingForAnotherEmployer`}
-                    className="block text-[15px] smd:text-lg text-gray-900 font-radios"
-                  >
-                    At this time do you intend to work for another employer
-                    while still employed by this company?*
-                  </label>
+                  <SingleLabelLogic
+                    htmlFor="workingForAnotherEmployer"
+                    labelName="At this time do you intend to work for another employer
+                    while still employed by this company?"
+                    status={field.workingForAnotherEmployer.status} // Adjust the status accordingly
+                    note={field.workingForAnotherEmployer.note} // Adjust the note accordingly
+                  />
                   <div className="mt-2">
                     <label className="inline-flex items-center">
                       <input

@@ -66,7 +66,7 @@ const SignInPage = () => {
       let userData = await queryCollection("admin");
       if (userData) {
         setLoading(false); // Stop loading
-        navigate("/AdminLayout");
+        navigate("/AdminLayout/users");
       }
 
       userData = await queryCollection("TruckDrivers");

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 
 const ApplicationForm7 = () => {
   const navigate = useNavigate();
@@ -227,14 +228,15 @@ const ApplicationForm7 = () => {
             localFormData.map((field, index) => (
               <div className="flex flex-col w-full mb-6" key={index}>
                 <div className="w-full mb-6">
-                  <label
-                    htmlFor={`company-${index}-testedPositiveEver`}
-                    className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
-                  >
-                    Have you ever been tested positive or refused to be tested
+                  <SingleLabelLogic
+                    htmlFor="testedPositiveEver"
+                    labelName="Have you ever been tested positive or refused to be tested
                     on any pre-employment drug test in which you were not hired
-                    during the past two years?*
-                  </label>
+                    during the past two years?"
+                    status={field.testedPositiveEver.status} // Adjust the status accordingly
+                    note={field.testedPositiveEver.note} // Adjust the note accordingly
+                  />
+
                   <div className="mt-2">
                     <label className="inline-flex items-center">
                       <input
@@ -267,13 +269,13 @@ const ApplicationForm7 = () => {
                 </div>
                 {field.testedPositiveEver.value === "yes" && (
                   <div className="w-full mb-6">
-                    <label
-                      htmlFor={`company-${index}-DOTCompletion`}
-                      className="block w-full text-[15px] smd:text-lg text-gray-900 font-radios"
-                    >
-                      If yes, have you successfully completed the DOT return to
-                      duty process?*
-                    </label>
+                    <SingleLabelLogic
+                      htmlFor="DOTCompletion"
+                      labelName="If yes, have you successfully completed the DOT return to
+                      duty process?"
+                      status={field.DOTCompletion.status} // Adjust the status accordingly
+                      note={field.DOTCompletion.note} // Adjust the note accordingly
+                    />
                     <div className="mt-2">
                       <label className="inline-flex items-center">
                         <input

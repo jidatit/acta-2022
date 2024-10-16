@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 const ApplicationForm6 = () => {
   const {
     setIsSaveClicked,
@@ -257,12 +258,13 @@ const ApplicationForm6 = () => {
                     className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3"
                   >
                     <div>
-                      <label
-                        htmlFor={`date-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Date*
-                      </label>
+                      <FormLabelWithStatus
+                        label="Date"
+                        id={`date`}
+                        status={address.date?.status}
+                        note={address.date?.note}
+                        index={index}
+                      />
                       <input
                         type="date"
                         name="date"
@@ -282,12 +284,13 @@ const ApplicationForm6 = () => {
                       )}
                     </div>
                     <div>
-                      <label
-                        htmlFor={`offense-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Offense*
-                      </label>
+                      <FormLabelWithStatus
+                        label="Offense"
+                        id={`offense`}
+                        status={address.offense?.status}
+                        note={address.offense?.note}
+                        index={index}
+                      />
                       <input
                         type="text"
                         name="offense"
@@ -307,12 +310,13 @@ const ApplicationForm6 = () => {
                       )}
                     </div>
                     <div>
-                      <label
-                        htmlFor={`location-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Location*
-                      </label>
+                      <FormLabelWithStatus
+                        label="Location"
+                        id={`location`}
+                        status={address.location?.status}
+                        note={address.location?.note}
+                        index={index}
+                      />
                       <input
                         type="text"
                         name="location"
@@ -332,12 +336,13 @@ const ApplicationForm6 = () => {
                       )}
                     </div>
                     <div>
-                      <label
-                        htmlFor={`vehicleOperated-${index}`}
-                        className="block text-sm font-semibold text-gray-900 font-radios"
-                      >
-                        Type of Vehicle Operated*
-                      </label>
+                      <FormLabelWithStatus
+                        label="Type of Vehicle Operated"
+                        id={`vehicleOperated`}
+                        status={address.vehicleOperated?.status}
+                        note={address.vehicleOperated?.note}
+                        index={index}
+                      />
                       <input
                         type="text"
                         name="vehicleOperated"

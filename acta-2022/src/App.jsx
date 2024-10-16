@@ -43,8 +43,8 @@ function App() {
     switch (userType) {
       case "TruckDriver":
         return "/TruckDriverLayout/ApplicationForm1";
-      case "admin":
-        return "/AdminLayout";
+      case "Admin":
+        return "/AdminLayout/users";
       default:
         return "/";
     }
@@ -173,6 +173,60 @@ function App() {
                   path="users"
                   element={
                     currentUser ? <RegisteredUsers /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm1"
+                  element={
+                    currentUser ? <ApplicationForm /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm2"
+                  element={
+                    currentUser ? <ApplicationForm2 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm3"
+                  element={
+                    currentUser ? <ApplicationForm3 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm4"
+                  element={
+                    currentUser ? <ApplicationForm4 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm5"
+                  element={
+                    currentUser ? <ApplicationForm5 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm6"
+                  element={
+                    currentUser ? <ApplicationForm6 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm7"
+                  element={
+                    currentUser ? <ApplicationForm7 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm8"
+                  element={
+                    currentUser ? <ApplicationForm8 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="ApplicationForm9"
+                  element={
+                    currentUser ? <ApplicationForm9 /> : <Navigate to="/" />
                   }
                 />
                 <Route
