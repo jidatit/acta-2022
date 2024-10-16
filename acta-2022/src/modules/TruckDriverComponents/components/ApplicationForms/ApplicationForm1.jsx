@@ -223,6 +223,749 @@ const ApplicationForm = ({ uid }) => {
                 </p>
               )}
             </div>
+
+            <div>
+              <SingleLabelLogic
+                htmlFor="positionApplied"
+                labelName="Position Applied For"
+                value={formData?.positionApplied?.value}
+                status={formData?.positionApplied?.status}
+                note={formData?.positionApplied?.note}
+              />
+              <select
+                name="positionApplied"
+                id="positionApplied"
+                value={formData.positionApplied.value}
+                onChange={handleChange}
+                className={`w-full p-[12px] mt-1 border rounded-md ${
+                  errors.positionApplied
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              >
+                <option value="">Select Position</option>
+                <option value="position1">Position 1</option>
+                <option value="position2">Position 2</option>
+              </select>
+              {errors.positionApplied && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  This Field is required
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="ssn"
+                labelName="SSN"
+                value={formData?.ssn?.value}
+                status={formData?.ssn?.status}
+                note={formData?.ssn?.note}
+              />
+              <input
+                type="text"
+                name="ssn"
+                id="ssn"
+                value={formData.ssn.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.ssn ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.ssn && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.ssn}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Line 3: Date of Birth, Gender, Who Referred You */}
+          <div className="grid justify-center grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+            <div>
+              <SingleLabelLogic
+                htmlFor="DOB"
+                labelName="Date of Birth"
+                value={formData?.DOB?.value}
+                status={formData?.DOB?.status}
+                note={formData?.DOB?.note}
+              />
+              <input
+                type="date"
+                name="DOB"
+                id="DOB"
+                value={formData.DOB.value}
+                onChange={handleChange}
+                max={new Date().toISOString().split("T")[0]} // Setting max to today's date
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.DOB ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.DOB && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.DOB}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <SingleLabelLogic
+                htmlFor="gender"
+                labelName="Gender"
+                value={formData?.gender?.value}
+                status={formData?.gender?.status}
+                note={formData?.gender?.note}
+              />
+              <div className="flex items-center p-2 mt-1">
+                <label className="inline-flex items-center mr-4">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="male"
+                    checked={formData.gender === "male".value}
+                    onChange={handleChange}
+                    className={`text-blue-500 form-radio ${
+                      errors.gender ? "border-red-500 border-2" : ""
+                    }`}
+                  />
+                  <span className="ml-2">Male</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="female"
+                    checked={formData.gender === "female".value}
+                    onChange={handleChange}
+                    className={`text-blue-500 form-radio ${
+                      errors.gender ? "border-red-500 border-2" : ""
+                    }`}
+                  />
+                  <span className="ml-2">Female</span>
+                </label>
+              </div>
+              {errors.gender && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.gender}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="referredBy"
+                labelName="Who Referred You"
+                value={formData?.referredBy?.value}
+                status={formData?.referredBy?.status}
+                note={formData?.referredBy?.note}
+              />
+              <input
+                type="text"
+                name="referredBy"
+                id="referredBy"
+                value={formData.referredBy.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.referredBy ? "border-gray-300" : "border-gray-300"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Line 4: Legal Right to Work, Pay Expected */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <SingleLabelLogic
+                htmlFor="legalRightToWork"
+                labelName="Do You Have Legal Right to Work in the United States?"
+                value={formData?.legalRightToWork?.value}
+                status={formData?.legalRightToWork?.status}
+                note={formData?.legalRightToWork?.note}
+              />
+              <div className="flex items-center p-2 mt-1">
+                <label className="inline-flex items-center mr-4">
+                  <input
+                    type="radio"
+                    name="legalRightToWork"
+                    value="yes"
+                    checked={formData.legalRightToWork === "yes".value}
+                    onChange={handleChange}
+                    className={`text-blue-500 form-radio ${
+                      errors.legalRightToWork ? "border-red-500 border-2" : ""
+                    }`}
+                  />
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="legalRightToWork"
+                    value="no"
+                    checked={formData.legalRightToWork === "no".value}
+                    onChange={handleChange}
+                    className={`text-blue-500 form-radio ${
+                      errors.legalRightToWork ? "border-red-500 border-2" : ""
+                    }`}
+                  />
+                  <span className="ml-2">No</span>
+                </label>
+              </div>
+              {errors.legalRightToWork && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.legalRightToWork}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <SingleLabelLogic
+                htmlFor="payExpected"
+                labelName="Rate of Pay Expected"
+                value={formData?.payExpected?.value}
+                status={formData?.payExpected?.status}
+                note={formData?.payExpected?.note}
+              />
+              <input
+                type="text"
+                name="payExpected"
+                id="payExpected"
+                value={formData.payExpected.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.payExpected
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.payExpected && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.payExpected}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Line 5-8: Address Details */}
+          <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+            <div>
+              <SingleLabelLogic
+                htmlFor="street1"
+                labelName="Street 1"
+                value={formData?.street1?.value}
+                status={formData?.street1?.status}
+                note={formData?.street1?.note}
+              />
+              <input
+                type="text"
+                name="street1"
+                id="street1"
+                value={formData.street1.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.street1 ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.street1 && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.street1}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="street2"
+                labelName="Street 2"
+                value={formData?.street2?.value}
+                status={formData?.street2?.status}
+                note={formData?.street2?.note}
+              />
+              <input
+                type="text"
+                name="street2"
+                id="street2"
+                value={formData.street2.value}
+                onChange={handleChange}
+                className="w-full p-2 mt-1 border rounded-md border-gray-300"
+              />
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="city"
+                labelName="City"
+                value={formData?.city?.value}
+                status={formData?.city?.status}
+                note={formData?.city?.note}
+              />
+              <input
+                type="text"
+                name="city"
+                id="city"
+                value={formData.city.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.city ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.city && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.city}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="state"
+                labelName="State"
+                value={formData?.state?.value}
+                status={formData?.state?.status}
+                note={formData?.state?.note}
+              />
+              <input
+                type="text"
+                name="state"
+                id="state"
+                value={formData.state.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.state ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.state && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.state}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="zipCode"
+                labelName="Zip Code"
+                value={formData?.zipCode?.value}
+                status={formData?.zipCode?.status}
+                note={formData?.zipCode?.note}
+              />
+              <input
+                type="number"
+                name="zipCode"
+                id="zipCode"
+                value={formData.zipCode.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.zipCode ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.zipCode && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.zipCode}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="cellPhone"
+                labelName="Cell Phone #"
+                value={formData?.cellPhone?.value}
+                status={formData?.cellPhone?.status}
+                note={formData?.cellPhone?.note}
+              />
+              <input
+                type="text"
+                name="cellPhone"
+                id="cellPhone"
+                value={formData.cellPhone.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.cellPhone
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.cellPhone && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.cellPhone}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="Email"
+                labelName="Email"
+                value={formData?.Email?.value}
+                status={formData?.Email?.status}
+                note={formData?.Email?.note}
+              />
+              <input
+                type="email"
+                required
+                name="Email"
+                id="Email"
+                disabled={true}
+                value={currentUser.email}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md text-gray-400 ${
+                  errors.Email ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.Email && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.Email}
+                </p>
+              )}
+            </div>
+            <div>
+              <SingleLabelLogic
+                htmlFor="EmergencyContact"
+                labelName="Emergency Contact"
+                value={formData?.EmergencyContact?.value}
+                status={formData?.EmergencyContact?.status}
+                note={formData?.EmergencyContact?.note}
+              />
+              <input
+                type="text"
+                name="EmergencyContact"
+                id="EmergencyContact"
+                value={formData.EmergencyContact.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.EmergencyContact
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.EmergencyContact && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.EmergencyContact}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <SingleLabelLogic
+                htmlFor="Relationship"
+                labelName="Relationship"
+                value={formData?.Relationship?.value}
+                status={formData?.Relationship?.status}
+                note={formData?.Relationship?.note}
+              />
+              <input
+                type="text"
+                name="Relationship"
+                id="Relationship"
+                value={formData.Relationship.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.Relationship
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.Relationship && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.Relationship}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <SingleLabelLogic
+                htmlFor="CDL"
+                labelName="CDL #"
+                value={formData?.CDL?.value}
+                status={formData?.CDL?.status}
+                note={formData?.CDL?.note}
+              />
+              <input
+                type="text"
+                name="CDL"
+                id="CDL"
+                value={formData.CDL.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDL ? "border-red-500 border-2" : "border-gray-300"
+                }`}
+              />
+              {errors.CDL && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDL}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <SingleLabelLogic
+                htmlFor="CDLState"
+                labelName="CDL State"
+                value={formData?.CDLState?.value}
+                status={formData?.CDLState?.status}
+                note={formData?.CDLState?.note}
+              />
+              <input
+                type="text"
+                name="CDLState"
+                id="CDLState"
+                value={formData.CDLState.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDLState
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.CDLState && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDLState}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <SingleLabelLogic
+                htmlFor="CDLClass"
+                labelName="CDL Class"
+                value={formData?.CDLClass?.value}
+                status={formData?.CDLClass?.status}
+                note={formData?.CDLClass?.note}
+              />
+              <input
+                type="text"
+                name="CDLClass"
+                id="CDLClass"
+                value={formData.CDLClass.value}
+                onChange={handleChange}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.CDLClass
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                }`}
+              />
+              {errors.CDLClass && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.CDLClass}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Line 9: Additional Questions */}
+          <div className="mb-6">
+            <SingleLabelLogic
+              htmlFor="CDLExpirationDate"
+              labelName="CDL Expiration Date"
+              value={formData?.CDLExpirationDate?.value}
+              status={formData?.CDLExpirationDate?.status}
+              note={formData?.CDLExpirationDate?.note}
+            />
+            <input
+              type="date"
+              name="CDLExpirationDate"
+              id="CDLExpirationDate"
+              value={formData.CDLExpirationDate.value}
+              onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
+              className={`w-full p-2 mt-1 border rounded-md ${
+                errors.CDLExpirationDate
+                  ? "border-red-500 border-2"
+                  : "border-gray-300"
+              }`}
+            />
+            {errors.CDLExpirationDate && (
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                {errors.CDLExpirationDate}
+              </p>
+            )}
+          </div>
+          <div className="mb-6">
+            <SingleLabelLogic
+              htmlFor="EverBeenDeniedALicense"
+              labelName="Have you ever been denied a license, permit or privilege to
+              operate a motor vehicle?"
+              value={formData?.EverBeenDeniedALicense?.value}
+              status={formData?.EverBeenDeniedALicense?.status}
+              note={formData?.EverBeenDeniedALicense?.note}
+            />
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="EverBeenDeniedALicense"
+                  value="yes"
+                  checked={formData.EverBeenDeniedALicense.value === "yes"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.EverBeenDeniedALicense
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="EverBeenDeniedALicense"
+                  value="no"
+                  checked={formData.EverBeenDeniedALicense.value === "no"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.EverBeenDeniedALicense
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+            {errors.EverBeenDeniedALicense && (
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                {errors.EverBeenDeniedALicense}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <SingleLabelLogic
+              htmlFor="PermitPrivilegeOfLicense"
+              labelName="Have any license, permit or privilege ever been suspended or
+              revoked?"
+              value={formData?.PermitPrivilegeOfLicense?.value}
+              status={formData?.PermitPrivilegeOfLicense?.status}
+              note={formData?.PermitPrivilegeOfLicense?.note}
+            />
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="PermitPrivilegeOfLicense"
+                  value="yes"
+                  checked={formData.PermitPrivilegeOfLicense.value === "yes"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.PermitPrivilegeOfLicense
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="PermitPrivilegeOfLicense"
+                  value="no"
+                  checked={formData.PermitPrivilegeOfLicense.value === "no"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.PermitPrivilegeOfLicense
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+            {errors.PermitPrivilegeOfLicense && (
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                {errors.PermitPrivilegeOfLicense}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <SingleLabelLogic
+              htmlFor="TestedPositiveOrRefusedDotDrug"
+              labelName="Have you ever tested positive or refused a DOT drug or alcohol
+              pre-employment test within the past 3 years from an employer who
+              did not hire you?"
+              value={formData?.TestedPositiveOrRefusedDotDrug?.value}
+              status={formData?.TestedPositiveOrRefusedDotDrug?.status}
+              note={formData?.TestedPositiveOrRefusedDotDrug?.note}
+            />
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="TestedPositiveOrRefusedDotDrug"
+                  value="yes"
+                  checked={
+                    formData.TestedPositiveOrRefusedDotDrug.value === "yes"
+                  }
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.TestedPositiveOrRefusedDotDrug
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="TestedPositiveOrRefusedDotDrug"
+                  value="no"
+                  checked={
+                    formData.TestedPositiveOrRefusedDotDrug.value === "no"
+                  }
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.TestedPositiveOrRefusedDotDrug
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+            {errors.TestedPositiveOrRefusedDotDrug && (
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                {errors.TestedPositiveOrRefusedDotDrug}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <SingleLabelLogic
+              htmlFor="EverConvictedOfFelony"
+              labelName="Have you ever been convicted of a felony?"
+              value={formData?.EverConvictedOfFelony?.value}
+              status={formData?.EverConvictedOfFelony?.status}
+              note={formData?.EverConvictedOfFelony?.note}
+            />
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="EverConvictedOfFelony"
+                  value="yes"
+                  checked={formData.EverConvictedOfFelony.value === "yes"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.EverConvictedOfFelony
+                      ? "border-red-500 border-2 "
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="EverConvictedOfFelony"
+                  value="no"
+                  checked={formData.EverConvictedOfFelony.value === "no"}
+                  onChange={handleChange}
+                  className={`text-blue-500 form-radio ${
+                    errors.EverConvictedOfFelony
+                      ? "border-red-500 border-2"
+                      : ""
+                  }`}
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+            {errors.EverConvictedOfFelony && (
+              <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                {errors.EverConvictedOfFelony}
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
