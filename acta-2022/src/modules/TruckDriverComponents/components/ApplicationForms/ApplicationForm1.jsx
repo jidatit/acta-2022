@@ -8,16 +8,15 @@ import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useAuth } from "../../../../AuthContext";
-const ApplicationForm = ({ uid }) => {
+const ApplicationForm = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
 
   // Assuming this gives you userType for conditional logic
   const authData = useAuth();
   const adminAuthData = useAuthAdmin();
-  const { fetchUserData, FormData1, currentUser } = adminAuthData;
-  console.log("savedFormData1", FormData1);
+  const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { setIsSaveClicked } =
+  const { setIsSaveClicked, FormData1 } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   const [errors, setErrors] = useState({});
@@ -73,8 +72,6 @@ const ApplicationForm = ({ uid }) => {
       }
     });
 
-    // Specifically check for the email field
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -113,9 +110,7 @@ const ApplicationForm = ({ uid }) => {
     }
   };
 
-  const saveFormInfo = async (e) => {
-    e.preventDefault();
-
+  const saveFormInfo = async (uid) => {
     // Check if at least one field is filled
     const isAnyFieldFilled = Object.values(formData).some(
       (field) => field.value.trim() !== "" // Access the value property here
@@ -130,7 +125,7 @@ const ApplicationForm = ({ uid }) => {
       const applicationData = { ...formData, submittedAt: new Date() };
 
       // Reference to the specific document in the collection
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docRef = doc(db, "truck_driver_applications", uid);
 
       // Check if the document exists
       const docSnap = await getDoc(docRef);
@@ -154,6 +149,15 @@ const ApplicationForm = ({ uid }) => {
       toast.error("Error saving the form, please try again");
     }
   };
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        saveFormInfo(uid);
+      }
+    }, [clicked]);
+  }
 
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
@@ -173,6 +177,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.applicantName?.value}
               status={formData?.applicantName?.status}
               note={formData?.applicantName?.note}
+              fieldName="applicantName"
+              uid={uid}
             />
             <input
               type="text"
@@ -202,6 +208,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.appliedDate?.value}
                 status={formData?.appliedDate?.status}
                 note={formData?.appliedDate?.note}
+                fieldName="appliedDate"
+                uid={uid}
               />
 
               <input
@@ -231,6 +239,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.positionApplied?.value}
                 status={formData?.positionApplied?.status}
                 note={formData?.positionApplied?.note}
+                fieldName="positionApplied"
+                uid={uid}
               />
               <select
                 name="positionApplied"
@@ -260,6 +270,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.ssn?.value}
                 status={formData?.ssn?.status}
                 note={formData?.ssn?.note}
+                fieldName="ssn"
+                uid={uid}
               />
               <input
                 type="text"
@@ -288,6 +300,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.DOB?.value}
                 status={formData?.DOB?.status}
                 note={formData?.DOB?.note}
+                fieldName="DOB"
+                uid={uid}
               />
               <input
                 type="date"
@@ -314,6 +328,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.gender?.value}
                 status={formData?.gender?.status}
                 note={formData?.gender?.note}
+                fieldName="gender"
+                uid={uid}
               />
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
@@ -321,7 +337,7 @@ const ApplicationForm = ({ uid }) => {
                     type="radio"
                     name="gender"
                     value="male"
-                    checked={formData.gender === "male".value}
+                    checked={formData.gender.value === "male"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -334,7 +350,7 @@ const ApplicationForm = ({ uid }) => {
                     type="radio"
                     name="gender"
                     value="female"
-                    checked={formData.gender === "female".value}
+                    checked={formData.gender.value === "female"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -356,6 +372,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.referredBy?.value}
                 status={formData?.referredBy?.status}
                 note={formData?.referredBy?.note}
+                fieldName="referredBy"
+                uid={uid}
               />
               <input
                 type="text"
@@ -379,6 +397,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.legalRightToWork?.value}
                 status={formData?.legalRightToWork?.status}
                 note={formData?.legalRightToWork?.note}
+                fieldName="legalRightToWork"
+                uid={uid}
               />
               <div className="flex items-center p-2 mt-1">
                 <label className="inline-flex items-center mr-4">
@@ -386,7 +406,7 @@ const ApplicationForm = ({ uid }) => {
                     type="radio"
                     name="legalRightToWork"
                     value="yes"
-                    checked={formData.legalRightToWork === "yes".value}
+                    checked={formData.legalRightToWork.value === "yes"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -399,7 +419,7 @@ const ApplicationForm = ({ uid }) => {
                     type="radio"
                     name="legalRightToWork"
                     value="no"
-                    checked={formData.legalRightToWork === "no".value}
+                    checked={formData.legalRightToWork.value === "no"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -422,6 +442,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.payExpected?.value}
                 status={formData?.payExpected?.status}
                 note={formData?.payExpected?.note}
+                fieldName="payExpected"
+                uid={uid}
               />
               <input
                 type="text"
@@ -452,6 +474,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.street1?.value}
                 status={formData?.street1?.status}
                 note={formData?.street1?.note}
+                fieldName="street1"
+                uid={uid}
               />
               <input
                 type="text"
@@ -476,6 +500,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.street2?.value}
                 status={formData?.street2?.status}
                 note={formData?.street2?.note}
+                fieldName="street2"
+                uid={uid}
               />
               <input
                 type="text"
@@ -493,6 +519,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.city?.value}
                 status={formData?.city?.status}
                 note={formData?.city?.note}
+                fieldName="city"
+                uid={uid}
               />
               <input
                 type="text"
@@ -517,6 +545,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.state?.value}
                 status={formData?.state?.status}
                 note={formData?.state?.note}
+                fieldName="state"
+                uid={uid}
               />
               <input
                 type="text"
@@ -541,6 +571,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.zipCode?.value}
                 status={formData?.zipCode?.status}
                 note={formData?.zipCode?.note}
+                fieldName="zipCode"
+                uid={uid}
               />
               <input
                 type="number"
@@ -565,6 +597,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.cellPhone?.value}
                 status={formData?.cellPhone?.status}
                 note={formData?.cellPhone?.note}
+                fieldName="cellPhone"
+                uid={uid}
               />
               <input
                 type="text"
@@ -591,6 +625,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.Email?.value}
                 status={formData?.Email?.status}
                 note={formData?.Email?.note}
+                fieldName="Email"
+                uid={uid}
               />
               <input
                 type="email"
@@ -617,6 +653,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.EmergencyContact?.value}
                 status={formData?.EmergencyContact?.status}
                 note={formData?.EmergencyContact?.note}
+                fieldName="EmergencyContact"
+                uid={uid}
               />
               <input
                 type="text"
@@ -644,6 +682,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.Relationship?.value}
                 status={formData?.Relationship?.status}
                 note={formData?.Relationship?.note}
+                fieldName="Relationship"
+                uid={uid}
               />
               <input
                 type="text"
@@ -671,6 +711,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.CDL?.value}
                 status={formData?.CDL?.status}
                 note={formData?.CDL?.note}
+                fieldName="CDL"
+                uid={uid}
               />
               <input
                 type="text"
@@ -696,6 +738,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.CDLState?.value}
                 status={formData?.CDLState?.status}
                 note={formData?.CDLState?.note}
+                fieldName="CDLState"
+                uid={uid}
               />
               <input
                 type="text"
@@ -723,6 +767,8 @@ const ApplicationForm = ({ uid }) => {
                 value={formData?.CDLClass?.value}
                 status={formData?.CDLClass?.status}
                 note={formData?.CDLClass?.note}
+                fieldName="CDLClass"
+                uid={uid}
               />
               <input
                 type="text"
@@ -752,6 +798,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.CDLExpirationDate?.value}
               status={formData?.CDLExpirationDate?.status}
               note={formData?.CDLExpirationDate?.note}
+              fieldName="CDLExpirationDate"
+              uid={uid}
             />
             <input
               type="date"
@@ -780,6 +828,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.EverBeenDeniedALicense?.value}
               status={formData?.EverBeenDeniedALicense?.status}
               note={formData?.EverBeenDeniedALicense?.note}
+              fieldName="EverBeenDeniedALicense"
+              uid={uid}
             />
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -828,6 +878,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.PermitPrivilegeOfLicense?.value}
               status={formData?.PermitPrivilegeOfLicense?.status}
               note={formData?.PermitPrivilegeOfLicense?.note}
+              fieldName="PermitPrivilegeOfLicense"
+              uid={uid}
             />
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -877,6 +929,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.TestedPositiveOrRefusedDotDrug?.value}
               status={formData?.TestedPositiveOrRefusedDotDrug?.status}
               note={formData?.TestedPositiveOrRefusedDotDrug?.note}
+              fieldName="TestedPositiveOrRefusedDotDrug"
+              uid={uid}
             />
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -928,6 +982,8 @@ const ApplicationForm = ({ uid }) => {
               value={formData?.EverConvictedOfFelony?.value}
               status={formData?.EverConvictedOfFelony?.status}
               note={formData?.EverConvictedOfFelony?.note}
+              fieldName="EverConvictedOfFelony"
+              uid={uid}
             />
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -970,22 +1026,26 @@ const ApplicationForm = ({ uid }) => {
 
           {/* Submit Button */}
         </form>
-        <div className="flex justify-end w-full gap-x-2">
-          <button
-            type="submit"
-            onClick={saveFormInfo}
-            className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700"
-          >
-            Next
-          </button>
-        </div>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex justify-end w-full gap-x-2">
+            <button
+              type="submit"
+              onClick={() => saveFormInfo(currentUser.uid)}
+              className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700"
+            >
+              Next
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

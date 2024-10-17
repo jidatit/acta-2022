@@ -7,20 +7,30 @@ import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
+import { useAuthAdmin } from "../../../../AdminContext";
 
-const ApplicationForm5 = () => {
+const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
+
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
   const {
+    isSaveClicked,
+    setIsSaveClicked,
     DriverLicensePermit,
     DriverExperience,
     EducationHistory,
 
     ExtraSkills,
-    isSaveClicked,
+  } = currentUser?.userType === "Admin" ? adminAuthData : authData;
 
-    setIsSaveClicked,
-    currentUser,
-  } = useAuth();
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+    }
+  }, [uid]);
 
   const [driverLicensePermit, setDriverLicensePermit] =
     useState(DriverLicensePermit);
@@ -145,34 +155,51 @@ const ApplicationForm5 = () => {
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        driverLicensePermit: driverLicensePermit,
-        driverExperience: driverExperience,
-        educationHistory: educationHistory,
-        extraSkills: extraSkills,
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form5: applicationData,
-          completedForms: 5,
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form5: applicationData,
-          completedForms: 5,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
 
-      //console.log("Data successfully saved to Firebase");
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
+  };
+  const saveForm5 = async () => {
+    const applicationData = {
+      driverLicensePermit: driverLicensePermit,
+      driverExperience: driverExperience,
+      educationHistory: educationHistory,
+      extraSkills: extraSkills,
+    };
+    await saveToFirebase(5, applicationData);
   };
   const handleBack = () => {
     // Check if save is clicked
@@ -200,7 +227,7 @@ const ApplicationForm5 = () => {
     ) {
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      await saveForm5();
       navigate("/TruckDriverLayout/ApplicationForm6");
     } else {
       // Show a message indicating the form is incomplete
@@ -208,9 +235,7 @@ const ApplicationForm5 = () => {
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     // Check if there is at least one field filled out
     const hasDriverLicensePermitData = driverLicensePermit.some((field) =>
       Object.values(field).some((val) => val.value.trim() !== "")
@@ -239,7 +264,7 @@ const ApplicationForm5 = () => {
       setIsSaveClicked(true);
 
       try {
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docRef = doc(db, "truck_driver_applications", uid);
         const docSnap = await getDoc(docRef);
 
         const applicationData = {
@@ -265,6 +290,17 @@ const ApplicationForm5 = () => {
       toast.error("Please complete at least one field before saving.");
     }
   };
+
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
+
   const addDriverLicenseFields = () => {
     setDriverLicensePermit([
       ...driverLicensePermit,
@@ -356,6 +392,8 @@ const ApplicationForm5 = () => {
                   status={license.LicenseNo.status} // Adjust as necessary based on your state
                   note={license.LicenseNo.note} // Adjust as necessary based on your state
                   index={index}
+                  fieldName="LicenseNo"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -373,6 +411,8 @@ const ApplicationForm5 = () => {
                   status={license.type.status} // Adjust as necessary based on your state
                   note={license.type.note} // Adjust as necessary based on your state
                   index={index}
+                  fieldName="type"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -390,6 +430,8 @@ const ApplicationForm5 = () => {
                   status={license.state.status} // Adjust as necessary based on your state
                   note={license.state.note} // Adjust as necessary based on your state
                   index={index}
+                  fieldName="state"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -407,6 +449,8 @@ const ApplicationForm5 = () => {
                   status={license.expiryDate.status} // Adjust as necessary based on your state
                   note={license.expiryDate.note} // Adjust as necessary based on your state
                   index={index}
+                  fieldName="expiryDate"
+                  uid={uid}
                 />
                 <input
                   type="date"
@@ -460,6 +504,8 @@ const ApplicationForm5 = () => {
                   status={experience.statesOperated.status}
                   note={experience.statesOperated.note}
                   index={index}
+                  fieldName="statesOperated"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -488,6 +534,8 @@ const ApplicationForm5 = () => {
                   status={experience.ClassEquipment.status}
                   note={experience.ClassEquipment.note}
                   index={index}
+                  fieldName="ClassEquipment"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -516,6 +564,8 @@ const ApplicationForm5 = () => {
                   status={experience.EquipmentType.status}
                   note={experience.EquipmentType.note}
                   index={index}
+                  fieldName="EquipmentType"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -544,6 +594,8 @@ const ApplicationForm5 = () => {
                   status={experience.DateTo.status}
                   note={experience.DateTo.note}
                   index={index}
+                  fieldName="DateTo"
+                  uid={uid}
                 />
                 <input
                   type="date"
@@ -573,6 +625,8 @@ const ApplicationForm5 = () => {
                   status={experience.DateFrom.status}
                   note={experience.DateFrom.note}
                   index={index}
+                  fieldName="DateFrom"
+                  uid={uid}
                 />
                 <input
                   type="date"
@@ -603,6 +657,8 @@ const ApplicationForm5 = () => {
                   status={experience.ApproximatelyMiles.status}
                   note={experience.ApproximatelyMiles.note}
                   index={index}
+                  fieldName="ApproximatelyMiles"
+                  uid={uid}
                 />
 
                 <input
@@ -632,6 +688,8 @@ const ApplicationForm5 = () => {
                   status={experience.comments.status}
                   note={experience.comments.note}
                   index={index}
+                  fieldName="comments"
+                  uid={uid}
                 />
 
                 <input
@@ -696,6 +754,8 @@ const ApplicationForm5 = () => {
                   status={education.school.status} // Adjust the status logic as needed
                   note={education.school.note} // Adjust the note logic as needed
                   index={index}
+                  fieldName="school"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -724,6 +784,8 @@ const ApplicationForm5 = () => {
                   status={education.educationLevel.status} // Adjust the status logic as needed
                   note={education.educationLevel.note} // Adjust the note logic as needed
                   index={index}
+                  fieldName="educationLevel"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -752,6 +814,8 @@ const ApplicationForm5 = () => {
                   status={education.DateFrom.status} // Adjust the status logic as needed
                   note={education.DateFrom.note} // Adjust the note logic as needed
                   index={index}
+                  fieldName="DateFrom"
+                  uid={uid}
                 />
                 <input
                   type="date"
@@ -781,6 +845,8 @@ const ApplicationForm5 = () => {
                   status={education.DateTo.status} // Adjust the status logic as needed
                   note={education.DateTo.note} // Adjust the note logic as needed
                   index={index}
+                  fieldName="DateTo"
+                  uid={uid}
                 />
                 <input
                   type="date"
@@ -811,6 +877,8 @@ const ApplicationForm5 = () => {
                   status={education.comments.status} // Adjust the status logic as needed
                   note={education.comments.note} // Adjust the note logic as needed
                   index={index}
+                  fieldName="comments"
+                  uid={uid}
                 />
                 <input
                   type="text"
@@ -864,6 +932,8 @@ const ApplicationForm5 = () => {
                 labelName="List any safe driving awards you have earned"
                 status={extraSkills.safeDrivingAwards.status} // Adjust the status accordingly
                 note={extraSkills.safeDrivingAwards.note} // Adjust the note accordingly
+                fieldName="safeDrivingAwards"
+                uid={uid}
               />
               <input
                 type="text"
@@ -880,6 +950,8 @@ const ApplicationForm5 = () => {
                 labelName="List any special training that will enable you to be a better driver"
                 status={extraSkills.specialTraining.status} // Adjust the status accordingly
                 note={extraSkills.specialTraining.note} // Adjust the note accordingly
+                fieldName="specialTraining"
+                uid={uid}
               />
               <input
                 type="text"
@@ -896,6 +968,8 @@ const ApplicationForm5 = () => {
                 labelName="Other Skills or Training"
                 status={extraSkills.otherSkills.status} // Adjust the status accordingly
                 note={extraSkills.otherSkills.note} // Adjust the note accordingly
+                fieldName="otherSkills"
+                uid={uid}
               />
               <input
                 type="text"
@@ -908,31 +982,35 @@ const ApplicationForm5 = () => {
             </div>
           </div>
         </form>
-        <div className="flex items-center justify-between px-1">
-          <button
-            type="button"
-            onClick={handleBack}
-            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
-          >
-            back
-          </button>
-          <div className="flex justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-600 rounded-lg`}
-            >
-              Save
-            </button>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
-              onClick={handleSubmit}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
             >
-              Next
+              Back
             </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => handleSave(currentUser.uid)}
+                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

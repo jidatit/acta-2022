@@ -196,14 +196,10 @@ export const AdminProvider = ({ children }) => {
   ]);
 
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const formData1Ref = useRef(FormData1);
-  useEffect(() => {
-    formData1Ref.current = FormData1;
-  }, [FormData1]);
 
   const fetchUserData = useCallback((uid) => {
     if (!uid) return Promise.resolve();
-
+    console.log("fetchUserData", uid);
     setCurrentUserId(uid);
     const docRef = doc(db, "truck_driver_applications", uid);
 
@@ -212,7 +208,9 @@ export const AdminProvider = ({ children }) => {
         docRef,
         (docSnap) => {
           if (docSnap.exists()) {
+            clearLocalStorageAndState();
             const data = docSnap.data();
+            console.log("data", data);
             updateFormData(data);
           } else {
             clearLocalStorageAndState();
@@ -230,132 +228,131 @@ export const AdminProvider = ({ children }) => {
     });
   }, []);
 
-  const updateFormData = useCallback((data) => {
-    const form1Data = data.form1 || null;
-    setFormData1((prevState) => {
-      const newState = { ...prevState, ...form1Data };
-      console.log("Updating FormData1 to:", newState);
-      localStorage.setItem("AdminFormData", JSON.stringify(newState));
-      return newState;
-    });
-    setFormData8(data.form8?.onDutyHours || null);
-    localStorage.setItem(
-      "AdminFormData8",
-      JSON.stringify(data.form8?.onDutyHours || null)
-    );
+  const updateFormData = useCallback(
+    (data) => {
+      // Helper function to update state and localStorage
+      const updateStateAndLocalStorage = (
+        stateUpdater,
+        localStorageKey,
+        value
+      ) => {
+        stateUpdater((prevState) => {
+          const newState = { ...prevState, ...value };
+          localStorage.setItem(localStorageKey, JSON.stringify(newState));
+          return newState;
+        });
+      };
 
-    setFormData9(data.form9?.compensatedWork || null);
-    localStorage.setItem(
-      "AdminFormData9",
-      JSON.stringify(data.form9?.compensatedWork || null)
-    );
+      // Update Form1 data
+      const form1Data = data.form1 || {};
+      updateStateAndLocalStorage(setFormData1, "AdminFormData1", form1Data);
 
-    setFormData(data.form2?.previousAddresses || []);
-    localStorage.setItem(
-      "AdminFormData2",
-      JSON.stringify(data.form2?.previousAddresses || [])
-    );
+      // Update Form8 data
+      if (data.form8) {
+        localStorage.setItem("AdminFormData8", JSON.stringify(data.form8));
+        setFormData8(data.form8.onDutyHours);
+      }
+      if (data.form9) {
+        localStorage.setItem("AdminFormData9", JSON.stringify(data.form9));
+        setFormData9(data.form9.compensatedWork);
+      }
 
-    setFormData3(data.form3?.EmploymentHistory || []);
-    localStorage.setItem(
-      "AdminFormData3",
-      JSON.stringify(data.form3?.EmploymentHistory || [])
-    );
+      // Update Form2 (previous addresses)
+      // const form2Data = data.form2?.previousAddresses || [];
+      // updateStateAndLocalStorage(setFormData, "AdminFormData2", form2Data);
+      if (data.form2) {
+        localStorage.setItem("AdminFormData2", JSON.stringify(data.form2));
+        //console.log(data.form2.previousAddresses);
+        setFormData(data.form2.previousAddresses);
+      }
 
-    if (data.form4) {
-      const { accidentRecords, trafficConvictions } = data.form4;
-      setAddressField(accidentRecords || []);
-      setTrafficConvictionField(trafficConvictions || []);
-      setNoAccidentsChecked(data.form4.noAccidents || false);
-      setNoTrafficConvictionsChecked(data.form4.noTrafficConvictions || false);
+      if (data.form3) {
+        localStorage.setItem("AdminFormData3", JSON.stringify(data.form3));
+        //console.log(data.form3.EmploymentHistory);
+        setFormData3(data.form3.EmploymentHistory);
+      }
+      // Update Form4 (accident records and traffic convictions)
+      if (data.form4) {
+        const { accidentRecords, trafficConvictions } = data.form4;
+        localStorage.setItem(
+          "AdminAddressField4",
+          JSON.stringify(accidentRecords)
+        );
+        setAddressField(accidentRecords);
+        localStorage.setItem(
+          "AdminTrafficConvictionField4",
+          JSON.stringify(trafficConvictions)
+        );
+        setTrafficConvictionField(trafficConvictions);
+        localStorage.setItem(
+          "AdminNoAccidentsChecked",
+          JSON.stringify(data.form4.noAccidents)
+        );
+        setNoAccidentsChecked(data.form4.noAccidents);
+        localStorage.setItem(
+          "AdminNoTrafficConvictions",
+          JSON.stringify(data.form4.noTrafficConvictions)
+        );
+        setNoTrafficConvictionsChecked(data.form4.noTrafficConvictions);
+      }
 
-      localStorage.setItem(
-        "AdminAddressField4",
-        JSON.stringify(accidentRecords || [])
-      );
-      localStorage.setItem(
-        "AdminTrafficConvictionField4",
-        JSON.stringify(trafficConvictions || [])
-      );
-      localStorage.setItem(
-        "AdminNoAccidentsChecked",
-        JSON.stringify(data.form4.noAccidents || false)
-      );
-      localStorage.setItem(
-        "AdminNoTrafficConvictions",
-        JSON.stringify(data.form4.noTrafficConvictions || false)
-      );
-    }
+      // Update Form5 (driver license, experience, education, skills)
+      if (data.form5) {
+        localStorage.setItem(
+          "AdminDriverLicensePermit5",
+          JSON.stringify(data.form5.driverLicensePermit)
+        );
+        setDriverLicensePermit(data.form5.driverLicensePermit);
+        localStorage.setItem(
+          "AdminDriverExperience5",
+          JSON.stringify(data.form5.driverExperience)
+        );
+        setDriverExperience(data.form5.driverExperience);
+        localStorage.setItem(
+          "AdminEducationHistory5",
+          JSON.stringify(data.form5.educationHistory)
+        );
+        setEducationHistory(data.form5.educationHistory);
+        localStorage.setItem(
+          "AdminExtraSkills5",
+          JSON.stringify(data.form5.extraSkills)
+        );
+        setExtraSkills(data.form5.extraSkills);
+      }
 
-    if (data.form5) {
-      const {
-        driverLicensePermit,
-        driverExperience,
-        educationHistory,
-        extraSkills,
-      } = data.form5;
-      setDriverLicensePermit(driverLicensePermit || []);
-      setDriverExperience(driverExperience || []);
-      setEducationHistory(educationHistory || []);
-      setExtraSkills(extraSkills || []);
+      // Update Form6 (violation records)
+      if (data.form6) {
+        const { violationRecords } = data.form6;
+        localStorage.setItem(
+          "AdminViolationField6",
+          JSON.stringify(violationRecords)
+        );
+        setViolationField(violationRecords);
 
-      localStorage.setItem(
-        "AdminDriverLicensePermit5",
-        JSON.stringify(driverLicensePermit || [])
-      );
-      localStorage.setItem(
-        "AdminDriverExperience5",
-        JSON.stringify(driverExperience || [])
-      );
-      localStorage.setItem(
-        "AdminEducationHistory5",
-        JSON.stringify(educationHistory || [])
-      );
-      localStorage.setItem(
-        "AdminExtraSkills5",
-        JSON.stringify(extraSkills || [])
-      );
-    }
+        localStorage.setItem(
+          "AdminNoViolationChecked",
+          JSON.stringify(data.form6.noViolations)
+        );
+        setNoViolationChecked(data.form6.noViolations);
+      }
 
-    if (data.form6) {
-      const { violationRecords } = data.form6;
-      setViolationField(violationRecords || []);
-      setNoViolationChecked(data.form6.noViolations || false);
+      // Update Form7 (alcohol drug test)
+      if (data.form7) {
+        const { AlcoholDrugTest } = data.form7;
+        localStorage.setItem(
+          "AdminAlcoholDrugTest7",
+          JSON.stringify(AlcoholDrugTest)
+        );
+        setAlcoholDrugTesting(AlcoholDrugTest);
+      }
+    },
+    [currentUserId]
+  );
 
-      localStorage.setItem(
-        "AdminViolationField6",
-        JSON.stringify(violationRecords || [])
-      );
-      localStorage.setItem(
-        "AdminNoViolationChecked",
-        JSON.stringify(data.form6.noViolations || false)
-      );
-    }
-
-    if (data.form7) {
-      const { AlcoholDrugTest } = data.form7;
-      setAlcoholDrugTesting(AlcoholDrugTest || []);
-      localStorage.setItem(
-        "AdminAlcoholDrugTest7",
-        JSON.stringify(AlcoholDrugTest || [])
-      );
-    }
-  }, []);
-  useEffect(() => {
-    if (currentUserId) {
-      fetchUserData(currentUserId);
-    }
-  }, [currentUserId, fetchUserData]);
-  useEffect(() => {
-    console.log("formData1 updated:", FormData1);
-  }, [FormData1]);
-  useEffect(() => {
-    console.log("Current formData1:", formData1Ref.current);
-  }, [FormData1]);
   // Clear all local storage and reset states
   const clearLocalStorageAndState = () => {
     // Clear all relevant localStorage items
-    localStorage.removeItem("AdminFormData");
+    localStorage.removeItem("AdminFormData1");
     localStorage.removeItem("AdminFormData8");
     localStorage.removeItem("AdminFormData9");
     localStorage.removeItem("AdminFormData2");
@@ -405,25 +402,174 @@ export const AdminProvider = ({ children }) => {
       },
       EverConvictedOfFelony: { value: "", status: "pending", note: "" },
     });
-    setFormData8(null);
-    setFormData9(null);
-    setFormData([]);
-    setFormData3([]);
-    setAddressField([]);
-    setTrafficConvictionField([]);
+    setFormData8({
+      day1: { value: "", status: "pending", note: "" },
+      day2: { value: "", status: "pending", note: "" },
+      day3: { value: "", status: "pending", note: "" },
+      day4: { value: "", status: "pending", note: "" },
+      day5: { value: "", status: "pending", note: "" },
+      day6: { value: "", status: "pending", note: "" },
+      day7: { value: "", status: "pending", note: "" },
+      day1HoursWorked: { value: "", status: "pending", note: "" },
+      day2HoursWorked: { value: "", status: "pending", note: "" },
+      day3HoursWorked: { value: "", status: "pending", note: "" },
+      day4HoursWorked: { value: "", status: "pending", note: "" },
+      day5HoursWorked: { value: "", status: "pending", note: "" },
+      day6HoursWorked: { value: "", status: "pending", note: "" },
+      day7HoursWorked: { value: "", status: "pending", note: "" },
+      TotalHours: { value: "", status: "pending", note: "" },
+      relievedTime: { value: "00:00", status: "pending", note: "" },
+      relievedDate: { value: "", status: "pending", note: "" },
+    });
+    setFormData9([
+      {
+        currentlyWorking: { value: "", status: "pending", note: "" },
+        workingForAnotherEmployer: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setFormData([
+      {
+        street1: { value: "", status: "pending", note: "" },
+        street2: { value: "", status: "pending", note: "" },
+        city: { value: "", status: "pending", note: "" },
+        state: { value: "", status: "pending", note: "" },
+        zipCode: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setFormData3([
+      {
+        companyName: { value: "", status: "pending", note: "" },
+        street: { value: "", status: "pending", note: "" },
+        city: { value: "", status: "pending", note: "" },
+        zipCode: { value: "", status: "pending", note: "" },
+        contactPerson: { value: "", status: "pending", note: "" },
+        phone: { value: "", status: "pending", note: "" },
+        fax1: { value: "", status: "pending", note: "" },
+        from: { value: "", status: "pending", note: "" },
+        to: { value: "", status: "pending", note: "" },
+        position: { value: "", status: "pending", note: "" },
+        salary: { value: "", status: "pending", note: "" },
+        leavingReason: { value: "", status: "pending", note: "" },
+        subjectToFMCSRs: { value: "", status: "pending", note: "" },
+        jobDesignatedAsSafetySensitive: {
+          value: "",
+          status: "pending",
+          note: "",
+        },
+      },
+    ]);
+    setAddressField([
+      {
+        date: { value: "", status: "pending", note: "" },
+        accidentType: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        fatalities: { value: "", status: "pending", note: "" },
+        penalties: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setTrafficConvictionField([
+      {
+        date: { value: "", status: "pending", note: "" },
+        offenseType: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        penalties: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setDriverLicensePermit([
+      {
+        LicenseNo: { value: "", status: "pending", note: "" },
+        type: { value: "", status: "pending", note: "" },
+        state: { value: "", status: "pending", note: "" },
+        expiryDate: { value: "", status: "pending", note: "" },
+      },
+    ]);
     setNoAccidentsChecked(false);
     setNoTrafficConvictionsChecked(false);
-    setDriverLicensePermit([]);
-    setDriverExperience([]);
-    setEducationHistory([]);
-    setExtraSkills([]);
-    setViolationField([]);
+
+    setDriverExperience([
+      {
+        statesOperated: { value: "", status: "pending", note: "" },
+        ClassEquipment: { value: "", status: "pending", note: "" },
+        EquipmentType: { value: "", status: "pending", note: "" },
+        DateFrom: { value: "", status: "pending", note: "" },
+        DateTo: { value: "", status: "pending", note: "" },
+        ApproximatelyMiles: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setEducationHistory([
+      {
+        school: { value: "", status: "pending", note: "" },
+        educationLevel: { value: "", status: "pending", note: "" },
+        DateFrom: { value: "", status: "pending", note: "" },
+        DateTo: { value: "", status: "pending", note: "" },
+        comments: { value: "", status: "pending", note: "" },
+      },
+    ]);
+    setExtraSkills({
+      safeDrivingAwards: { value: "", status: "pending", note: "" },
+      specialTraining: { value: "", status: "pending", note: "" },
+      otherSkills: { value: "", status: "pending", note: "" },
+    });
+    setViolationField([
+      {
+        date: { value: "", status: "pending", note: "" },
+        offense: { value: "", status: "pending", note: "" },
+        location: { value: "", status: "pending", note: "" },
+        vehicleOperated: { value: "", status: "pending", note: "" },
+      },
+    ]);
+
+    setAlcoholDrugTesting([
+      {
+        testedPositiveEver: { value: "", status: "pending", note: "" },
+        DOTCompletion: { value: "", status: "pending", note: "" },
+      },
+    ]);
     setNoViolationChecked(false);
-    setAlcoholDrugTesting([]);
   };
-  const populateFormData = () => {
-    const savedFormData1 = localStorage.getItem("AdminFormData");
-    console.log("savedFormData1", savedFormData1);
+  // const populateFormData = () => {
+  //   const savedFormData1 = localStorage.getItem("AdminFormData");
+  //   console.log("savedFormData1", savedFormData1);
+  //   const savedFormData8 = localStorage.getItem("AdminFormData8");
+  //   const savedFormData9 = localStorage.getItem("AdminFormData9");
+  //   const savedFormData = localStorage.getItem("AdminFormData2");
+  //   const savedFormData3 = localStorage.getItem("AdminFormData3");
+  //   const savedAddressField = localStorage.getItem("AdminAddressField4");
+  //   const savedTrafficConvictionField = localStorage.getItem(
+  //     "AdminTrafficConvictionField4"
+  //   );
+  //   const driverLicensePermit = localStorage.getItem(
+  //     "AdminDriverLicensePermit5"
+  //   );
+  //   const driverExperience = localStorage.getItem("AdminDriverExperience5");
+  //   const educationHistory = localStorage.getItem("AdminEducationHistory5");
+  //   const extraSkills = localStorage.getItem("AdminExtraSkills5");
+  //   const savedViolationField = localStorage.getItem("AdminViolationField6");
+  //   const alcoholDrugTesting7 = localStorage.getItem("AdminAlcoholDrugTest7");
+
+  //   if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
+  //   if (savedFormData) setFormData(JSON.parse(savedFormData));
+  //   if (savedFormData8) setFormData8(JSON.parse(savedFormData8));
+  //   if (savedFormData9) setFormData9(JSON.parse(savedFormData9));
+  //   if (savedFormData3) setFormData3(JSON.parse(savedFormData3));
+  //   if (driverLicensePermit)
+  //     setDriverLicensePermit(JSON.parse(driverLicensePermit));
+  //   if (driverExperience) setDriverExperience(JSON.parse(driverExperience));
+  //   if (educationHistory) setEducationHistory(JSON.parse(educationHistory));
+  //   if (savedAddressField) setAddressField(JSON.parse(savedAddressField));
+  //   if (extraSkills) setExtraSkills(JSON.parse(extraSkills));
+  //   if (savedTrafficConvictionField)
+  //     setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
+  //   if (savedViolationField) setViolationField(JSON.parse(savedViolationField));
+  //   if (alcoholDrugTesting7)
+  //     setAlcoholDrugTesting(JSON.parse(alcoholDrugTesting7));
+  // };
+  useEffect(() => {
+    const savedFormData1 = localStorage.getItem("AdminFormData1");
+
     const savedFormData8 = localStorage.getItem("AdminFormData8");
     const savedFormData9 = localStorage.getItem("AdminFormData9");
     const savedFormData = localStorage.getItem("AdminFormData2");
@@ -440,8 +586,8 @@ export const AdminProvider = ({ children }) => {
     const extraSkills = localStorage.getItem("AdminExtraSkills5");
     const savedViolationField = localStorage.getItem("AdminViolationField6");
     const alcoholDrugTesting7 = localStorage.getItem("AdminAlcoholDrugTest7");
-
     if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
+
     if (savedFormData) setFormData(JSON.parse(savedFormData));
     if (savedFormData8) setFormData8(JSON.parse(savedFormData8));
     if (savedFormData9) setFormData9(JSON.parse(savedFormData9));
@@ -457,52 +603,6 @@ export const AdminProvider = ({ children }) => {
     if (savedViolationField) setViolationField(JSON.parse(savedViolationField));
     if (alcoholDrugTesting7)
       setAlcoholDrugTesting(JSON.parse(alcoholDrugTesting7));
-  };
-  useEffect(() => {
-    const savedFormData1 = localStorage.getItem("AdminFormData");
-    if (savedFormData1) {
-      setFormData1((prevState) => {
-        const newState = { ...prevState, ...savedFormData1 };
-        console.log("Updating FormData1 to:", newState);
-        localStorage.setItem("AdminFormData", JSON.stringify(newState));
-        return newState;
-      });
-
-      const savedFormData8 = localStorage.getItem("AdminFormData8");
-      const savedFormData9 = localStorage.getItem("AdminFormData9");
-      const savedFormData = localStorage.getItem("AdminFormData2");
-      const savedFormData3 = localStorage.getItem("AdminFormData3");
-      const savedAddressField = localStorage.getItem("AdminAddressField4");
-      const savedTrafficConvictionField = localStorage.getItem(
-        "AdminTrafficConvictionField4"
-      );
-      const driverLicensePermit = localStorage.getItem(
-        "AdminDriverLicensePermit5"
-      );
-      const driverExperience = localStorage.getItem("AdminDriverExperience5");
-      const educationHistory = localStorage.getItem("AdminEducationHistory5");
-      const extraSkills = localStorage.getItem("AdminExtraSkills5");
-      const savedViolationField = localStorage.getItem("AdminViolationField6");
-      const alcoholDrugTesting7 = localStorage.getItem("AdminAlcoholDrugTest7");
-
-      if (savedFormData1) setFormData1(JSON.parse(savedFormData1));
-      if (savedFormData) setFormData(JSON.parse(savedFormData));
-      if (savedFormData8) setFormData8(JSON.parse(savedFormData8));
-      if (savedFormData9) setFormData9(JSON.parse(savedFormData9));
-      if (savedFormData3) setFormData3(JSON.parse(savedFormData3));
-      if (driverLicensePermit)
-        setDriverLicensePermit(JSON.parse(driverLicensePermit));
-      if (driverExperience) setDriverExperience(JSON.parse(driverExperience));
-      if (educationHistory) setEducationHistory(JSON.parse(educationHistory));
-      if (savedAddressField) setAddressField(JSON.parse(savedAddressField));
-      if (extraSkills) setExtraSkills(JSON.parse(extraSkills));
-      if (savedTrafficConvictionField)
-        setTrafficConvictionField(JSON.parse(savedTrafficConvictionField));
-      if (savedViolationField)
-        setViolationField(JSON.parse(savedViolationField));
-      if (alcoholDrugTesting7)
-        setAlcoholDrugTesting(JSON.parse(alcoholDrugTesting7));
-    }
   }, [currentUserId, fetchUserData]);
 
   // useEffect(() => {

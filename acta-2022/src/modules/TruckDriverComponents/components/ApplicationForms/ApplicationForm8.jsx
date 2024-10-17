@@ -6,7 +6,8 @@ import { useAuth } from "../../../../AuthContext";
 import { useNavigate } from "react-router";
 import { FaBell } from "react-icons/fa";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
-const ApplicationForm8 = () => {
+import { useAuthAdmin } from "../../../../AdminContext";
+const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const defaultFormData = [
     {
       day1: { value: "", status: "pending", note: "" },
@@ -29,7 +30,20 @@ const ApplicationForm8 = () => {
     },
   ];
   const navigate = useNavigate();
-  const { formData8, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
+
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
+  const { isSaveClicked, setIsSaveClicked, formData8 } =
+    currentUser?.userType === "Admin" ? adminAuthData : authData;
+
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+    }
+  }, [uid]);
+
   const [localFormData, setLocalFormData] = useState(
     formData8 || defaultFormData
   );
@@ -85,30 +99,48 @@ const ApplicationForm8 = () => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm7");
   };
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        onDutyHours: localFormData,
-        submittedAt: new Date(),
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form8: applicationData,
-          completedForms: 8, // Update this with the specific key for this form
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form8: applicationData,
-          completedForms: 8,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
+
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
+  };
+  const saveForm8 = async () => {
+    const applicationData = {
+      onDutyHours: localFormData,
+    };
+    await saveToFirebase(8, applicationData);
   };
   const validateForm = () => {
     const newErrors = localFormData.map((formEntry) => {
@@ -162,16 +194,14 @@ const ApplicationForm8 = () => {
     if (validateForm()) {
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      await saveForm8();
       navigate("/TruckDriverLayout/ApplicationForm9");
     } else {
       toast.error("Please complete all required fields to continue");
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((formEntry) =>
       Object.values(formEntry).some(
@@ -189,7 +219,7 @@ const ApplicationForm8 = () => {
     setIsSaveClicked(true);
 
     try {
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docRef = doc(db, "truck_driver_applications", uid);
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
@@ -212,6 +242,15 @@ const ApplicationForm8 = () => {
       toast.error("Error saving the form, please try again");
     }
   };
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
 
@@ -338,6 +377,8 @@ const ApplicationForm8 = () => {
                           status={field.day1?.status}
                           note={field.day1?.note}
                           index={index}
+                          fieldName="day1"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -364,6 +405,8 @@ const ApplicationForm8 = () => {
                           status={field.day1HoursWorked?.status}
                           note={field.day1HoursWorked?.note}
                           index={index}
+                          fieldName="day1HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -392,6 +435,8 @@ const ApplicationForm8 = () => {
                           status={field.day2?.status}
                           note={field.day2?.note}
                           index={index}
+                          fieldName="day2"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -418,6 +463,8 @@ const ApplicationForm8 = () => {
                           status={field.day2HoursWorked?.status}
                           note={field.day2HoursWorked?.note}
                           index={index}
+                          fieldName="day2HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -446,6 +493,8 @@ const ApplicationForm8 = () => {
                           status={field.day3?.status}
                           note={field.day3?.note}
                           index={index}
+                          fieldName="day3"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -472,6 +521,8 @@ const ApplicationForm8 = () => {
                           status={field.day3HoursWorked?.status}
                           note={field.day3HoursWorked?.note}
                           index={index}
+                          fieldName="day3HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -500,6 +551,8 @@ const ApplicationForm8 = () => {
                           status={field.day4?.status}
                           note={field.day4?.note}
                           index={index}
+                          fieldName="day4"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -526,6 +579,8 @@ const ApplicationForm8 = () => {
                           status={field.day4HoursWorked?.status}
                           note={field.day4HoursWorked?.note}
                           index={index}
+                          fieldName="day4HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -554,6 +609,8 @@ const ApplicationForm8 = () => {
                           status={field.day5?.status}
                           note={field.day5?.note}
                           index={index}
+                          fieldName="day5"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -580,6 +637,8 @@ const ApplicationForm8 = () => {
                           status={field.day5HoursWorked?.status}
                           note={field.day5HoursWorked?.note}
                           index={index}
+                          fieldName="day5HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -608,6 +667,8 @@ const ApplicationForm8 = () => {
                           status={field.day6?.status}
                           note={field.day6?.note}
                           index={index}
+                          fieldName="day6"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -634,6 +695,8 @@ const ApplicationForm8 = () => {
                           status={field.day6HoursWorked?.status}
                           note={field.day6HoursWorked?.note}
                           index={index}
+                          fieldName="day6HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -662,6 +725,8 @@ const ApplicationForm8 = () => {
                           status={field.day7?.status}
                           note={field.day7?.note}
                           index={index}
+                          fieldName="day7"
+                          uid={uid}
                         />
                         <input
                           type="date"
@@ -688,6 +753,8 @@ const ApplicationForm8 = () => {
                           status={field.day7HoursWorked?.status}
                           note={field.day7HoursWorked?.note}
                           index={index}
+                          fieldName="day7HoursWorked"
+                          uid={uid}
                         />
                         <input
                           type="number"
@@ -717,6 +784,8 @@ const ApplicationForm8 = () => {
                     status={field.TotalHours?.status}
                     note={field.TotalHours?.note}
                     index={index}
+                    fieldName="TotalHours"
+                    uid={uid}
                   />
                   <input
                     type="number"
@@ -745,6 +814,8 @@ const ApplicationForm8 = () => {
                       status={field.relievedTime?.status}
                       note={field.relievedTime?.note}
                       index={index}
+                      fieldName="relievedTime"
+                      uid={uid}
                     />
                     <form className="w-full mx-auto mt-3">
                       <div className="relative">
@@ -794,6 +865,8 @@ const ApplicationForm8 = () => {
                     status={field.relievedDate?.status}
                     note={field.relievedDate?.note}
                     index={index}
+                    fieldName="relievedDate"
+                    uid={uid}
                   />
                   <input
                     type="date"
@@ -816,31 +889,35 @@ const ApplicationForm8 = () => {
               </div>
             ))}
         </form>
-        <div className="flex items-center justify-between px-1 pt-3">
-          <button
-            type="button"
-            onClick={handleBack}
-            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
-          >
-            back
-          </button>
-          <div className="flex justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
-            >
-              Save
-            </button>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
-              onClick={handleSubmit}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
             >
-              Next
+              Back
             </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => handleSave(currentUser.uid)}
+                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

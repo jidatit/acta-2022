@@ -6,10 +6,20 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
+import { useAuthAdmin } from "../../../../AdminContext";
 
-const ApplicationForm9 = () => {
+const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
-  const { formData9, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
+  const { fetchUserData, currentUser } = adminAuthData;
+  const { isSaveClicked, setIsSaveClicked, formData9 } =
+    currentUser?.userType === "Admin" ? adminAuthData : authData;
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+    }
+  }, [uid]);
   const [localFormData, setLocalFormData] = useState(formData9);
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false); // State for modal visibility
@@ -36,30 +46,48 @@ const ApplicationForm9 = () => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm8");
   };
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        compensatedWork: localFormData,
-        submittedAt: new Date(),
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form9: applicationData,
-          completedForms: 9, // Update this with the specific key for this form
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form9: applicationData,
-          completedForms: 9,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
+
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
+  };
+  const saveForm9 = async () => {
+    const applicationData = {
+      compensatedWork: localFormData,
+    };
+    await saveToFirebase(9, applicationData);
   };
   const validateForm = () => {
     const newErrors = localFormData.map((field) => {
@@ -84,10 +112,9 @@ const ApplicationForm9 = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveClicked(false);
-
     if (validateForm()) {
       setIsSaveClicked(true);
-      await saveToFirebase();
+      await saveForm9();
       setShowModal(true); // Show modal after successful submission
       // navigate("/TruckDriverLayout/ApplicationForm1");
     } else {
@@ -95,9 +122,7 @@ const ApplicationForm9 = () => {
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     // Check if at least one field is filled
     const isAnyFieldFilled = localFormData.some((field) =>
       Object.values(field).some((value) => value.value.trim() !== "")
@@ -113,7 +138,7 @@ const ApplicationForm9 = () => {
     setIsSaveClicked(true);
 
     try {
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docRef = doc(db, "truck_driver_applications", uid);
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
@@ -136,7 +161,15 @@ const ApplicationForm9 = () => {
       toast.error("Error saving the form, please try again");
     }
   };
-
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     const updatedFields = localFormData.map((field, i) =>
@@ -210,6 +243,8 @@ const ApplicationForm9 = () => {
                     labelName="Are you currently working for another employer?"
                     status={field.currentlyWorking.status} // Adjust the status accordingly
                     note={field.currentlyWorking.note} // Adjust the note accordingly
+                    fieldName="currentlyWorking"
+                    uid={uid}
                   />
                   <div className="mt-2">
                     <label className="inline-flex items-center">
@@ -249,6 +284,8 @@ const ApplicationForm9 = () => {
                     while still employed by this company?"
                     status={field.workingForAnotherEmployer.status} // Adjust the status accordingly
                     note={field.workingForAnotherEmployer.note} // Adjust the note accordingly
+                    fieldName="workingForAnotherEmployer"
+                    uid={uid}
                   />
                   <div className="mt-2">
                     <label className="inline-flex items-center">
@@ -320,31 +357,35 @@ const ApplicationForm9 = () => {
             </div>
           </div>
         )}
-        <div className="flex items-center justify-between px-1">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg"
-          >
-            Back
-          </button>
-          <div className="flex justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleSave}
-              className="px-6 py-2 font-semibold text-white bg-green-600 hover:bg-green-800 rounded-lg"
-            >
-              Save
-            </button>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
-              onClick={handleSubmit}
-              className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg"
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
             >
-              Submit
+              Back
             </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => handleSave(currentUser.uid)}
+                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

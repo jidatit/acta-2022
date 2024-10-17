@@ -6,23 +6,35 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
+import { useAuthAdmin } from "../../../../AdminContext";
 
-const ApplicationForm4 = () => {
+const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
+
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
+  const {
+    isSaveClicked,
+    setIsSaveClicked,
+    addressField,
+    trafficConvictionField,
+    noAccidentsCheckeds,
+    noTrafficConvictionsCheckeds,
+  } = currentUser?.userType === "Admin" ? adminAuthData : authData;
+
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+    }
+  }, [uid]);
+
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
   }, []); // Empty dependency array means this effect runs once, on mount
-  const {
-    addressField,
-    trafficConvictionField,
 
-    setIsSaveClicked,
-    isSaveClicked,
-    currentUser,
-    noAccidentsCheckeds,
-    noTrafficConvictionsCheckeds,
-  } = useAuth();
   const [addressFields, setAddressFields] = useState(
     addressField.length > 0
       ? addressField
@@ -167,35 +179,52 @@ const ApplicationForm4 = () => {
     setTrafficErrors(newErrors);
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
-
-  const saveToFirebase = async () => {
+  const saveForm4 = async () => {
+    const applicationData = {
+      accidentRecords: noAccidentsChecked ? [] : addressFields,
+      trafficConvictions: noTrafficConvictionsChecked
+        ? []
+        : trafficConvictionFields,
+      noAccidents: noAccidentsChecked,
+      noTrafficConvictions: noTrafficConvictionsChecked,
+    };
+    await saveToFirebase(4, applicationData);
+  };
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        accidentRecords: noAccidentsChecked ? [] : addressFields,
-        trafficConvictions: noTrafficConvictionsChecked
-          ? []
-          : trafficConvictionFields,
-        submittedAt: new Date(),
-        noAccidents: noAccidentsChecked,
-        noTrafficConvictions: noTrafficConvictionsChecked,
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form4: applicationData,
-          completedForms: 4,
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form4: applicationData,
-          completedForms: 4,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
+
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
   const handleSubmit = async (e) => {
@@ -208,16 +237,14 @@ const ApplicationForm4 = () => {
       (noTrafficConvictionsChecked || isTrafficValid)
     ) {
       setIsSaveClicked(true);
-      await saveToFirebase();
+      await saveForm4();
       navigate("/TruckDriverLayout/ApplicationForm5");
     } else {
       toast.error("Please complete all required fields to continue");
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     // Check if there is at least one field filled out
     const hasAddressData =
       !noAccidentsChecked &&
@@ -242,7 +269,12 @@ const ApplicationForm4 = () => {
       setIsSaveClicked(true);
 
       try {
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        let docRef;
+        if (currentUser.userType === "Admin") {
+          docRef = doc(db, "truck_driver_applications", uid);
+        } else {
+          docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        }
         const docSnap = await getDoc(docRef);
 
         const applicationData = {
@@ -271,7 +303,15 @@ const ApplicationForm4 = () => {
       toast.error("Please complete at least one field before saving.");
     }
   };
-
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const addAddressFields = () => {
     setAddressFields([
       ...addressFields,
@@ -356,6 +396,8 @@ const ApplicationForm4 = () => {
                       status={address.date.status}
                       note={address.date.note}
                       index={index}
+                      fieldName="date"
+                      uid={uid}
                     />
                     <input
                       type="date"
@@ -382,6 +424,8 @@ const ApplicationForm4 = () => {
                       status={address.accidentType.status}
                       note={address.accidentType.note}
                       index={index}
+                      fieldName="accidentType"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -408,6 +452,8 @@ const ApplicationForm4 = () => {
                       status={address.location.status}
                       note={address.location.note}
                       index={index}
+                      fieldName="location"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -434,6 +480,8 @@ const ApplicationForm4 = () => {
                       status={address.fatalities.status}
                       note={address.fatalities.note}
                       index={index}
+                      fieldName="fatalities"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -460,6 +508,8 @@ const ApplicationForm4 = () => {
                       status={address.penalties.status}
                       note={address.penalties.note}
                       index={index}
+                      fieldName="penalties"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -486,6 +536,8 @@ const ApplicationForm4 = () => {
                       status={address.comments.status}
                       note={address.comments.note}
                       index={index}
+                      fieldName="comments"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -564,6 +616,8 @@ const ApplicationForm4 = () => {
                       status={traffic.date.status}
                       note={traffic.date.note}
                       index={index}
+                      fieldName="date"
+                      uid={uid}
                     />
                     <input
                       type="date"
@@ -590,6 +644,8 @@ const ApplicationForm4 = () => {
                       status={traffic.offenseType.status}
                       note={traffic.offenseType.note}
                       index={index}
+                      fieldName="offenseType"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -617,6 +673,8 @@ const ApplicationForm4 = () => {
                       status={traffic.location.status}
                       note={traffic.location.note}
                       index={index}
+                      fieldName="location"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -643,6 +701,8 @@ const ApplicationForm4 = () => {
                       status={traffic.penalties.status}
                       note={traffic.penalties.note}
                       index={index}
+                      fieldName="penalties"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -669,6 +729,8 @@ const ApplicationForm4 = () => {
                       status={traffic.comments.status}
                       note={traffic.comments.note}
                       index={index}
+                      fieldName="comments"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -714,31 +776,35 @@ const ApplicationForm4 = () => {
           )}
         </form>
 
-        <div className="flex items-center justify-between px-1">
-          <button
-            type="button"
-            onClick={handleBack}
-            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
-          >
-            back
-          </button>
-          <div className="flex justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
-            >
-              Save
-            </button>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
-              onClick={handleSubmit}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
             >
-              Next
+              Back
             </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => handleSave(currentUser.uid)}
+                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

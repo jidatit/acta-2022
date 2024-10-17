@@ -5,17 +5,10 @@ import { FaBell } from "react-icons/fa";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
-import { FaRegTimesCircle } from "react-icons/fa";
-import { FaPencil } from "react-icons/fa6";
-import { FaRegCheckCircle } from "react-icons/fa";
-import IndexLabelLogic from "../../../SharedComponents/components/IndexLableLogic";
-const ApplicationForm2 = () => {
+import { useAuthAdmin } from "../../../../AdminContext";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
+const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
-  const { FormData, setIsSaveClicked, currentUser } = useAuth();
-
-  // Initialize localFormData with the new structure
-  const [localFormData, setLocalFormData] = useState(FormData || []);
-
   const initialFields = [
     {
       street1: { value: "", status: "pending", note: "" },
@@ -25,17 +18,35 @@ const ApplicationForm2 = () => {
       zipCode: { value: "", status: "pending", note: "" },
     },
   ];
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
 
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
+  const { setIsSaveClicked, FormData } =
+    currentUser?.userType === "Admin" ? adminAuthData : authData;
+
+  const [localFormData, setLocalFormData] = useState(FormData || [{}]);
+  console.log("FormData", localFormData);
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+      setLocalFormData([{}]); // Reset form data when changing UID
+    }
+  }, [uid]);
+
+  useEffect(() => {
+    if (FormData !== null) {
+      setLocalFormData(FormData);
+    } else {
+      setLocalFormData([{}]);
+    }
+  }, [FormData]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   // Update localFormData whenever FormData changes
-  useEffect(() => {
-    if (FormData) {
-      setLocalFormData(FormData);
-    }
-  }, [FormData]);
 
   useEffect(() => {
     setIsSaveClicked(true);
@@ -57,30 +68,47 @@ const ApplicationForm2 = () => {
   const handleBack = () => {
     navigate("/TruckDriverLayout/ApplicationForm1");
   };
-
-  const saveToFirebase = async () => {
+  const saveForm2 = async () => {
+    const applicationData = {
+      previousAddresses: localFormData,
+    };
+    await saveToFirebase(2, applicationData);
+  };
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        previousAddresses: localFormData,
-        submittedAt: new Date(),
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form2: applicationData,
-          completedForms: 2,
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form2: applicationData,
-          completedForms: 2,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
+
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
 
@@ -88,17 +116,16 @@ const ApplicationForm2 = () => {
     e.preventDefault();
     setIsSaveClicked(true);
 
-    await saveToFirebase();
+    await saveForm2();
     navigate("/TruckDriverLayout/ApplicationForm3");
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const handleSave = async (uid) => {
     toast.success("Form is successfully saved");
     setIsSaveClicked(true);
 
     try {
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docRef = doc(db, "truck_driver_applications", uid);
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
@@ -119,7 +146,15 @@ const ApplicationForm2 = () => {
       console.error("Error saving application: ", error);
     }
   };
-
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const addAddressFields = () => {
     setLocalFormData([
       ...localFormData,
@@ -153,74 +188,133 @@ const ApplicationForm2 = () => {
       </div>
 
       <div className="flex flex-col w-full gap-y-8 ">
-        <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
+        <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((address, index) => (
               <div
                 key={index}
                 className="grid grid-cols-1 gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
               >
-                <IndexLabelLogic
-                  label="Street 1"
-                  id="street1"
-                  name="street1"
-                  value={address.street1.value || ""}
-                  status={address.street1.status || "pending"}
-                  note={address.street1.note || ""}
-                  handleChange={handleChange}
-                  index={index}
-                />
-                <IndexLabelLogic
-                  label="Street 2"
-                  id="street2"
-                  name="street2"
-                  value={address.street2.value}
-                  status={address.street2.status}
-                  note={address.street2.note}
-                  handleChange={handleChange}
-                  index={index}
-                />
-                <IndexLabelLogic
-                  label="City"
-                  id="city"
-                  name="city"
-                  value={address.city.value}
-                  status={address.city.status}
-                  note={address.city.note}
-                  handleChange={handleChange}
-                  index={index}
-                />
-                <IndexLabelLogic
-                  label="State"
-                  id="state"
-                  name="state"
-                  value={address.state.value}
-                  status={address.state.status}
-                  note={address.state.note}
-                  handleChange={handleChange}
-                  index={index}
-                />
-                <IndexLabelLogic
-                  label="Zip Code"
-                  id="zipCode"
-                  name="zipCode"
-                  value={address.zipCode.value}
-                  status={address.zipCode.status}
-                  note={address.zipCode.note}
-                  handleChange={handleChange}
-                  index={index}
-                />
+                <div>
+                  <FormLabelWithStatus
+                    label="Street 1"
+                    id={`street1`}
+                    status={address?.street1?.status}
+                    note={address?.street1?.note}
+                    index={index}
+                    fieldName="street1"
+                    uid={uid}
+                  />
+                  <input
+                    type="text"
+                    name="street1"
+                    id={`street1-${index}`}
+                    value={address.street1.value}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <FormLabelWithStatus
+                    label="Street 2"
+                    id={`street2`}
+                    status={address.street2.status}
+                    note={address.street2.note}
+                    index={index}
+                    fieldName="street2"
+                    uid={uid}
+                  />
+                  <input
+                    type="text"
+                    name="street2"
+                    id={`street2-${index}`}
+                    value={address.street2.value}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <FormLabelWithStatus
+                    label="City"
+                    id={`city`}
+                    status={address.city.status}
+                    note={address.city.note}
+                    index={index}
+                    fieldName="city"
+                    uid={uid}
+                  />
+                  <input
+                    type="text"
+                    name="city"
+                    id={`city-${index}`}
+                    value={address.city.value}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <FormLabelWithStatus
+                    label="State"
+                    id={`state`}
+                    status={address.state.status}
+                    note={address.state.note}
+                    index={index}
+                    fieldName="state"
+                    uid={uid}
+                  />
+                  <input
+                    type="text"
+                    name="state"
+                    id={`state-${index}`}
+                    value={address.state.value}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <FormLabelWithStatus
+                    label="Zip Code"
+                    id={`zipCode`}
+                    status={address.zipCode.status}
+                    note={address.zipCode.note}
+                    index={index}
+                    fieldName="zipCode"
+                    uid={uid}
+                  />
+                  <input
+                    type="text"
+                    name="zipCode"
+                    id={`zipCode-${index}`}
+                    value={address.zipCode.value}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div className="flex items-center mt-4">
+                  {index >= initialFields.length && ( // Only show remove button for dynamically added fields
+                    <button
+                      type="button"
+                      onClick={() => removeAddressField(index)}
+                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           <div className="flex items-end justify-end w-full">
             <button
               type="button"
               onClick={addAddressFields}
-              className="px-4 py-2 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Add Address
+              Add More
             </button>
           </div>
+        </form>
+        {currentUser.userType !== "Admin" ? (
           <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
@@ -232,7 +326,7 @@ const ApplicationForm2 = () => {
             <div>
               <button
                 type="button"
-                onClick={handleSave}
+                onClick={() => handleSave(currentUser.uid)}
                 className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
               >
                 Save
@@ -246,7 +340,9 @@ const ApplicationForm2 = () => {
               </button>
             </div>
           </div>
-        </form>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

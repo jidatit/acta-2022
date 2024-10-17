@@ -6,14 +6,26 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
-const ApplicationForm6 = () => {
+import { useAuthAdmin } from "../../../../AdminContext";
+const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
+
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
   const {
-    setIsSaveClicked,
-    violationField,
     isSaveClicked,
-    currentUser,
+    setIsSaveClicked,
     noViolationChecked,
-  } = useAuth();
+    violationField,
+  } = currentUser?.userType === "Admin" ? adminAuthData : authData;
+
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+    }
+  }, [uid]);
+
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
   const [noViolationCheckeds, setNoViolationChecked] =
@@ -97,36 +109,50 @@ const ApplicationForm6 = () => {
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        violationRecords: noViolationCheckeds ? [] : violationFields,
-
-        submittedAt: new Date(),
-        noViolations: noViolationCheckeds,
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form6: applicationData,
-          completedForms: 6,
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form6: applicationData,
-          completedForms: 6,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
 
-      //console.log("Data successfully saved to Firebase");
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
-
+  const saveForm6 = async () => {
+    const applicationData = {
+      violationRecords: noViolationCheckeds ? [] : violationFields,
+      noViolations: noViolationCheckeds,
+    };
+    await saveToFirebase(6, applicationData);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isViolationField = validateViolationFields();
@@ -134,16 +160,14 @@ const ApplicationForm6 = () => {
     if (noViolationCheckeds || isViolationField) {
       setIsSaveClicked(true);
 
-      await saveToFirebase();
+      await saveForm6();
       navigate("/TruckDriverLayout/ApplicationForm7");
     } else {
       toast.error("Please complete all required fields to continue");
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     // Check if there is at least one field filled out
     const hasViolationData =
       !noViolationCheckeds &&
@@ -157,7 +181,7 @@ const ApplicationForm6 = () => {
       setIsSaveClicked(true);
 
       try {
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+        const docRef = doc(db, "truck_driver_applications", uid);
         const docSnap = await getDoc(docRef);
 
         const applicationData = {
@@ -183,7 +207,15 @@ const ApplicationForm6 = () => {
       toast.error("Please complete at least one field before saving.");
     }
   };
-
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      console.log("child clicked", clicked);
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const addViolationFields = () => {
     setViolationFields([
       ...violationFields,
@@ -264,6 +296,8 @@ const ApplicationForm6 = () => {
                         status={address.date?.status}
                         note={address.date?.note}
                         index={index}
+                        fieldName="date"
+                        uid={uid}
                       />
                       <input
                         type="date"
@@ -290,6 +324,8 @@ const ApplicationForm6 = () => {
                         status={address.offense?.status}
                         note={address.offense?.note}
                         index={index}
+                        fieldName="offense"
+                        uid={uid}
                       />
                       <input
                         type="text"
@@ -316,6 +352,8 @@ const ApplicationForm6 = () => {
                         status={address.location?.status}
                         note={address.location?.note}
                         index={index}
+                        fieldName="location"
+                        uid={uid}
                       />
                       <input
                         type="text"
@@ -342,6 +380,8 @@ const ApplicationForm6 = () => {
                         status={address.vehicleOperated?.status}
                         note={address.vehicleOperated?.note}
                         index={index}
+                        fieldName="vehicleOperated"
+                        uid={uid}
                       />
                       <input
                         type="text"
@@ -387,31 +427,35 @@ const ApplicationForm6 = () => {
               </>
             )}
           </form>
-          <div className="flex items-center justify-between px-1 mt-4">
-            <button
-              type="button"
-              onClick={handleBack}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
-            >
-              back
-            </button>
-            <div className="flex justify-end w-full gap-x-2">
-              <button
-                type="submit"
-                onClick={handleSave}
-                className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
-              >
-                Save
-              </button>
+          {currentUser.userType !== "Admin" ? (
+            <div className="flex items-center justify-between w-full mt-10">
               <button
                 type="button"
-                onClick={handleSubmit}
-                className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+                onClick={handleBack}
+                className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
               >
-                Next
+                Back
               </button>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => handleSave(currentUser.uid)}
+                  className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+                >
+                  Save
+                </button>
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+                >
+                  Next
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

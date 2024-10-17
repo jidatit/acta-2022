@@ -4,34 +4,45 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaRegTimesCircle } from "react-icons/fa";
-import { FaPencil } from "react-icons/fa6";
-import { FaRegCheckCircle } from "react-icons/fa";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
-import IndexLabelLogic from "../../../SharedComponents/components/IndexLableLogic";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
-const ApplicationForm3 = () => {
+import { useAuthAdmin } from "../../../../AdminContext";
+const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
-  const { FormData3, setIsSaveClicked, currentUser, isSaveClicked } = useAuth();
+  const authData = useAuth();
+  const adminAuthData = useAuthAdmin();
 
-  const [localFormData, setLocalFormData] = useState(FormData3);
-  const [errors, setErrors] = useState([]);
+  const { fetchUserData, currentUser } = adminAuthData;
+  // Use object destructuring with default values
+  const { isSaveClicked, setIsSaveClicked, FormData3 } =
+    currentUser?.userType === "Admin" ? adminAuthData : authData;
 
+  const [localFormData, setLocalFormData] = useState(FormData3 || [{}]);
+  useEffect(() => {
+    if (uid) {
+      fetchUserData(uid); // Fetch the data for the specific UID
+      setLocalFormData([{}]); // Reset form data when changing UID
+    }
+  }, [uid]);
+
+  useEffect(() => {
+    if (FormData3 !== null) {
+      setLocalFormData(FormData3);
+    } else {
+      setLocalFormData([{}]);
+    }
+  }, [FormData3]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const [errors, setErrors] = useState([]);
+
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
-
-  useEffect(() => {
-    if (FormData3) {
-      setLocalFormData(FormData3);
-    }
-  }, [FormData3]);
 
   const handleBack = () => {
     if (!isSaveClicked) {
@@ -41,31 +52,48 @@ const ApplicationForm3 = () => {
     navigate("/TruckDriverLayout/ApplicationForm2");
   };
 
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (formNumber, formData) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      const applicationData = {
-        EmploymentHistory: localFormData,
-        submittedAt: new Date(),
+      // Create the update object with the form data
+      const updateObject = {
+        [`form${formNumber}`]: {
+          ...formData,
+          submittedAt: new Date(),
+        },
       };
 
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form3: applicationData,
-          completedForms: 3,
-        });
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        // Only update completedForms if the new form number is higher
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          form3: applicationData,
-          completedForms: 3,
+          ...updateObject,
+          completedForms: formNumber,
         });
       }
+
+      toast.success(`Form ${formNumber} saved successfully`);
     } catch (error) {
-      console.error("Error saving application: ", error);
+      console.error("Error saving application:", error);
       toast.error("Error saving the application, please try again.");
     }
+  };
+  const saveForm3 = async () => {
+    const applicationData = {
+      EmploymentHistory: localFormData,
+    };
+    await saveToFirebase(3, applicationData);
   };
 
   const validateForm = () => {
@@ -106,16 +134,14 @@ const ApplicationForm3 = () => {
 
     if (validateForm()) {
       setIsSaveClicked(true);
-      await saveToFirebase();
+      await saveForm3();
       navigate("/TruckDriverLayout/ApplicationForm4");
     } else {
       toast.error("Please complete all required fields to continue.");
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async (uid) => {
     const isAnyFieldFilled = localFormData.some((field) =>
       Object.values(field).some((value) => value.value.trim() !== "")
     );
@@ -127,9 +153,16 @@ const ApplicationForm3 = () => {
 
     toast.success("Form is successfully saved");
     setIsSaveClicked(true);
-    await saveToFirebase();
+    await saveToFirebase(uid);
   };
-
+  if (currentUser.userType === "Admin") {
+    useEffect(() => {
+      setClicked(false);
+      if (clicked) {
+        handleSave(uid);
+      }
+    }, [clicked]);
+  }
   const handleAddCompany = () => {
     setLocalFormData([
       ...localFormData,
@@ -238,6 +271,8 @@ const ApplicationForm3 = () => {
                       status={field.companyName.status}
                       note={field.companyName.note}
                       index={index}
+                      fieldName="companyName"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -265,6 +300,8 @@ const ApplicationForm3 = () => {
                       status={field.street.status}
                       note={field.street.note}
                       index={index}
+                      fieldName="street"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -292,6 +329,8 @@ const ApplicationForm3 = () => {
                       status={field.city.status}
                       note={field.city.note}
                       index={index}
+                      fieldName="city"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -319,6 +358,8 @@ const ApplicationForm3 = () => {
                       status={field.zipCode.status}
                       note={field.zipCode.note}
                       index={index}
+                      fieldName="zipCode"
+                      uid={uid}
                     />
                     <input
                       type="number"
@@ -346,6 +387,8 @@ const ApplicationForm3 = () => {
                       status={field.contactPerson.status}
                       note={field.contactPerson.note}
                       index={index}
+                      fieldName="contactPerson"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -373,6 +416,8 @@ const ApplicationForm3 = () => {
                       status={field.phone.status}
                       note={field.phone.note}
                       index={index}
+                      fieldName="phone"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -400,6 +445,8 @@ const ApplicationForm3 = () => {
                       status={field.fax1.status}
                       note={field.fax1.note}
                       index={index}
+                      fieldName="fax1"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -427,6 +474,8 @@ const ApplicationForm3 = () => {
                       status={field.from.status}
                       note={field.from.note}
                       index={index}
+                      fieldName="from"
+                      uid={uid}
                     />
                     <input
                       type="date"
@@ -455,6 +504,8 @@ const ApplicationForm3 = () => {
                       status={field.to.status}
                       note={field.to.note}
                       index={index}
+                      fieldName="to"
+                      uid={uid}
                     />
                     <input
                       type="date"
@@ -481,6 +532,8 @@ const ApplicationForm3 = () => {
                       status={field.position.status}
                       note={field.position.note}
                       index={index}
+                      fieldName="position"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -508,6 +561,8 @@ const ApplicationForm3 = () => {
                       status={field.salary.status}
                       note={field.salary.note}
                       index={index}
+                      fieldName="salary"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -535,6 +590,8 @@ const ApplicationForm3 = () => {
                       status={field.leavingReason.status}
                       note={field.leavingReason.note}
                       index={index}
+                      fieldName="leavingReason"
+                      uid={uid}
                     />
                     <input
                       type="text"
@@ -561,6 +618,8 @@ const ApplicationForm3 = () => {
                         labelName="Were you subject to the FMCSRs* while employed?"
                         status={field.subjectToFMCSRs.status} // Adjust the status accordingly
                         note={field.subjectToFMCSRs.note} // Adjust the note accordingly
+                        fieldName="subjectToFMCSRs"
+                        uid={uid}
                       />
                       <div className="mt-2">
                         <label className="inline-flex items-center">
@@ -599,6 +658,8 @@ const ApplicationForm3 = () => {
                         labelName="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
                         status={field.jobDesignatedAsSafetySensitive.status} // Adjust the status accordingly
                         note={field.jobDesignatedAsSafetySensitive.note} // Adjust the note accordingly
+                        fieldName="jobDesignatedAsSafetySensitive"
+                        uid={uid}
                       />
                       <div className="mt-2">
                         <label className="inline-flex items-center">
@@ -661,31 +722,35 @@ const ApplicationForm3 = () => {
             </button>
           </div>
         </form>
-        <div className="flex items-center justify-between px-1">
-          <button
-            type="button"
-            onClick={handleBack}
-            className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
-          >
-            back
-          </button>
-          <div className="flex justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleSave}
-              className={`px-6 py-2 font-semibold text-white bg-green-500 hover:bg-green-800 rounded-lg`}
-            >
-              Save
-            </button>
+        {currentUser.userType !== "Admin" ? (
+          <div className="flex items-center justify-between w-full mt-10">
             <button
               type="button"
-              onClick={handleSubmit}
-              className={`px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg`}
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
             >
-              Next
+              Back
             </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => handleSave(currentUser.uid)}
+                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

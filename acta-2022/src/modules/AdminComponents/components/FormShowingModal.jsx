@@ -27,7 +27,7 @@ const forms = [
 
 const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
-
+  const [clicked, setClicked] = useState(false);
   if (!openModal) return null;
 
   const CurrentForm = forms[currentFormIndex];
@@ -55,6 +55,9 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
     setOpenModal(false);
     setCurrentFormIndex(0); // Reset to first form when closing
   };
+  const handleClick = () => {
+    setClicked(true);
+  };
 
   return (
     <div className="fixed inset-0 w-screen bg-black bg-opacity-50 h-screen z-50 flex justify-center items-center overflow-y-auto">
@@ -71,7 +74,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
             Application Form {currentFormIndex + 1}
           </h3>
           <div className="space-y-4">
-            <CurrentForm uid={uid} />
+            <CurrentForm clicked={clicked} setClicked={setClicked} uid={uid} />
           </div>
         </div>
         <div className="bg-gray-50 px-6 py-4 flex justify-between rounded-b-lg">
@@ -86,7 +89,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
-              onClick={handleSave}
+              onClick={handleClick}
               className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
             >
               Save
