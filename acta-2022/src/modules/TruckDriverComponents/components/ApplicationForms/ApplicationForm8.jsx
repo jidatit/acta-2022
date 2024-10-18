@@ -130,7 +130,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         });
       }
 
-      toast.success(`Form ${formNumber} saved successfully`);
+      toast.success(`Form saved successfully`);
     } catch (error) {
       console.error("Error saving application:", error);
       toast.error("Error saving the application, please try again.");

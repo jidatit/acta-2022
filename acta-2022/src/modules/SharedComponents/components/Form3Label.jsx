@@ -160,6 +160,7 @@ const FormLabelWithStatus = ({
         }
       }
       // Update the document in Firebase
+      setIsModalOpen(false);
       await updateDoc(docRef, updatedData);
       toast.success(`Successfully updated status for ${fieldName}`);
     } catch (error) {
@@ -303,7 +304,7 @@ const FormLabelWithStatus = ({
     }
   };
   return (
-    <div className="flex flex-row items-center gap-x-3 mb-1">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-2 mb-1 w-full">
       <label
         htmlFor={`${id}-${index}`}
         className="block text-sm font-semibold text-gray-900 font-radios"
@@ -336,8 +337,15 @@ const FormLabelWithStatus = ({
                   )}
                 </div>
                 {note === "" ? (
-                  <dialog open={isModalOpen} className="modal w-[30%]">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
                       <div className="flex flex-col gap-y-6 w-full">
                         <h3 className="font-bold text-lg">Add Note</h3>
                         {/* Textarea with onChange event */}
@@ -371,8 +379,15 @@ const FormLabelWithStatus = ({
                     </div>
                   </dialog>
                 ) : (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
                       <h3 className="font-bold text-lg">View Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}
@@ -410,8 +425,15 @@ const FormLabelWithStatus = ({
                   )}
                 </div>
                 {note ? (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
                       <h3 className="font-bold text-lg">View Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}
@@ -428,8 +450,15 @@ const FormLabelWithStatus = ({
                     </div>
                   </dialog>
                 ) : (
-                  <dialog open={isModalOpen} className="modal w-[30%]">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
                       <div className="flex flex-col gap-y-6 w-full">
                         <h3 className="font-bold text-lg">Add Note</h3>
                         {/* Textarea with onChange event */}
@@ -489,8 +518,15 @@ const FormLabelWithStatus = ({
                 )}
 
                 {note ? (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
                       <h3 className="font-bold text-lg">View Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}

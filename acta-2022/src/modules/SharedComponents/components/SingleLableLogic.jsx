@@ -156,7 +156,7 @@ const SingleLabelLogic = ({
 
         // Update the document in Firebase
         await updateDoc(docRef, updatedData);
-
+        setIsModalOpen(false);
         toast.success(`Successfully updated status for ${fieldName}`);
       } else {
         toast.error("Document does not exist!");
@@ -331,14 +331,14 @@ const SingleLabelLogic = ({
     }
   };
   return (
-    <div className="flex flex-row items-center gap-x-3 mb-1">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-2 mb-1 w-full">
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-semibold text-gray-900 font-radios"
+        className="block text-sm font-semibold text-gray-900 font-radios "
       >
         {labelName}*
       </label>
-      <div className="flex flex-row items-center gap-x-2">
+      <div className="flex flex-row items-center gap-x-2 ">
         {/* Logic for showing icons and notes based on status and user type */}
         {status === "pending" ? (
           <>
@@ -364,8 +364,15 @@ const SingleLabelLogic = ({
                   )}
                 </div>
                 {note === "" ? (
-                  <dialog open={isModalOpen} className="modal w-[30%]">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
                       <div className="flex flex-col gap-y-6 w-full">
                         <h3 className="font-bold text-lg">Add Note</h3>
                         {/* Textarea with onChange event */}
@@ -399,8 +406,15 @@ const SingleLabelLogic = ({
                     </div>
                   </dialog>
                 ) : (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
                       <h3 className="font-bold text-lg">View Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}
@@ -424,7 +438,7 @@ const SingleLabelLogic = ({
           // Admin User Logic for rejected or approved statuses
           <>
             {status === "rejected" && (
-              <div className="flex flex-row gap-x-1">
+              <div className="flex flex-row gap-x-1 w-full">
                 <FaRegTimesCircle className="text-red-500 cursor-pointer" />
                 <div
                   className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
@@ -438,8 +452,15 @@ const SingleLabelLogic = ({
                   )}
                 </div>
                 {note ? (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
                       <h3 className="font-bold text-lg">View Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}
@@ -456,8 +477,15 @@ const SingleLabelLogic = ({
                     </div>
                   </dialog>
                 ) : (
-                  <dialog open={isModalOpen} className="modal w-[30%]">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6">
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                  >
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
                       <div className="flex flex-col gap-y-6 w-full">
                         <h3 className="font-bold text-lg">Add Note</h3>
                         {/* Textarea with onChange event */}
@@ -501,25 +529,36 @@ const SingleLabelLogic = ({
           // Non-Admin User Logic
           <>
             {status === "rejected" && (
-              <div className="flex flex-row gap-x-1">
-                <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+              <div className="flex flex-row gap-x-1 w-full">
+                <div className="flex flex-row gap-x-1">
+                  <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+                  {note ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={handleViewNote}
+                    >
+                      <FaPencil size={10} />
+
+                      <p className="text-xs font-radios">View note</p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+
                 {note ? (
-                  <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                    onClick={handleViewNote}
+                  <dialog
+                    open={isModalOpen}
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
                   >
-                    <FaPencil size={10} />
+                    {/* Background overlay */}
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                    ></div>
 
-                    <p className="text-xs font-radios">View note</p>
-                  </div>
-                ) : (
-                  ""
-                )}
-
-                {note ? (
-                  <dialog open={isModalOpen} className="modal">
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4">
-                      <h3 className="font-bold text-lg">View Note</h3>
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col justify-center items-center z-50 relative">
+                      <h3 className="font-bold text-lg">Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}
                       </p>

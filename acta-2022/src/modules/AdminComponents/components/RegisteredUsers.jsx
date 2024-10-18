@@ -1,4 +1,12 @@
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { db } from "../../../config/firebaseConfig";
@@ -66,36 +74,7 @@ const RegisteredUsers = () => {
     fetchTruckDrivers();
   }, []);
 
-  // Function to handle status change
-  const handleStatusChange = (id, newStatus) => {
-    const updatedData = tableData.map((row) =>
-      row.id === id ? { ...row, status: newStatus } : row
-    );
-    setTableData(updatedData);
-  };
-  const handleStatusChange2 = (id, newStatus) => {
-    const updatedData = truckDrivers.map((row) =>
-      row.email === id ? { ...row, status: newStatus } : row
-    );
-    setTableData(updatedData);
-  };
   // Function to determine status background color
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Pending":
-        return "bg-yellow-400";
-      case "Approved":
-        return "bg-green-400";
-      case "Declined":
-        return "bg-red-400";
-      case "Future Lead":
-        return "bg-blue-400";
-      case "Need Review":
-        return "bg-orange-400";
-      default:
-        return "bg-gray-200";
-    }
-  };
 
   // Function to select a row via checkbox
 
@@ -111,10 +90,11 @@ const RegisteredUsers = () => {
 
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   // Function to confirm delete
-  const handleSelectRow = (uid) => {
+  const handleSelectRow = (uid, name) => {
     setSelectedUserIds((prev) =>
       prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
     );
+    setSelectedUser(name);
   };
 
   const handleDeleteClick = () => {
@@ -192,6 +172,46 @@ const RegisteredUsers = () => {
 
     return `${day}${suffix(day)} ${month} ${year}`;
   };
+  const handleStatusChange = async (uid, newStatus) => {
+    setTruckDrivers((prevDrivers) =>
+      prevDrivers.map((driver) =>
+        driver.uid === uid ? { ...driver, driverStatus: newStatus } : driver
+      )
+    );
+    const truckDriversQuery = query(
+      collection(db, "TruckDrivers"),
+      where("uid", "==", uid)
+    );
+
+    const querySnapshot = await getDocs(truckDriversQuery);
+
+    if (!querySnapshot.empty) {
+      // Get the first matching document
+      const truckDriverDoc = querySnapshot.docs[0];
+
+      // Update the status in the found document
+      await updateDoc(doc(db, "TruckDrivers", truckDriverDoc.id), {
+        driverStatus: newStatus,
+        statusUpdateDate: new Date().toISOString(),
+      });
+    }
+  };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-400";
+      case "approved":
+        return "bg-green-400";
+      case "rejected":
+        return "bg-red-400";
+      case "Future Lead":
+        return "bg-blue-400";
+      case "Need Review":
+        return "bg-orange-400";
+      default:
+        return "bg-gray-200";
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
@@ -203,114 +223,79 @@ const RegisteredUsers = () => {
           onClick={() => handleDeleteClick(selectedUser)}
         />
       </div>
-
-      <table className="min-w-full border-1 rounded-t-md font-radios">
-        <thead className="bg-gray-200 ">
-          <tr>
-            <th className="border p-2 text-left"></th>
-            <th className="border p-2 text-left">Driver Name</th>
-            <th className="border p-2 text-left">Status</th>
-            <th className="border p-2 text-left">Date</th>
-            <th className="border p-2 text-left">Time</th>
-            <th className="border p-2 text-left">Application</th>
-          </tr>
-        </thead>
-        <tbody>
-          {truckDrivers.map((driver) => (
-            <tr key={driver.uid} className="hover:bg-gray-100 ">
-              <td className="px-4 py-2">
-                <input
-                  type="checkbox"
-                  className="form-checkbox"
-                  onChange={() => handleSelectRow(driver.uid)}
-                />
-              </td>
-              <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
-              <td className="px-2 py-3">
-                <select
-                  value={driver.status || "Pending"} // Default to "Pending" if status is not set
-                  onChange={(e) =>
-                    handleStatusChange2(driver.email, e.target.value)
-                  }
-                  className={`p-2 rounded ${getStatusColor(
-                    driver.status || "Pending"
-                  )}`} // Use the current status for color
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Declined">Declined</option>
-                  <option value="Future Lead">Future Lead</option>
-                  <option value="Need Review">Need Review</option>
-                </select>
-              </td>
-              {/* Default status or you can modify this */}
-              <td className="px-2 py-3">{formatDate(driver.dateCreated)}</td>
-              <td className=" px-2 py-3">--</td>{" "}
-              {/* Placeholder for time or remove this column */}
-              <td className=" px-2 py-3">
-                {/* <button className="bg-blue-500 text-white py-1 px-3 rounded mr-2">
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-full border-1 rounded-t-md font-radios overflow-x-auto">
+          <thead className="bg-gray-200 ">
+            <tr>
+              <th className="border p-2 text-left"></th>
+              <th className="border p-2 text-left">Driver Name</th>
+              <th className="border p-2 text-left">Status</th>
+              <th className="border p-2 text-left">Date</th>
+              <th className="border p-2 text-left">Time</th>
+              <th className="border p-2 text-left">Application</th>
+            </tr>
+          </thead>
+          <tbody>
+            {truckDrivers.map((driver) => (
+              <tr key={driver.uid} className="hover:bg-gray-100 ">
+                <td className="px-4 py-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox"
+                    onChange={() =>
+                      handleSelectRow(driver.uid, driver.firstName)
+                    }
+                  />
+                </td>
+                <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
+                <td className="px-2 py-3">
+                  <select
+                    value={driver.driverStatus || "Pending"}
+                    onChange={(e) =>
+                      handleStatusChange(driver.uid, e.target.value)
+                    } // Capture the change and update the state
+                    className={`p-2 rounded border transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 ${getStatusColor(
+                      driver.driverStatus
+                    )}`}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="Future Lead">Future Lead</option>
+                    <option value="Need Review">Need Review</option>
+                  </select>
+                </td>
+                {/* Default status or you can modify this */}
+                <td className="px-2 py-3">{formatDate(driver.dateCreated)}</td>
+                <td className=" px-2 py-3">--</td>{" "}
+                {/* Placeholder for time or remove this column */}
+                <td className=" px-2 py-3">
+                  {/* <button className="bg-blue-500 text-white py-1 px-3 rounded mr-2">
                   View
                 </button> */}
-                <button
-                  className="bg-blue-500 text-white py-1 px-10 rounded"
-                  onClick={() => {
-                    console.log("driver.uid", driver.uid);
-                    setCurrentUserId(driver.uid);
-                    setOpenModal(true);
-                  }}
-                >
-                  Edit
-                </button>
-                <>
-                  <FormShowingModal
-                    uid={currentUserId}
-                    openModal={openModal}
-                    setOpenModal={setOpenModal}
-                  />
-                </>
-              </td>
-            </tr>
-          ))}
-
-          {/* {tableData.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-100 ">
-              <td className="px-4 py-2">
-                <input
-                  type="checkbox"
-                  className="form-checkbox"
-                  onChange={() => handleSelectRow(row.id)}
-                />
-              </td>
-
-              <td className=" px-2 py-3">{row.name}</td>
-              <td className=" px-2 py-3">
-                <select
-                  value={row.status}
-                  onChange={(e) => handleStatusChange(row.id, e.target.value)}
-                  className={`p-2 rounded ${getStatusColor(row.status)}`}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Declined">Declined</option>
-                  <option value="Future Lead">Future Lead</option>
-                  <option value="Need Review">Need Review</option>
-                </select>
-              </td>
-              <td className=" px-2 py-3">{row.date}</td>
-              <td className=" px-2 py-3">{row.time}</td>
-              <td className=" px-2 py-3">
-                <button className="bg-blue-500 text-white py-1 px-3 rounded mr-2">
-                  View
-                </button>
-                <button className="bg-blue-500 text-white py-1 px-3 rounded">
-                  Edit
-                </button>
-              </td>
-            </tr>
-          ))} */}
-        </tbody>
-      </table>
-
+                  <button
+                    className="bg-blue-500 text-white py-1 px-10 rounded"
+                    onClick={() => {
+                      console.log("driver.uid", driver.uid);
+                      setCurrentUserId(driver.uid);
+                      setOpenModal(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <>
+                    <FormShowingModal
+                      uid={currentUserId}
+                      openModal={openModal}
+                      setOpenModal={setOpenModal}
+                    />
+                  </>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-40 min-h-full w-full overflow-y-auto overflow-x-hidden transition flex items-center">
@@ -345,27 +330,27 @@ const RegisteredUsers = () => {
                   />
                 </svg>
               </button>
-
-              <h1 className="text-center text-lg font-bold">
-                Confirm Deletion
-              </h1>
-              <p className="text-center">
-                Are you sure you want to delete{" "}
-                {selectedUser ? selectedUser.name : ""}?
-              </p>
-              <div className="flex justify-center gap-4 mt-4">
-                <button
-                  onClick={handleConfirmDelete}
-                  className="bg-red-500 text-white py-1 px-3 rounded"
-                >
-                  Yes, Delete
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="bg-gray-500 text-white py-1 px-3 rounded"
-                >
-                  Cancel
-                </button>
+              <div className="flex flex-col items-center justify-center gap-y-5">
+                <p className="text-center text-xl font-radios mt-4">
+                  Are you sure you want to delete this driver?{" "}
+                </p>
+                <p className="text-center text-lg font-radios ">
+                  "{selectedUser ? selectedUser : ""}"
+                </p>
+                <div className="flex justify-center gap-4 mt-4">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="bg-gray-300 text-black py-2.5 px-6 rounded-xl"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="bg-blue-600 text-white py-2.5 px-6 rounded-xl"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
