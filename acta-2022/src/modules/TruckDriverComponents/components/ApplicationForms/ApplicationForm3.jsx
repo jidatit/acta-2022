@@ -236,7 +236,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4 ${
-        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+        currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
       <div className=" flex flex-col items-start justify-start w-full ">
@@ -263,7 +263,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         </p>
       </div>
 
-      <div className=" flex flex-col gap-y-4 flex-wrap">
+      <div className=" flex flex-col gap-y-4 flex-wrap ">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (

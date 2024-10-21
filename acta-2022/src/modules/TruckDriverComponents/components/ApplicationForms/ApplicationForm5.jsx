@@ -360,7 +360,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4 ${
-        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+        currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
       <div className="flex flex-row items-start justify-center w-full ">
