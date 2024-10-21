@@ -235,7 +235,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   };
   return (
     <div
-      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-12 pr-4 ${
+      className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4 ${
         currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
@@ -717,15 +717,17 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                 </div>
               </div>
             ))}
-          <div className="flex items-end justify-end w-full">
-            <button
-              type="button"
-              onClick={handleAddCompany}
-              className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            >
-              Add More
-            </button>
-          </div>
+          {currentUser.userType !== "Admin" && (
+            <div className="flex items-end justify-end w-full">
+              <button
+                type="button"
+                onClick={handleAddCompany}
+                className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              >
+                Add More
+              </button>
+            </div>
+          )}
         </form>
         {currentUser.userType !== "Admin" ? (
           <div className="flex items-center justify-between w-full mt-10">

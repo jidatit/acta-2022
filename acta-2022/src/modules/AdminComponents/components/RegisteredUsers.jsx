@@ -17,6 +17,7 @@ import EnhancedStatusDropdown from "../../SharedComponents/components/EnhancedDr
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  let dropdownRef = useRef(null);
   const [tableData, setTableData] = useState([
     {
       id: 1,

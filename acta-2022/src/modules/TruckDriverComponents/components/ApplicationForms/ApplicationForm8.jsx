@@ -340,7 +340,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
 
   return (
     <div
-      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full pr-4 ${
+      className={`flex flex-col items-start justify-start overflow-x-hidden w-full pr-4 ${
         currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >

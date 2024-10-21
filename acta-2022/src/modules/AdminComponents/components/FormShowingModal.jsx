@@ -256,7 +256,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   };
   return (
     <div className="fixed inset-0 w-screen bg-black bg-opacity-50 h-screen z-50 flex justify-center items-center overflow-hidden">
-      <div className="bg-white rounded-lg shadow-xl w-[96%] smd:w-[90%] h-[90%] mx-4 flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl w-[96%] smd:w-[90%] h-[90%] mx-4 flex flex-col ">
         {/* Fixed Header */}
         <div className="p-6 relative flex-shrink-0">
           <button
@@ -266,7 +266,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           >
             <X size={24} />
           </button>
-          <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8">
+          <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8 gap-y-6">
             <h3 className="text-xl font-semibold">
               Application Form {currentFormIndex + 1}
               {isFormEmpty(currentFormIndex) && (
@@ -275,7 +275,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
                 </span>
               )}
             </h3>
-            <div className="flex gap-x-4">
+            <div className="flex gap-x-4 ">
               {" "}
               <button
                 onClick={handleApproveAll}

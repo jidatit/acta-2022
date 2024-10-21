@@ -352,7 +352,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
 
   return (
     <div
-      className={`flex flex-col items-start overflow-y-hidden justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
+      className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
         currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
@@ -769,15 +769,17 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   </div>
                 </div>
               ))}
-              <div className="flex items-end justify-end w-full">
-                <button
-                  type="button"
-                  onClick={addTrafficFields}
-                  className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                >
-                  Add More
-                </button>
-              </div>
+              {currentUser.userType !== "Admin" && (
+                <div className="flex items-end justify-end w-full">
+                  <button
+                    type="button"
+                    onClick={addTrafficFields}
+                    className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                  >
+                    Add More
+                  </button>
+                </div>
+              )}
             </>
           )}
         </form>

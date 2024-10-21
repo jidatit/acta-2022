@@ -202,7 +202,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           </div>
 
           {/* Line 2: Applied Date, Position Applied For, SSN */}
-          <div className="grid grid-cols-1 gap-4 mb-6 md md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-3">
             <div>
               <SingleLabelLogic
                 htmlFor="appliedDate"
@@ -293,7 +293,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           </div>
 
           {/* Line 3: Date of Birth, Gender, Who Referred You */}
-          <div className="grid justify-center grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+          <div className="grid justify-center grid-cols-1 gap-4 mb-6 lg:grid-cols-3">
             <div>
               <SingleLabelLogic
                 htmlFor="DOB"
@@ -390,7 +390,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           </div>
 
           {/* Line 4: Legal Right to Work, Pay Expected */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             <div>
               <SingleLabelLogic
                 htmlFor="legalRightToWork"
@@ -467,7 +467,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           </div>
 
           {/* Line 5-8: Address Details */}
-          <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-3">
             <div>
               <SingleLabelLogic
                 htmlFor="street1"
