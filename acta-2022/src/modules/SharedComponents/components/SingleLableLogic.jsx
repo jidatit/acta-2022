@@ -359,28 +359,34 @@ const SingleLabelLogic = ({
     }
   };
   return (
-    <div className="flex flex-row flex-wrap items-center gap-x-2 gap-y-2 mb-1 w-full ">
+    <div className="flex flex-row flex-wrap justify-between smd:justify-start items-center gap-x-2 gap-y-2 mb-1 w-full ">
       <label
         htmlFor={htmlFor}
-        className={` text-sm w-max font-semibold text-gray-900 font-radios `}
+        className={` text-sm smd:w-max font-semibold text-gray-900 font-radios `}
       >
         {labelName}*
       </label>
-      <div className={`flex flex-row gap-x-2 `}>
+      <div
+        className={`flex flex-row gap-x-2 smd:w-auto flex-shrink-0 justify-end `}
+      >
         {/* Logic for showing icons and notes based on status and user type */}
         {status === "pending" ? (
-          <>
+          <div className="w-full smd:w-max flex justify-end">
             {currentUser.userType === "Admin" && (
               <>
-                <div className="w-max flex items-center flex-row gap-x-3">
-                  <FaRegCheckCircle
-                    className="text-green-500 cursor-pointer"
-                    onClick={handleApprove}
-                  />
-                  <FaRegTimesCircle
-                    className="text-red-500 cursor-pointer"
-                    onClick={handleReject}
-                  />
+                <div className="w-full smd:w-max flex items-center  flex-row gap-x-3">
+                  <div className="flex justify-end">
+                    <FaRegCheckCircle
+                      className="text-green-500 cursor-pointer"
+                      onClick={handleApprove}
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <FaRegTimesCircle
+                      className="text-red-500 cursor-pointer"
+                      onClick={handleReject}
+                    />
+                  </div>
                   <div
                     className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
                     onClick={note === "" ? handleAddNote : handleViewNote}
@@ -463,15 +469,16 @@ const SingleLabelLogic = ({
                 )}
               </>
             )}
-          </>
+          </div>
         ) : currentUser.userType === "Admin" ? (
           // Admin User Logic for rejected or approved statuses
-          <>
+          <div className="w-full smd:w-max ">
             {status === "rejected" && (
-              <div className="flex flex-row items-center gap-x-2 w-max ">
-                <div className="flex flex-row gap-x-3 items-center">
-                  <FaRegTimesCircle className="text-red-500 cursor-pointer" />
-
+              <div className="flex flex-row flex-wrap items-center gap-x-2 w-full smd:w-max">
+                <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
+                  <div className="flex justify-end">
+                    <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+                  </div>
                   <div
                     className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
                     onClick={note === "" ? handleAddNote : handleViewNote}
@@ -578,9 +585,12 @@ const SingleLabelLogic = ({
                 )}
               </div>
             )}
+
             {status === "approved" && (
-              <div className="flex flex-row gap-x-3 w-max">
-                <FaRegCheckCircle className="text-green-500 cursor-pointer" />
+              <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
+                <div className="flex justify-end">
+                  <FaRegCheckCircle className="text-green-500 cursor-pointer" />
+                </div>
                 <div className="relative">
                   <FaPencil
                     className="text-blue-500 cursor-pointer"
@@ -607,14 +617,16 @@ const SingleLabelLogic = ({
                 </div>
               </div>
             )}
-          </>
+          </div>
         ) : (
           // Non-Admin User Logic
-          <>
+          <div className="w-full smd:w-max">
             {status === "rejected" && (
-              <div className="flex flex-row flex-wrap items-center gap-x-2 w-max">
-                <div className="flex flex-row gap-x-3 w-max">
-                  <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+              <div className="flex flex-row flex-wrap items-center w-full smd:w-max">
+                <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
+                  <div className="flex smd:justify-start justify-end">
+                    <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+                  </div>
                   {note ? (
                     <div
                       className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
@@ -662,9 +674,11 @@ const SingleLabelLogic = ({
               </div>
             )}
             {status === "approved" && (
-              <FaRegCheckCircle className="text-green-500 cursor-pointer" />
+              <div className="flex smd:justify-start justify-end">
+                <FaRegCheckCircle className="text-green-500 cursor-pointer " />
+              </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
