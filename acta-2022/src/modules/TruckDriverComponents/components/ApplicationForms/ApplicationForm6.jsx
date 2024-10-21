@@ -233,7 +233,11 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4">
+    <div
+      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-6 pr-4 ${
+        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+      }`}
+    >
       <div className="flex flex-row items-start justify-start w-full">
         <div className="flex flex-col items-start justify-start w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -241,10 +245,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
           </h1>
         </div>
 
-        <FaBell
-          size={45}
-          className="p-2 text-white bg-blue-700 rounded-md cursor-pointer"
-        />
+        {currentUser.userType !== "Admin" && (
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        )}
       </div>
       <p className=" text-[16px] smd:text-lg text-black font-radios">
         Each driver shall furnish the list required in accordance with paragraph

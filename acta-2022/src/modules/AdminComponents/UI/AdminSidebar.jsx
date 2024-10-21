@@ -4,12 +4,13 @@ import "../../../index.css";
 import { useAuth } from "../../../AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
+import { Camera } from "lucide-react";
 
 const AdminSidebar = ({ isSidebarExpanded }) => {
   const [activeItem, setActiveItem] = useState("RegisteredDrivers");
   const { handleLogout } = useAuth();
   const [companyInfo, setCompanyInfo] = useState(null); // State for company info
-
+  const [logoPreview, setLogoPreview] = useState(null);
   // Fetch company info from Firestore
   useEffect(() => {
     const fetchCompanyInfo = async () => {
@@ -19,6 +20,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
 
       if (companyData.length > 0) {
         setCompanyInfo(companyData[0]); // Assuming you want the first document
+        setLogoPreview(companyData[0].logoUrl);
       }
     };
 
@@ -41,9 +43,20 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
     >
       <div className="flex flex-col items-start justify-between w-full h-full px-5 py-3 gap-y-4 smd:gap-y-4">
         <div className="flex w-full">
-          <h1 className="w-full p-2 smd:px-3 smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
-            Logo
-          </h1>
+          <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
+            {logoPreview ? (
+              <img
+                src={logoPreview}
+                alt="Company logo preview"
+                className="w-16 h-16 text-center rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full">
+                <Camera className="w-8 h-8 text-gray-400" />
+                <span className="mt-2 text-sm text-gray-500">Upload Logo</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex flex-col justify-between w-full h-full mt-4">
           <div className="flex flex-col w-full gap-y-4">
@@ -109,11 +122,6 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                   className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
                 >
                   Fax: {companyInfo.fax || "www.Acta.com"}
-                </p>
-                <p
-                  className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
-                >
-                  Website: {companyInfo.website || "www.Acta.com"}
                 </p>
               </div>
             )}

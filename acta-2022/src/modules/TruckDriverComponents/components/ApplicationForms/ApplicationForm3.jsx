@@ -234,13 +234,19 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     setErrors(errors.filter((_, i) => i !== index));
   };
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
+    <div
+      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-12 pr-4 ${
+        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+      }`}
+    >
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Employment History*
           </h1>
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
+          {currentUser.userType !== "Admin" && (
+            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          )}
         </div>
         <p className="mt-3 text-[16px] md:text-lg px-1 smd:p-0 text-justify text-black font-radios">
           *The Federal Motor Carrier Safety Regulations (49 CFR 391.21) require

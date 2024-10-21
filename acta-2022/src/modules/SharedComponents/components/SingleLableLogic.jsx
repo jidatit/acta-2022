@@ -2,7 +2,7 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { useAuth } from "../../../AuthContext";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { toast } from "react-toastify";
@@ -19,6 +19,34 @@ const SingleLabelLogic = ({
   const { currentUser } = useAuth();
   const [existingNote, setExistingNote] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown
+  const dropdownRef = useRef(null); // Ref for the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false); // Close the dropdown if clicked outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
+  };
+
+  const handleRejectApplication = () => {
+    handleReject();
+    setIsDropdownOpen(false); // Close dropdown after action
+  };
+  const handleApproveApplication = () => {
+    handleApprove();
+    setIsDropdownOpen(false); // Close dropdown after action
+  };
   const handleViewNote = async () => {
     const existingNotes = await getNoteForField(uid, fieldName);
     console.log("Existing Notes:", existingNotes);
@@ -331,37 +359,45 @@ const SingleLabelLogic = ({
     }
   };
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-2 mb-1 w-full">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-2 mb-1 w-full">
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-semibold text-gray-900 font-radios "
+        className={`block text-sm ${
+          currentUser.userType === "Admin" ? "xl:w-auto w-[70%]" : "w-full"
+        } font-semibold text-gray-900 font-radios `}
       >
         {labelName}*
       </label>
-      <div className="flex flex-row items-center gap-x-2 ">
+      <div
+        className={`flex flex-row items-center gap-x-2 ${
+          currentUser.userType === "Admin" ? "xl:w-auto w-[30%]" : "w-full"
+        }`}
+      >
         {/* Logic for showing icons and notes based on status and user type */}
         {status === "pending" ? (
           <>
             {currentUser.userType === "Admin" && (
               <>
-                <FaRegCheckCircle
-                  className="text-green-500 cursor-pointer"
-                  onClick={handleApprove}
-                />
-                <FaRegTimesCircle
-                  className="text-red-500 cursor-pointer"
-                  onClick={handleReject}
-                />
-                <div
-                  className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                  onClick={note === "" ? handleAddNote : handleViewNote}
-                >
-                  <FaPencil size={10} />
-                  {note ? (
-                    <p className="text-xs font-radios">View note</p>
-                  ) : (
-                    <p className="text-xs font-radios">Add note</p>
-                  )}
+                <div className="w-full flex items-center flex-row gap-x-3">
+                  <FaRegCheckCircle
+                    className="text-green-500 cursor-pointer"
+                    onClick={handleApprove}
+                  />
+                  <FaRegTimesCircle
+                    className="text-red-500 cursor-pointer"
+                    onClick={handleReject}
+                  />
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={note === "" ? handleAddNote : handleViewNote}
+                  >
+                    <FaPencil size={10} />
+                    {note ? (
+                      <p className="text-xs font-radios">View note</p>
+                    ) : (
+                      <p className="text-xs font-radios">Add note</p>
+                    )}
+                  </div>
                 </div>
                 {note === "" ? (
                   <dialog
@@ -438,18 +474,45 @@ const SingleLabelLogic = ({
           // Admin User Logic for rejected or approved statuses
           <>
             {status === "rejected" && (
-              <div className="flex flex-row gap-x-1 w-full">
-                <FaRegTimesCircle className="text-red-500 cursor-pointer" />
-                <div
-                  className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                  onClick={note === "" ? handleAddNote : handleViewNote}
-                >
-                  <FaPencil size={10} />
-                  {note ? (
-                    <p className="text-xs font-radios">View note</p>
-                  ) : (
-                    <p className="text-xs font-radios">Add note</p>
-                  )}
+              <div className="flex flex-row items-center gap-x-1 w-full">
+                <div className="flex flex-row gap-x-3 items-center">
+                  <FaRegTimesCircle className="text-red-500 cursor-pointer" />
+
+                  <div
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    onClick={note === "" ? handleAddNote : handleViewNote}
+                  >
+                    <FaPencil size={10} />
+                    {note ? (
+                      <p className="text-xs font-radios">View note</p>
+                    ) : (
+                      <p className="text-xs font-radios">Add note</p>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <FaPencil
+                      className="text-blue-500 cursor-pointer"
+                      onClick={handleDropdownToggle} // Toggle dropdown on click
+                    />
+                    {isDropdownOpen && (
+                      <div
+                        className="absolute top-8 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60 z-50 "
+                        ref={dropdownRef}
+                      >
+                        <ul className="flex flex-col">
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                            onClick={handleApproveApplication}
+                          >
+                            <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaRegCheckCircle size={20} className="" />
+                            </div>
+                            Approve Application
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {note ? (
                   <dialog
@@ -522,15 +585,41 @@ const SingleLabelLogic = ({
               </div>
             )}
             {status === "approved" && (
-              <FaRegCheckCircle className="text-green-500 cursor-pointer" />
+              <div className="flex flex-row gap-x-3 w-full">
+                <FaRegCheckCircle className="text-green-500 cursor-pointer" />
+                <div className="relative">
+                  <FaPencil
+                    className="text-blue-500 cursor-pointer"
+                    onClick={handleDropdownToggle} // Toggle dropdown on click
+                  />
+                  {isDropdownOpen && (
+                    <div
+                      className="absolute top-8 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60 z-50"
+                      ref={dropdownRef}
+                    >
+                      <ul className="flex flex-col">
+                        <li
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                          onClick={handleRejectApplication}
+                        >
+                          <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <FaRegTimesCircle size={20} className="" />
+                          </div>
+                          Reject Application
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </>
         ) : (
           // Non-Admin User Logic
           <>
             {status === "rejected" && (
-              <div className="flex flex-row gap-x-1 w-full">
-                <div className="flex flex-row gap-x-1">
+              <div className="flex flex-row items-center gap-x-1 w-full">
+                <div className="flex flex-row gap-x-3">
                   <FaRegTimesCircle className="text-red-500 cursor-pointer" />
                   {note ? (
                     <div

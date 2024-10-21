@@ -1,7 +1,12 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { db, storage } from "../../../config/firebaseConfig";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
 import { Camera } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -12,11 +17,33 @@ export default function CompanyInformationForm() {
     phoneNumber: "",
     fax: "",
   });
-
+  const [companyId, setCompanyId] = useState(null); // Store company document ID
   const [logo, setLogo] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // Fetch company info from Firestore
+  useEffect(() => {
+    const companyCollection = collection(db, "companyInfo");
+    const unsubscribe = onSnapshot(companyCollection, (snapshot) => {
+      if (!snapshot.empty) {
+        const companyData = snapshot.docs[0].data(); // Assuming single company
+        const companyId = snapshot.docs[0].id;
+        setFormData({
+          companyName: companyData.companyName,
+          address: companyData.address,
+          phoneNumber: companyData.phoneNumber,
+          fax: companyData.fax,
+        });
+        setCompanyId(companyId); // Store the document ID
+        if (companyData.logoUrl) {
+          setLogoPreview(companyData.logoUrl);
+        }
+      }
+    });
+
+    return () => unsubscribe(); // Clean up listener on component unmount
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

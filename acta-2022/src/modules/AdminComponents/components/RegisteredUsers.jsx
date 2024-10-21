@@ -3,14 +3,16 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { db } from "../../../config/firebaseConfig";
 import FormShowingModal from "./FormShowingModal";
+import EnhancedStatusDropdown from "../../SharedComponents/components/EnhancedDropdown";
 
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -57,23 +59,29 @@ const RegisteredUsers = () => {
   const [truckDrivers, setTruckDrivers] = useState([]); // State for truck driver data
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // Store the selected user for deletion
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown visibility
 
   useEffect(() => {
-    // Mock API call to fetch truck drivers data
     const fetchTruckDrivers = async () => {
-      // Simulate fetching data from the database
-      const querySnapshot = await getDocs(collection(db, "TruckDrivers"));
-      const drivers = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      // Set up Firestore real-time listener using onSnapshot
+      const unsubscribe = onSnapshot(
+        collection(db, "TruckDrivers"),
+        (snapshot) => {
+          const drivers = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
-      setTruckDrivers(drivers);
+          setTruckDrivers(drivers); // Update the state with real-time data
+        }
+      );
+
+      // Clean up the listener when the component unmounts
+      return () => unsubscribe();
     };
 
     fetchTruckDrivers();
-  }, []);
-
+  }, []); // Empty dependency array means this runs once on mount
   // Function to determine status background color
 
   // Function to select a row via checkbox
@@ -196,6 +204,13 @@ const RegisteredUsers = () => {
       });
     }
   };
+  const statusOptions = [
+    "Pending",
+    "approved",
+    "rejected",
+    "Future Lead",
+    "Need Review",
+  ];
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending":
@@ -248,22 +263,16 @@ const RegisteredUsers = () => {
                   />
                 </td>
                 <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
-                <td className="px-2 py-3">
-                  <select
-                    value={driver.driverStatus || "Pending"}
-                    onChange={(e) =>
-                      handleStatusChange(driver.uid, e.target.value)
-                    } // Capture the change and update the state
-                    className={`p-2 rounded border transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 ${getStatusColor(
-                      driver.driverStatus
-                    )}`}
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="Future Lead">Future Lead</option>
-                    <option value="Need Review">Need Review</option>
-                  </select>
+                <td className="px-2 py-3 whitespace-nowrap ">
+                  <EnhancedStatusDropdown
+                    initialStatus={driver.driverStatus}
+                    ref={dropdownRef}
+                    options={statusOptions}
+                    onStatusChange={(value) =>
+                      handleStatusChange(driver.uid, value)
+                    }
+                    getStatusColor={getStatusColor}
+                  />
                 </td>
                 {/* Default status or you can modify this */}
                 <td className="px-2 py-3">{formatDate(driver.dateCreated)}</td>

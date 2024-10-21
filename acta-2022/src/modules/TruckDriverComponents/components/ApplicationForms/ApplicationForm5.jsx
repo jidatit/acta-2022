@@ -358,7 +358,11 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     setDriverEducationError(driverEducationError.filter((_, i) => i !== index));
   };
   return (
-    <div className=" flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
+    <div
+      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-12 pr-4 ${
+        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+      }`}
+    >
       <div className="flex flex-row items-start justify-center w-full ">
         <div className="flex flex-col items-start justify-start w-[98%]">
           <h1 className="w-full mb-4 text-lg smd:text-xl font-bold text-black">
@@ -368,7 +372,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
             Provide accident record and forfeitures record for previous 3 years
           </p>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
+        {currentUser.userType !== "Admin" && (
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        )}
       </div>
 
       {/* First Form */}

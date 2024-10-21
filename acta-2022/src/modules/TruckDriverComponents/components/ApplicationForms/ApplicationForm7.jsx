@@ -228,14 +228,20 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-6">
+    <div
+      className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
+        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+      }`}
+    >
       <div className="flex flex-row items-start justify-start w-full ">
         <div className="  flex flex-col items-start justify-start w-full">
           <h1 className="smd:w-full mb-4 w-[97%] text-[17px] smd:text-xl font-bold text-black">
             Previous Pre-Employment Employee Alcohol and Drug Testing Statement
           </h1>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
+        {currentUser.userType !== "Admin" && (
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        )}
       </div>
       <div className="flex flex-col gap-y-5 w-full">
         <p className="text-black font-radios w-full text-[16px] smd:text-lg">

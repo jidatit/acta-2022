@@ -165,7 +165,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         <h1 className="w-full text-xl font-bold text-center text-black">
           Application Form
         </h1>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        {currentUser.userType !== "Admin" && (
+          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        )}
       </div>
       <div className=" flex flex-col w-full gap-y-8">
         <form className="w-full rounded-md shadow-md border-b-1 border-b-gray-400">
@@ -211,7 +213,6 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 fieldName="appliedDate"
                 uid={uid}
               />
-
               <input
                 type="date"
                 name="appliedDate"

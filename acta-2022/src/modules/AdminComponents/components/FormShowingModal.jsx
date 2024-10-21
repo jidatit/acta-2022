@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "flowbite-react";
 import { X } from "lucide-react";
 
@@ -41,7 +41,20 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({});
+  useEffect(() => {
+    const fetchFormData = async () => {
+      if (uid) {
+        const docRef = doc(db, "truck_driver_applications", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setFormData(docSnap.data());
+        }
+      }
+    };
 
+    fetchFormData();
+  }, [uid]);
   if (!openModal) return null;
 
   const CurrentForm = forms[currentFormIndex];
@@ -59,12 +72,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
     }
   };
 
-  const handleSave = () => {
-    // Call the save function of the current form
-    if (CurrentForm.save) {
-      CurrentForm.save();
-    }
-  };
+  if (!openModal) return null;
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -72,6 +80,10 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   };
   const handleClick = () => {
     setClicked(true);
+  };
+  const isFormEmpty = (formIndex) => {
+    const formKey = `form${formIndex + 1}`;
+    return !formData[formKey] || Object.keys(formData[formKey]).length === 0;
   };
   const handleApproveAll = async () => {
     try {
@@ -126,6 +138,67 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
 
         toast.success(
           `Successfully approved all fields in Form ${currentFormIndex + 1}`
+        );
+      } else {
+        toast.error("Document does not exist!");
+      }
+    } catch (error) {
+      console.error("Error in handleApproveAll:", error);
+      toast.error("Error updating statuses: " + error.message);
+    }
+  };
+  const handleRejectAll = async () => {
+    try {
+      // Get the document reference for the specific user
+      const docRef = doc(db, "truck_driver_applications", uid);
+      // Get the current document data
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const currentForm = `form${currentFormIndex + 1}`;
+        const formData = data[currentForm];
+
+        // Create an object to store the updated form
+        const updatedData = { ...data };
+
+        // Function to recursively update all status fields to "approved"
+        const updateStatusFields = (obj) => {
+          if (!obj || typeof obj !== "object") return obj;
+
+          let updated = Array.isArray(obj) ? [...obj] : { ...obj };
+
+          // If the current object has a status field, update it
+          if ("status" in obj) {
+            updated.status = "rejected";
+          }
+
+          // Recursively update nested objects and arrays
+          Object.keys(updated).forEach((key) => {
+            if (typeof updated[key] === "object") {
+              updated[key] = updateStatusFields(updated[key]);
+            }
+          });
+
+          return updated;
+        };
+
+        // Update the current form's data
+        if (currentFormIndex + 1 === 1) {
+          // Handle form1 (top-level fields)
+          updatedData[currentForm] = updateStatusFields(formData);
+        } else {
+          // Handle other forms (nested fields)
+          updatedData[currentForm] = updateStatusFields(formData);
+        }
+
+        // Update the document in Firebase
+        await updateDoc(docRef, {
+          [currentForm]: updatedData[currentForm],
+        });
+
+        toast.success(
+          `Successfully rejected all fields in Form ${currentFormIndex + 1}`
         );
       } else {
         toast.error("Document does not exist!");
@@ -196,13 +269,27 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8">
             <h3 className="text-xl font-semibold">
               Application Form {currentFormIndex + 1}
+              {isFormEmpty(currentFormIndex) && (
+                <span className="ml-2 bg-red-500 text-white text-xs font-medium mr-2 px-2.5 py-2.5 mb-1 rounded-full">
+                  Not Filled by User
+                </span>
+              )}
             </h3>
-            <button
-              onClick={handleApproveAll}
-              className="bg-green-500 text-white px-4 py-2 rounded-md"
-            >
-              Approve All
-            </button>
+            <div className="flex gap-x-4">
+              {" "}
+              <button
+                onClick={handleApproveAll}
+                className="bg-green-500 text-white px-4 py-2 rounded-md"
+              >
+                Approve All
+              </button>
+              <button
+                onClick={handleRejectAll}
+                className="bg-red-500 text-white px-4 py-2 rounded-md"
+              >
+                Reject All
+              </button>
+            </div>
           </div>
         </div>
 
@@ -245,7 +332,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
                   type="button"
                   onClick={() => handleApplicationStatus("approved")}
                   disabled={isSubmitting}
-                  className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                  className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700 disabled:opacity-50"
                 >
                   Approve Application
                 </button>

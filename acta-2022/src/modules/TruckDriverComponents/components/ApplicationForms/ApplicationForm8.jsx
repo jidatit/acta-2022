@@ -339,13 +339,19 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full ">
+    <div
+      className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full pr-4 ${
+        currentUser.userType === "Admin" ? "max-h-[85vh]" : "min-h-[94.9vh]"
+      }`}
+    >
       <div className=" flex flex-col items-start justify-start w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Statement of On-Duty Hours*
           </h1>
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md cursor-pointer text-4xl" />
+          {currentUser.userType !== "Admin" && (
+            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          )}
         </div>
       </div>
 
@@ -370,7 +376,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       carrier entity, must be recorded on this form.
                     </p>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 1 (yesterday)"
                           id={`day1`}
@@ -398,7 +410,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day1HoursWorked`}
@@ -414,7 +432,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day1HoursWorked-${index}`}
                           value={field.day1HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={`w-full p-2.5 mt-1 border rounded-md ${
+                          className={` p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day1HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -428,7 +446,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 2"
                           id={`day2`}
@@ -456,7 +480,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day2HoursWorked`}
@@ -486,7 +516,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 3"
                           id={`day3`}
@@ -514,7 +550,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day3HoursWorked`}
@@ -544,7 +586,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 4"
                           id={`day4`}
@@ -572,7 +620,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day4HoursWorked`}
@@ -602,7 +656,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 5"
                           id={`day5`}
@@ -630,7 +690,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day5HoursWorked`}
@@ -660,7 +726,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 6"
                           id={`day6`}
@@ -688,7 +760,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day6HoursWorked`}
@@ -718,7 +796,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       </div>
                     </div>
                     <div className="flex smd:flex-row flex-col gap-y-4 gap-x-10 w-full">
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Day 7"
                           id={`day7`}
@@ -746,7 +830,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           </p>
                         )}
                       </div>
-                      <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]">
+                      <div
+                        className={` ${
+                          currentUser.userType === "Admin"
+                            ? " xxl:w-[25%] md:w-[35%] smd:w-[35%] w-[65%]"
+                            : "xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%]"
+                        }`}
+                      >
                         <FormLabelWithStatus
                           label="Hours Worked"
                           id={`day7HoursWorked`}
