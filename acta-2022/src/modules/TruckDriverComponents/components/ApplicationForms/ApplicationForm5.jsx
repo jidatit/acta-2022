@@ -468,28 +468,36 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                 />
               </div>
-              <div className="flex items-center mt-4">
-                {index !== 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeDriverLicenseField(index)}
-                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
+              {currentUser.userType !== "Admin" ? (
+                <div className="flex items-center mt-4">
+                  {index !== 0 && (
+                    <button
+                      type="button"
+                      onClick={() => removeDriverLicenseField(index)}
+                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           ))}
-          <div className="flex items-end justify-end w-full">
-            <button
-              type="button"
-              onClick={addDriverLicenseFields}
-              className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            >
-              Add More
-            </button>
-          </div>
+          {currentUser.userType !== "Admin" ? (
+            <div className="flex items-end justify-end w-full">
+              <button
+                type="button"
+                onClick={addDriverLicenseFields}
+                className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              >
+                Add More
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </form>
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
@@ -718,28 +726,36 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     </p>
                   )}
               </div>
-              <div className="flex items-center mt-4">
-                {index !== 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeDriverExperienceField(index)}
-                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
+              {currentUser.userType !== "Admin" ? (
+                <div className="flex items-center mt-4">
+                  {index !== 0 && (
+                    <button
+                      type="button"
+                      onClick={() => removeDriverExperienceField(index)}
+                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           ))}
-          <div className="flex items-end justify-end w-full">
-            <button
-              type="button"
-              onClick={addDriverExperience}
-              className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            >
-              Add More
-            </button>
-          </div>
+          {currentUser.userType !== "Admin" ? (
+            <div className="flex items-end justify-end w-full">
+              <button
+                type="button"
+                onClick={addDriverExperience}
+                className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              >
+                Add More
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </form>
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
@@ -906,17 +922,21 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     </p>
                   )}
               </div>
-              <div className="flex items-center mt-4">
-                {index !== 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeEducationHistoryField(index)}
-                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
+              {currentUser.userType !== "Admin" ? (
+                <div className="flex items-center mt-4">
+                  {index !== 0 && (
+                    <button
+                      type="button"
+                      onClick={() => removeEducationHistoryField(index)}
+                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           ))}
           {currentUser.userType !== "Admin" && (

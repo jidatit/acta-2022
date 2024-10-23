@@ -267,14 +267,20 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
             <X size={24} />
           </button>
           <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8 gap-y-6">
-            <h3 className="text-xl font-semibold">
-              Application Form {currentFormIndex + 1}
-              {isFormEmpty(currentFormIndex) && (
-                <span className="ml-2 bg-red-500 text-white text-xs font-medium mr-2 px-2.5 py-2.5 mb-1 rounded-full">
-                  Not Filled by User
-                </span>
-              )}
-            </h3>
+            <div className="flex flex-col gap-y-2 smd:flex-row  ">
+              <h3 className="text-xl font-semibold ">
+                Application Form {currentFormIndex + 1}
+              </h3>
+
+              <h1>
+                {" "}
+                {isFormEmpty(currentFormIndex) && (
+                  <span className="smd:ml-2 w-full bg-red-500 text-white text-xs font-medium mr-2 px-2.5 py-2.5 mb-1 rounded-full">
+                    Not Filled by User
+                  </span>
+                )}
+              </h1>
+            </div>
             <div className="flex gap-x-4 ">
               {" "}
               <button
@@ -301,7 +307,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
         </div>
 
         {/* Fixed Footer */}
-        <div className="bg-gray-50 px-6 py-4 flex flex-col smd:flex-row justify-between rounded-b-lg flex-shrink-0">
+        <div className="bg-gray-50 px-6 py-4 flex flex-col gap-2 smd:gap-0 smd:flex-row justify-between rounded-b-lg flex-shrink-0">
           <Button
             color="gray"
             onClick={handleBack}

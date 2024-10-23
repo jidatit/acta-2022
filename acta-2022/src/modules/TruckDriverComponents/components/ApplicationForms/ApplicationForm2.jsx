@@ -199,7 +199,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             localFormData.map((address, index) => (
               <div
                 key={index}
-                className="grid grid-cols-1 gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
+                className="grid grid-cols-1 w-full smd:-mt-0 -mt-11 smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
               >
                 <div>
                   <FormLabelWithStatus

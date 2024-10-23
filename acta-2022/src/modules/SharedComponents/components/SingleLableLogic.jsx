@@ -362,7 +362,7 @@ const SingleLabelLogic = ({
     <div className="flex flex-row flex-wrap justify-between smd:justify-start items-center gap-x-2 gap-y-2 mb-1 w-full ">
       <label
         htmlFor={htmlFor}
-        className={` text-sm smd:w-max font-semibold text-gray-900 font-radios `}
+        className={` text-[16px] font-inter smd:w-max font-semibold text-gray-900 font-radios `}
       >
         {labelName}*
       </label>

@@ -224,7 +224,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         )}
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full -mt-4 smd:-mt-0">
         <p className="text-black font-radios text-[16px] smd:text-lg">
           INSTRUCTIONS: When employed by a motor carrier, a driver must report
           to the carrier all on-duty time including time working for other

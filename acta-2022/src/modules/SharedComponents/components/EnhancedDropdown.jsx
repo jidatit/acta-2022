@@ -59,7 +59,7 @@ const EnhancedStatusDropdown = ({
 
   return (
     <>
-      <div className="inline-flex items-center space-x-2" ref={triggerRef}>
+      <div className="inline-flex items-center space-x-2 " ref={triggerRef}>
         <h3
           className={`px-3 py-2 text-white rounded-md text-sm font-medium ${getStatusColor(
             selectedStatus
@@ -78,7 +78,7 @@ const EnhancedStatusDropdown = ({
       {isOpen &&
         createPortal(
           <div
-            className="fixed z-50 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+            className="fixed z-50 mt-2 w-56 -ml-14 smd:-ml-0  rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
             style={{
               top: `${dropdownPosition.top}px`,
               left: `${dropdownPosition.left}px`,

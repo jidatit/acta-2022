@@ -657,7 +657,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       )}
                     </div>
 
-                    <div className="w-full mb-6">
+                    <div
+                      className={` ${
+                        currentUser.userType === "Admin"
+                          ? "w-auto smd:w-[80%] lg:w-[80%]"
+                          : "xxl:w-full lg:w-[65%] xl:w-[75%] smd:w-[60%]"
+                      } mb-6`}
+                    >
                       <SingleLabelLogic
                         htmlFor="jobDesignatedAsSafetySensitive"
                         labelName="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."

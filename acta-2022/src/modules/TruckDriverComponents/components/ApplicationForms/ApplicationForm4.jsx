@@ -371,7 +371,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
       <div className="flex flex-col gap-y-8 w-full">
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-col gap-y-3.5">
-            <p className="text-[17px] smd:text-lg text-black font-radios">
+            <p className="text-[17px] smd:text-lg text-black font-radios smd:mt-0 -mt-4">
               Provide accident record and forfeitures record for previous 3
               years
             </p>
@@ -563,28 +563,36 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center mt-4">
-                    {index !== 0 && (
-                      <button
-                        type="button"
-                        onClick={() => removeAddressField(index)}
-                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
+                  {currentUser.userType !== "Admin" ? (
+                    <div className="flex items-center mt-4">
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeAddressField(index)}
+                          className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               ))}
-              <div className="flex items-end justify-end w-full">
-                <button
-                  type="button"
-                  onClick={addAddressFields}
-                  className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                >
-                  Add More
-                </button>
-              </div>
+              {currentUser.userType !== "Admin" ? (
+                <div className="flex items-end justify-end w-full">
+                  <button
+                    type="button"
+                    onClick={addAddressFields}
+                    className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                  >
+                    Add More
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
             </>
           )}
         </form>
@@ -756,17 +764,21 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center mt-4">
-                    {index !== 0 && (
-                      <button
-                        type="button"
-                        onClick={() => removeTrafficField(index)}
-                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
+                  {currentUser.userType !== "Admin" ? (
+                    <div className="flex items-center mt-4">
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeTrafficField(index)}
+                          className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               ))}
               {currentUser.userType !== "Admin" && (

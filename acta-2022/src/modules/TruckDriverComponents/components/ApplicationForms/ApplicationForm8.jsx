@@ -361,7 +361,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
             localFormData.map((field, index) => (
               <div key={index} className="mb-6 w-full">
                 <div className="grid w-full grid-cols-1 md:grid-cols-1">
-                  <div className="flex flex-col gap-y-6 mt-4 w-screen mb-6">
+                  <div className="flex flex-col gap-y-6 smd:mt-4 w-screen mb-6">
                     <p className="text-black font-radios text-[15px] smd:text-lg w-[79%] sssm:w-[79%] smd:w-[79%] md:w-[70%] xxl:w-[70%] ">
                       INSTRUCTIONS: Motor carriers when using a driver for the
                       first time shall obtain from the driver a signed statement
@@ -432,7 +432,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day1HoursWorked-${index}`}
                           value={field.day1HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          className={` p-2.5 mt-1 border rounded-md ${
+                          className={`w-full p-2.5 mt-1 border rounded-md ${
                             errors[index]?.day1HoursWorked
                               ? "border-red-500"
                               : "border-gray-300"
@@ -897,7 +897,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                 </div>
 
                 <div className="flex items-center gap-x-4 lg:w-[21%] md:w-[35%] w-[80%] mt-7">
-                  <div className="flex flex-col">
+                  <div className="w-full flex flex-col">
                     <FormLabelWithStatus
                       label="Relieved Time"
                       id={`relievedTime`}
@@ -928,7 +928,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           type="time"
                           id={`time-${index}`}
                           name="relievedTime"
-                          className={`bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
+                          className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
                             errors[index]?.relievedTime
                               ? "border-red-500"
                               : "border-gray-300"
@@ -948,7 +948,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                     </form>
                   </div>
                 </div>
-                <div className="xxl:w-[15%] md:w-[25%] smd:w-[35%] w-[65%] mt-3">
+                <div className=" lg:w-[21%] md:w-[35%] w-[80%] mt-3">
                   <FormLabelWithStatus
                     label="Relieved Date"
                     id={`relievedDate`}

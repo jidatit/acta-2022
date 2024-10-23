@@ -334,7 +334,7 @@ const FormLabelWithStatus = ({
     <div className="flex flex-row flex-wrap justify-between smd:justify-start items-center gap-x-2 gap-y-2 mb-1 w-full">
       <label
         htmlFor={`${id}-${index}`}
-        className=" smd:w-max text-sm font-semibold text-gray-900 font-radios "
+        className=" smd:w-max text-[16px] font-inter font-semibold text-gray-900 font-radios "
       >
         {label}*
       </label>

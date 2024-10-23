@@ -249,7 +249,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         )}
       </div>
-      <p className=" text-[16px] smd:text-lg text-black font-radios">
+      <p className=" text-[16px] smd:text-lg text-black font-radios  -mt-4 ">
         Each driver shall furnish the list required in accordance with paragraph
         (a) of this section. If the driver has not been convicted of, or
         forfeited bond or collateral on account of, any violation which must be

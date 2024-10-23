@@ -243,7 +243,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
           <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
         )}
       </div>
-      <div className="flex flex-col gap-y-5 w-full">
+      <div className="flex flex-col gap-y-5 w-full -mt-4 smd:-mt-0">
         <p className="text-black font-radios w-full text-[16px] smd:text-lg">
           Sec. 40.25() As the employer, you must also ask the employee whether
           he or she has tested positive, or refused to test, on any pre-
