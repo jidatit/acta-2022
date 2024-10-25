@@ -269,12 +269,18 @@ const RegisteredUsers = () => {
                   View
                 </button> */}
                   <button
-                    className="bg-blue-500 text-white py-1 px-10 rounded"
+                    className={`py-1 px-10 rounded ${
+                      driver.driverStatus === "registered"
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
                     onClick={() => {
-                      console.log("driver.uid", driver.uid);
-                      setCurrentUserId(driver.uid);
-                      setOpenModal(true);
+                      if (driver.driverStatus !== "registered") {
+                        setCurrentUserId(driver.uid);
+                        setOpenModal(true);
+                      }
                     }}
+                    disabled={driver.driverStatus === "registered"}
                   >
                     Edit
                   </button>

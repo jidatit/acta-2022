@@ -44,65 +44,117 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({});
   const [applicationStatus, setApplicationStatus] = useState("");
+  const [availableForms, setAvailableForms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchFormData = async () => {
-      try {
-        // Reference the "TruckDrivers" collection
-        const querySnapshot = await getDocs(collection(db, "TruckDrivers"));
+      if (!uid) return;
 
-        // Extract the `driverStatusname` value from each document
+      setIsLoading(true);
+      try {
+        const docRef = doc(db, "truck_driver_applications", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setFormData(data);
+
+          // Determine which forms are available based on existing data
+          const available = [];
+          let shouldContinue = true;
+
+          for (let i = 0; i < forms.length; i++) {
+            const formKey = `form${i + 1}`;
+
+            // First form is always available
+            if (i === 0) {
+              available.push(i);
+              continue;
+            }
+
+            // Check if previous form exists and has data
+            const previousFormKey = `form${i}`;
+            const previousFormHasData =
+              data[previousFormKey] &&
+              Object.keys(data[previousFormKey]).length > 0;
+
+            // If previous form has data, this form is available
+            if (previousFormHasData && shouldContinue) {
+              available.push(i);
+            } else {
+              shouldContinue = false;
+            }
+          }
+
+          setAvailableForms(available);
+
+          // If current form index is not available, set to last available form
+          if (!available.includes(currentFormIndex)) {
+            setCurrentFormIndex(available[available.length - 1] || 0);
+          }
+        } else {
+          // If no document exists, only first form is available
+          setAvailableForms([0]);
+          setCurrentFormIndex(0);
+        }
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+        toast.error("Error loading form data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFormData();
+  }, [uid]);
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "TruckDrivers"));
         const driverStatuses = querySnapshot.docs.map(
           (doc) => doc.data().driverStatus
         );
-
-        // Assuming you only want the `driverStatusname` of the first document for `applicationStatus`
         if (driverStatuses.length > 0) {
           setApplicationStatus(driverStatuses[0]);
         }
-
-        console.log("Driver statuses:", driverStatuses);
       } catch (error) {
-        console.error("Error fetching form data:", error);
+        console.error("Error fetching status:", error);
       }
     };
 
-    fetchFormData();
+    fetchStatus();
   }, [uid]);
-  useEffect(() => {
-    const fetchFormData = async () => {
-      if (uid) {
-        const docRef = doc(db, "truck_driver_applications", uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setFormData(docSnap.data());
-        }
-      }
-    };
 
-    fetchFormData();
-  }, [uid]);
-  if (!openModal) return null;
+  if (!openModal || isLoading) return null;
 
   const CurrentForm = forms[currentFormIndex];
   const isLastForm = currentFormIndex === forms.length - 1;
-
   const handleNext = () => {
-    if (currentFormIndex < forms.length - 1) {
-      setCurrentFormIndex(currentFormIndex + 1);
+    const nextIndex = currentFormIndex + 1;
+    if (availableForms.includes(nextIndex)) {
+      setCurrentFormIndex(nextIndex);
+    } else {
+      toast.warning(
+        "Next form is not available yet. Please complete current form first."
+      );
     }
   };
 
   const handleBack = () => {
-    if (currentFormIndex > 0) {
-      setCurrentFormIndex(currentFormIndex - 1);
+    const prevIndex = currentFormIndex - 1;
+    if (prevIndex >= 0 && availableForms.includes(prevIndex)) {
+      setCurrentFormIndex(prevIndex);
     }
   };
 
-  if (!openModal) return null;
-
   const handleCloseModal = () => {
     setOpenModal(false);
-    setCurrentFormIndex(0); // Reset to first form when closing
+    setCurrentFormIndex(0);
+  };
+
+  const isNextEnabled = () => {
+    const nextIndex = currentFormIndex + 1;
+    return availableForms.includes(nextIndex);
   };
   const handleClick = () => {
     setClicked(true);
@@ -293,8 +345,8 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           >
             <X size={24} />
           </button>
-          <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8 gap-y-6">
-            <div className="flex flex-col gap-y-2 items-center smd:flex-row  ">
+          <div className="flex flex-col md:flex-row md:justify-between w-full mt-8 gap-y-6">
+            <div className="flex flex-col gap-y-4 md:items-center smd:flex-row  ">
               <h3 className="text-xl font-semibold ">
                 Application Form {currentFormIndex + 1}
               </h3>
@@ -303,7 +355,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
                 applicationStatus={applicationStatus}
               />
             </div>
-            <div className="flex gap-x-4 ">
+            <div className="flex gap-x-4 items-center ">
               {" "}
               <button
                 onClick={handleApproveAll}
@@ -329,51 +381,90 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
         </div>
 
         {/* Fixed Footer */}
-        <div className="bg-gray-50 px-6 py-4 flex flex-col gap-2 smd:gap-0 smd:flex-row justify-between rounded-b-lg flex-shrink-0">
-          <Button
-            color="gray"
-            onClick={handleBack}
-            disabled={currentFormIndex === 0}
-          >
-            Back
-          </Button>
-          <div className="flex flex-col gap-y-2  smd:flex-row justify-end w-full gap-x-2">
-            <button
-              type="submit"
-              onClick={handleClick}
-              className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
-            >
-              Save
-            </button>
+        <div className="bg-gray-50 px-6 py-4 flex flex-col gap-4 rounded-b-lg flex-shrink-0">
+          {/* Progress Dots - Always on top, centered */}
+          <div className="flex justify-center w-full mt-4">
+            <div className="flex gap-2">
+              {forms.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full ${
+                    availableForms.includes(index)
+                      ? currentFormIndex === index
+                        ? "bg-blue-500"
+                        : "bg-blue-300"
+                      : "bg-gray-300"
+                  }`}
+                  title={
+                    availableForms.includes(index)
+                      ? `Form ${index + 1}`
+                      : "Not available yet"
+                  }
+                />
+              ))}
+            </div>
+          </div>
 
-            {isLastForm ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => handleApplicationStatus("rejected")}
-                  disabled={isSubmitting}
-                  className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-700 disabled:opacity-50"
-                >
-                  Reject Application
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleApplicationStatus("approved")}
-                  disabled={isSubmitting}
-                  className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700 disabled:opacity-50"
-                >
-                  Approve Application
-                </button>
-              </>
-            ) : (
+          {/* Buttons Container */}
+          <div className="flex flex-row justify-between items-center w-full gap-x-2 md:-mt-4">
+            {/* Left - Back Button */}
+            <div className="flex-shrink-0">
               <button
-                type="button"
-                onClick={handleNext}
-                className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700"
+                onClick={handleBack}
+                disabled={currentFormIndex === 0}
+                className={`px-4 py-2 rounded ${
+                  currentFormIndex === 0
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
               >
-                Next
+                Back
               </button>
-            )}
+            </div>
+
+            {/* Right - Action Buttons */}
+            <div className="flex gap-x-2">
+              <button
+                type="submit"
+                onClick={handleClick}
+                className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
+              >
+                Save
+              </button>
+
+              {isLastForm ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleApplicationStatus("rejected")}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-700 disabled:opacity-50"
+                  >
+                    Reject Application
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleApplicationStatus("approved")}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700 disabled:opacity-50"
+                  >
+                    Approve Application
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleNext}
+                  disabled={!isNextEnabled()}
+                  className={`px-4 py-2 rounded ${
+                    !isNextEnabled()
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600 text-white"
+                  }`}
+                >
+                  Next
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -17,16 +17,21 @@ const FormStatusHeader = ({ formData, applicationStatus }) => {
   };
 
   // Get status color based on application status
+
   const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
+    switch (status) {
       case "pending":
-        return "bg-yellow-500";
+        return "bg-yellow-400";
       case "approved":
-        return "bg-green-500";
+        return "bg-green-400";
       case "rejected":
-        return "bg-red-500";
+        return "bg-red-400";
+      case "filled":
+        return "bg-blue-400";
+      case "registered":
+        return "bg-orange-400";
       default:
-        return "bg-gray-500";
+        return "bg-gray-200";
     }
   };
 

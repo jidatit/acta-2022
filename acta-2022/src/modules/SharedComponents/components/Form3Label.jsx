@@ -221,6 +221,7 @@ const FormLabelWithStatus = ({
             [fieldName]: {
               ...obj[fieldName],
               status: "approved",
+              note: "",
             },
           };
         }

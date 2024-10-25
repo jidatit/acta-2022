@@ -223,6 +223,7 @@ const SingleLabelLogic = ({
                   [fieldName]: {
                     ...formData[fieldName],
                     status: "approved", // or "rejected"
+                    note: "",
                   },
                 };
                 break; // Exit loop once we've found and updated the field
@@ -241,6 +242,7 @@ const SingleLabelLogic = ({
                         [fieldName]: {
                           ...nestedItem[fieldName],
                           status: "approved", // or "rejected"
+                          note: "",
                         },
                       };
                     }
@@ -256,6 +258,7 @@ const SingleLabelLogic = ({
                       [fieldName]: {
                         ...nestedField[fieldName],
                         status: "approved", // or "rejected"
+                        note: "",
                       },
                     },
                   };
@@ -405,7 +408,7 @@ const SingleLabelLogic = ({
                     className="modal w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      className="fixed inset-0 bg-black bg-opacity-50 z-50"
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
                     <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
@@ -447,7 +450,7 @@ const SingleLabelLogic = ({
                     className="modal w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      className="fixed inset-0 bg-black bg-opacity-50 z-50"
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
                     <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
@@ -490,10 +493,11 @@ const SingleLabelLogic = ({
                       <p className="text-xs font-radios">Add note</p>
                     )}
                   </div>
-                  <div className="relative">
+                  <div className="relative z-0">
+                    {" "}
                     <FaPencil
-                      className="text-blue-500 cursor-pointer"
-                      onClick={handleDropdownToggle} // Toggle dropdown on click
+                      className="text-blue-500 cursor-pointer" // Remove z-10 if present
+                      onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
                       <div
@@ -516,37 +520,41 @@ const SingleLabelLogic = ({
                   </div>
                 </div>
                 {note ? (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                  >
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
-                      <h3 className="font-bold text-lg">View Note</h3>
-                      <p className="py-4">
-                        {existingNote ? existingNote : "No note added"}
-                      </p>
-                      <div className="modal-action">
-                        <button
-                          type="button" // Prevents the default form submission
-                          className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                          onClick={() => setIsModalOpen(false)} // Close modal on click
-                        >
-                          Close
-                        </button>
-                      </div>
+                  <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+                    <div className="relative z-40">
+                      <dialog
+                        open={isModalOpen}
+                        className="modal w-[30%] fixed mx-auto my-auto inset-0 "
+                      >
+                        <div
+                          className="fixed inset-0 bg-black bg-opacity-50 z-50"
+                          onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                        ></div>
+                        <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
+                          <h3 className="font-bold text-lg">View Note</h3>
+                          <p className="py-4">
+                            {existingNote ? existingNote : "No note added"}
+                          </p>
+                          <div className="modal-action">
+                            <button
+                              type="button" // Prevents the default form submission
+                              className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
+                              onClick={() => setIsModalOpen(false)} // Close modal on click
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </dialog>
                     </div>
-                  </dialog>
+                  </div>
                 ) : (
                   <dialog
                     open={isModalOpen}
                     className="modal w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      className="fixed inset-0 bg-black bg-opacity-50 z-50"
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
                     <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
@@ -591,9 +599,9 @@ const SingleLabelLogic = ({
                 <div className="flex justify-end">
                   <FaRegCheckCircle className="text-green-500 cursor-pointer" />
                 </div>
-                <div className="relative">
+                <div className="relative z-10">
                   <FaPencil
-                    className="text-blue-500 cursor-pointer"
+                    className="text-blue-500 cursor-pointer z-50"
                     onClick={handleDropdownToggle} // Toggle dropdown on click
                   />
                   {isDropdownOpen && (
@@ -648,7 +656,7 @@ const SingleLabelLogic = ({
                   >
                     {/* Background overlay */}
                     <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      className="fixed inset-0 bg-black bg-opacity-50 z-50"
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
 
