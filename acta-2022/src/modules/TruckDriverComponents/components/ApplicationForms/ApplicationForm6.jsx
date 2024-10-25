@@ -109,23 +109,29 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       // Create the update object with the form data
-      const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (6 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 6;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
@@ -136,6 +142,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 6,
           completedForms: formNumber,
         });
       }
@@ -146,12 +153,12 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
       toast.error("Error saving the application, please try again.");
     }
   };
-  const saveForm6 = async () => {
+  const saveForm6 = async (isSubmit = false) => {
     const applicationData = {
       violationRecords: noViolationCheckeds ? [] : violationFields,
       noViolations: noViolationCheckeds,
     };
-    await saveToFirebase(6, applicationData);
+    await saveToFirebase(6, applicationData, isSubmit);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,7 +167,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     if (noViolationCheckeds || isViolationField) {
       setIsSaveClicked(true);
 
-      await saveForm6();
+      await saveForm6(true);
       navigate("/TruckDriverLayout/ApplicationForm7");
     } else {
       toast.error("Please complete all required fields to continue");
@@ -168,43 +175,66 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleSave = async (uid) => {
-    // Check if there is at least one field filled out
-    const hasViolationData =
-      !noViolationCheckeds &&
-      violationFields.some((field) =>
-        Object.values(field).some((val) => val.value.trim() !== "")
-      );
+    try {
+      // Only validate fields for non-admin users
+      if (currentUser.userType !== "Admin") {
+        const hasViolationData =
+          !noViolationCheckeds &&
+          violationFields.some((field) =>
+            Object.values(field).some((val) => val.value.trim() !== "")
+          );
 
-    if (noViolationCheckeds || hasViolationData) {
-      // Perform save
-      toast.success("Form is successfully saved");
-      setIsSaveClicked(true);
-
-      try {
-        const docRef = doc(db, "truck_driver_applications", uid);
-        const docSnap = await getDoc(docRef);
-
-        const applicationData = {
-          violationRecords: noViolationCheckeds ? [] : violationFields,
-
-          submittedAt: new Date(),
-          noViolations: noViolationCheckeds,
-        };
-
-        if (docSnap.exists()) {
-          await updateDoc(docRef, {
-            form6: applicationData,
-          });
-        } else {
-          await setDoc(docRef, {
-            form6: applicationData,
-          });
+        if (!noViolationCheckeds && !hasViolationData) {
+          toast.error("Please complete at least one field before saving.");
+          return;
         }
-      } catch (error) {
-        console.error("Error saving application: ", error);
       }
-    } else {
-      toast.error("Please complete at least one field before saving.");
+
+      // Proceed with saving regardless of validation for Admin users
+      let docRef;
+      if (currentUser.userType === "Admin") {
+        docRef = doc(db, "truck_driver_applications", uid);
+      } else {
+        docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      }
+
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        violationRecords: noViolationCheckeds ? [] : violationFields,
+        submittedAt: new Date(),
+        noViolations: noViolationCheckeds,
+      };
+
+      let updateObject = {
+        form6: applicationData,
+      };
+
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        if (6 > currentSavedForms) {
+          updateObject.savedForms = 6;
+        }
+
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+        await updateDoc(docRef, updateObject);
+      } else {
+        await setDoc(docRef, {
+          ...updateObject,
+          savedForms: 6,
+          completedForms: 6,
+        });
+      }
+
+      setIsSaveClicked(true);
+      toast.success("Form is successfully saved");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
   if (currentUser.userType === "Admin") {
@@ -212,7 +242,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
       console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
-        handleSave(uid);
+        handleSave(uid, 6);
       }
     }, [clicked]);
   }

@@ -47,11 +47,11 @@ const FormLabelWithStatus = ({
   };
   const handleViewNote = async () => {
     const existingNotes = await getNoteForField(uid, fieldName);
-    console.log("Existing Notes:", existingNotes);
+
     setExistingNote(existingNotes);
     setIsModalOpen(true); // Show modal through state
   };
-  console.log("existingNote", existingNote);
+
   const handleAddNote = () => {
     setIsModalOpen(true); // Show modal through state
   };
@@ -109,7 +109,7 @@ const FormLabelWithStatus = ({
       };
 
       // Process each form until we find the note
-      for (let i = 1; i <= data.completedForms; i++) {
+      for (let i = 1; i <= data.savedForms; i++) {
         const formKey = `form${i}`;
         if (data[formKey]) {
           const note = findFieldNote(data[formKey]);
@@ -180,7 +180,7 @@ const FormLabelWithStatus = ({
       };
 
       // Process each form
-      for (let i = 1; i <= data.completedForms; i++) {
+      for (let i = 1; i <= data.savedForms; i++) {
         const formKey = `form${i}`;
         if (data[formKey]) {
           updatedData[formKey] = updateNestedField(data[formKey]);
@@ -248,7 +248,7 @@ const FormLabelWithStatus = ({
       };
 
       // Process each form
-      for (let i = 1; i <= data.completedForms; i++) {
+      for (let i = 1; i <= data.savedForms; i++) {
         const formKey = `form${i}`;
         if (data[formKey]) {
           updatedData[formKey] = updateNestedField(data[formKey]);
@@ -315,7 +315,7 @@ const FormLabelWithStatus = ({
       };
 
       // Process each form
-      for (let i = 1; i <= data.completedForms; i++) {
+      for (let i = 1; i <= data.savedForms; i++) {
         const formKey = `form${i}`;
         if (data[formKey]) {
           updatedData[formKey] = updateNestedField(data[formKey]);

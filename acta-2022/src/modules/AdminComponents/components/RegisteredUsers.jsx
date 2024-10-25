@@ -13,6 +13,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { db } from "../../../config/firebaseConfig";
 import FormShowingModal from "./FormShowingModal";
 import EnhancedStatusDropdown from "../../SharedComponents/components/EnhancedDropdown";
+import { toast } from "react-toastify";
 
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -63,40 +64,22 @@ const RegisteredUsers = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown visibility
 
   useEffect(() => {
-    const fetchTruckDrivers = async () => {
-      // Set up Firestore real-time listener using onSnapshot
-      const unsubscribe = onSnapshot(
-        collection(db, "TruckDrivers"),
-        (snapshot) => {
-          const drivers = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+    const unsubscribe = onSnapshot(
+      collection(db, "TruckDrivers"),
+      (snapshot) => {
+        const drivers = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTruckDrivers(drivers);
+      },
+      (error) => {
+        console.error("Error in snapshot listener:", error);
+      }
+    );
 
-          setTruckDrivers(drivers); // Update the state with real-time data
-        }
-      );
-
-      // Clean up the listener when the component unmounts
-      return () => unsubscribe();
-    };
-
-    fetchTruckDrivers();
-  }, []); // Empty dependency array means this runs once on mount
-  // Function to determine status background color
-
-  // Function to select a row via checkbox
-
-  // Function to handle delete click
-  const deleteUserByUid = async (uid) => {
-    try {
-      await deleteDoc(doc(db, "TruckDrivers", uid));
-      console.log(`User with UID ${uid} deleted successfully.`);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
-
+    return () => unsubscribe();
+  }, []);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   // Function to confirm delete
   const handleSelectRow = (uid, name) => {
@@ -114,28 +97,41 @@ const RegisteredUsers = () => {
 
   const handleConfirmDelete = async () => {
     try {
+      // Delete from TruckDrivers collection
       const truckDriversRef = collection(db, "TruckDrivers");
       const querySnapshot = await getDocs(truckDriversRef);
 
       const deletePromises = selectedUserIds.map(async (selectedUid) => {
-        const docToDelete = querySnapshot.docs.find(
-          (doc) => doc.data().uid === selectedUid
-        );
-        if (docToDelete) {
-          await deleteDoc(doc(db, "TruckDrivers", docToDelete.id));
+        try {
+          // Delete from TruckDrivers collection where uid is in document data
+          const docToDelete = querySnapshot.docs.find(
+            (doc) => doc.data().uid === selectedUid
+          );
+          if (docToDelete) {
+            await deleteDoc(doc(db, "TruckDrivers", docToDelete.id));
+          }
+
+          // Delete from truck_driver_applications collection where uid is document ID
+          await deleteDoc(doc(db, "truck_driver_applications", selectedUid));
+        } catch (error) {
+          console.error(`Error deleting user ${selectedUid}:`, error);
+          throw error; // Re-throw to handle in outer catch
         }
       });
 
       await Promise.all(deletePromises);
 
+      // Update local state
       setTruckDrivers((prevDrivers) =>
         prevDrivers.filter((driver) => !selectedUserIds.includes(driver.uid))
       );
 
       setSelectedUserIds([]);
       setShowDeleteModal(false);
+      toast.success("Selected drivers deleted successfully");
     } catch (error) {
       console.error("Error deleting users:", error);
+      toast.error("Error deleting selected drivers");
     }
   };
   const formatDate = (timestamp) => {
@@ -181,48 +177,38 @@ const RegisteredUsers = () => {
 
     return `${day}${suffix(day)} ${month} ${year}`;
   };
-  const handleStatusChange = async (uid, newStatus) => {
-    setTruckDrivers((prevDrivers) =>
-      prevDrivers.map((driver) =>
-        driver.uid === uid ? { ...driver, driverStatus: newStatus } : driver
-      )
-    );
-    const truckDriversQuery = query(
-      collection(db, "TruckDrivers"),
-      where("uid", "==", uid)
-    );
-
-    const querySnapshot = await getDocs(truckDriversQuery);
-
-    if (!querySnapshot.empty) {
-      // Get the first matching document
-      const truckDriverDoc = querySnapshot.docs[0];
-
-      // Update the status in the found document
-      await updateDoc(doc(db, "TruckDrivers", truckDriverDoc.id), {
+  const handleStatusChange = async (documentId, newStatus) => {
+    try {
+      // Update Firestore directly using the document ID
+      await updateDoc(doc(db, "TruckDrivers", documentId), {
         driverStatus: newStatus,
         statusUpdateDate: new Date().toISOString(),
       });
+
+      // No need to manually update state as onSnapshot will handle it
+    } catch (error) {
+      console.error("Error updating status:", error);
+      // Optionally show an error toast/notification here
     }
   };
   const statusOptions = [
-    "Pending",
+    "pending",
+    "filled",
+    "registered",
     "approved",
     "rejected",
-    "Future Lead",
-    "Need Review",
   ];
   const getStatusColor = (status) => {
     switch (status) {
-      case "Pending":
+      case "pending":
         return "bg-yellow-400";
       case "approved":
         return "bg-green-400";
       case "rejected":
         return "bg-red-400";
-      case "Future Lead":
+      case "filled":
         return "bg-blue-400";
-      case "Need Review":
+      case "registered":
         return "bg-orange-400";
       default:
         return "bg-gray-200";
@@ -264,14 +250,13 @@ const RegisteredUsers = () => {
                   />
                 </td>
                 <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
-                <td className="px-2 py-3 whitespace-nowrap ">
+                <td className="px-2 py-3 whitespace-nowrap">
                   <EnhancedStatusDropdown
                     initialStatus={driver.driverStatus}
-                    ref={dropdownRef}
                     options={statusOptions}
                     onStatusChange={(value) =>
-                      handleStatusChange(driver.uid, value)
-                    }
+                      handleStatusChange(driver.id, value)
+                    } // Use driver.id here
                     getStatusColor={getStatusColor}
                   />
                 </td>

@@ -24,6 +24,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { toast } from "react-toastify";
+import FormStatusHeader from "./FormStatusHeader";
 
 const forms = [
   ApplicationForm,
@@ -42,6 +43,31 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
   const [clicked, setClicked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({});
+  const [applicationStatus, setApplicationStatus] = useState("");
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        // Reference the "TruckDrivers" collection
+        const querySnapshot = await getDocs(collection(db, "TruckDrivers"));
+
+        // Extract the `driverStatusname` value from each document
+        const driverStatuses = querySnapshot.docs.map(
+          (doc) => doc.data().driverStatus
+        );
+
+        // Assuming you only want the `driverStatusname` of the first document for `applicationStatus`
+        if (driverStatuses.length > 0) {
+          setApplicationStatus(driverStatuses[0]);
+        }
+
+        console.log("Driver statuses:", driverStatuses);
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+      }
+    };
+
+    fetchFormData();
+  }, [uid]);
   useEffect(() => {
     const fetchFormData = async () => {
       if (uid) {
@@ -254,6 +280,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className="fixed inset-0 w-screen bg-black bg-opacity-50 h-screen z-50 flex justify-center items-center overflow-hidden">
       <div className="bg-white rounded-lg shadow-xl w-[96%] smd:w-[90%] h-[90%] mx-4 flex flex-col ">
@@ -267,19 +294,14 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
             <X size={24} />
           </button>
           <div className="flex flex-col gap-y-2 smd:flex-row smd:justify-between w-full mt-8 gap-y-6">
-            <div className="flex flex-col gap-y-2 smd:flex-row  ">
+            <div className="flex flex-col gap-y-2 items-center smd:flex-row  ">
               <h3 className="text-xl font-semibold ">
                 Application Form {currentFormIndex + 1}
               </h3>
-
-              <h1>
-                {" "}
-                {isFormEmpty(currentFormIndex) && (
-                  <span className="smd:ml-2 w-full bg-red-500 text-white text-xs font-medium mr-2 px-2.5 py-2.5 mb-1 rounded-full">
-                    Not Filled by User
-                  </span>
-                )}
-              </h1>
+              <FormStatusHeader
+                formData={formData}
+                applicationStatus={applicationStatus}
+              />
             </div>
             <div className="flex gap-x-4 ">
               {" "}

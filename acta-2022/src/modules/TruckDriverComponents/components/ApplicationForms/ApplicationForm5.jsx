@@ -155,23 +155,29 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       // Create the update object with the form data
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
       const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (4 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 4;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
@@ -182,6 +188,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 5,
           completedForms: formNumber,
         });
       }
@@ -192,14 +199,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
       toast.error("Error saving the application, please try again.");
     }
   };
-  const saveForm5 = async () => {
+  const saveForm5 = async (isSubmit = false) => {
     const applicationData = {
       driverLicensePermit: driverLicensePermit,
       driverExperience: driverExperience,
       educationHistory: educationHistory,
       extraSkills: extraSkills,
     };
-    await saveToFirebase(5, applicationData);
+    await saveToFirebase(5, applicationData, isSubmit);
   };
   const handleBack = () => {
     // Check if save is clicked
@@ -227,7 +234,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     ) {
       setIsSaveClicked(true);
 
-      await saveForm5();
+      await saveForm5(true);
       navigate("/TruckDriverLayout/ApplicationForm6");
     } else {
       // Show a message indicating the form is incomplete
@@ -236,58 +243,84 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleSave = async (uid) => {
-    // Check if there is at least one field filled out
-    const hasDriverLicensePermitData = driverLicensePermit.some((field) =>
-      Object.values(field).some((val) => val.value.trim() !== "")
-    );
+    try {
+      // Only validate fields for non-admin users
+      if (currentUser.userType !== "Admin") {
+        const hasDriverLicensePermitData = driverLicensePermit.some((field) =>
+          Object.values(field).some((val) => val.value.trim() !== "")
+        );
 
-    const hasDriverExperienceData = driverExperience.some((field) =>
-      Object.values(field).some((val) => val.value.trim() !== "")
-    );
+        const hasDriverExperienceData = driverExperience.some((field) =>
+          Object.values(field).some((val) => val.value.trim() !== "")
+        );
 
-    const hasEducationHistoryData = educationHistory.some((field) =>
-      Object.values(field).some((val) => val.value.trim() !== "")
-    );
+        const hasEducationHistoryData = educationHistory.some((field) =>
+          Object.values(field).some((val) => val.value.trim() !== "")
+        );
 
-    const hasExtraSkillsData = Object.values(extraSkills).some(
-      (val) => val.value.trim() !== ""
-    );
+        const hasExtraSkillsData = Object.values(extraSkills).some(
+          (val) => val.value.trim() !== ""
+        );
 
-    if (
-      hasDriverLicensePermitData ||
-      hasDriverExperienceData ||
-      hasEducationHistoryData ||
-      hasExtraSkillsData
-    ) {
-      // Perform save
-      toast.success("Form is successfully saved");
-      setIsSaveClicked(true);
-
-      try {
-        const docRef = doc(db, "truck_driver_applications", uid);
-        const docSnap = await getDoc(docRef);
-
-        const applicationData = {
-          driverLicensePermit: driverLicensePermit,
-          driverExperience: driverExperience,
-          educationHistory: educationHistory,
-          extraSkills: extraSkills,
-        };
-
-        if (docSnap.exists()) {
-          await updateDoc(docRef, {
-            form5: applicationData,
-          });
-        } else {
-          await setDoc(docRef, {
-            form5: applicationData,
-          });
+        // Check if at least one section has data for non-admin users
+        if (
+          !hasDriverLicensePermitData &&
+          !hasDriverExperienceData &&
+          !hasEducationHistoryData &&
+          !hasExtraSkillsData
+        ) {
+          toast.error("Please complete at least one field before saving.");
+          return;
         }
-      } catch (error) {
-        console.error("Error saving application: ", error);
       }
-    } else {
-      toast.error("Please complete at least one field before saving.");
+
+      // Proceed with saving regardless of validation for admin users
+
+      let docRef;
+      if (currentUser.userType === "Admin") {
+        docRef = doc(db, "truck_driver_applications", uid);
+      } else {
+        docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      }
+
+      const docSnap = await getDoc(docRef);
+
+      const applicationData = {
+        driverLicensePermit: driverLicensePermit,
+        driverExperience: driverExperience,
+        educationHistory: educationHistory,
+        extraSkills: extraSkills,
+        submittedAt: new Date(),
+      };
+
+      let updateObject = {
+        form5: applicationData,
+      };
+
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        if (5 > currentSavedForms) {
+          updateObject.savedForms = 5;
+        }
+
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+        await updateDoc(docRef, updateObject);
+      } else {
+        await setDoc(docRef, {
+          ...updateObject,
+          savedForms: 5,
+          completedForms: 5,
+        });
+      }
+      setIsSaveClicked(true);
+      toast.success("Form is successfully saved");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the application, please try again.");
     }
   };
 
@@ -296,7 +329,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
       console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
-        handleSave(uid);
+        handleSave(uid, 5);
       }
     }, [clicked]);
   }

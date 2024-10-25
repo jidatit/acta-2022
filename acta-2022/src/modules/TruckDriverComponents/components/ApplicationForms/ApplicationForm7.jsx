@@ -49,33 +49,38 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm6");
   };
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      // Create the update object with the form data
-      const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (7 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 7;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
         }
-
         await updateDoc(docRef, updateObject);
       } else {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 7,
           completedForms: formNumber,
         });
       }
@@ -86,11 +91,11 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
       toast.error("Error saving the application, please try again.");
     }
   };
-  const saveForm7 = async () => {
+  const saveForm7 = async (isSubmit = false) => {
     const applicationData = {
       AlcoholDrugTest: localFormData,
     };
-    await saveToFirebase(7, applicationData);
+    await saveToFirebase(7, applicationData, isSubmit);
   };
   const validateForm = () => {
     const newErrors = localFormData.map((field) => {
@@ -129,7 +134,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
     if (validateForm()) {
       setIsSaveClicked(true);
 
-      await saveForm7();
+      await saveForm7(true);
       navigate("/TruckDriverLayout/ApplicationForm8");
     } else {
       toast.error("Please complete all required fields to continue");
@@ -138,19 +143,17 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
 
   const handleSave = async (uid) => {
     // Check if at least one field is filled
-    const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some(
-        (input) => input.value && input.value.trim() !== ""
-      )
-    );
-    if (!isAnyFieldFilled) {
-      toast.error("At least one field must be filled before saving");
-      return;
+    if (currentUser.userType !== "Admin") {
+      const isAnyFieldFilled = localFormData.some((field) =>
+        Object.values(field).some(
+          (input) => input.value && input.value.trim() !== ""
+        )
+      );
+      if (!isAnyFieldFilled) {
+        toast.error("At least one field must be filled before saving");
+        return;
+      }
     }
-
-    toast.success("Form is successfully saved");
-
-    setIsSaveClicked(true);
 
     try {
       const docRef = doc(db, "truck_driver_applications", uid);
@@ -160,17 +163,33 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
         AlcoholDrugTest: localFormData,
         submittedAt: new Date(),
       };
-
+      let updateObject = {
+        form7: applicationData,
+      };
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form7: applicationData,
-          // Update this with the specific key for this form
-        });
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        // Always update savedForms if current form number is higher
+        if (7 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 7;
+        }
+
+        // Keep the existing completedForms value
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+        await updateDoc(docRef, updateObject);
       } else {
         await setDoc(docRef, {
-          form7: applicationData,
+          ...updateObject,
+          savedForms: 7, // Set initial savedForms to current form number
+          completedForms: 7, // No forms completed yet, just saved
         });
       }
+      setIsSaveClicked(true);
+      toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
       toast.error("Error saving the form, please try again");
@@ -180,7 +199,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
     useEffect(() => {
       setClicked(false);
       if (clicked) {
-        handleSave(uid);
+        handleSave(uid, 7);
       }
     }, [clicked]);
   }

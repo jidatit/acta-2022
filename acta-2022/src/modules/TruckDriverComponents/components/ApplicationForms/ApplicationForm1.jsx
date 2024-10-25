@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 
-import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  addDoc,
+  collection,
+  where,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
@@ -75,54 +85,128 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const saveForm1 = async () => {
+    const applicationData = {
+      ...formData,
+    };
+    await saveToFirebase(1, applicationData);
+  };
+  const saveToFirebase = async (formNumber, formData) => {
+    try {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      try {
-        const applicationData = { ...formData, submittedAt: new Date() };
+      // Create the update object with the form data
+      const formDataToSave = {
+        ...formData,
+        submittedAt: new Date(),
+      };
 
-        // Reference to the specific document in the collection
-        const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      // Reference to the specific document in the collection
 
-        // Check if the document exists
-        const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
 
-        if (docSnap.exists()) {
-          // Document exists, update it
-          await updateDoc(docRef, {
-            form1: applicationData, // Use a descriptive key for each form
-          });
-        } else {
-          // Document does not exist, create it
-          await setDoc(docRef, {
-            form1: applicationData,
-          });
+        // Only update completedForms if the new form number is higher
+        const updateObject = {
+          [`form${formNumber}`]: formDataToSave,
+          savedForms: formNumber,
+        };
+
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
         }
 
+        // Document exists, update it
+        await updateDoc(docRef, updateObject);
+      } else {
+        // Document does not exist, create it
+        await setDoc(docRef, {
+          [`form${formNumber}`]: formDataToSave,
+          completedForms: formNumber,
+          savedForms: formNumber,
+        });
+      }
+
+      toast.success(`Form saved successfully`);
+    } catch (error) {
+      console.error("Error saving application:", error);
+      toast.error("Error saving the application, please try again.");
+    }
+  };
+  const updateDriverStatusToFilled = async (uid) => {
+    try {
+      const collectionName = "TruckDrivers";
+
+      // Query to find the document with the specific UID
+      const truckDriversQuery = query(
+        collection(db, collectionName),
+        where("uid", "==", uid)
+      );
+
+      const querySnapshot = await getDocs(truckDriversQuery);
+
+      if (!querySnapshot.empty) {
+        // Get the first matching document
+        const truckDriverDoc = querySnapshot.docs[0];
+
+        // Update driverStatus to "Filled"
+        await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+          driverStatus: "pending",
+        });
+
+        console.log("Driver status updated to 'Filled' successfully.");
+      } else {
+        console.error("No matching driver found in the collection.");
+      }
+    } catch (error) {
+      console.error("Error updating driver status:", error);
+    }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      try {
         setIsSaveClicked(true);
+        await saveForm1();
+        if (currentUser.userType !== "Admin") {
+          updateDriverStatusToFilled(currentUser.uid);
+        }
+
         navigate("/TruckDriverLayout/ApplicationForm2");
       } catch (error) {
         console.error("Error saving application: ", error);
+        toast.error("Error submitting the form, please try again");
       }
     } else {
-      toast.error("Please complete all required fields to continue");
+      toast.error("Please complete all required fields to continue");
     }
   };
 
-  const saveFormInfo = async (uid) => {
-    // Check if at least one field is filled
-    const isAnyFieldFilled = Object.values(formData).some(
-      (field) => field.value.trim() !== "" // Access the value property here
-    );
-
-    if (!isAnyFieldFilled) {
-      toast.error("At least one field must be filled before saving");
-      return;
-    }
-
+  const saveFormInfo = async (uid, formNumber) => {
     try {
-      const applicationData = { ...formData, submittedAt: new Date() };
+      // Check if at least one field is filled
+      if (currentUser.userType !== "Admin") {
+        const isAnyFieldFilled = Object.keys(formData).some((key) => {
+          const value = formData[key];
+          // Handle both string values and object values with a 'value' property
+          return typeof value === "object"
+            ? (value.value?.toString().trim() || "").length > 0
+            : (value?.toString().trim() || "").length > 0;
+        });
+
+        if (!isAnyFieldFilled) {
+          toast.error("At least one field must be filled before saving");
+          return;
+        }
+      }
+
+      const formDataToSave = {
+        ...formData,
+        submittedAt: new Date(),
+      };
 
       // Reference to the specific document in the collection
       const docRef = doc(db, "truck_driver_applications", uid);
@@ -131,16 +215,28 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const currentCompletedForms = existingData.completedForms || 0;
+
+        const updateObject = {
+          [`form${formNumber}`]: formDataToSave,
+        };
+
+        if (formNumber > currentCompletedForms) {
+          updateObject.completedForms = formNumber;
+        }
+
         // Document exists, update it
-        await updateDoc(docRef, {
-          form1: applicationData,
-          // Use a descriptive key for each form
-        });
+        await updateDoc(docRef, updateObject);
       } else {
         // Document does not exist, create it
         await setDoc(docRef, {
-          form1: applicationData,
+          [`form${formNumber}`]: formDataToSave,
+          savedForms: formNumber,
         });
+      }
+      if (currentUser.userType !== "Admin") {
+        updateDriverStatusToFilled(currentUser.uid);
       }
 
       toast.success("Form is successfully saved");
@@ -149,16 +245,12 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       toast.error("Error saving the form, please try again");
     }
   };
-  if (currentUser.userType === "Admin") {
-    useEffect(() => {
-      console.log("child clicked", clicked);
+  useEffect(() => {
+    if (currentUser?.userType === "Admin" && clicked) {
+      saveFormInfo(uid, 1);
       setClicked(false);
-      if (clicked) {
-        saveFormInfo(uid);
-      }
-    }, [clicked]);
-  }
-
+    }
+  }, [clicked, currentUser, uid]);
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-row items-center justify-center w-full ">
@@ -246,7 +338,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               <select
                 name="positionApplied"
                 id="positionApplied"
-                value={formData.positionApplied.value}
+                value={formData?.positionApplied?.value}
                 onChange={handleChange}
                 className={`w-full p-[12px] mt-1 border rounded-md ${
                   errors.positionApplied
@@ -278,7 +370,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="ssn"
                 id="ssn"
-                value={formData.ssn.value}
+                value={formData?.ssn?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.ssn ? "border-red-500 border-2" : "border-gray-300"
@@ -308,7 +400,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="date"
                 name="DOB"
                 id="DOB"
-                value={formData.DOB.value}
+                value={formData?.DOB?.value}
                 onChange={handleChange}
                 max={new Date().toISOString().split("T")[0]} // Setting max to today's date
                 className={`w-full p-2 mt-1 border rounded-md ${
@@ -338,7 +430,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     type="radio"
                     name="gender"
                     value="male"
-                    checked={formData.gender.value === "male"}
+                    checked={formData?.gender?.value === "male"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -351,7 +443,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     type="radio"
                     name="gender"
                     value="female"
-                    checked={formData.gender.value === "female"}
+                    checked={formData?.gender?.value === "female"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
@@ -380,7 +472,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="referredBy"
                 id="referredBy"
-                value={formData.referredBy.value}
+                value={formData?.referredBy?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.referredBy ? "border-gray-300" : "border-gray-300"
@@ -407,7 +499,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     type="radio"
                     name="legalRightToWork"
                     value="yes"
-                    checked={formData.legalRightToWork.value === "yes"}
+                    checked={formData?.legalRightToWork?.value === "yes"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -420,7 +512,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     type="radio"
                     name="legalRightToWork"
                     value="no"
-                    checked={formData.legalRightToWork.value === "no"}
+                    checked={formData?.legalRightToWork?.value === "no"}
                     onChange={handleChange}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
@@ -450,7 +542,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="payExpected"
                 id="payExpected"
-                value={formData.payExpected.value}
+                value={formData?.payExpected?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.payExpected
@@ -482,7 +574,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="street1"
                 id="street1"
-                value={formData.street1.value}
+                value={formData?.street1?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street1 ? "border-red-500 border-2" : "border-gray-300"
@@ -508,7 +600,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="street2"
                 id="street2"
-                value={formData.street2.value}
+                value={formData?.street2?.value}
                 onChange={handleChange}
                 className="w-full p-2 mt-1 border rounded-md border-gray-300"
               />
@@ -527,7 +619,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="city"
                 id="city"
-                value={formData.city.value}
+                value={formData?.city?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.city ? "border-red-500 border-2" : "border-gray-300"
@@ -553,7 +645,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="state"
                 id="state"
-                value={formData.state.value}
+                value={formData?.state?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.state ? "border-red-500 border-2" : "border-gray-300"
@@ -579,7 +671,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="number"
                 name="zipCode"
                 id="zipCode"
-                value={formData.zipCode.value}
+                value={formData?.zipCode?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.zipCode ? "border-red-500 border-2" : "border-gray-300"
@@ -605,7 +697,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="cellPhone"
                 id="cellPhone"
-                value={formData.cellPhone.value}
+                value={formData?.cellPhone?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.cellPhone
@@ -661,7 +753,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="EmergencyContact"
                 id="EmergencyContact"
-                value={formData.EmergencyContact.value}
+                value={formData?.EmergencyContact?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.EmergencyContact
@@ -690,7 +782,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="Relationship"
                 id="Relationship"
-                value={formData.Relationship.value}
+                value={formData?.Relationship?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.Relationship
@@ -719,7 +811,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="CDL"
                 id="CDL"
-                value={formData.CDL.value}
+                value={formData?.CDL?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDL ? "border-red-500 border-2" : "border-gray-300"
@@ -746,7 +838,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="CDLState"
                 id="CDLState"
-                value={formData.CDLState.value}
+                value={formData?.CDLState?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLState
@@ -775,7 +867,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 type="text"
                 name="CDLClass"
                 id="CDLClass"
-                value={formData.CDLClass.value}
+                value={formData?.CDLClass?.value}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLClass
@@ -806,7 +898,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               type="date"
               name="CDLExpirationDate"
               id="CDLExpirationDate"
-              value={formData.CDLExpirationDate.value}
+              value={formData?.CDLExpirationDate?.value}
               onChange={handleChange}
               min={new Date().toISOString().split("T")[0]}
               className={`w-full p-2 mt-1 border rounded-md ${
@@ -838,7 +930,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="EverBeenDeniedALicense"
                   value="yes"
-                  checked={formData.EverBeenDeniedALicense.value === "yes"}
+                  checked={formData?.EverBeenDeniedALicense?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
@@ -853,7 +945,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="EverBeenDeniedALicense"
                   value="no"
-                  checked={formData.EverBeenDeniedALicense.value === "no"}
+                  checked={formData?.EverBeenDeniedALicense?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
@@ -888,7 +980,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="PermitPrivilegeOfLicense"
                   value="yes"
-                  checked={formData.PermitPrivilegeOfLicense.value === "yes"}
+                  checked={formData?.PermitPrivilegeOfLicense?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
@@ -903,7 +995,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="PermitPrivilegeOfLicense"
                   value="no"
-                  checked={formData.PermitPrivilegeOfLicense.value === "no"}
+                  checked={formData?.PermitPrivilegeOfLicense?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
@@ -940,7 +1032,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   name="TestedPositiveOrRefusedDotDrug"
                   value="yes"
                   checked={
-                    formData.TestedPositiveOrRefusedDotDrug.value === "yes"
+                    formData?.TestedPositiveOrRefusedDotDrug?.value === "yes"
                   }
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
@@ -957,7 +1049,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   name="TestedPositiveOrRefusedDotDrug"
                   value="no"
                   checked={
-                    formData.TestedPositiveOrRefusedDotDrug.value === "no"
+                    formData?.TestedPositiveOrRefusedDotDrug?.value === "no"
                   }
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
@@ -992,7 +1084,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="EverConvictedOfFelony"
                   value="yes"
-                  checked={formData.EverConvictedOfFelony.value === "yes"}
+                  checked={formData?.EverConvictedOfFelony?.value === "yes"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony
@@ -1007,7 +1099,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   type="radio"
                   name="EverConvictedOfFelony"
                   value="no"
-                  checked={formData.EverConvictedOfFelony.value === "no"}
+                  checked={formData?.EverConvictedOfFelony?.value === "no"}
                   onChange={handleChange}
                   className={`text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony
@@ -1031,7 +1123,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           <div className="flex justify-end w-full gap-x-2">
             <button
               type="submit"
-              onClick={() => saveFormInfo(currentUser.uid)}
+              onClick={() => saveFormInfo(currentUser.uid, 1)}
               className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
             >
               Save

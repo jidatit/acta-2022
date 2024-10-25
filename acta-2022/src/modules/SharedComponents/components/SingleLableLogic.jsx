@@ -49,11 +49,11 @@ const SingleLabelLogic = ({
   };
   const handleViewNote = async () => {
     const existingNotes = await getNoteForField(uid, fieldName);
-    console.log("Existing Notes:", existingNotes);
+
     setExistingNote(existingNotes);
     setIsModalOpen(true); // Show modal through state
   };
-  console.log("existingNote", existingNote);
+
   const handleAddNote = () => {
     setIsModalOpen(true); // Show modal through state
   };
@@ -78,7 +78,7 @@ const SingleLabelLogic = ({
         const data = docSnap.data();
 
         // Iterate through forms to find the field
-        for (let i = 1; i <= data.completedForms; i++) {
+        for (let i = 1; i <= data.savedForms; i++) {
           const formKey = `form${i}`;
 
           if (data[formKey]) {
@@ -126,7 +126,7 @@ const SingleLabelLogic = ({
         const updatedData = { ...data };
 
         // Iterate through forms (form1, form2, etc.)
-        for (let i = 1; i <= data.completedForms; i++) {
+        for (let i = 1; i <= data.savedForms; i++) {
           const formKey = `form${i}`;
 
           if (data[formKey]) {
@@ -209,7 +209,7 @@ const SingleLabelLogic = ({
         const updatedData = { ...data };
 
         // Iterate through forms (form1, form2, etc.)
-        for (let i = 1; i <= data.completedForms; i++) {
+        for (let i = 1; i <= data.savedForms; i++) {
           const formKey = `form${i}`;
 
           if (data[formKey]) {
@@ -291,7 +291,7 @@ const SingleLabelLogic = ({
         const updatedData = { ...data };
 
         // Iterate through forms (form1, form2, etc.)
-        for (let i = 1; i <= data.completedForms; i++) {
+        for (let i = 1; i <= data.savedForms; i++) {
           const formKey = `form${i}`;
 
           if (data[formKey]) {
@@ -508,7 +508,7 @@ const SingleLabelLogic = ({
                             <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                               <FaRegCheckCircle size={20} className="" />
                             </div>
-                            Approve Application
+                            Approve Field
                           </li>
                         </ul>
                       </div>

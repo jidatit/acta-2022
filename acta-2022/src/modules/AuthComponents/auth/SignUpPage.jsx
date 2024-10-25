@@ -24,6 +24,7 @@ const SignUpPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    driverStatus: "",
   });
 
   const togglePasswordVisibility = () => {
@@ -67,10 +68,11 @@ const SignUpPage = () => {
         email: formData.email,
         password: hashedPassword,
         userType: "TruckDriver",
+        driverStatus: "registered",
         dateCreated: new Date(),
       });
 
-      if (collectionName !== "admin") {
+      if (collectionName !== "Admin") {
         await sendEmailVerification(user);
       }
 

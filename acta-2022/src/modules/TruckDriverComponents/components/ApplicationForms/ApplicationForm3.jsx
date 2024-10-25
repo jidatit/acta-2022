@@ -52,17 +52,20 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     navigate("/TruckDriverLayout/ApplicationForm2");
   };
 
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       // Create the update object with the form data
-      const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
+
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
@@ -79,6 +82,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 3,
           completedForms: formNumber,
         });
       }
@@ -87,13 +91,14 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     } catch (error) {
       console.error("Error saving application:", error);
       toast.error("Error saving the application, please try again.");
+      throw error; // Re-throw to handle in calling function
     }
   };
-  const saveForm3 = async () => {
+  const saveForm3 = async (isSubmit = false) => {
     const applicationData = {
       EmploymentHistory: localFormData,
     };
-    await saveToFirebase(3, applicationData);
+    await saveToFirebase(3, applicationData, isSubmit);
   };
 
   const validateForm = () => {
@@ -132,28 +137,80 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     e.preventDefault();
     setIsSaveClicked(false);
 
-    if (validateForm()) {
+    try {
+      if (validateForm()) {
+        setIsSaveClicked(true);
+        await saveForm3(true); // Pass true to indicate this is a submit action
+        navigate("/TruckDriverLayout/ApplicationForm4");
+      } else {
+        toast.error("Please complete all required fields to continue.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting the form, please try again.");
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (currentUser.userType !== "Admin") {
+        const isAnyFieldFilled = Object.keys(localFormData).some((key) => {
+          const value = localFormData[key];
+          // Handle both string values and object values with a 'value' property
+          return typeof value === "object"
+            ? (value.value?.toString().trim() || "").length > 0
+            : (value?.toString().trim() || "").length > 0;
+        });
+
+        if (!isAnyFieldFilled) {
+          toast.error("At least one field must be filled before saving");
+          return;
+        }
+      }
+
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      const applicationData = {
+        EmploymentHistory: localFormData,
+        submittedAt: new Date(),
+      };
+
+      let updateObject = {
+        form3: applicationData,
+      };
+
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        // Always update savedForms if current form number is higher
+        if (3 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 3;
+        }
+
+        // Keep the existing completedForms value
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+
+        await updateDoc(docRef, updateObject);
+      } else {
+        // For new documents
+        await setDoc(docRef, {
+          ...updateObject,
+          savedForms: 3, // Set initial savedForms to current form number
+          completedForms: 3, // No forms completed yet, just saved
+        });
+      }
       setIsSaveClicked(true);
-      await saveForm3();
-      navigate("/TruckDriverLayout/ApplicationForm4");
-    } else {
-      toast.error("Please complete all required fields to continue.");
+      toast.success("Form is successfully saved");
+    } catch (error) {
+      console.error("Error saving application: ", error);
+      toast.error("Error saving the form, please try again.");
     }
   };
 
-  const handleSave = async (uid) => {
-    const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.value.trim() !== "")
-    );
-
-    if (!isAnyFieldFilled) {
-      toast.error("At least one field must be filled before saving");
-      return;
-    }
-
-    setIsSaveClicked(true);
-    await saveToFirebase(uid);
-  };
   if (currentUser.userType === "Admin") {
     useEffect(() => {
       setClicked(false);

@@ -2,7 +2,16 @@ import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { useEffect, useState } from "react";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
@@ -46,23 +55,29 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm8");
   };
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       // Create the update object with the form data
-      const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (9 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 9;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
@@ -73,6 +88,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 9,
           completedForms: formNumber,
         });
       }
@@ -109,12 +125,44 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
       (fieldErrors) => Object.keys(fieldErrors).length === 0
     );
   };
+  const updateDriverStatusToFilled = async (uid) => {
+    try {
+      const collectionName = "TruckDrivers";
+
+      // Query to find the document with the specific UID
+      const truckDriversQuery = query(
+        collection(db, collectionName),
+        where("uid", "==", uid)
+      );
+
+      const querySnapshot = await getDocs(truckDriversQuery);
+
+      if (!querySnapshot.empty) {
+        // Get the first matching document
+        const truckDriverDoc = querySnapshot.docs[0];
+
+        // Update driverStatus to "Filled"
+        await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+          driverStatus: "pending",
+        });
+
+        console.log("Driver status updated to 'Filled' successfully.");
+      } else {
+        console.error("No matching driver found in the collection.");
+      }
+    } catch (error) {
+      console.error("Error updating driver status:", error);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveClicked(false);
     if (validateForm()) {
       setIsSaveClicked(true);
-      await saveForm9();
+      await saveForm9(true);
+      if (currentUser.userType !== "Admin") {
+        updateDriverStatusToFilled(currentUser.uid);
+      }
       setShowModal(true); // Show modal after successful submission
       // navigate("/TruckDriverLayout/ApplicationForm1");
     } else {
@@ -124,18 +172,16 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
 
   const handleSave = async (uid) => {
     // Check if at least one field is filled
-    const isAnyFieldFilled = localFormData.some((field) =>
-      Object.values(field).some((value) => value.value.trim() !== "")
-    );
+    if (currentUser.userType !== "Admin") {
+      const isAnyFieldFilled = localFormData.some((field) =>
+        Object.values(field).some((value) => value.value.trim() !== "")
+      );
 
-    if (!isAnyFieldFilled) {
-      toast.error("At least one field must be filled before saving");
-      return;
+      if (!isAnyFieldFilled) {
+        toast.error("At least one field must be filled before saving");
+        return;
+      }
     }
-
-    toast.success("Form is successfully saved");
-
-    setIsSaveClicked(true);
 
     try {
       const docRef = doc(db, "truck_driver_applications", uid);
@@ -145,17 +191,39 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         compensatedWork: localFormData,
         submittedAt: new Date(),
       };
-
+      let updateObject = {
+        form4: applicationData,
+      };
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form9: applicationData,
-          // Update this with the specific key for this form
-        });
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        // Always update savedForms if current form number is higher
+        if (9 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 9;
+        }
+
+        // Keep the existing completedForms value
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+        await updateDoc(docRef, updateObject);
+        if (currentUser.userType !== "Admin") {
+          updateDriverStatusToFilled(currentUser.uid);
+        }
       } else {
         await setDoc(docRef, {
-          form9: applicationData,
+          ...updateObject,
+          savedForms: 9, // Set initial savedForms to current form number
+          completedForms: 9, // No forms completed yet, just saved
         });
+        if (currentUser.userType !== "Admin") {
+          updateDriverStatusToFilled(currentUser.uid);
+        }
       }
+      setIsSaveClicked(true);
+      toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
       toast.error("Error saving the form, please try again");
@@ -166,7 +234,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
       console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
-        handleSave(uid);
+        handleSave(uid, 9);
       }
     }, [clicked]);
   }

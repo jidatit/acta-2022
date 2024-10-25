@@ -68,29 +68,36 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   const handleBack = () => {
     navigate("/TruckDriverLayout/ApplicationForm1");
   };
-  const saveForm2 = async () => {
+  const saveForm2 = async (isSubmit = false) => {
     const applicationData = {
       previousAddresses: localFormData,
     };
-    await saveToFirebase(2, applicationData);
+    await saveToFirebase(2, applicationData, isSubmit);
   };
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
-      // Create the update object with the form data
-      const updateObject = {
-        [`form${formNumber}`]: {
-          ...formData,
-          submittedAt: new Date(),
-        },
+      // Create the form data update object
+      const formUpdate = {
+        ...formData,
+        submittedAt: new Date(),
+        isSubmitted: isSubmit,
+      };
+
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
       };
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (2 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 2;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
@@ -101,31 +108,33 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
           ...updateObject,
+          savedForms: 2,
           completedForms: formNumber,
         });
       }
 
-      toast.success(`Form ${formNumber} saved successfully`);
+      toast.success(`Form saved successfully`);
     } catch (error) {
       console.error("Error saving application:", error);
       toast.error("Error saving the application, please try again.");
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaveClicked(true);
 
-    await saveForm2();
-    navigate("/TruckDriverLayout/ApplicationForm3");
+    try {
+      await saveForm2(true); // Pass true to indicate this is a submit action
+      navigate("/TruckDriverLayout/ApplicationForm3");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting the form, please try again.");
+    }
   };
 
-  const handleSave = async (uid) => {
-    toast.success("Form is successfully saved");
-    setIsSaveClicked(true);
-
+  const handleSave = async () => {
     try {
-      const docRef = doc(db, "truck_driver_applications", uid);
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
@@ -133,17 +142,57 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         submittedAt: new Date(),
       };
 
+      let updateObject = {
+        form2: applicationData,
+      };
+
       if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          form2: applicationData,
-        });
+        const existingData = docSnap.data();
+        const currentSavedForms = existingData.savedForms || 0;
+
+        // Always update savedForms if current form number is higher
+        if (2 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 2;
+        }
+
+        // Keep the existing completedForms value
+        if (existingData.completedForms) {
+          updateObject.completedForms = existingData.completedForms;
+        }
+
+        await updateDoc(docRef, updateObject);
       } else {
+        // For new documents
         await setDoc(docRef, {
-          form2: applicationData,
+          ...updateObject,
+          savedForms: 2, // Set initial savedForms to current form number
+          completedForms: 2, // No forms completed yet, just saved
         });
       }
+      setIsSaveClicked(true);
+      toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
+      toast.error("Error saving the form, please try again.");
+    }
+  };
+  const getFormProgress = async (uid) => {
+    try {
+      const docRef = doc(db, "truck_driver_applications", uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return {
+          savedForms: data.savedForms || 0,
+          completedForms: data.completedForms || 0,
+        };
+      }
+      return { savedForms: 0, completedForms: 0 };
+    } catch (error) {
+      console.error("Error getting form progress:", error);
+      return { savedForms: 0, completedForms: 0 };
     }
   };
   if (currentUser.userType === "Admin") {
@@ -151,7 +200,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
       console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
-        handleSave(uid);
+        handleSave(uid, 2);
       }
     }, [clicked]);
   }
@@ -197,7 +246,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         <form className="w-full p-6 bg-white shadow-md border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((address, index) => (
-              <div
+              <divs
                 key={index}
                 className="grid grid-cols-1 w-full smd:-mt-0 -mt-11 smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
               >
@@ -215,7 +264,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     type="text"
                     name="street1"
                     id={`street1-${index}`}
-                    value={address.street1.value}
+                    value={address?.street1?.value}
                     onChange={(e) => handleChange(e, index)}
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                   />
@@ -224,8 +273,8 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                   <FormLabelWithStatus
                     label="Street 2"
                     id={`street2`}
-                    status={address.street2.status}
-                    note={address.street2.note}
+                    status={address?.street2?.status}
+                    note={address?.street2?.note}
                     index={index}
                     fieldName="street2"
                     uid={uid}
@@ -234,7 +283,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     type="text"
                     name="street2"
                     id={`street2-${index}`}
-                    value={address.street2.value}
+                    value={address?.street2?.value}
                     onChange={(e) => handleChange(e, index)}
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                   />
@@ -243,8 +292,8 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                   <FormLabelWithStatus
                     label="City"
                     id={`city`}
-                    status={address.city.status}
-                    note={address.city.note}
+                    status={address?.city?.status}
+                    note={address?.city?.note}
                     index={index}
                     fieldName="city"
                     uid={uid}
@@ -253,7 +302,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     type="text"
                     name="city"
                     id={`city-${index}`}
-                    value={address.city.value}
+                    value={address?.city?.value}
                     onChange={(e) => handleChange(e, index)}
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                   />
@@ -262,8 +311,8 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                   <FormLabelWithStatus
                     label="State"
                     id={`state`}
-                    status={address.state.status}
-                    note={address.state.note}
+                    status={address?.state?.status}
+                    note={address?.state?.note}
                     index={index}
                     fieldName="state"
                     uid={uid}
@@ -272,7 +321,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     type="text"
                     name="state"
                     id={`state-${index}`}
-                    value={address.state.value}
+                    value={address?.state?.value}
                     onChange={(e) => handleChange(e, index)}
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                   />
@@ -281,8 +330,8 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                   <FormLabelWithStatus
                     label="Zip Code"
                     id={`zipCode`}
-                    status={address.zipCode.status}
-                    note={address.zipCode.note}
+                    status={address?.zipCode?.status}
+                    note={address?.zipCode?.note}
                     index={index}
                     fieldName="zipCode"
                     uid={uid}
@@ -291,7 +340,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     type="text"
                     name="zipCode"
                     id={`zipCode-${index}`}
-                    value={address.zipCode.value}
+                    value={address?.zipCode?.value}
                     onChange={(e) => handleChange(e, index)}
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                   />
@@ -308,7 +357,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     </button>
                   )}
                 </div>
-              </div>
+              </divs>
             ))}
           {currentUser.userType !== "Admin" && (
             <div className="flex items-end justify-end w-full">
@@ -334,7 +383,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             <div>
               <button
                 type="button"
-                onClick={() => handleSave(currentUser.uid)}
+                onClick={() => handleSave(currentUser.uid, 2)}
                 className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
               >
                 Save
