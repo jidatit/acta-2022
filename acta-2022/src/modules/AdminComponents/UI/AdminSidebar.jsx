@@ -4,7 +4,14 @@ import "../../../index.css";
 import { useAuth } from "../../../AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { Camera } from "lucide-react";
+import { Camera, LogOutIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const AdminSidebar = ({ isSidebarExpanded }) => {
   const [activeItem, setActiveItem] = useState("RegisteredDrivers");
@@ -34,7 +41,20 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
   const handleLogoutClick = () => {
     handleLogout();
   };
+  const [openDialog, setOpenDialog] = useState(false);
 
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmLogout = () => {
+    handleLogout();
+    handleDialogClose();
+  };
   return (
     <div
       className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
@@ -101,7 +121,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
           </div>
           <div className="flex flex-col gap-y-1  mb-16 lg:mb-0">
             {/* Display Company Information */}
-            {companyInfo && (
+            {/* {companyInfo && (
               <div className="flex flex-col gap-y-1">
                 <p
                   className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
@@ -124,27 +144,86 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                   Fax: {companyInfo.fax || "www.Acta.com"}
                 </p>
               </div>
-            )}
-            <Link
-              to=""
-              className={`w-full transition-all duration-300 ease-in-out rounded-md ${
-                activeItem === "Logout"
-                  ? "bg-white rounded-md shadow-lg"
-                  : "hover:bg-white rounded-md hover:text-blue-900"
-              }`}
-              onClick={() => {
-                handleItemClick("Logout");
-                handleLogoutClick();
-              }}
-            >
-              <p
-                className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 ${
-                  activeItem === "Logout" ? "text-blue-800" : "text-white"
+            )} */}
+            <>
+              <Link
+                to=""
+                className={`w-full transition-all duration-300 ease-in-out rounded-md ${
+                  activeItem === "Logout"
+                    ? "bg-white rounded-md shadow-lg"
+                    : "hover:bg-white rounded-md hover:text-blue-900"
                 }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleItemClick("Logout");
+                  handleDialogOpen();
+                }}
               >
-                Logout
-              </p>
-            </Link>
+                <div
+                  className={`w-full p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-blue-900 ${
+                    activeItem === "Logout" ? "text-blue-800" : "text-white"
+                  }`}
+                >
+                  <LogOutIcon className="w-5 h-5" />
+                  <span>Logout</span>
+                </div>
+              </Link>
+
+              <Dialog
+                open={openDialog}
+                onClose={handleDialogClose}
+                PaperProps={{
+                  style: {
+                    borderRadius: "12px",
+                    padding: "8px",
+                    maxWidth: "400px",
+                    width: "90%",
+                  },
+                }}
+              >
+                <DialogTitle
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1e3a8a",
+                    paddingBottom: "8px",
+                  }}
+                >
+                  Confirm Logout
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText
+                    style={{
+                      color: "#4b5563",
+                      fontSize: "1rem",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Are you sure you want to logout? This will end your current
+                    session.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions
+                  style={{
+                    padding: "16px",
+                    gap: "8px",
+                  }}
+                >
+                  <button
+                    onClick={handleDialogClose}
+                    className="px-6 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmLogout}
+                    className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium"
+                  >
+                    Logout
+                  </button>
+                </DialogActions>
+              </Dialog>
+            </>
           </div>
         </div>
       </div>

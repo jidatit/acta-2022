@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import { auth, db } from "../../../config/firebaseConfig";
@@ -9,11 +9,28 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../../SharedUiComponents/Loader";
+import { Camera } from "lucide-react";
 
 const SignInPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [companyInfo, setCompanyInfo] = useState(null);
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      const companyCollection = collection(db, "companyInfo");
+      const companySnapshot = await getDocs(companyCollection);
+      const companyData = companySnapshot.docs.map((doc) => doc.data());
+
+      if (companyData.length > 0) {
+        setCompanyInfo(companyData[0]); // Assuming you want the first document
+        setLogoPreview(companyData[0].logoUrl);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, []);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -89,11 +106,20 @@ const SignInPage = () => {
           LOGO
         </h1>
         <div className="flex items-center justify-center w-full">
-          <img
-            src={image}
-            alt="......."
-            className="w-[55%] object-cover mx-auto "
-          />
+          <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
+            {logoPreview ? (
+              <img
+                src={logoPreview}
+                alt="Company logo preview"
+                className="w-[80%] rounded-xl text-center mx-auto object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full">
+                <Camera className="w-8 h-8 text-gray-400" />
+                <span className="mt-2 text-sm text-gray-500"> Logo</span>
+              </div>
+            )}
+          </div>
         </div>
 
         <p className="text-lg font-radios w-[80%] text-white">

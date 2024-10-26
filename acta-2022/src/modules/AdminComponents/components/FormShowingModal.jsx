@@ -348,7 +348,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           <div className="flex flex-col md:flex-row md:justify-between w-full mt-8 gap-y-6">
             <div className="flex flex-col gap-y-4 md:items-center smd:flex-row  ">
               <h3 className="text-xl font-semibold ">
-                Application Form {currentFormIndex + 1}
+                Page {currentFormIndex + 1}
               </h3>
               <FormStatusHeader
                 formData={formData}
@@ -391,8 +391,8 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
                   className={`w-3 h-3 rounded-full ${
                     availableForms.includes(index)
                       ? currentFormIndex === index
-                        ? "bg-blue-500"
-                        : "bg-blue-300"
+                        ? "bg-blue-600"
+                        : "bg-blue-400"
                       : "bg-gray-300"
                   }`}
                   title={

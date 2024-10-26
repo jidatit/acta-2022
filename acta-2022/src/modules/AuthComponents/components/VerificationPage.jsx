@@ -37,7 +37,9 @@ const VerificationPage = () => {
     <div className="flex flex-col justify-center items-center w-screen bg-[#3B82F6] h-screen">
       <div className="relative flex flex-col items-center justify-center h-auto p-12 py-6 bg-white rounded-lg shadow-lg overfslow-hidden sm:py-12">
         <div className="max-w-xl px-5 text-center">
-          <h1 className="w-full text-xl text-center text-black">Acta </h1>
+          <h1 className="w-full text-xl text-center text-black">
+            Acta Website
+          </h1>
           <h2 className="mb-2 text-[42px] font-bold text-zinc-800">
             Check your inbox
           </h2>

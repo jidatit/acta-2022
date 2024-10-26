@@ -104,7 +104,7 @@ const SingleLabelLogic = ({
       }
       return ""; // Return empty string if no note found
     } catch (error) {
-      console.error("Error retrieving note");
+      console.error("Error retrieving note:", error);
       toast.error("Failed to retrieve note");
       return "";
     }
@@ -181,16 +181,16 @@ const SingleLabelLogic = ({
             }
           }
         }
-        setIsModalOpen(false);
+
         // Update the document in Firebase
         await updateDoc(docRef, updatedData);
-
+        setIsModalOpen(false);
         toast.success(`Successfully updated status for ${fieldName}`);
       } else {
         toast.error("Document does not exist!");
       }
     } catch (error) {
-      toast.error("Error updating status");
+      toast.error("Error updating status:", error);
     }
   };
 
@@ -276,7 +276,7 @@ const SingleLabelLogic = ({
         toast.error("Document does not exist!");
       }
     } catch (error) {
-      toast.error("Error updating status");
+      toast.error("Error updating status:", error);
     }
   };
   const handleReject = async () => {
@@ -358,40 +358,37 @@ const SingleLabelLogic = ({
         toast.error("Document does not exist!");
       }
     } catch (error) {
-      toast.error("Error updating status");
+      toast.error("Error updating status:", error);
     }
   };
   return (
-    <div className="flex flex-row flex-wrap justify-between smd:justify-start items-center gap-x-2 gap-y-2 mb-1 w-full ">
+    <div className="flex flex-row flex-wrap justify-between smd:justify-start items-center gap-x-2 gap-y-2 mb-1 w-full">
       <label
         htmlFor={htmlFor}
-        className={` text-[16px] font-inter smd:w-max font-semibold text-gray-900 font-radios `}
+        className="text-[16px] font-inter smd:w-max font-semibold text-gray-900 font-radios"
       >
         {labelName}*
       </label>
-      <div
-        className={`flex flex-row gap-x-2 smd:w-auto flex-shrink-0 justify-end `}
-      >
-        {/* Logic for showing icons and notes based on status and user type */}
+      <div className="flex flex-row gap-x-2 smd:w-auto flex-shrink-0 justify-end">
         {status === "pending" ? (
           <div className="w-full smd:w-max flex justify-end">
             {currentUser.userType === "Admin" && (
               <>
-                <div className="w-full smd:w-max flex items-center  flex-row gap-x-3">
+                <div className="w-full smd:w-max flex items-center flex-row gap-x-3">
                   <div className="flex justify-end">
                     <FaRegCheckCircle
-                      className="text-green-500 cursor-pointer z-10"
+                      className="text-green-500 cursor-pointer relative z-10"
                       onClick={handleApprove}
                     />
                   </div>
                   <div className="flex justify-end">
                     <FaRegTimesCircle
-                      className="text-red-500 cursor-pointer z-10"
+                      className="text-red-500 cursor-pointer relative z-10"
                       onClick={handleReject}
                     />
                   </div>
                   <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer z-10"
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer relative z-10"
                     onClick={note === "" ? handleAddNote : handleViewNote}
                   >
                     <FaPencil size={10} />
@@ -402,88 +399,73 @@ const SingleLabelLogic = ({
                     )}
                   </div>
                 </div>
-                {note === "" ? (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
-                  >
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 "
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
-                      <div className="flex flex-col gap-y-6 w-full">
-                        <h3 className="font-bold text-lg">Add Note</h3>
-                        {/* Textarea with onChange event */}
-                        <textarea
-                          className="textarea textarea-bordered w-full h-28 resize-none rounded-xl px-3 py-3 border-1 border-gray-400"
-                          placeholder="Add note"
-                          value={notes} // Bind textarea value to the state
-                          onChange={handleTextareaChange} // Update state on change
-                        ></textarea>
-                      </div>
 
-                      <div className="modal-action">
-                        <form method="dialog" className="flex flex-row gap-x-3">
-                          {/* Save button triggers handleSave */}
-                          <button
-                            type="button"
-                            onClick={handleSave}
-                            className="btn bg-green-500 text-white rounded-xl px-6 py-2.5"
-                          >
-                            Save
-                          </button>
-                          <button
-                            type="button" // Prevents the default form submission
-                            className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                            onClick={() => setIsModalOpen(false)} // Close modal on click
-                          >
-                            Close
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </dialog>
-                ) : (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                  >
+                {isModalOpen && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50"
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 relative">
-                      <h3 className="font-bold text-lg">View Note</h3>
-                      <p className="py-4">
-                        {existingNote ? existingNote : "No note added"}
-                      </p>
-                      <div className="modal-action">
-                        <button
-                          type="button" // Prevents the default form submission
-                          className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                          onClick={() => setIsModalOpen(false)} // Close modal on click
-                        >
-                          Close
-                        </button>
-                      </div>
+                      onClick={() => setIsModalOpen(false)}
+                    />
+                    <div className="bg-white rounded-xl shadow-lg p-4 w-[30%] relative z-50">
+                      {note === "" ? (
+                        <div className="flex flex-col gap-y-6">
+                          <h3 className="font-bold text-lg">Add Note</h3>
+                          <textarea
+                            className="textarea textarea-bordered w-full h-28 resize-none rounded-xl px-3 py-3 border-1 border-gray-400"
+                            placeholder="Add note"
+                            value={notes}
+                            onChange={handleTextareaChange}
+                          />
+                          <div className="flex flex-row gap-x-3 justify-end">
+                            <button
+                              type="button"
+                              onClick={handleSave}
+                              className="btn bg-green-500 text-white rounded-xl px-6 py-2.5"
+                            >
+                              Save
+                            </button>
+                            <button
+                              type="button"
+                              className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
+                              onClick={() => setIsModalOpen(false)}
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-y-4">
+                          <h3 className="font-bold text-lg">View Note</h3>
+                          <p className="py-4">
+                            {existingNote ? existingNote : "No note added"}
+                          </p>
+                          <div className="flex justify-end">
+                            <button
+                              type="button"
+                              className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
+                              onClick={() => setIsModalOpen(false)}
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </dialog>
+                  </div>
                 )}
               </>
             )}
           </div>
         ) : currentUser.userType === "Admin" ? (
-          // Admin User Logic for rejected or approved statuses
-          <div className="w-full smd:w-max ">
+          <div className="w-full smd:w-max">
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center gap-x-2 w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
                   <div className="flex justify-end">
-                    <FaRegTimesCircle className="text-red-500 cursor-pointer z-10" />
+                    <FaRegTimesCircle className="text-red-500 cursor-pointer relative z-10" />
                   </div>
                   <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center z-10 bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer relative z-10"
                     onClick={note === "" ? handleAddNote : handleViewNote}
                   >
                     <FaPencil size={10} />
@@ -493,24 +475,23 @@ const SingleLabelLogic = ({
                       <p className="text-xs font-radios">Add note</p>
                     )}
                   </div>
-                  <div className="relative z-0">
-                    {" "}
+                  <div className="relative">
                     <FaPencil
-                      className="text-blue-500 cursor-pointer z-10" // Remove z-10 if present
+                      className="text-blue-500 cursor-pointer relative z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
                       <div
-                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60  "
+                        className="absolute top-8 right-0 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60 z-20"
                         ref={dropdownRef}
                       >
                         <ul className="flex flex-col">
                           <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                             onClick={handleApproveApplication}
                           >
                             <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaRegCheckCircle size={20} className="" />
+                              <FaRegCheckCircle size={20} />
                             </div>
                             Approve Field
                           </li>
@@ -519,101 +500,31 @@ const SingleLabelLogic = ({
                     )}
                   </div>
                 </div>
-                {note ? (
-                  <div className="relative z-50">
-                    <dialog
-                      open={isModalOpen}
-                      className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                    >
-                      <div
-                        className="fixed inset-0 bg-black bg-opacity-50 z-10"
-                        onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                      ></div>
-                      <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
-                        <h3 className="font-bold text-lg">View Note</h3>
-                        <p className="py-4">
-                          {existingNote ? existingNote : "No note added"}
-                        </p>
-                        <div className="modal-action">
-                          <button
-                            type="button" // Prevents the default form submission
-                            className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                            onClick={() => setIsModalOpen(false)} // Close modal on click
-                          >
-                            Close
-                          </button>
-                        </div>
-                      </div>
-                    </dialog>
-                  </div>
-                ) : (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
-                  >
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 "
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
-                      <div className="flex flex-col gap-y-6 w-full">
-                        <h3 className="font-bold text-lg">Add Note</h3>
-                        {/* Textarea with onChange event */}
-                        <textarea
-                          className="textarea textarea-bordered w-full h-28 resize-none rounded-xl px-3 py-3 border-1 border-gray-400"
-                          placeholder="Add note"
-                          value={notes} // Bind textarea value to the state
-                          onChange={handleTextareaChange} // Update state on change
-                        ></textarea>
-                      </div>
-
-                      <div className="modal-action">
-                        <form method="dialog" className="flex flex-row gap-x-3">
-                          {/* Save button triggers handleSave */}
-                          <button
-                            type="button"
-                            onClick={handleSave}
-                            className="btn bg-green-500 text-white rounded-xl px-6 py-2.5"
-                          >
-                            Save
-                          </button>
-                          <button
-                            type="button" // Prevents the default form submission
-                            className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                            onClick={() => setIsModalOpen(false)} // Close modal on click
-                          >
-                            Close
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </dialog>
-                )}
               </div>
             )}
 
             {status === "approved" && (
               <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
                 <div className="flex justify-end">
-                  <FaRegCheckCircle className="text-green-500 cursor-pointer z-10" />
+                  <FaRegCheckCircle className="text-green-500 cursor-pointer relative z-10" />
                 </div>
-                <div className="relative z-10">
+                <div className="relative">
                   <FaPencil
-                    className="text-blue-500 cursor-pointer z-10"
-                    onClick={handleDropdownToggle} // Toggle dropdown on click
+                    className="text-blue-500 cursor-pointer relative z-10"
+                    onClick={handleDropdownToggle}
                   />
                   {isDropdownOpen && (
                     <div
-                      className="absolute top-8 bg-white border border-gray-300 z-20 shadow-lg rounded-md py-2 w-60 "
+                      className="absolute top-8 right-0 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60 z-20"
                       ref={dropdownRef}
                     >
                       <ul className="flex flex-col">
                         <li
-                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                           onClick={handleRejectApplication}
                         >
                           <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                            <FaRegTimesCircle size={20} className="" />
+                            <FaRegTimesCircle size={20} />
                           </div>
                           Reject Application
                         </li>
@@ -625,63 +536,28 @@ const SingleLabelLogic = ({
             )}
           </div>
         ) : (
-          // Non-Admin User Logic
           <div className="w-full smd:w-max">
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
                   <div className="flex smd:justify-start justify-end">
-                    <FaRegTimesCircle className="text-red-500 cursor-pointer z-10" />
+                    <FaRegTimesCircle className="text-red-500 cursor-pointer relative z-10" />
                   </div>
-                  {note ? (
+                  {note && (
                     <div
-                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer relative z-10"
                       onClick={handleViewNote}
                     >
                       <FaPencil size={10} />
-
                       <p className="text-xs font-radios">View note</p>
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
-
-                {note ? (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                  >
-                    {/* Background overlay */}
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 "
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col justify-center items-center z-20 relative">
-                      <h3 className="font-bold text-lg">Note</h3>
-                      <p className="py-4">
-                        {existingNote ? existingNote : "No note added"}
-                      </p>
-                      <div className="modal-action">
-                        <button
-                          type="button" // Prevents the default form submission
-                          className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                          onClick={() => setIsModalOpen(false)} // Close modal on click
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </dialog>
-                ) : (
-                  ""
-                )}
               </div>
             )}
             {status === "approved" && (
               <div className="flex smd:justify-start justify-end">
-                <FaRegCheckCircle className="text-green-500 cursor-pointer z-10" />
+                <FaRegCheckCircle className="text-green-500 cursor-pointer relative z-10" />
               </div>
             )}
           </div>

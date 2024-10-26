@@ -8,10 +8,17 @@ import {
   BsChevronUp,
   BsThreeDotsVertical,
 } from "react-icons/bs";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { Camera } from "lucide-react";
+import { Button } from "@mui/material";
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
@@ -23,6 +30,23 @@ const SideBar = ({ isSidebarExpanded }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [isSectionsVisible, setIsSectionsVisible] = useState(false); // State to manage section visibility
+
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    setShowLogoutDialog(true);
+    setIsDropdownOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    handleLogout();
+    localStorage.removeItem("completedSections");
+    setShowLogoutDialog(false);
+  };
+  const handleClose = () => {
+    setShowLogoutDialog(false);
+  };
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -63,7 +87,22 @@ const SideBar = ({ isSidebarExpanded }) => {
     "/TruckDriverLayout/ApplicationForm8": "Section 8",
     "/TruckDriverLayout/ApplicationForm9": "Section 9",
   };
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [companyInfo, setCompanyInfo] = useState(null);
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      const companyCollection = collection(db, "companyInfo");
+      const companySnapshot = await getDocs(companyCollection);
+      const companyData = companySnapshot.docs.map((doc) => doc.data());
 
+      if (companyData.length > 0) {
+        setCompanyInfo(companyData[0]); // Assuming you want the first document
+        setLogoPreview(companyData[0].logoUrl);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, []);
   useEffect(() => {
     // Load completed sections from local storage
     const savedSections =
@@ -194,11 +233,6 @@ const SideBar = ({ isSidebarExpanded }) => {
     //console.log("edit item");
   };
 
-  const handleLogoutClick = () => {
-    handleLogout();
-    localStorage.removeItem("completedSections");
-  };
-
   return (
     <div
       className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
@@ -207,68 +241,146 @@ const SideBar = ({ isSidebarExpanded }) => {
     >
       <div className="flex flex-col items-center justify-start w-full h-full px-5 py-3 gap-y-4 smd:gap-y-4">
         <div className="flex w-full">
-          <h1 className="w-full p-2 smd:px-3 smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
-            Logo
-          </h1>
+          <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
+            {logoPreview ? (
+              <img
+                src={logoPreview}
+                alt="Company logo preview"
+                className="w-16 h-16 text-center rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full">
+                <Camera className="w-8 h-8 text-gray-400" />
+                <span className="mt-2 text-sm text-gray-500">Upload Logo</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex flex-row justify-between w-full md:items-center">
           <div className="flex items-center -ml-3 xxl:ml-0 justify-center w-full md:justify-start md:items-start flex-row gap-x-2 gap-y-2 ">
-            <img
+            {/* <img
               src={image}
               alt="..."
               className="object-cover w-10 h-10 rounded-full"
-            />
+            /> */}
             <div className="flex flex-col w-full md:justify-start md:items-start ">
               <p className="text-[14px] text-white font-radios">
-                {currentUser ? currentUser.firstName : "Guest"}
+                {currentUser
+                  ? currentUser.firstName + currentUser.lastName
+                  : "Guest"}
               </p>
               <p className="text-[12px] md:block hidden text-start text-white w-full font-radios">
                 {"Welcome Back"}
               </p>
             </div>
           </div>
-          <div className="relative inline-block text-left" ref={dropdownRef}>
-            <button
-              onClick={toggleDropdown}
-              className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50"
-            >
-              <BsThreeDotsVertical className="w-5 h-5" />
-            </button>
+          <>
+            <div className="relative inline-block text-left" ref={dropdownRef}>
+              <button
+                onClick={toggleDropdown}
+                className="inline-flex w-full md:items-center md:justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-white hover:text-black font-semibold hover:bg-gray-50"
+              >
+                <BsThreeDotsVertical className="w-5 h-5" />
+              </button>
 
-            {/* Dropdown menu */}
-            {isDropdownOpen && (
-              <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                <div className="py-1">
-                  <a
-                    href="#"
-                    onClick={handleEdit}
-                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
-                  >
-                    Edit
-                  </a>
+              {isDropdownOpen && (
+                <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div className="py-1">
+                    <a
+                      href="#"
+                      onClick={handleEdit}
+                      className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                    >
+                      Edit
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href="#"
+                      onClick={handleLogoutClick}
+                      className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                    >
+                      Logout
+                    </a>
+                  </div>
+                  <div>
+                    <Link
+                      to="/TruckDriverLayout/ChangePassword"
+                      className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
+                    >
+                      Change Password
+                    </Link>
+                  </div>
                 </div>
-                <div>
-                  <a
-                    href="#"
-                    onClick={handleLogoutClick}
-                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
-                  >
-                    Logout
-                  </a>
-                </div>
-                <div>
-                  <Link
-                    to="/TruckDriverLayout/ChangePassword"
-                    className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
-                  >
-                    Change Password
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+
+            <Dialog
+              open={showLogoutDialog}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+              PaperProps={{
+                style: {
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                },
+              }}
+            >
+              <DialogTitle
+                id="alert-dialog-title"
+                sx={{
+                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  padding: "1rem 1.5rem",
+                }}
+              >
+                Confirm Logout
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText
+                  id="alert-dialog-description"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
+                  Are you sure you want to logout? You'll need to login again to
+                  access your account.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions sx={{ padding: "1rem 1.5rem" }}>
+                <Button
+                  onClick={handleClose}
+                  sx={{
+                    backgroundColor: "rgb(243 244 246)",
+                    color: "rgb(55 65 81)",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "rgb(229 231 235)",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleLogoutConfirm}
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "rgb(37 99 235)",
+                    color: "white",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "rgb(29 78 216)",
+                    },
+                  }}
+                >
+                  Logout
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
         </div>
-        <div className="flex flex-col w-full gap-y-4">
+        <div className="flex flex-col justify-between w-full h-full gap-y-4">
           <Link
             className={`w-full transition-all duration-300 ease-in-out rounded-md ${
               activeItem === "JobApplication"
@@ -344,6 +456,30 @@ const SideBar = ({ isSidebarExpanded }) => {
                   ))}
                 </ul>
               </div>
+            </div>
+          )}
+          {companyInfo && (
+            <div className="flex flex-col gap-y-1">
+              <p
+                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+              >
+                Name: {companyInfo.companyName || "N/A"}
+              </p>
+              <p
+                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+              >
+                Phone: {companyInfo.phoneNumber || "N/A"}
+              </p>
+              <p
+                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+              >
+                Address: {companyInfo.address || "N/A"}
+              </p>
+              <p
+                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+              >
+                Fax: {companyInfo.fax || "www.Acta.com"}
+              </p>
             </div>
           )}
         </div>
