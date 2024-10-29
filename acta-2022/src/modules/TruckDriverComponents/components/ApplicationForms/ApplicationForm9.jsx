@@ -49,21 +49,23 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const { editStatus, setEditStatus } = useEdit();
   const hasValue = (fieldName, index) => {
     // Guard clauses for safety
-    if (!localFormData || !Array.isArray(localFormData)) return false;
+    if (currentUser && currentUser.userType !== "Admin") {
+      if (!formData9 || !Array.isArray(formData9)) return false;
 
-    const field = localFormData[index];
-    if (!field) return false;
+      const field = formData9[index];
+      if (!field) return false;
 
-    const fieldData = field[fieldName];
-    if (!fieldData) return false;
+      const fieldData = field[fieldName];
+      if (!fieldData) return false;
 
-    // If in edit mode, enable all fields
-    if (editStatus) {
-      return false;
+      // If in edit mode, enable all fields
+      if (editStatus) {
+        return false;
+      }
+
+      // Check if the radio button field has a value
+      return fieldData.value === "yes" || fieldData.value === "no";
     }
-
-    // Check if the radio button field has a value
-    return fieldData.value === "yes" || fieldData.value === "no";
   };
 
   const handleBack = () => {
@@ -132,7 +134,11 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
       const requiredFields = ["currentlyWorking", "workingForAnotherEmployer"];
 
       requiredFields.forEach((key) => {
-        if (field[key].value.trim() === "") {
+        if (
+          !field[key] ||
+          !field[key].value ||
+          field[key].value.trim() === ""
+        ) {
           fieldErrors[key] = "This field is required";
         }
       });
@@ -292,10 +298,10 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
 
     setErrors(updatedErrors);
 
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((fieldValue) => fieldValue.value.trim() === "")
-    );
-    setIsSaveClicked(allFieldsEmpty);
+    // const allFieldsEmpty = updatedFields.every((field) =>
+    //   Object.values(field).every((fieldValue) => fieldValue.value.trim() === "")
+    // );
+    // setIsSaveClicked(allFieldsEmpty);
   };
   return (
     <div

@@ -39,7 +39,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const [driverExperience, setDriverExperience] = useState(DriverExperience);
   const [educationHistory, setEducationHistory] = useState(EducationHistory);
   const [extraSkills, setExtraSkills] = useState(ExtraSkills);
-
+  const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState([]);
   const [driverExperienceErrors, setDriverExperienceErrors] = useState([]);
   const [driverEducationError, setDriverEducationError] = useState([]);
@@ -48,78 +48,81 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const hasValue = useCallback(
     (formType, fieldName, index = 0) => {
       // If in edit mode, enable all fields
-      if (editStatus) {
+      if (currentUser && currentUser.userType !== "Admin") {
+        if (editStatus || isEditing) {
+          return false;
+        }
+
+        // If form hasn't been saved yet, keep fields enabled
+        if (!isSaveClicked) {
+          return false;
+        }
+
+        // Handle driver license permit fields
+        if (formType === "license") {
+          // Check if the index exists in the original data
+          if (index >= DriverLicensePermit.length) {
+            return false; // New fields should be enabled
+          }
+
+          // Get the current field value
+          const currentField = driverLicensePermit[index]?.[fieldName];
+
+          // If this is a new field (not in original data) or the field is empty, it should be enabled
+          if (!currentField || !currentField.value) {
+            return false;
+          }
+
+          // Check if this field was in the original data and had a value
+          const originalField = DriverLicensePermit[index]?.[fieldName];
+          return originalField?.value ? true : false;
+        }
+
+        // Handle driver experience fields
+        if (formType === "experience") {
+          if (index >= DriverExperience.length) {
+            return false;
+          }
+          const field = DriverExperience[index]?.[fieldName];
+          return field?.value ? true : false;
+        }
+
+        // Handle education history fields
+        if (formType === "education") {
+          if (index >= EducationHistory.length) {
+            return false;
+          }
+          const field = EducationHistory[index]?.[fieldName];
+          return field?.value ? true : false;
+        }
+
+        // Handle extra skills fields
+        if (formType === "skills") {
+          const field = ExtraSkills[fieldName];
+          return field?.value ? true : false;
+        }
+
         return false;
       }
-
-      // If form hasn't been saved yet, check if field has a value
-      if (!isSaveClicked) {
-        switch (formType) {
-          case "license":
-            const licenseField = driverLicensePermit[index]?.[fieldName];
-            return licenseField?.value && licenseField.value.trim() !== "";
-          case "experience":
-            const expField = driverExperience[index]?.[fieldName];
-            return expField?.value && expField.value.trim() !== "";
-          case "education":
-            const eduField = educationHistory[index]?.[fieldName];
-            return eduField?.value && eduField.value.trim() !== "";
-          case "skills":
-            const skillField = extraSkills[fieldName];
-            return skillField?.value && skillField.value.trim() !== "";
-          default:
-            return false;
-        }
-      }
-
-      // Handle driver license permit fields
-      if (formType === "license") {
-        if (index >= driverLicensePermit.length) {
-          return true;
-        }
-        const field = driverLicensePermit[index][fieldName];
-        // Disable if field has a value, enable if empty
-        return field?.value && field.value.trim() !== "";
-      }
-
-      // Handle driver experience fields
-      if (formType === "experience") {
-        if (index >= driverExperience.length) {
-          return true;
-        }
-        const field = driverExperience[index][fieldName];
-        // Disable if field has a value, enable if empty
-        return field?.value && field.value.trim() !== "";
-      }
-
-      // Handle education history fields
-      if (formType === "education") {
-        if (index >= educationHistory.length) {
-          return true;
-        }
-        const field = educationHistory[index][fieldName];
-        // Disable if field has a value, enable if empty
-        return field?.value && field.value.trim() !== "";
-      }
-
-      // Handle extra skills fields
-      if (formType === "skills") {
-        const field = extraSkills[fieldName];
-        // Disable if field has a value, enable if empty
-        return field?.value && field.value.trim() !== "";
-      }
-
-      return true;
     },
     [
       isSaveClicked,
+      isEditing,
       editStatus,
+      DriverLicensePermit,
       driverLicensePermit,
-      driverExperience,
-      educationHistory,
-      extraSkills,
+      DriverExperience,
+      EducationHistory,
+      ExtraSkills,
     ]
   );
+
+  // Helper function to determine if all fields in a license entry are empty
+  const isLicenseEntryEmpty = (license) => {
+    return Object.values(license).every(
+      (field) => !field.value || field.value.trim() === ""
+    );
+  };
 
   // Helper functions remain the same
   const hasLicenseValue = useCallback(
@@ -158,50 +161,59 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
 
   const handleDriverLicenseChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedFields = [...driverLicensePermit];
-    updatedFields[index][name].value = value; // Update the value property
-    setDriverLicensePermit(updatedFields);
-
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.value.trim() === "")
-    );
-    setIsSaveClicked(allFieldsEmpty);
+    setDriverLicensePermit((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [name]: { ...updated[index][name], value },
+      };
+      return updated;
+    });
   };
 
   const handleDriverExpChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedFields = [...driverExperience];
-    updatedFields[index][name].value = value; // Update the value property
-    setDriverExperience(updatedFields);
 
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.value.trim() === "")
+    // Update only the specific field within the driverExperience array
+    setDriverExperience((prevFields) =>
+      prevFields.map((field, i) =>
+        i === index ? { ...field, [name]: { ...field[name], value } } : field
+      )
     );
-    setIsSaveClicked(allFieldsEmpty);
 
-    if (driverExperienceErrors[index] && driverExperienceErrors[index][name]) {
-      const updatedErrors = [...driverExperienceErrors];
-      delete updatedErrors[index][name];
-      setDriverExperienceErrors(updatedErrors);
-    }
+    // Mark as editing when typing
+    setIsEditing(false);
+
+    // Clear errors if the field is filled
+    setDriverExperienceErrors((prevErrors) => {
+      if (prevErrors[index] && prevErrors[index][name] && value.trim() !== "") {
+        const updatedErrors = [...prevErrors];
+        delete updatedErrors[index][name];
+        return updatedErrors;
+      }
+      return prevErrors;
+    });
   };
 
   const handleEducationHistoryChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedFields = [...educationHistory];
-    updatedFields[index][name].value = value; // Update the value property
-    setEducationHistory(updatedFields);
 
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.value.trim() === "")
+    // Update only the specific field within the educationHistory array
+    setEducationHistory((prevFields) =>
+      prevFields.map((field, i) =>
+        i === index ? { ...field, [name]: { ...field[name], value } } : field
+      )
     );
-    setIsSaveClicked(allFieldsEmpty);
-
-    if (driverEducationError[index] && driverEducationError[index][name]) {
-      const updatedErrors = [...driverEducationError];
-      delete updatedErrors[index][name];
-      setDriverEducationError(updatedErrors);
-    }
+    setIsEditing(false);
+    // Clear specific error if the field is now filled
+    setDriverEducationError((prevErrors) => {
+      if (prevErrors[index] && prevErrors[index][name] && value.trim() !== "") {
+        const updatedErrors = [...prevErrors];
+        delete updatedErrors[index][name];
+        return updatedErrors;
+      }
+      return prevErrors;
+    });
   };
 
   const handleExtraSkillChange = (e) => {
@@ -416,6 +428,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
           completedForms: 5,
         });
       }
+      setIsEditing(false);
       setIsSaveClicked(true);
       setEditStatus(false);
       toast.success("Form is successfully saved");
@@ -436,15 +449,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   }
 
   const addDriverLicenseFields = () => {
-    setDriverLicensePermit([
-      ...driverLicensePermit,
-      {
-        LicenseNo: { value: "", status: "pending", note: "" },
-        type: { value: "", status: "pending", note: "" },
-        state: { value: "", status: "pending", note: "" },
-        expiryDate: { value: "", status: "pending", note: "" },
-      },
-    ]);
+    const newField = {
+      LicenseNo: { value: "", status: "pending", note: "" },
+      type: { value: "", status: "pending", note: "" },
+      state: { value: "", status: "pending", note: "" },
+      expiryDate: { value: "", status: "pending", note: "" },
+    };
+
+    setDriverLicensePermit((prev) => [...prev, newField]);
   };
 
   const addDriverExperience = () => {
@@ -683,7 +695,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={hasExperienceValue("statesOperated", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.statesOperated
+                    driverExperienceErrors[index]?.statesOperated
                       ? "border-red-500 border-2"
                       : ""
                   } ${
@@ -717,7 +729,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={hasExperienceValue("ClassEquipment", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.ClassEquipment
+                    driverExperienceErrors[index]?.ClassEquipment
                       ? "border-red-500 border-2"
                       : ""
                   } ${
@@ -749,13 +761,13 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`EquipmentType-${index}`}
                   value={experience.EquipmentType.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  disabled={(hasExperienceValue, "EquipmentType", index)}
+                  disabled={hasExperienceValue("EquipmentType", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.EquipmentType
+                    driverExperienceErrors[index]?.EquipmentType
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    (hasExperienceValue, "EquipmentType", index)
+                    hasExperienceValue("EquipmentType", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
@@ -786,7 +798,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   max={new Date().toISOString().split("T")[0]}
                   disabled={hasExperienceValue("DateTo", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.DateTo ? "border-red-500 border-2" : ""
+                    driverExperienceErrors[index]?.DateTo
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasExperienceValue("DateTo", index)
                       ? ""
@@ -819,7 +833,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={hasExperienceValue("DateFrom", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.DateFrom ? "border-red-500 border-2" : ""
+                    driverExperienceErrors[index]?.DateFrom
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasExperienceValue("DateFrom", index)
                       ? ""
@@ -853,7 +869,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={hasExperienceValue("ApproximatelyMiles", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.ApproximatelyMiles
+                    driverExperienceErrors[index]?.ApproximatelyMiles
                       ? "border-red-500 border-2"
                       : ""
                   } ${
@@ -888,7 +904,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={hasExperienceValue("comments", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.comments ? "border-red-500 border-2" : ""
+                    driverExperienceErrors[index]?.comments
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasExperienceValue("comments", index)
                       ? ""
@@ -959,23 +977,24 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   type="text"
                   name="school"
                   id={`school-${index}`}
-                  value={education.school.value}
+                  value={educationHistory[index].school.value} // Make sure you reference the correct array
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   disabled={hasEducationValue("school", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.school ? "border-red-500 border-2" : ""
+                    driverEducationError[index]?.school
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasEducationValue("school", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
-                {driverEducationError[index] &&
-                  driverEducationError[index].school && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {driverEducationError[index].school}
-                    </p>
-                  )}
+                {driverEducationError[index]?.school && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {driverEducationError[index].school}
+                  </p>
+                )}
               </div>
               <div>
                 <FormLabelWithStatus
@@ -995,7 +1014,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   disabled={hasEducationValue("educationLevel", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.educationLevel
+                    driverEducationError[index]?.educationLevel
                       ? "border-red-500 border-2"
                       : ""
                   } ${
@@ -1030,7 +1049,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   min={new Date().toISOString().split("T")[0]}
                   disabled={hasEducationValue("DateFrom", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.DateFrom ? "border-red-500 border-2" : ""
+                    driverEducationError[index]?.DateFrom
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasEducationValue("DateFrom", index)
                       ? ""
@@ -1063,7 +1084,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   max={new Date().toISOString().split("T")[0]}
                   disabled={hasEducationValue("DateTo", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.DateTo ? "border-red-500 border-2" : ""
+                    driverEducationError[index]?.DateTo
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasEducationValue("DateTo", index)
                       ? ""
@@ -1096,7 +1119,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   disabled={hasEducationValue("comments", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    errors[index]?.comments ? "border-red-500 border-2" : ""
+                    driverEducationError[index]?.comments
+                      ? "border-red-500 border-2"
+                      : ""
                   } ${
                     hasEducationValue("comments", index)
                       ? ""

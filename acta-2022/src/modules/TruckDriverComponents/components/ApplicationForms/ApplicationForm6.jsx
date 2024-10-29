@@ -72,44 +72,29 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
   const hasValue = useCallback(
     (fieldName, index) => {
       // If in edit mode, enable all fields
-      if (editStatus) {
-        return false;
-      }
+      if (currentUser && currentUser.userType !== "Admin") {
+        if (editStatus) {
+          return false;
+        }
 
-      // If form hasn't been saved yet, return false to keep fields enabled
-      if (!isSaveClicked) {
-        return false;
-      }
+        // If form hasn't been saved yet, return false to keep fields enabled
+        if (!isSaveClicked) {
+          return false;
+        }
 
-      // If no violations checkbox is checked, disable all fields
-      if (noViolationCheckeds) {
-        return true;
-      }
+        // If no violations checkbox is checked, disable all fields
+        if (noViolationChecked) {
+          return true;
+        }
 
-      // Check if the field exists and has a value
-      const field = violationFields[index]?.[fieldName];
-      return field?.value && field.value.trim() !== "";
+        // Check if the field exists and has a value
+        const field = violationField[index]?.[fieldName];
+        return field?.value ? true : false;
+      }
     },
-    [editStatus, isSaveClicked, noViolationCheckeds, violationFields]
+    [editStatus, isSaveClicked, noViolationChecked, violationField]
   );
-  const getFieldClassName = useCallback(
-    (fieldName, index) => {
-      const baseClasses = "w-full p-2 mt-1 border rounded-md";
-      const errorClasses =
-        errors[index] && errors[index][fieldName]
-          ? "border-red-500"
-          : "border-gray-300";
-      const statusClasses =
-        violationField[index]?.[fieldName]?.status === "approved"
-          ? "bg-green-50"
-          : violationField[index]?.[fieldName]?.status === "rejected"
-          ? "bg-red-50"
-          : "";
 
-      return `${baseClasses} ${errorClasses} ${statusClasses}`;
-    },
-    [errors, violationField]
-  );
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
@@ -123,22 +108,31 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     if (noViolationCheckeds) return;
 
     const { name, value } = e.target;
-    const updatedFields = [...violationFields];
-    updatedFields[index][name].value = value; // Update the value in the structure
+
+    // Copy the specific field object to avoid mutating state directly
+    const updatedField = {
+      ...violationFields[index],
+      [name]: { ...violationFields[index][name], value },
+    };
+
+    // Replace only the updated field in the array
+    const updatedFields = [
+      ...violationFields.slice(0, index),
+      updatedField,
+      ...violationFields.slice(index + 1),
+    ];
+
     setViolationFields(updatedFields);
 
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((val) => val.value.trim() === "")
-    );
-    setIsSaveClicked(allFieldsEmpty);
-
+    // Remove error only for the specific field if it was previously set
     if (errors[index] && errors[index][name]) {
-      const updatedErrors = [...errors];
-      delete updatedErrors[index][name];
-      setErrors(updatedErrors);
+      setErrors((prevErrors) => {
+        const updatedErrors = [...prevErrors];
+        delete updatedErrors[index][name];
+        return updatedErrors;
+      });
     }
   };
-
   const validateViolationFields = () => {
     const newErrors = violationFields.map((field) => {
       const fieldErrors = {};

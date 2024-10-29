@@ -29,19 +29,17 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
 
   const [localFormData, setLocalFormData] = useState(FormData || [{}]);
   const { editStatus, setEditStatus } = useEdit();
-
+  const [savedFields, setSavedFields] = useState([]);
   // Simplified hasValue function using context
 
   const hasValue = useCallback(
     (fieldName, index) => {
       // Check if FormData exists and has the index
-      const fieldData = FormData?.[index]?.[fieldName];
 
-      // Adjust fieldHasValue to require more than one character to consider as "value"
-      const fieldHasValue = fieldData?.value;
-
-      // Only disable if there's a significant value AND we're not in edit mode
-      return fieldHasValue && !editStatus;
+      if (currentUser && currentUser.userType !== "Admin") {
+        const fieldHasValue = FormData?.[index]?.[fieldName]?.value;
+        return fieldHasValue && !editStatus;
+      }
     },
     [FormData, editStatus]
   );
@@ -69,15 +67,19 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   useEffect(() => {
     setIsSaveClicked(true);
   }, [setIsSaveClicked]);
-
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    const newFormData = [...localFormData];
 
-    // Update value and reset status and note
-    newFormData[index][name].value = value;
+    // Update only the field that changed
+    setLocalFormData((prevFormData) =>
+      prevFormData.map((field, i) =>
+        i === index
+          ? { ...field, [name]: { ...field[name], value: value } }
+          : field
+      )
+    );
 
-    setLocalFormData(newFormData);
+    // Delay setting isSaveClicked to ensure it's only reset when necessary
     setIsSaveClicked(false);
   };
 

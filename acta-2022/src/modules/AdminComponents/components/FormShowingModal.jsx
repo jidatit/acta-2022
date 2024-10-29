@@ -59,32 +59,14 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
           const data = docSnap.data();
           setFormData(data);
 
-          // Determine which forms are available based on existing data
-          const available = [];
-          let shouldContinue = true;
+          // Get savedForms count from root of document
+          const savedFormsCount = data.savedForms || 0;
 
-          for (let i = 0; i < forms.length; i++) {
-            const formKey = `form${i + 1}`;
-
-            // First form is always available
-            if (i === 0) {
-              available.push(i);
-              continue;
-            }
-
-            // Check if previous form exists and has data
-            const previousFormKey = `form${i}`;
-            const previousFormHasData =
-              data[previousFormKey] &&
-              Object.keys(data[previousFormKey]).length > 0;
-
-            // If previous form has data, this form is available
-            if (previousFormHasData && shouldContinue) {
-              available.push(i);
-            } else {
-              shouldContinue = false;
-            }
-          }
+          // Generate available forms array based on savedForms count
+          const available = Array.from(
+            { length: Math.min(savedFormsCount, forms.length) },
+            (_, index) => index
+          );
 
           setAvailableForms(available);
 
@@ -106,7 +88,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
     };
 
     fetchFormData();
-  }, [uid]);
+  }, [uid, currentFormIndex]);
   useEffect(() => {
     const fetchStatus = async () => {
       try {
@@ -135,7 +117,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
       setCurrentFormIndex(nextIndex);
     } else {
       toast.warning(
-        "Next form is not available yet. Please complete current form first."
+        "Please complete and save the current form before proceeding to the next one."
       );
     }
   };

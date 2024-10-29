@@ -28,10 +28,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
   const hasValue = useCallback(
     (fieldName, index) => {
-      // Check if FormData exists and has the index
-      console.log("index: " + index);
-      const fieldHasValue = FormData3?.[index]?.[fieldName]?.value;
-      return fieldHasValue && !editStatus;
+      if (currentUser && currentUser.userType !== "Admin") {
+        const fieldHasValue = FormData3?.[index]?.[fieldName]?.value;
+        return fieldHasValue && !editStatus;
+      }
     },
     [FormData3, editStatus]
   );
@@ -167,18 +167,59 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleSave = async () => {
+    console.log("editStatus", editStatus);
     try {
-      if (currentUser.userType !== "Admin" && editStatus === "false") {
-        const isAnyFieldFilled = Object.keys(localFormData).some((key) => {
-          const value = localFormData[key];
-          // Handle both string values and object values with a 'value' property
-          return typeof value === "object"
-            ? (value.value?.toString().trim() || "").length > 0
-            : (value?.toString().trim() || "").length > 0;
-        });
+      if (currentUser.userType !== "Admin") {
+        // Improved validation logic to check all fields
+        const checkFieldValue = (field) => {
+          // Handle null or undefined
+          if (field === null || field === undefined) return false;
+
+          // Handle nested objects with value property (like form controls)
+          if (typeof field === "object") {
+            // Check if it's an array
+            if (Array.isArray(field)) {
+              return field.some((item) => {
+                if (typeof item === "object") {
+                  // Check each field in the array item
+                  return Object.values(item).some((subField) =>
+                    typeof subField === "object" && subField.value
+                      ? subField.value.toString().trim().length > 0
+                      : subField?.toString().trim().length > 0
+                  );
+                }
+                return item?.toString().trim().length > 0;
+              });
+            }
+
+            // Handle regular objects
+            if (field.hasOwnProperty("value")) {
+              return field.value?.toString().trim().length > 0;
+            }
+
+            // Check nested object values
+            return Object.values(field).some((val) => checkFieldValue(val));
+          }
+
+          // Handle primitive values
+          return field.toString().trim().length > 0;
+        };
+
+        const isAnyFieldFilled = Object.entries(localFormData).some(
+          ([key, value]) => {
+            const fieldHasValue = checkFieldValue(value);
+            console.log(`Checking field ${key}:`, {
+              value,
+              hasValue: fieldHasValue,
+            });
+            return fieldHasValue;
+          }
+        );
+
+        console.log("Form validation result:", { isAnyFieldFilled });
 
         if (!isAnyFieldFilled) {
-          toast.error("At least one field must be filled before saving");
+          toast.error("Please fill at least one field before saving");
           return;
         }
       }
@@ -198,32 +239,29 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         const existingData = docSnap.data();
         const currentSavedForms = existingData.savedForms || 0;
 
-        // Always update savedForms if current form number is higher
         if (3 > currentSavedForms) {
-          // 2 is the current form number
           updateObject.savedForms = 3;
         }
 
-        // Keep the existing completedForms value
         if (existingData.completedForms) {
           updateObject.completedForms = existingData.completedForms;
         }
 
         await updateDoc(docRef, updateObject);
       } else {
-        // For new documents
         await setDoc(docRef, {
           ...updateObject,
-          savedForms: 3, // Set initial savedForms to current form number
-          completedForms: 3, // No forms completed yet, just saved
+          savedForms: 3,
+          completedForms: 3,
         });
       }
+
       setIsSaveClicked(true);
       setEditStatus(false);
-      toast.success("Form is successfully saved");
+      toast.success("Form saved successfully");
     } catch (error) {
-      console.error("Error saving application: ", error);
-      toast.error("Error saving the form, please try again.");
+      console.error("Error saving application:", error);
+      toast.error("Error saving the form. Please try again.");
     }
   };
 

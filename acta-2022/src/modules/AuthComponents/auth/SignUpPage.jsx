@@ -121,9 +121,6 @@ const SignUpPage = () => {
   return (
     <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-6 justify-center items-center w-[50%] h-full">
-        <h1 className="w-full text-3xl font-extrabold text-center text-white">
-          LOGO
-        </h1>
         <div className="flex items-center justify-center w-full">
           <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
             {logoPreview ? (

@@ -403,7 +403,9 @@ const SingleLabelLogic = ({
                           <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                             <FaRegCheckCircle size={20} />
                           </div>
-                          <span className="text-sm font-medium">Approve</span>
+                          <span className="text-sm font-medium">
+                            Approve Field
+                          </span>
                         </li>
                         <li
                           className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
@@ -415,7 +417,9 @@ const SingleLabelLogic = ({
                           <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                             <FaRegTimesCircle size={20} />
                           </div>
-                          <span className="text-sm font-medium">Reject</span>
+                          <span className="text-sm font-medium">
+                            Reject Field
+                          </span>
                         </li>
                         <li
                           className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
@@ -531,7 +535,7 @@ const SingleLabelLogic = ({
                             <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                               <FaRegTimesCircle size={20} />
                             </div>
-                            Rejected Field
+                            Field Rejected
                           </li>
                           <li
                             className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
@@ -652,7 +656,7 @@ const SingleLabelLogic = ({
                           <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                             <FaRegCheckCircle size={20} />
                           </div>
-                          Approved Field
+                          Field Approved
                         </li>
                         <li
                           className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
@@ -676,51 +680,21 @@ const SingleLabelLogic = ({
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
-                  <div className="relative z-0">
-                    <FaPencil
-                      className="text-blue-500 cursor-pointer z-10"
-                      onClick={handleDropdownToggle}
-                    />
-                    {isDropdownOpen && (
-                      <div
-                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
-                        ref={dropdownRef}
-                      >
-                        <ul className="flex flex-col">
-                          <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
-                            onClick={() => {}}
-                          >
-                            <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaRegTimesCircle size={20} />
-                            </div>
-                            Rejected Field
-                          </li>
-                          <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
-                            onClick={handleApproveApplication}
-                          >
-                            <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaRegCheckCircle size={20} />
-                            </div>
-                            Approve Field
-                          </li>
-
-                          <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
-                            onClick={
-                              note === "" ? handleAddNote : handleViewNote
-                            }
-                          >
-                            <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaPencil size={20} />
-                            </div>
-                            {note ? "View note" : "Add note"}
-                          </li>
-                        </ul>
-                      </div>
-                    )}
+                  <div className="flex smd:justify-start justify-end">
+                    <FaRegTimesCircle className="text-red-500 cursor-pointer z-10" />
                   </div>
+                  {note ? (
+                    <div
+                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
+                      onClick={handleViewNote}
+                    >
+                      <FaPencil size={10} />
+
+                      <p className="text-xs font-radios">View note</p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 {note ? (
@@ -734,7 +708,7 @@ const SingleLabelLogic = ({
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
 
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col justify-center items-center z-20 relative">
+                    <div className="modal-box bg-white rounded-xl shadow-lg p-6 flex flex-col z-20 relative">
                       <h3 className="font-bold text-lg">Note</h3>
                       <p className="py-4">
                         {existingNote ? existingNote : "No note added"}

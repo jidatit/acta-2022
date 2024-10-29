@@ -263,12 +263,12 @@ const SideBar = ({ isSidebarExpanded }) => {
               className="object-cover w-10 h-10 rounded-full"
             /> */}
             <div className="flex flex-col w-full md:justify-start md:items-start ">
-              <p className="text-[14px] text-white font-radios">
+              <p className="text-[14px] text-white font-radios pl-4">
                 {currentUser
                   ? currentUser.firstName + currentUser.lastName
                   : "Guest"}
               </p>
-              <p className="text-[12px] md:block hidden text-start text-white w-full font-radios">
+              <p className="text-[12px] pl-4 text-start text-white w-full font-radios">
                 {"Welcome Back"}
               </p>
             </div>
@@ -381,27 +381,28 @@ const SideBar = ({ isSidebarExpanded }) => {
         </div>
         <div className="flex flex-col w-full h-full gap-y-4">
           <Link
-            className={`w-full transition-all duration-300 ease-in-out rounded-md ${
+            to="/TruckDriverLayout/ApplicationForm1"
+            className={`w-full flex justify-between items-center transition-all duration-300 ease-in-out rounded-md ${
               activeItem === "JobApplication"
-                ? "bg-white rounded-md "
-                : "hover:bg-white rounded-md hover:text-blue-900"
+                ? "bg-white text-blue-800 rounded-md"
+                : "hover:bg-white hover:text-blue-900 rounded-md text-white"
             }`}
             onClick={() => handleItemClick("JobApplication")}
           >
             <p
-              className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
-                activeItem === "JobApplication" ? "text-blue-800" : "text-white"
+              className={`w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios ${
+                activeItem === "JobApplication" ? "text-blue-800" : ""
               }`}
             >
               Job Application
-              <span className="ml-2">
-                {isSectionsVisible ? (
-                  <BsChevronUp className="inline" />
-                ) : (
-                  <BsChevronDown className="inline" />
-                )}
-              </span>
             </p>
+            <span className="relative right-5">
+              {isSectionsVisible ? (
+                <BsChevronUp className="inline" />
+              ) : (
+                <BsChevronDown className="inline" />
+              )}
+            </span>
           </Link>
           {isSectionsVisible && ( // Conditional rendering of sections
             <div className="flex flex-col w-full gap-y-2">
@@ -459,30 +460,25 @@ const SideBar = ({ isSidebarExpanded }) => {
               </div>
             </div>
           )}
-          {companyInfo && (
-            <div className="flex flex-col gap-y-1">
-              <p
-                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
-              >
-                Name: {companyInfo.companyName || "N/A"}
-              </p>
-              <p
-                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
-              >
-                Phone: {companyInfo.phoneNumber || "N/A"}
-              </p>
-              <p
-                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
-              >
-                Address: {companyInfo.address || "N/A"}
-              </p>
-              <p
-                className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
-              >
-                Fax: {companyInfo.fax || "www.Acta.com"}
-              </p>
-            </div>
-          )}
+          <Link
+            to={"/TruckDriverLayout/CompanyInformation"}
+            className={`w-full transition-all duration-300 ease-in-out rounded-md ${
+              activeItem === "CompanyInformation"
+                ? "bg-white rounded-md "
+                : "hover:bg-white rounded-md hover:text-blue-900"
+            }`}
+            onClick={() => handleItemClick("CompanyInformation")}
+          >
+            <p
+              className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
+                activeItem === "CompanyInformation"
+                  ? "text-blue-800"
+                  : "text-white"
+              }`}
+            >
+              CompanyInformation
+            </p>
+          </Link>
         </div>
       </div>
     </div>

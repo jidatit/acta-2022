@@ -44,20 +44,22 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
   const hasValue = useCallback(
     (fieldName, index) => {
       // If in edit mode, enable all fields
-      if (editStatus) {
-        return false;
-      }
+      if (currentUser && currentUser.userType !== "Admin") {
+        if (editStatus) {
+          return false;
+        }
 
-      // If form hasn't been saved yet, return false to keep fields enabled
-      if (!isSaveClicked) {
-        return false;
-      }
+        // If form hasn't been saved yet, return false to keep fields enabled
+        if (!isSaveClicked) {
+          return false;
+        }
 
-      // Check if the field exists and has a value
-      const field = localFormData[index]?.[fieldName];
-      return field?.value && field.value.trim() !== "";
+        // Check if the field exists and has a value
+        const field = alcoholDrugTesting[index]?.[fieldName];
+        return field?.value ? true : false;
+      }
     },
-    [editStatus, isSaveClicked, localFormData]
+    [editStatus, isSaveClicked, alcoholDrugTesting]
   );
 
   const handleBack = () => {
@@ -260,11 +262,6 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
     );
 
     setErrors(updatedErrors);
-
-    const allFieldsEmpty = updatedFields.every((field) =>
-      Object.values(field).every((input) => input.value.trim() === "")
-    );
-    setIsSaveClicked(allFieldsEmpty);
   };
 
   return (
@@ -360,7 +357,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                 </div>
 
                 {field.testedPositiveEver.value === "yes" && (
-                  <div className="w-full mb-6">
+                  <div className="w-full mb-6 mt-4">
                     <SingleLabelLogic
                       htmlFor="DOTCompletion"
                       labelName="If yes, have you successfully completed the DOT return to duty process?"

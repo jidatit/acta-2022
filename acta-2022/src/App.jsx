@@ -31,6 +31,7 @@ import ApplicationForm9 from "./modules/TruckDriverComponents/components/Applica
 import AdminLayout from "./modules/AdminComponents/layout/AdminLayout";
 import RegisteredUsers from "./modules/AdminComponents/components/RegisteredUsers";
 import CompanyInformationForm from "./modules/AdminComponents/components/CompanyInfo";
+import CompanyInformationUser from "./modules/TruckDriverComponents/components/CompanyInformationUser";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -133,6 +134,16 @@ function App() {
                   path="ApplicationForm9"
                   element={
                     currentUser ? <ApplicationForm9 /> : <Navigate to="/" />
+                  }
+                />
+                <Route
+                  path="CompanyInformation"
+                  element={
+                    currentUser ? (
+                      <CompanyInformationUser />
+                    ) : (
+                      <Navigate to="/" />
+                    )
                   }
                 />
                 {/* <Route

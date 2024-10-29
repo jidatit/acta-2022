@@ -60,49 +60,51 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   };
   const hasValue = (fieldName, index) => {
     // If we don't have access to localFormData or it's not an array, return false
-    if (!formData8 || !Array.isArray(formData8)) return false;
+    if (currentUser && currentUser.userType !== "Admin") {
+      if (!formData8 || !Array.isArray(formData8)) return false;
 
-    const field = formData8[index];
-    if (!field) return false;
+      const field = formData8[index];
+      if (!field) return false;
 
-    // Get the field value using the fieldName
-    const fieldData = field[fieldName];
+      // Get the field value using the fieldName
+      const fieldData = field[fieldName];
 
-    // If we're in edit mode, enable all fields regardless of value
-    if (editStatus) {
+      // If we're in edit mode, enable all fields regardless of value
+      if (editStatus) {
+        return false;
+      }
+
+      // Check if the field exists and has a value
+      if (fieldData && fieldData.value) {
+        // For date fields, check if it's a valid date string
+        if (
+          fieldName.toLowerCase().includes("date") ||
+          (fieldName.startsWith("day") && !fieldName.includes("HoursWorked"))
+        ) {
+          return fieldData.value !== "";
+        }
+
+        // For hours worked fields
+        if (fieldName.includes("HoursWorked")) {
+          return fieldData.value !== "";
+        }
+
+        // For total hours
+        if (fieldName === "TotalHours") {
+          return fieldData.value !== "";
+        }
+
+        // For relieved time
+        if (fieldName === "relievedTime") {
+          return fieldData.value !== "00:00" && fieldData.value !== "";
+        }
+
+        // For any other fields
+        return Boolean(fieldData.value);
+      }
+
       return false;
     }
-
-    // Check if the field exists and has a value
-    if (fieldData && fieldData.value) {
-      // For date fields, check if it's a valid date string
-      if (
-        fieldName.toLowerCase().includes("date") ||
-        (fieldName.startsWith("day") && !fieldName.includes("HoursWorked"))
-      ) {
-        return fieldData.value !== "";
-      }
-
-      // For hours worked fields
-      if (fieldName.includes("HoursWorked")) {
-        return fieldData.value !== "";
-      }
-
-      // For total hours
-      if (fieldName === "TotalHours") {
-        return fieldData.value !== "";
-      }
-
-      // For relieved time
-      if (fieldName === "relievedTime") {
-        return fieldData.value !== "00:00" && fieldData.value !== "";
-      }
-
-      // For any other fields
-      return Boolean(fieldData.value);
-    }
-
-    return false;
   };
   // Update the formatTimeForInput function
   const formatTimeForInput = (time) => {
@@ -254,16 +256,37 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleSave = async (uid) => {
-    // Check if at least one field is filled
+    // Check if at least one field is filled for non-admin users
     if (currentUser.userType !== "Admin") {
-      const isAnyFieldFilled = localFormData.some((formEntry) =>
-        Object.values(formEntry).some(
-          (field) => field.value && field.value.trim() !== ""
-        )
-      );
+      // Debug logging
+      console.log("Form Data to validate:", localFormData);
+
+      // Check if localFormData is array and not empty
+      if (!Array.isArray(localFormData) || localFormData.length === 0) {
+        toast.error("No form data available to save");
+        return;
+      }
+
+      // Improved validation to check each entry's fields
+      const isAnyFieldFilled = localFormData.some((formEntry) => {
+        // Debug each entry
+        console.log("Checking entry:", formEntry);
+
+        return Object.entries(formEntry).some(([key, field]) => {
+          // Skip checking status and note fields
+          if (key === "status" || key === "note") return false;
+
+          // Check if field has a value property and it's not empty
+          const hasValue = field?.value && field.value.toString().trim() !== "";
+          console.log(`Field ${key}:`, { value: field?.value, hasValue });
+          return hasValue;
+        });
+      });
+
+      console.log("Validation result:", { isAnyFieldFilled });
 
       if (!isAnyFieldFilled) {
-        toast.error("At least one field must be filled before saving");
+        toast.error("Please fill in at least one field before saving");
         return;
       }
     }
@@ -276,37 +299,38 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         onDutyHours: localFormData,
         submittedAt: new Date(),
       };
+
       let updateObject = {
         form8: applicationData,
       };
+
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentSavedForms = existingData.savedForms || 0;
 
-        // Always update savedForms if current form number is higher
         if (8 > currentSavedForms) {
-          // 2 is the current form number
           updateObject.savedForms = 8;
         }
 
-        // Keep the existing completedForms value
         if (existingData.completedForms) {
           updateObject.completedForms = existingData.completedForms;
         }
+
         await updateDoc(docRef, updateObject);
       } else {
         await setDoc(docRef, {
           ...updateObject,
-          savedForms: 8, // Set initial savedForms to current form number
-          completedForms: 8, // No forms completed yet, just saved
+          savedForms: 8,
+          completedForms: 8,
         });
       }
+
       setIsSaveClicked(true);
       setEditStatus(false);
-      toast.success("Form is successfully saved");
+      toast.success("Form saved successfully");
     } catch (error) {
-      console.error("Error saving application: ", error);
-      toast.error("Error saving the form, please try again");
+      console.error("Error saving application:", error);
+      toast.error("Error saving the form. Please try again");
     }
   };
   if (currentUser.userType === "Admin") {
@@ -1056,9 +1080,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           name="relievedTime"
                           disabled={hasValue("relievedTime", index)}
                           className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
-                            errors[index]?.relievedTime
-                              ? "border-red-500"
-                              : "border-gray-300"
+                            errors[index]?.relievedTime ? "border-red-500" : ""
                           } ${
                             hasValue("relievedTime", index)
                               ? ""
