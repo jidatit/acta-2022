@@ -38,7 +38,7 @@ const forms = [
   ApplicationForm9,
 ];
 
-const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
+const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -335,6 +335,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid }) => {
               <FormStatusHeader
                 formData={formData}
                 applicationStatus={applicationStatus}
+                driverStatus={driverStatus}
               />
             </div>
             <div className="flex gap-x-4 items-center ">

@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 
-const FormStatusHeader = ({ formData, applicationStatus }) => {
+const FormStatusHeader = ({ formData, applicationStatus, driverStatus }) => {
   // Count filled forms by checking for form data presence
   const getFilledFormsCount = () => {
     let count = 0;
@@ -43,13 +43,13 @@ const FormStatusHeader = ({ formData, applicationStatus }) => {
         {filledCount}/9 Forms Filled
       </span>
 
-      {applicationStatus && (
+      {driverStatus && (
         <span
           className={`${getStatusColor(
-            applicationStatus
+            driverStatus
           )} text-white text-xs font-medium px-3.5 py-2.5 rounded-full`}
         >
-          Status: {applicationStatus}
+          Status: {driverStatus}
         </span>
       )}
     </div>

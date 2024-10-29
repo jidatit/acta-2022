@@ -289,6 +289,7 @@ const RegisteredUsers = () => {
                       uid={currentUserId}
                       openModal={openModal}
                       setOpenModal={setOpenModal}
+                      driverStatus={driver.driverStatus}
                     />
                   </>
                 </td>
