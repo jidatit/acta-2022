@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -20,6 +21,20 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   const [localFormData, setLocalFormData] = useState(FormData3 || [{}]);
+
+  const { editStatus, setEditStatus } = useEdit();
+
+  // Simplified hasValue function using context
+
+  const hasValue = useCallback(
+    (fieldName, index) => {
+      // Check if FormData exists and has the index
+      console.log("index: " + index);
+      const fieldHasValue = FormData3?.[index]?.[fieldName]?.value;
+      return fieldHasValue && !editStatus;
+    },
+    [FormData3, editStatus]
+  );
   useEffect(() => {
     if (uid) {
       fetchUserData(uid); // Fetch the data for the specific UID
@@ -153,7 +168,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
   const handleSave = async () => {
     try {
-      if (currentUser.userType !== "Admin") {
+      if (currentUser.userType !== "Admin" && editStatus === "false") {
         const isAnyFieldFilled = Object.keys(localFormData).some((key) => {
           const value = localFormData[key];
           // Handle both string values and object values with a 'value' property
@@ -204,6 +219,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         });
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -342,10 +358,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`companyName-${index}`}
                       value={field.companyName.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("companyName", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.companyName
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors.companyName ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("companyName", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.companyName && (
@@ -371,10 +390,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`street-${index}`}
                       value={field.street.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("street", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.street
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.street ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("street", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.street && (
@@ -400,10 +422,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`city-${index}`}
                       value={field.city.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("city", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.city
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.city ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("city", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.city && (
@@ -429,10 +454,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`zipCode-${index}`}
                       value={field.zipCode.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("zipCode", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.zipCode
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.zipCode ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("zipCode", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.zipCode && (
@@ -458,10 +486,15 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`contactPerson-${index}`}
                       value={field.contactPerson.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("contactPerson", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.contactPerson
-                          ? "border-red-500"
-                          : "border-gray-300"
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasValue("contactPerson", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.contactPerson && (
@@ -487,10 +520,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`phone-${index}`}
                       value={field.phone.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("phone", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.phone
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.phone ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("phone", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.phone && (
@@ -516,10 +552,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`fax1-${index}`}
                       value={field.fax1.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("fax1", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.fax1
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.fax1 ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("fax1", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.fax1 && (
@@ -546,10 +585,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       min={new Date().toISOString().split("T")[0]}
                       value={field.from.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("from", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.from
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.from ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("from", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.from && (
@@ -573,11 +615,14 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       type="date"
                       name="to"
                       id={`to-${index}`}
+                      max={new Date().toISOString().split("T")[0]}
                       value={field.to.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      max={new Date().toISOString().split("T")[0]}
+                      disabled={hasValue("to", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.to ? "border-red-500" : "border-gray-300"
+                        errors[index]?.to ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("to", index) ? "" : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.to && (
@@ -603,10 +648,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`position-${index}`}
                       value={field.position.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("position", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.position
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.position ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("position", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.position && (
@@ -632,10 +680,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`salary-${index}`}
                       value={field.salary.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("salary", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.salary
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.salary ? "border-red-500 border-2" : ""
+                      } ${
+                        hasValue("salary", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.salary && (
@@ -661,10 +712,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       id={`leavingReason-${index}`}
                       value={field.leavingReason.value}
                       onChange={(e) => handleInputChange(index, e)}
+                      disabled={hasValue("leavingReason", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.leavingReason
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors[index]?.leavingReason ? "border-red-500" : ""
+                      } ${
+                        hasValue("leavingReason", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
                     {errors[index]?.leavingReason && (
@@ -673,13 +727,14 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       </p>
                     )}
                   </div>
+
                   <div className="flex flex-col smd:w-screen w-[90%] mb-6">
                     <div className="w-full mb-6">
                       <SingleLabelLogic
                         htmlFor="subjectToFMCSRs"
                         labelName="Were you subject to the FMCSRs* while employed?"
-                        status={field.subjectToFMCSRs.status} // Adjust the status accordingly
-                        note={field.subjectToFMCSRs.note} // Adjust the note accordingly
+                        status={field.subjectToFMCSRs.status}
+                        note={field.subjectToFMCSRs.note}
                         fieldName="subjectToFMCSRs"
                         uid={uid}
                       />
@@ -691,6 +746,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             value="yes"
                             checked={field.subjectToFMCSRs.value === "yes"}
                             onChange={(e) => handleInputChange(index, e)}
+                            disabled={hasValue("subjectToFMCSRs", index)}
                             className="text-blue-500 form-radio"
                           />
                           <span className="ml-2">Yes</span>
@@ -702,6 +758,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             value="no"
                             checked={field.subjectToFMCSRs.value === "no"}
                             onChange={(e) => handleInputChange(index, e)}
+                            disabled={hasValue("subjectToFMCSRs", index)}
                             className="text-blue-500 form-radio"
                           />
                           <span className="ml-2">No</span>
@@ -724,8 +781,8 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       <SingleLabelLogic
                         htmlFor="jobDesignatedAsSafetySensitive"
                         labelName="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
-                        status={field.jobDesignatedAsSafetySensitive.status} // Adjust the status accordingly
-                        note={field.jobDesignatedAsSafetySensitive.note} // Adjust the note accordingly
+                        status={field.jobDesignatedAsSafetySensitive.status}
+                        note={field.jobDesignatedAsSafetySensitive.note}
                         fieldName="jobDesignatedAsSafetySensitive"
                         uid={uid}
                       />
@@ -740,6 +797,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                               "yes"
                             }
                             onChange={(e) => handleInputChange(index, e)}
+                            disabled={hasValue(
+                              "jobDesignatedAsSafetySensitive",
+                              index
+                            )}
                             className="text-blue-500 form-radio"
                           />
                           <span className="ml-2">Yes</span>
@@ -754,6 +815,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                               "no"
                             }
                             onChange={(e) => handleInputChange(index, e)}
+                            disabled={hasValue(
+                              "jobDesignatedAsSafetySensitive",
+                              index
+                            )}
                             className="text-blue-500 form-radio"
                           />
                           <span className="ml-2">No</span>
@@ -765,6 +830,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         </p>
                       )}
                     </div>
+
                     <div className="flex items-center mt-4">
                       {index !== 0 && ( // Only show remove button for dynamically added fields
                         <button

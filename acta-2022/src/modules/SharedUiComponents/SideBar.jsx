@@ -19,20 +19,20 @@ import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Camera } from "lucide-react";
 import { Button } from "@mui/material";
+import { useEdit } from "../../../EditContext";
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
   const navigate = useNavigate();
   const location = useLocation();
-  const [completedSections, setCompletedSections] = useState(["Section 1"]);
+  const [completedSections, setCompletedSections] = useState([]);
   const [currentSection, setCurrentSection] = useState("Section 1");
   const [completedForms, setCompletedForms] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [isSectionsVisible, setIsSectionsVisible] = useState(false); // State to manage section visibility
-
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-
+  const { handleEditStatus } = useEdit();
   const handleLogoutClick = (e) => {
     e.preventDefault();
     setShowLogoutDialog(true);
@@ -117,13 +117,13 @@ const SideBar = ({ isSidebarExpanded }) => {
     if (correspondingSection) {
       setCurrentSection(correspondingSection);
 
-      // Add this to ensure "Section 1" is always marked correctly
+      // Remove the special handling for Section 1
       if (
-        correspondingSection === "Section 1" &&
-        !completedSections.includes("Section 1")
+        !completedSections.includes(correspondingSection) &&
+        correspondingSection !== "Section 1"
       ) {
         setCompletedSections((prevSections) => {
-          const newSections = [...prevSections, "Section 1"];
+          const newSections = [...prevSections, correspondingSection];
           localStorage.setItem(
             "completedSections",
             JSON.stringify(newSections)
@@ -230,9 +230,8 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
 
   const handleEdit = () => {
-    //console.log("edit item");
+    handleEditStatus(true);
   };
-
   return (
     <div
       className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
@@ -380,7 +379,7 @@ const SideBar = ({ isSidebarExpanded }) => {
             </Dialog>
           </>
         </div>
-        <div className="flex flex-col justify-between w-full h-full gap-y-4">
+        <div className="flex flex-col w-full h-full gap-y-4">
           <Link
             className={`w-full transition-all duration-300 ease-in-out rounded-md ${
               activeItem === "JobApplication"
@@ -434,8 +433,9 @@ const SideBar = ({ isSidebarExpanded }) => {
                     >
                       <div
                         className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
+                          section === "Section 1" ||
                           completedSections.includes(section)
-                            ? "bg-white border-2 border-blue-500"
+                            ? "bg-white border-1 border-blue-500"
                             : "bg-blue-500 border-2 border-white"
                         }`}
                       >
@@ -445,6 +445,7 @@ const SideBar = ({ isSidebarExpanded }) => {
                       </div>
                       <span
                         className={`ml-4 ${
+                          section === "Section 1" ||
                           completedSections.includes(section)
                             ? "text-white"
                             : "text-gray-300"

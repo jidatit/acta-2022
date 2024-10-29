@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { FaBell } from "react-icons/fa";
@@ -7,6 +7,7 @@ import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 
 const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -100,7 +101,73 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     useState(noAccidentsCheckeds);
   const [noTrafficConvictionsChecked, setNoTrafficConvictionsChecked] =
     useState(noTrafficConvictionsCheckeds);
+  const { editStatus, setEditStatus } = useEdit();
+  console.log("editStatus", editStatus);
+  const hasValue = useCallback(
+    (fieldType, fieldName, index) => {
+      // If in edit mode, fields should remain enabled
+      console.log("hasValue");
+      if (editStatus) {
+        return false;
+      }
 
+      // If form hasn't been saved yet, keep fields enabled for editing
+      if (!isSaveClicked) {
+        return false;
+      }
+
+      // Handle address fields
+      if (fieldType === "address") {
+        // If index is out of bounds, disable field
+        if (index >= addressField.length) {
+          return true;
+        }
+
+        const field = addressField[index]?.[fieldName];
+        // Disable field only if it has a value after save has been clicked
+        return field?.value ? true : false;
+      }
+
+      // Handle traffic conviction fields
+      if (fieldType === "traffic") {
+        // If index is out of bounds, disable field
+        if (index >= trafficConvictionField.length) {
+          return true;
+        }
+
+        const field = trafficConvictionField[index]?.[fieldName];
+        // Disable field only if it has a value after save has been clicked
+        return field?.value ? true : false;
+      }
+
+      return false;
+    },
+    [isSaveClicked, editStatus, addressField, trafficConvictionField]
+  );
+
+  // Helper functions
+  const hasAddressValue = useCallback(
+    (fieldName, index) => hasValue("address", fieldName, index),
+    [hasValue]
+  );
+
+  const hasTrafficValue = useCallback(
+    (fieldName, index) => hasValue("traffic", fieldName, index),
+    [hasValue]
+  );
+
+  // Simplified hasValue function using context
+
+  // const hasValue = useCallback(
+  //   (fieldName, index) => {
+  //     // Check if FormData exists and has the index
+  //     const fieldHasValue =
+  //       FormData3?.[index]?.[fieldName]?.value &&
+  //       FormData3[index][fieldName].value.trim() !== "";
+  //     return fieldHasValue && !editStatus;
+  //   },
+  //   [FormData3, editStatus]
+  // );
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -152,6 +219,12 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     setIsSaveClicked(allFieldsEmpty);
   };
 
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Validates all address fields and returns true if all fields are valid.
+   * @returns {boolean} True if all fields are valid, false otherwise.
+   */
+  /******  c4834481-5e2a-49b7-85dd-3bb9945b9eaa  *******/
   const validateAddressFields = () => {
     const newErrors = addressFields.map((field) => {
       const fieldErrors = {};
@@ -326,6 +399,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
         });
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -440,11 +514,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`date-${index}`}
                       value={address.date.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].date
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("date", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.date ? "border-red-500 border-2" : ""
+                      } ${
+                        hasAddressValue("date", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].date && (
                       <p className="mt-1 text-xs text-red-500">
@@ -468,11 +545,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`accidentType-${index}`}
                       value={address.accidentType.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].accidentType
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("accidentType", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.accidentType
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasAddressValue("accidentType", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].accidentType && (
                       <p className="mt-1 text-xs text-red-500">
@@ -496,11 +578,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`location-${index}`}
                       value={address.location.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].location
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("location", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.location ? "border-red-500 border-2" : ""
+                      } ${
+                        hasAddressValue("location", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].location && (
                       <p className="mt-1 text-xs text-red-500">
@@ -524,11 +609,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`fatalities-${index}`}
                       value={address.fatalities.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].fatalities
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("fatalities", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.fatalities
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasAddressValue("fatalities", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].fatalities && (
                       <p className="mt-1 text-xs text-red-500">
@@ -552,11 +642,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`penalties-${index}`}
                       value={address.penalties.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].penalties
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("penalties", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.penalties
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasAddressValue("penalties", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].penalties && (
                       <p className="mt-1 text-xs text-red-500">
@@ -580,11 +675,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`comments-${index}`}
                       value={address.comments.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        errors[index] && errors[index].comments
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasAddressValue("comments", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.comments ? "border-red-500 border-2" : ""
+                      } ${
+                        hasAddressValue("comments", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {errors[index] && errors[index].comments && (
                       <p className="mt-1 text-xs text-red-500">
@@ -668,11 +766,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`date-${index}`}
                       value={traffic.date.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        trafficErrors[index] && trafficErrors[index].date
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasTrafficValue("date", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.date ? "border-red-500 border-2" : ""
+                      } ${
+                        hasTrafficValue("date", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {trafficErrors[index] && trafficErrors[index].date && (
                       <p className="mt-1 text-xs text-red-500">
@@ -696,11 +797,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`offenseType-${index}`}
                       value={traffic.offenseType.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        trafficErrors[index] && trafficErrors[index].offenseType
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasTrafficValue("offenseType", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.offenseType
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasTrafficValue("offenseType", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {trafficErrors[index] &&
                       trafficErrors[index].offenseType && (
@@ -725,11 +831,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`location-${index}`}
                       value={traffic.location.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        trafficErrors[index] && trafficErrors[index].location
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasTrafficValue("location", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.location ? "border-red-500 border-2" : ""
+                      } ${
+                        hasTrafficValue("location", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {trafficErrors[index] && trafficErrors[index].location && (
                       <p className="mt-1 text-xs text-red-500">
@@ -753,11 +862,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`penalties-${index}`}
                       value={traffic.penalties.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        trafficErrors[index] && trafficErrors[index].penalties
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasTrafficValue("penalties", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.penalties
+                          ? "border-red-500 border-2"
+                          : ""
+                      } ${
+                        hasTrafficValue("penalties", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {trafficErrors[index] && trafficErrors[index].penalties && (
                       <p className="mt-1 text-xs text-red-500">
@@ -781,11 +895,14 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`comments-${index}`}
                       value={traffic.comments.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      className={`w-full p-2 mt-1 border ${
-                        trafficErrors[index] && trafficErrors[index].comments
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md`}
+                      disabled={hasTrafficValue("comments", index)}
+                      className={`w-full p-2 mt-1 border rounded-md ${
+                        errors[index]?.comments ? "border-red-500 border-2" : ""
+                      } ${
+                        hasTrafficValue("comments", index)
+                          ? ""
+                          : "bg-white border-gray-300"
+                      }`}
                     />
                     {trafficErrors[index] && trafficErrors[index].comments && (
                       <p className="mt-1 text-xs text-red-500">

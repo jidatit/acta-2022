@@ -16,6 +16,7 @@ import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 
 const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -45,6 +46,25 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
     }
     //console.log(localFormData);
   }, [formData9]);
+  const { editStatus, setEditStatus } = useEdit();
+  const hasValue = (fieldName, index) => {
+    // Guard clauses for safety
+    if (!localFormData || !Array.isArray(localFormData)) return false;
+
+    const field = localFormData[index];
+    if (!field) return false;
+
+    const fieldData = field[fieldName];
+    if (!fieldData) return false;
+
+    // If in edit mode, enable all fields
+    if (editStatus) {
+      return false;
+    }
+
+    // Check if the radio button field has a value
+    return fieldData.value === "yes" || fieldData.value === "no";
+  };
 
   const handleBack = () => {
     // Check if save is clicked
@@ -192,7 +212,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         submittedAt: new Date(),
       };
       let updateObject = {
-        form4: applicationData,
+        form9: applicationData,
       };
       if (docSnap.exists()) {
         const existingData = docSnap.data();
@@ -223,6 +243,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         }
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -328,7 +349,12 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="yes"
                         checked={field.currentlyWorking.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("currentlyWorking", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("currentlyWorking", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">Yes</span>
                     </label>
@@ -339,7 +365,12 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.currentlyWorking.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("currentlyWorking", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("currentlyWorking", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">No</span>
                     </label>
@@ -371,7 +402,12 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                           field.workingForAnotherEmployer.value === "yes"
                         }
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("workingForAnotherEmployer", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("workingForAnotherEmployer", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">Yes</span>
                     </label>
@@ -382,7 +418,12 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.workingForAnotherEmployer.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("workingForAnotherEmployer", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("workingForAnotherEmployer", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">No</span>
                     </label>

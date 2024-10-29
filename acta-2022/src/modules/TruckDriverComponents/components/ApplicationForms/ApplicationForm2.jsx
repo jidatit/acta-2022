@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { FaBell } from "react-icons/fa";
@@ -7,6 +7,7 @@ import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import { useAuthAdmin } from "../../../../AdminContext";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
+import { useEdit } from "../../../../../EditContext";
 const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const initialFields = [
@@ -27,7 +28,24 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   const [localFormData, setLocalFormData] = useState(FormData || [{}]);
-  console.log("FormData", localFormData);
+  const { editStatus, setEditStatus } = useEdit();
+
+  // Simplified hasValue function using context
+
+  const hasValue = useCallback(
+    (fieldName, index) => {
+      // Check if FormData exists and has the index
+      const fieldData = FormData?.[index]?.[fieldName];
+
+      // Adjust fieldHasValue to require more than one character to consider as "value"
+      const fieldHasValue = fieldData?.value;
+
+      // Only disable if there's a significant value AND we're not in edit mode
+      return fieldHasValue && !editStatus;
+    },
+    [FormData, editStatus]
+  );
+
   useEffect(() => {
     if (uid) {
       fetchUserData(uid); // Fetch the data for the specific UID
@@ -58,8 +76,6 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
 
     // Update value and reset status and note
     newFormData[index][name].value = value;
-    newFormData[index][name].status = "pending"; // Update status as needed
-    newFormData[index][name].note = ""; // Clear note on change
 
     setLocalFormData(newFormData);
     setIsSaveClicked(false);
@@ -171,6 +187,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         });
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -266,7 +283,12 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`street1-${index}`}
                     value={address?.street1?.value}
                     onChange={(e) => handleChange(e, index)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    disabled={hasValue("street1", index)}
+                    className={`w-full p-2 mt-1 border rounded-md  ${
+                      hasValue("street1", index)
+                        ? ""
+                        : "bg-white border-gray-300"
+                    }`}
                   />
                 </div>
                 <div>
@@ -285,7 +307,12 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`street2-${index}`}
                     value={address?.street2?.value}
                     onChange={(e) => handleChange(e, index)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    disabled={hasValue("street2", index)}
+                    className={`w-full p-2 mt-1 border rounded-md  ${
+                      hasValue("street2", index)
+                        ? ""
+                        : "bg-white border-gray-300"
+                    }`}
                   />
                 </div>
                 <div>
@@ -304,7 +331,10 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`city-${index}`}
                     value={address?.city?.value}
                     onChange={(e) => handleChange(e, index)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    disabled={hasValue("city", index)}
+                    className={`w-full p-2 mt-1 border rounded-md  ${
+                      hasValue("city", index) ? "" : "bg-white border-gray-300"
+                    }`}
                   />
                 </div>
                 <div>
@@ -323,7 +353,10 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`state-${index}`}
                     value={address?.state?.value}
                     onChange={(e) => handleChange(e, index)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    disabled={hasValue("state", index)}
+                    className={`w-full p-2 mt-1 border rounded-md  ${
+                      hasValue("state", index) ? "" : "bg-white border-gray-300"
+                    }`}
                   />
                 </div>
                 <div>
@@ -342,7 +375,12 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`zipCode-${index}`}
                     value={address?.zipCode?.value}
                     onChange={(e) => handleChange(e, index)}
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                    disabled={hasValue("zipCode", index)}
+                    className={`w-full p-2 mt-1 border rounded-md  ${
+                      hasValue("zipCode", index)
+                        ? ""
+                        : "bg-white border-gray-300"
+                    }`}
                   />
                 </div>
 

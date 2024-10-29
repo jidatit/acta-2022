@@ -1,12 +1,13 @@
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 
 const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
 
   const [localFormData, setLocalFormData] = useState(alcoholDrugTesting);
   const [errors, setErrors] = useState([]);
+  const { editStatus, setEditStatus } = useEdit();
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
@@ -39,6 +41,24 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
     }
     //console.log(localFormData);
   }, [alcoholDrugTesting]);
+  const hasValue = useCallback(
+    (fieldName, index) => {
+      // If in edit mode, enable all fields
+      if (editStatus) {
+        return false;
+      }
+
+      // If form hasn't been saved yet, return false to keep fields enabled
+      if (!isSaveClicked) {
+        return false;
+      }
+
+      // Check if the field exists and has a value
+      const field = localFormData[index]?.[fieldName];
+      return field?.value && field.value.trim() !== "";
+    },
+    [editStatus, isSaveClicked, localFormData]
+  );
 
   const handleBack = () => {
     // Check if save is clicked
@@ -189,6 +209,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
         });
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -287,14 +308,12 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
           {Array.isArray(localFormData) &&
             localFormData.map((field, index) => (
               <div className="flex flex-col w-full mb-6" key={index}>
-                <div className="w-full mb-6">
+                <div>
                   <SingleLabelLogic
                     htmlFor="testedPositiveEver"
-                    labelName="Have you ever been tested positive or refused to be tested
-                    on any pre-employment drug test in which you were not hired
-                    during the past two years?"
-                    status={field.testedPositiveEver.status} // Adjust the status accordingly
-                    note={field.testedPositiveEver.note} // Adjust the note accordingly
+                    labelName="Have you ever been tested positive or refused to be tested on any pre-employment drug test in which you were not hired during the past two years?"
+                    status={field.testedPositiveEver.status}
+                    note={field.testedPositiveEver.note}
                     fieldName="testedPositiveEver"
                     uid={uid}
                   />
@@ -307,7 +326,12 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         value="yes"
                         checked={field.testedPositiveEver.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("testedPositiveEver", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("testedPositiveEver", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">Yes</span>
                     </label>
@@ -318,7 +342,12 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.testedPositiveEver.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        className="text-blue-500 form-radio"
+                        disabled={hasValue("testedPositiveEver", index)}
+                        className={`text-blue-500 form-radio ${
+                          hasValue("testedPositiveEver", index)
+                            ? "bg-gray-100 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }`}
                       />
                       <span className="ml-2">No</span>
                     </label>
@@ -329,14 +358,14 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                     </p>
                   )}
                 </div>
+
                 {field.testedPositiveEver.value === "yes" && (
                   <div className="w-full mb-6">
                     <SingleLabelLogic
                       htmlFor="DOTCompletion"
-                      labelName="If yes, have you successfully completed the DOT return to
-                      duty process?"
-                      status={field.DOTCompletion.status} // Adjust the status accordingly
-                      note={field.DOTCompletion.note} // Adjust the note accordingly
+                      labelName="If yes, have you successfully completed the DOT return to duty process?"
+                      status={field.DOTCompletion.status}
+                      note={field.DOTCompletion.note}
                       fieldName="DOTCompletion"
                       uid={uid}
                     />
@@ -348,7 +377,12 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           value="yes"
                           checked={field.DOTCompletion.value === "yes"}
                           onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
+                          disabled={hasValue("DOTCompletion", index)}
+                          className={`text-blue-500 form-radio ${
+                            hasValue("DOTCompletion", index)
+                              ? "bg-gray-100 cursor-not-allowed"
+                              : "bg-white cursor-pointer"
+                          }`}
                         />
                         <span className="ml-2">Yes</span>
                       </label>
@@ -359,7 +393,12 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           value="no"
                           checked={field.DOTCompletion.value === "no"}
                           onChange={(e) => handleInputChange(index, e)}
-                          className="text-blue-500 form-radio"
+                          disabled={hasValue("DOTCompletion", index)}
+                          className={`text-blue-500 form-radio ${
+                            hasValue("DOTCompletion", index)
+                              ? "bg-gray-100 cursor-not-allowed"
+                              : "bg-white cursor-pointer"
+                          }`}
                         />
                         <span className="ml-2">No</span>
                       </label>

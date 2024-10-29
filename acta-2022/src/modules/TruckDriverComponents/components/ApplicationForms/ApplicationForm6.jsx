@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useAuth } from "../../../../AuthContext";
 import { useNavigate } from "react-router";
@@ -7,6 +7,7 @@ import { db } from "../../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
   const authData = useAuth();
   const adminAuthData = useAuthAdmin();
@@ -19,6 +20,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     noViolationChecked,
     violationField,
   } = currentUser?.userType === "Admin" ? adminAuthData : authData;
+  const { editStatus, setEditStatus } = useEdit();
 
   useEffect(() => {
     if (uid) {
@@ -42,6 +44,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
           },
         ]
   );
+
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
@@ -66,6 +69,47 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
       ]);
     }
   }, [violationFields]);
+  const hasValue = useCallback(
+    (fieldName, index) => {
+      // If in edit mode, enable all fields
+      if (editStatus) {
+        return false;
+      }
+
+      // If form hasn't been saved yet, return false to keep fields enabled
+      if (!isSaveClicked) {
+        return false;
+      }
+
+      // If no violations checkbox is checked, disable all fields
+      if (noViolationCheckeds) {
+        return true;
+      }
+
+      // Check if the field exists and has a value
+      const field = violationFields[index]?.[fieldName];
+      return field?.value && field.value.trim() !== "";
+    },
+    [editStatus, isSaveClicked, noViolationCheckeds, violationFields]
+  );
+  const getFieldClassName = useCallback(
+    (fieldName, index) => {
+      const baseClasses = "w-full p-2 mt-1 border rounded-md";
+      const errorClasses =
+        errors[index] && errors[index][fieldName]
+          ? "border-red-500"
+          : "border-gray-300";
+      const statusClasses =
+        violationField[index]?.[fieldName]?.status === "approved"
+          ? "bg-green-50"
+          : violationField[index]?.[fieldName]?.status === "rejected"
+          ? "bg-red-50"
+          : "";
+
+      return `${baseClasses} ${errorClasses} ${statusClasses}`;
+    },
+    [errors, violationField]
+  );
   const handleBack = () => {
     // Check if save is clicked
     if (!isSaveClicked) {
@@ -231,6 +275,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
       }
 
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -338,11 +383,14 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`date-${index}`}
                         value={address.date?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        className={`w-full p-2 mt-1 border ${
-                          errors[index] && errors[index].date
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } rounded-md`}
+                        disabled={hasValue("date", index)}
+                        className={`w-full p-2 mt-1 border rounded-md ${
+                          errors[index]?.date ? "border-red-500 border-2" : ""
+                        } ${
+                          hasValue("date", index)
+                            ? ""
+                            : "bg-white border-gray-300"
+                        }`}
                       />
                       {errors[index] && errors[index].date && (
                         <p className="mt-1 text-xs text-red-500">
@@ -366,11 +414,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`offense-${index}`}
                         value={address.offense?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        className={`w-full p-2 mt-1 border ${
-                          errors[index] && errors[index].offense
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } rounded-md`}
+                        disabled={hasValue("offense", index)}
+                        className={`w-full p-2 mt-1 border rounded-md ${
+                          errors[index]?.offense
+                            ? "border-red-500 border-2"
+                            : ""
+                        } ${
+                          hasValue("offense", index)
+                            ? ""
+                            : "bg-white border-gray-300"
+                        }`}
                       />
                       {errors[index] && errors[index].offense && (
                         <p className="mt-1 text-xs text-red-500">
@@ -394,11 +447,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`location-${index}`}
                         value={address.location?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        className={`w-full p-2 mt-1 border ${
-                          errors[index] && errors[index].location
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } rounded-md`}
+                        disabled={hasValue("location", index)}
+                        className={`w-full p-2 mt-1 border rounded-md ${
+                          errors[index]?.location
+                            ? "border-red-500 border-2"
+                            : ""
+                        } ${
+                          hasValue("location", index)
+                            ? ""
+                            : "bg-white border-gray-300"
+                        }`}
                       />
                       {errors[index] && errors[index].location && (
                         <p className="mt-1 text-xs text-red-500">
@@ -422,11 +480,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`vehicleOperated-${index}`}
                         value={address.vehicleOperated?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        className={`w-full p-2 mt-1 border ${
-                          errors[index] && errors[index].vehicleOperated
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } rounded-md`}
+                        disabled={hasValue("vehicleOperated", index)}
+                        className={`w-full p-2 mt-1 border rounded-md ${
+                          errors[index]?.vehicleOperated
+                            ? "border-red-500 border-2"
+                            : ""
+                        } ${
+                          hasValue("vehicleOperated", index)
+                            ? ""
+                            : "bg-white border-gray-300"
+                        }`}
                       />
                       {errors[index] && errors[index].vehicleOperated && (
                         <p className="mt-1 text-xs text-red-500">

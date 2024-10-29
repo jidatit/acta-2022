@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable no-case-declarations */
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
 import { FaBell } from "react-icons/fa";
@@ -8,6 +9,7 @@ import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
+import { useEdit } from "../../../../../EditContext";
 
 const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -42,6 +44,104 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const [driverExperienceErrors, setDriverExperienceErrors] = useState([]);
   const [driverEducationError, setDriverEducationError] = useState([]);
   // State to track if the checkboxes are checked
+  const { editStatus, setEditStatus } = useEdit();
+  const hasValue = useCallback(
+    (formType, fieldName, index = 0) => {
+      // If in edit mode, enable all fields
+      if (editStatus) {
+        return false;
+      }
+
+      // If form hasn't been saved yet, check if field has a value
+      if (!isSaveClicked) {
+        switch (formType) {
+          case "license":
+            const licenseField = driverLicensePermit[index]?.[fieldName];
+            return licenseField?.value && licenseField.value.trim() !== "";
+          case "experience":
+            const expField = driverExperience[index]?.[fieldName];
+            return expField?.value && expField.value.trim() !== "";
+          case "education":
+            const eduField = educationHistory[index]?.[fieldName];
+            return eduField?.value && eduField.value.trim() !== "";
+          case "skills":
+            const skillField = extraSkills[fieldName];
+            return skillField?.value && skillField.value.trim() !== "";
+          default:
+            return false;
+        }
+      }
+
+      // Handle driver license permit fields
+      if (formType === "license") {
+        if (index >= driverLicensePermit.length) {
+          return true;
+        }
+        const field = driverLicensePermit[index][fieldName];
+        // Disable if field has a value, enable if empty
+        return field?.value && field.value.trim() !== "";
+      }
+
+      // Handle driver experience fields
+      if (formType === "experience") {
+        if (index >= driverExperience.length) {
+          return true;
+        }
+        const field = driverExperience[index][fieldName];
+        // Disable if field has a value, enable if empty
+        return field?.value && field.value.trim() !== "";
+      }
+
+      // Handle education history fields
+      if (formType === "education") {
+        if (index >= educationHistory.length) {
+          return true;
+        }
+        const field = educationHistory[index][fieldName];
+        // Disable if field has a value, enable if empty
+        return field?.value && field.value.trim() !== "";
+      }
+
+      // Handle extra skills fields
+      if (formType === "skills") {
+        const field = extraSkills[fieldName];
+        // Disable if field has a value, enable if empty
+        return field?.value && field.value.trim() !== "";
+      }
+
+      return true;
+    },
+    [
+      isSaveClicked,
+      editStatus,
+      driverLicensePermit,
+      driverExperience,
+      educationHistory,
+      extraSkills,
+    ]
+  );
+
+  // Helper functions remain the same
+  const hasLicenseValue = useCallback(
+    (fieldName, index) => hasValue("license", fieldName, index),
+    [hasValue]
+  );
+
+  const hasExperienceValue = useCallback(
+    (fieldName, index) => hasValue("experience", fieldName, index),
+    [hasValue]
+  );
+
+  const hasEducationValue = useCallback(
+    (fieldName, index) => hasValue("education", fieldName, index),
+    [hasValue]
+  );
+
+  const hasSkillValue = useCallback(
+    (fieldName) => hasValue("skills", fieldName),
+    [hasValue]
+  );
+
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
@@ -317,6 +417,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
         });
       }
       setIsSaveClicked(true);
+      setEditStatus(false);
       toast.success("Form is successfully saved");
     } catch (error) {
       console.error("Error saving application: ", error);
@@ -440,7 +541,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`LicenseNo-${index}`}
                   value={license.LicenseNo.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  disabled={hasLicenseValue("LicenseNo", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    hasLicenseValue("LicenseNo", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
               </div>
               <div>
@@ -459,7 +565,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`type-${index}`}
                   value={license.type.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  disabled={hasLicenseValue("type", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    hasLicenseValue("type", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
               </div>
               <div>
@@ -478,7 +589,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`state-${index}`}
                   value={license.state.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  disabled={hasLicenseValue("state", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    hasLicenseValue("state", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
               </div>
               <div>
@@ -498,7 +614,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   value={license.expiryDate.value}
                   min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                  disabled={hasLicenseValue("LicenseNo", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    hasLicenseValue("LicenseNo", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
               </div>
               {currentUser.userType !== "Admin" ? (
@@ -560,12 +681,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`statesOperated-${index}`}
                   value={experience.statesOperated.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].statesOperated
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("statesOperated", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.statesOperated
+                      ? "border-red-500 border-2"
+                      : ""
+                  } ${
+                    hasExperienceValue("statesOperated", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].statesOperated && (
@@ -590,12 +715,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`ClassEquipment-${index}`}
                   value={experience.ClassEquipment.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].ClassEquipment
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("ClassEquipment", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.ClassEquipment
+                      ? "border-red-500 border-2"
+                      : ""
+                  } ${
+                    hasExperienceValue("ClassEquipment", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].ClassEquipment && (
@@ -620,12 +749,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`EquipmentType-${index}`}
                   value={experience.EquipmentType.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].EquipmentType
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={(hasExperienceValue, "EquipmentType", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.EquipmentType
+                      ? "border-red-500 border-2"
+                      : ""
+                  } ${
+                    (hasExperienceValue, "EquipmentType", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].EquipmentType && (
@@ -651,12 +784,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   value={experience.DateTo.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].DateTo
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("DateTo", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.DateTo ? "border-red-500 border-2" : ""
+                  } ${
+                    hasExperienceValue("DateTo", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].DateTo && (
@@ -682,12 +817,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   value={experience.DateFrom.value}
                   min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].DateFrom
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("DateFrom", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.DateFrom ? "border-red-500 border-2" : ""
+                  } ${
+                    hasExperienceValue("DateFrom", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].DateFrom && (
@@ -714,12 +851,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`ApproximatelyMiles-${index}`}
                   value={experience.ApproximatelyMiles.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].ApproximatelyMiles
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("ApproximatelyMiles", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.ApproximatelyMiles
+                      ? "border-red-500 border-2"
+                      : ""
+                  } ${
+                    hasExperienceValue("ApproximatelyMiles", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].ApproximatelyMiles && (
@@ -745,12 +886,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`comments-${index}`}
                   value={experience.comments.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverExperienceErrors[index] &&
-                    driverExperienceErrors[index].comments
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasExperienceValue("comments", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.comments ? "border-red-500 border-2" : ""
+                  } ${
+                    hasExperienceValue("comments", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].comments && (
@@ -818,12 +961,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`school-${index}`}
                   value={education.school.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverEducationError[index] &&
-                    driverEducationError[index].school
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasEducationValue("school", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.school ? "border-red-500 border-2" : ""
+                  } ${
+                    hasEducationValue("school", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverEducationError[index] &&
                   driverEducationError[index].school && (
@@ -848,12 +993,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`educationLevel-${index}`}
                   value={education.educationLevel.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverEducationError[index] &&
-                    driverEducationError[index].educationLevel
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasEducationValue("educationLevel", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.educationLevel
+                      ? "border-red-500 border-2"
+                      : ""
+                  } ${
+                    hasEducationValue("educationLevel", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverEducationError[index] &&
                   driverEducationError[index].educationLevel && (
@@ -879,12 +1028,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   value={education.DateFrom.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   min={new Date().toISOString().split("T")[0]}
-                  className={`w-full p-2 mt-1 border ${
-                    driverEducationError[index] &&
-                    driverEducationError[index].DateFrom
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasEducationValue("DateFrom", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.DateFrom ? "border-red-500 border-2" : ""
+                  } ${
+                    hasEducationValue("DateFrom", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverEducationError[index] &&
                   driverEducationError[index].DateFrom && (
@@ -910,12 +1061,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   value={education.DateTo.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
-                  className={`w-full p-2 mt-1 border ${
-                    driverEducationError[index] &&
-                    driverEducationError[index].DateTo
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasEducationValue("DateTo", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.DateTo ? "border-red-500 border-2" : ""
+                  } ${
+                    hasEducationValue("DateTo", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverEducationError[index] &&
                   driverEducationError[index].DateTo && (
@@ -941,12 +1094,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`comments-${index}`}
                   value={education.comments.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  className={`w-full p-2 mt-1 border ${
-                    driverEducationError[index] &&
-                    driverEducationError[index].comments
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md`}
+                  disabled={hasEducationValue("comments", index)}
+                  className={`w-full p-2 mt-1 border rounded-md ${
+                    errors[index]?.comments ? "border-red-500 border-2" : ""
+                  } ${
+                    hasEducationValue("comments", index)
+                      ? ""
+                      : "bg-white border-gray-300"
+                  }`}
                 />
                 {driverEducationError[index] &&
                   driverEducationError[index].comments && (
@@ -1002,7 +1157,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 id="safeDrivingAwards"
                 value={extraSkills.safeDrivingAwards.value}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                disabled={hasSkillValue("safeDrivingAwards")}
+                className={`w-full p-2 mt-1 border rounded-md  ${
+                  hasSkillValue("safeDrivingAwards")
+                    ? ""
+                    : "bg-white border-gray-300"
+                }`}
               />
             </div>
             <div>
@@ -1020,7 +1180,12 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 id="specialTraining"
                 value={extraSkills.specialTraining.value}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                disabled={hasSkillValue("specialTraining")}
+                className={`w-full p-2 mt-1 border rounded-md  ${
+                  hasSkillValue("specialTraining")
+                    ? ""
+                    : "bg-white border-gray-300"
+                }`}
               />
             </div>
             <div>
@@ -1038,7 +1203,10 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 id="otherSkills"
                 value={extraSkills.otherSkills.value}
                 onChange={(e) => handleExtraSkillChange(e)}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                disabled={hasSkillValue("otherSkills")}
+                className={`w-full p-2 mt-1 border rounded-md  ${
+                  hasSkillValue("otherSkills") ? "" : "bg-white border-gray-300"
+                }`}
               />
             </div>
           </div>

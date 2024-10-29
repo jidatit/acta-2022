@@ -21,6 +21,11 @@ const SingleLabelLogic = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown
   const dropdownRef = useRef(null); // Ref for the dropdown
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleToggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -377,31 +382,60 @@ const SingleLabelLogic = ({
           <div className="w-full smd:w-max flex justify-end">
             {currentUser.userType === "Admin" && (
               <>
-                <div className="w-full smd:w-max flex items-center  flex-row gap-x-3">
-                  <div className="flex justify-end">
-                    <FaRegCheckCircle
-                      className="text-green-500 cursor-pointer z-10"
-                      onClick={handleApprove}
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <FaRegTimesCircle
-                      className="text-red-500 cursor-pointer z-10"
-                      onClick={handleReject}
-                    />
-                  </div>
+                <div className="w-full smd:w-max flex items-center flex-row gap-x-3 relative">
                   <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer z-10"
-                    onClick={note === "" ? handleAddNote : handleViewNote}
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center text-xl text-blue-500 cursor-pointer z-10"
+                    onClick={handleToggleDropdown}
                   >
-                    <FaPencil size={10} />
-                    {note ? (
-                      <p className="text-xs font-radios">View note</p>
-                    ) : (
-                      <p className="text-xs font-radios">Add note</p>
-                    )}
+                    <FaPencil size={16} />
                   </div>
+
+                  {showDropdown && (
+                    <div className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60">
+                      <ul className="flex flex-col">
+                        <li
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
+                          onClick={() => {
+                            handleApprove();
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <FaRegCheckCircle size={20} />
+                          </div>
+                          <span className="text-sm font-medium">Approve</span>
+                        </li>
+                        <li
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
+                          onClick={() => {
+                            handleReject();
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <FaRegTimesCircle size={20} />
+                          </div>
+                          <span className="text-sm font-medium">Reject</span>
+                        </li>
+                        <li
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
+                          onClick={() => {
+                            note === "" ? handleAddNote() : handleViewNote();
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <FaPencil size={20} />
+                          </div>
+                          <span className="text-sm font-medium">
+                            {note ? "View Note" : "Add Note"}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
+
                 {note === "" ? (
                   <dialog
                     open={isModalOpen}
@@ -479,40 +513,46 @@ const SingleLabelLogic = ({
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center gap-x-2 w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
-                  <div className="flex justify-end">
-                    <FaRegTimesCircle className="text-red-500 cursor-pointer z-10" />
-                  </div>
-                  <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center z-10 bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                    onClick={note === "" ? handleAddNote : handleViewNote}
-                  >
-                    <FaPencil size={10} />
-                    {note ? (
-                      <p className="text-xs font-radios">View note</p>
-                    ) : (
-                      <p className="text-xs font-radios">Add note</p>
-                    )}
-                  </div>
                   <div className="relative z-0">
-                    {" "}
                     <FaPencil
-                      className="text-blue-500 cursor-pointer z-10" // Remove z-10 if present
+                      className="text-blue-500 cursor-pointer z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
                       <div
-                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60  "
+                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
                         ref={dropdownRef}
                       >
                         <ul className="flex flex-col">
                           <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            onClick={() => {}}
+                          >
+                            <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaRegTimesCircle size={20} />
+                            </div>
+                            Rejected Field
+                          </li>
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                             onClick={handleApproveApplication}
                           >
                             <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaRegCheckCircle size={20} className="" />
+                              <FaRegCheckCircle size={20} />
                             </div>
                             Approve Field
+                          </li>
+
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            onClick={
+                              note === "" ? handleAddNote : handleViewNote
+                            }
+                          >
+                            <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaPencil size={20} />
+                            </div>
+                            {note ? "View note" : "Add note"}
                           </li>
                         </ul>
                       </div>
@@ -594,9 +634,6 @@ const SingleLabelLogic = ({
 
             {status === "approved" && (
               <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
-                <div className="flex justify-end">
-                  <FaRegCheckCircle className="text-green-500 cursor-pointer z-10" />
-                </div>
                 <div className="relative z-10">
                   <FaPencil
                     className="text-blue-500 cursor-pointer z-10"
@@ -604,18 +641,27 @@ const SingleLabelLogic = ({
                   />
                   {isDropdownOpen && (
                     <div
-                      className="absolute top-8 bg-white border border-gray-300 z-20 shadow-lg rounded-md py-2 w-60 "
+                      className="absolute top-8 bg-white border border-gray-300 z-20 shadow-lg rounded-md py-2 w-60"
                       ref={dropdownRef}
                     >
                       <ul className="flex flex-col">
                         <li
-                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer "
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                          onClick={handleApproveApplication}
+                        >
+                          <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <FaRegCheckCircle size={20} />
+                          </div>
+                          Approved Field
+                        </li>
+                        <li
+                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                           onClick={handleRejectApplication}
                         >
                           <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                            <FaRegTimesCircle size={20} className="" />
+                            <FaRegTimesCircle size={20} />
                           </div>
-                          Reject Application
+                          Reject Field
                         </li>
                       </ul>
                     </div>
@@ -630,31 +676,61 @@ const SingleLabelLogic = ({
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
-                  <div className="flex smd:justify-start justify-end">
-                    <FaRegTimesCircle className="text-red-500 cursor-pointer z-10" />
-                  </div>
-                  {note ? (
-                    <div
-                      className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
-                      onClick={handleViewNote}
-                    >
-                      <FaPencil size={10} />
+                  <div className="relative z-0">
+                    <FaPencil
+                      className="text-blue-500 cursor-pointer z-10"
+                      onClick={handleDropdownToggle}
+                    />
+                    {isDropdownOpen && (
+                      <div
+                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                        ref={dropdownRef}
+                      >
+                        <ul className="flex flex-col">
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            onClick={() => {}}
+                          >
+                            <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaRegTimesCircle size={20} />
+                            </div>
+                            Rejected Field
+                          </li>
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            onClick={handleApproveApplication}
+                          >
+                            <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaRegCheckCircle size={20} />
+                            </div>
+                            Approve Field
+                          </li>
 
-                      <p className="text-xs font-radios">View note</p>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                          <li
+                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            onClick={
+                              note === "" ? handleAddNote : handleViewNote
+                            }
+                          >
+                            <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                              <FaPencil size={20} />
+                            </div>
+                            {note ? "View note" : "Add note"}
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {note ? (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
                   >
                     {/* Background overlay */}
                     <div
-                      className="fixed inset-0 bg-black bg-opacity-50 "
+                      className="fixed inset-0 bg-black bg-opacity-50 z-20"
                       onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
                     ></div>
 

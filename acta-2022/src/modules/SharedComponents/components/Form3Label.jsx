@@ -16,6 +16,7 @@ const FormLabelWithStatus = ({
   uid,
 }) => {
   const { currentUser } = useAuth();
+  console.log("index: " + index);
   const [existingNote, setExistingNote] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown
