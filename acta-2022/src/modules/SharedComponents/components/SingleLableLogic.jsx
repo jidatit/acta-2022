@@ -57,10 +57,13 @@ const SingleLabelLogic = ({
 
     setExistingNote(existingNotes);
     setIsModalOpen(true); // Show modal through state
+    setShowDropdown(false);
   };
 
   const handleAddNote = () => {
+    setExistingNote("");
     setIsModalOpen(true); // Show modal through state
+    setShowDropdown(false);
   };
   const [notes, setNote] = useState("");
 
@@ -443,7 +446,7 @@ const SingleLabelLogic = ({
                 {note === "" ? (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0 z-50"
                   >
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50 "
@@ -485,7 +488,7 @@ const SingleLabelLogic = ({
                 ) : (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50"
@@ -517,17 +520,17 @@ const SingleLabelLogic = ({
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center gap-x-2 w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
-                  <div className="relative z-0">
+                  <div className="relative ">
                     <FaPencil
                       className="text-blue-500 cursor-pointer z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
                       <div
-                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                        className="absolute top-8 z-50 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
                         ref={dropdownRef}
                       >
-                        <ul className="flex flex-col">
+                        <ul className="flex flex-col z-50">
                           <li
                             className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                             onClick={() => {}}
@@ -567,7 +570,7 @@ const SingleLabelLogic = ({
                   <div className="relative z-50">
                     <dialog
                       open={isModalOpen}
-                      className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                      className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0"
                     >
                       <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-10"
@@ -593,7 +596,7 @@ const SingleLabelLogic = ({
                 ) : (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0 z-50"
                   >
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50 "
@@ -638,17 +641,17 @@ const SingleLabelLogic = ({
 
             {status === "approved" && (
               <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
-                <div className="relative z-10">
+                <div className="relative ">
                   <FaPencil
                     className="text-blue-500 cursor-pointer z-10"
                     onClick={handleDropdownToggle} // Toggle dropdown on click
                   />
                   {isDropdownOpen && (
                     <div
-                      className="absolute top-8 bg-white border border-gray-300 z-20 shadow-lg rounded-md py-2 w-60"
+                      className="absolute top-8 bg-white border border-gray-300 z-50 shadow-lg rounded-md py-2 w-60"
                       ref={dropdownRef}
                     >
-                      <ul className="flex flex-col">
+                      <ul className="flex flex-col z-50">
                         <li
                           className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                           onClick={handleApproveApplication}
@@ -700,7 +703,7 @@ const SingleLabelLogic = ({
                 {note ? (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0 z-50"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0 z-50"
                   >
                     {/* Background overlay */}
                     <div

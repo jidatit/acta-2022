@@ -398,7 +398,9 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={hasValue("companyName", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors.companyName ? "border-red-500 border-2" : ""
+                        errors[index]?.companyName
+                          ? "border-red-500 border-2"
+                          : ""
                       } ${
                         hasValue("companyName", index)
                           ? ""
@@ -768,11 +770,11 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
                   <div className="flex flex-col smd:w-screen w-[90%] mb-6">
                     <div className="w-full mb-6">
-                      <SingleLabelLogic
+                      <FormLabelWithStatus
                         htmlFor="subjectToFMCSRs"
-                        labelName="Were you subject to the FMCSRs* while employed?"
+                        label="Were you subject to the FMCSRs* while employed?"
                         status={field.subjectToFMCSRs.status}
-                        note={field.subjectToFMCSRs.note}
+                        note={field?.subjectToFMCSRs?.note}
                         fieldName="subjectToFMCSRs"
                         uid={uid}
                       />
@@ -816,9 +818,9 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           : "xxl:w-full lg:w-[65%] xl:w-[75%] smd:w-[60%]"
                       } mb-6`}
                     >
-                      <SingleLabelLogic
+                      <FormLabelWithStatus
                         htmlFor="jobDesignatedAsSafetySensitive"
-                        labelName="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
+                        label="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
                         status={field.jobDesignatedAsSafetySensitive.status}
                         note={field.jobDesignatedAsSafetySensitive.note}
                         fieldName="jobDesignatedAsSafetySensitive"

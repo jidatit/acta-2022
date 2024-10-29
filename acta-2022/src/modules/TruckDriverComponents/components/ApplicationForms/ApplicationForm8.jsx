@@ -109,6 +109,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   // Update the formatTimeForInput function
   const formatTimeForInput = (time) => {
     if (!time || typeof time !== "object" || !time.value) return "";
+
     const [hourMinute, period] = time.value.split(" ");
     const [hour, minute] = hourMinute.split(":");
     let hour24 = parseInt(hour, 10);
@@ -119,9 +120,8 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
       hour24 = 0;
     }
 
-    return `${hour24.toString().padStart(2, "0")}:${minute}`; // Return in 24-hour format for input (HH:mm)
+    return `${hour24.toString().padStart(2, "0")}:${minute}`;
   };
-
   // Handler function for when the time input changes
 
   useEffect(() => {
@@ -693,9 +693,9 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : "bg-white border-gray-300"
                           }`}
                         />
-                        {errors[index]?.day1HoursWorked && (
+                        {errors[index]?.day3HoursWorked && (
                           <p className="mt-1 text-sm text-red-500">
-                            {errors[index].day1HoursWorked}
+                            {errors[index].day3HoursWorked}
                           </p>
                         )}
                       </div>
@@ -1089,7 +1089,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           min="09:00"
                           max="18:00"
                           required
-                          value={formatTimeForInput(field.relievedTime)}
+                          value={
+                            field.relievedTime?.value
+                              ? formatTimeForInput(field.relievedTime)
+                              : ""
+                          }
                           onChange={(e) => handleInputChange(index, e)}
                         />
                       </div>

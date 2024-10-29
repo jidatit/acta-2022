@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 
 const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -339,9 +340,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                 key={index}
               >
                 <div className="w-full mb-6">
-                  <SingleLabelLogic
+                  <FormLabelWithStatus
                     htmlFor="currentlyWorking"
-                    labelName="Are you currently working for another employer?"
+                    label="Are you currently working for another employer?"
                     status={field.currentlyWorking.status} // Adjust the status accordingly
                     note={field.currentlyWorking.note} // Adjust the note accordingly
                     fieldName="currentlyWorking"
@@ -389,9 +390,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                 </div>
 
                 <div className="w-full mb-6">
-                  <SingleLabelLogic
+                  <FormLabelWithStatus
                     htmlFor="workingForAnotherEmployer"
-                    labelName="At this time do you intend to work for another employer
+                    label="At this time do you intend to work for another employer
                     while still employed by this company?"
                     status={field.workingForAnotherEmployer.status} // Adjust the status accordingly
                     note={field.workingForAnotherEmployer.note} // Adjust the note accordingly

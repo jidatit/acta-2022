@@ -16,7 +16,7 @@ const FormLabelWithStatus = ({
   uid,
 }) => {
   const { currentUser } = useAuth();
-  console.log("index: " + index);
+
   const [existingNote, setExistingNote] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown
@@ -56,13 +56,16 @@ const FormLabelWithStatus = ({
 
     setExistingNote(existingNotes);
     setIsModalOpen(true); // Show modal through state
+
+    setShowDropdown(false);
   };
 
+  const [notes, setNote] = useState("");
   const handleAddNote = () => {
+    setNote("");
+    setShowDropdown(false);
     setIsModalOpen(true); // Show modal through state
   };
-  const [notes, setNote] = useState("");
-
   // Step 2: Update state on textarea change
   const handleTextareaChange = (e) => {
     setNote(e.target.value);
@@ -87,8 +90,15 @@ const FormLabelWithStatus = ({
       // Recursive function to search for the field and get its note
       const findFieldNote = (obj) => {
         // Base case: if we find the field we're looking for
-        if (obj && obj[fieldName] && obj[fieldName].note !== undefined) {
-          return obj[fieldName].note;
+        if (obj && obj[fieldName] !== undefined) {
+          if (
+            typeof obj[fieldName] === "object" &&
+            obj[fieldName].note !== undefined
+          ) {
+            return obj[fieldName].note;
+          } else {
+            return null;
+          }
         }
 
         // If it's an array, search through it
@@ -411,11 +421,14 @@ const FormLabelWithStatus = ({
                 {note === "" ? (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                      onClick={() => {
+                        setShowDropdown(false);
+                        setIsModalOpen(false);
+                      }} // Close modal when clicking the overlay
                     ></div>
                     <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
                       <div className="flex flex-col gap-y-6 w-full">
@@ -453,7 +466,7 @@ const FormLabelWithStatus = ({
                 ) : (
                   <dialog
                     open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                    className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0"
                   >
                     <div
                       className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -485,17 +498,17 @@ const FormLabelWithStatus = ({
             {status === "rejected" && (
               <div className="flex flex-row flex-wrap items-center gap-x-2 w-full smd:w-max">
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
-                  <div className="relative z-0">
+                  <div className="relative">
                     <FaPencil
                       className="text-blue-500 cursor-pointer z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
                       <div
-                        className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                        className="absolute top-8 z-50 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
                         ref={dropdownRef}
                       >
-                        <ul className="flex flex-col">
+                        <ul className="flex flex-col z-50">
                           <li
                             className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                             onClick={() => {}}
@@ -532,61 +545,21 @@ const FormLabelWithStatus = ({
                   </div>
                 </div>
                 {note ? (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                  >
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
-                      <h3 className="font-bold text-lg">View Note</h3>
-                      <p className="py-4">
-                        {existingNote ? existingNote : "No note added"}
-                      </p>
-                      <div className="modal-action">
-                        <button
-                          type="button" // Prevents the default form submission
-                          className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
-                          onClick={() => setIsModalOpen(false)} // Close modal on click
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </dialog>
-                ) : (
-                  <dialog
-                    open={isModalOpen}
-                    className="modal w-[30%] fixed mx-auto my-auto inset-0"
-                  >
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                      onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
-                    ></div>
-                    <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
-                      <div className="flex flex-col gap-y-6 w-full">
-                        <h3 className="font-bold text-lg">Add Note</h3>
-                        {/* Textarea with onChange event */}
-                        <textarea
-                          className="textarea textarea-bordered w-full h-28 resize-none rounded-xl px-3 py-3 border-1 border-gray-400"
-                          placeholder="Add note"
-                          value={notes} // Bind textarea value to the state
-                          onChange={handleTextareaChange} // Update state on change
-                        ></textarea>
-                      </div>
-
-                      <div className="modal-action">
-                        <form method="dialog" className="flex flex-row gap-x-3">
-                          {/* Save button triggers handleSave */}
-                          <button
-                            type="button"
-                            onClick={handleSave}
-                            className="btn bg-green-500 text-white rounded-xl px-6 py-2.5"
-                          >
-                            Save
-                          </button>
+                  <div className="relative z-50">
+                    <dialog
+                      open={isModalOpen}
+                      className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0 z-50"
+                    >
+                      <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-10"
+                        onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                      ></div>
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4 z-50 relative">
+                        <h3 className="font-bold text-lg">View Note</h3>
+                        <p className="py-4">
+                          {existingNote ? existingNote : "No note added"}
+                        </p>
+                        <div className="modal-action">
                           <button
                             type="button" // Prevents the default form submission
                             className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
@@ -594,28 +567,75 @@ const FormLabelWithStatus = ({
                           >
                             Close
                           </button>
-                        </form>
+                        </div>
                       </div>
-                    </div>
-                  </dialog>
+                    </dialog>
+                  </div>
+                ) : (
+                  <div className="relative z-50">
+                    <dialog
+                      open={isModalOpen}
+                      className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0 "
+                    >
+                      <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-10"
+                        onClick={() => setIsModalOpen(false)} // Close modal when clicking the overlay
+                      ></div>
+                      <div className="modal-box bg-white rounded-xl shadow-lg p-4 flex flex-col gap-y-6 z-50 relative">
+                        <div className="flex flex-col gap-y-6 w-full">
+                          <h3 className="font-bold text-lg">Add Note</h3>
+                          {/* Textarea with onChange event */}
+                          <textarea
+                            className="textarea textarea-bordered w-full h-28 resize-none rounded-xl px-3 py-3 border-1 border-gray-400"
+                            placeholder="Add note"
+                            value={notes} // Bind textarea value to the state
+                            onChange={handleTextareaChange} // Update state on change
+                          ></textarea>
+                        </div>
+
+                        <div className="modal-action">
+                          <form
+                            method="dialog"
+                            className="flex flex-row gap-x-3"
+                          >
+                            {/* Save button triggers handleSave */}
+                            <button
+                              type="button"
+                              onClick={handleSave}
+                              className="btn bg-green-500 text-white rounded-xl px-6 py-2.5"
+                            >
+                              Save
+                            </button>
+                            <button
+                              type="button" // Prevents the default form submission
+                              className="btn bg-gray-300 text-gray-700 rounded-xl px-6 py-2.5"
+                              onClick={() => setIsModalOpen(false)} // Close modal on click
+                            >
+                              Close
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
                 )}
               </div>
             )}
             {status === "approved" && (
               <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
-                <div className="relative z-10">
+                <div className="relative ">
                   <FaPencil
                     className="text-blue-500 cursor-pointer z-10"
                     onClick={handleDropdownToggle} // Toggle dropdown on click
                   />
                   {isDropdownOpen && (
                     <div
-                      className="absolute top-8 bg-white border border-gray-300 z-20 shadow-lg rounded-md py-2 w-60"
+                      className="absolute top-8 bg-white border border-gray-300 z-50 shadow-lg rounded-md py-2 w-60"
                       ref={dropdownRef}
                     >
-                      <ul className="flex flex-col">
+                      <ul className="flex flex-col z-50">
                         <li
-                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                          className="flex flex-row gap-x-2 z-20 items-center px-4 rounded-xl cursor-pointer"
                           onClick={handleApproveApplication}
                         >
                           <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
@@ -664,7 +684,7 @@ const FormLabelWithStatus = ({
                   {note ? (
                     <dialog
                       open={isModalOpen}
-                      className="modal w-[30%] fixed mx-auto my-auto inset-0"
+                      className="modal w-[60%] md:w-[30%] fixed mx-auto my-auto inset-0"
                     >
                       <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-40"

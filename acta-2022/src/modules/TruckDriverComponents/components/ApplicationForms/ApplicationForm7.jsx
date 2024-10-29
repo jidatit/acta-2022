@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
+import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 
 const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -306,9 +307,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
             localFormData.map((field, index) => (
               <div className="flex flex-col w-full mb-6" key={index}>
                 <div>
-                  <SingleLabelLogic
+                  <FormLabelWithStatus
                     htmlFor="testedPositiveEver"
-                    labelName="Have you ever been tested positive or refused to be tested on any pre-employment drug test in which you were not hired during the past two years?"
+                    label="Have you ever been tested positive or refused to be tested on any pre-employment drug test in which you were not hired during the past two years?"
                     status={field.testedPositiveEver.status}
                     note={field.testedPositiveEver.note}
                     fieldName="testedPositiveEver"
@@ -358,9 +359,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
 
                 {field.testedPositiveEver.value === "yes" && (
                   <div className="w-full mb-6 mt-4">
-                    <SingleLabelLogic
+                    <FormLabelWithStatus
                       htmlFor="DOTCompletion"
-                      labelName="If yes, have you successfully completed the DOT return to duty process?"
+                      label="If yes, have you successfully completed the DOT return to duty process?"
                       status={field.DOTCompletion.status}
                       note={field.DOTCompletion.note}
                       fieldName="DOTCompletion"
