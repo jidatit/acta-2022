@@ -14,9 +14,10 @@ const FormLabelWithStatus = ({
   index,
   fieldName,
   uid,
+  important = false,
 }) => {
   const { currentUser } = useAuth();
-
+  console.log("index: " + index);
   const [existingNote, setExistingNote] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown
@@ -353,7 +354,8 @@ const FormLabelWithStatus = ({
         htmlFor={`${id}-${index}`}
         className=" smd:w-max text-[16px] font-inter font-semibold text-gray-900 font-radios "
       >
-        {label}*
+        {label}
+        {important ? "" : "*"}
       </label>
       <div className={`flex flex-row gap-x-2 smd:w-auto `}>
         {/* Logic for showing icons and notes based on status and user type */}

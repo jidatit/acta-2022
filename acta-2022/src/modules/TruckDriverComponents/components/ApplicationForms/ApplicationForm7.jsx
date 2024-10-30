@@ -366,6 +366,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                       note={field.DOTCompletion.note}
                       fieldName="DOTCompletion"
                       uid={uid}
+                      important={true}
                     />
                     <div className="mt-2">
                       <label className="inline-flex items-center">

@@ -278,6 +278,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     index={index}
                     fieldName="street1"
                     uid={uid}
+                    important={true}
                   />
                   <input
                     type="text"
@@ -302,6 +303,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     index={index}
                     fieldName="street2"
                     uid={uid}
+                    important={true}
                   />
                   <input
                     type="text"
@@ -326,6 +328,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     index={index}
                     fieldName="city"
                     uid={uid}
+                    important={true}
                   />
                   <input
                     type="text"
@@ -348,6 +351,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     index={index}
                     fieldName="state"
                     uid={uid}
+                    important={true}
                   />
                   <input
                     type="text"

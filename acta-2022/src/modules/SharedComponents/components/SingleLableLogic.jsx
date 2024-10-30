@@ -15,6 +15,7 @@ const SingleLabelLogic = ({
   note,
   fieldName,
   uid,
+  important = false, // Add default value of false for important prop
 }) => {
   const { currentUser } = useAuth();
   const [existingNote, setExistingNote] = useState("");
@@ -375,7 +376,8 @@ const SingleLabelLogic = ({
         htmlFor={htmlFor}
         className={` text-[16px] font-inter smd:w-max font-semibold text-gray-900 font-radios `}
       >
-        {labelName}*
+        {labelName}
+        {important ? "" : "*"}
       </label>
       <div
         className={`flex flex-row gap-x-2 smd:w-auto flex-shrink-0 justify-end `}

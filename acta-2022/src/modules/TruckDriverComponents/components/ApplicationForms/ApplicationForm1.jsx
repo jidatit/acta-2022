@@ -489,6 +489,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 note={formData?.referredBy?.note}
                 fieldName="referredBy"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"
@@ -570,6 +571,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 note={formData?.payExpected?.note}
                 fieldName="payExpected"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"
@@ -632,6 +634,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 note={formData?.street2?.note}
                 fieldName="street2"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"

@@ -383,7 +383,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Company Name"
-                      id="companyName"
+                      id={`companyName-${index}`}
                       status={field.companyName.status}
                       note={field.companyName.note}
                       index={index}
@@ -423,6 +423,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       index={index}
                       fieldName="street"
                       uid={uid}
+                      important={true}
                     />
                     <input
                       type="text"
@@ -585,6 +586,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       index={index}
                       fieldName="fax1"
                       uid={uid}
+                      important={true}
                     />
                     <input
                       type="text"
@@ -713,6 +715,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       index={index}
                       fieldName="salary"
                       uid={uid}
+                      important={true}
                     />
                     <input
                       type="text"

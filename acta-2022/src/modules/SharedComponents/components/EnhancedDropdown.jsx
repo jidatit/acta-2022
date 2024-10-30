@@ -77,7 +77,7 @@ const EnhancedStatusDropdown = ({
         <button
           type="button"
           className="inline-flex justify-center items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen((prevState) => !prevState)}
         >
           <ChevronDown className="h-5 w-5" />
         </button>

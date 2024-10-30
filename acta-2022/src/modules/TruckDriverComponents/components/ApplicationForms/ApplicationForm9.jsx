@@ -170,7 +170,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
 
         // Update driverStatus to "Filled"
         await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
-          driverStatus: "pending",
+          driverStatus: "filled",
         });
 
         console.log("Driver status updated to 'Filled' successfully.");

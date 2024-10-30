@@ -546,6 +546,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   index={index}
                   fieldName="LicenseNo"
                   uid={uid}
+                  important={true}
                 />
                 <input
                   type="text"
@@ -570,6 +571,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   index={index}
                   fieldName="type"
                   uid={uid}
+                  important={true}
                 />
                 <input
                   type="text"
@@ -594,6 +596,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   index={index}
                   fieldName="state"
                   uid={uid}
+                  important={true}
                 />
                 <input
                   type="text"
@@ -618,6 +621,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   index={index}
                   fieldName="expiryDate"
                   uid={uid}
+                  important={true}
                 />
                 <input
                   type="date"
@@ -1175,6 +1179,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 note={extraSkills.safeDrivingAwards.note} // Adjust the note accordingly
                 fieldName="safeDrivingAwards"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"
@@ -1198,6 +1203,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 note={extraSkills.specialTraining.note} // Adjust the note accordingly
                 fieldName="specialTraining"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"
@@ -1221,6 +1227,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 note={extraSkills.otherSkills.note} // Adjust the note accordingly
                 fieldName="otherSkills"
                 uid={uid}
+                important={true}
               />
               <input
                 type="text"
