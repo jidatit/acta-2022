@@ -12,11 +12,11 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const initialFields = [
     {
-      street1: { value: "", status: "pending", note: "" },
-      street2: { value: "", status: "pending", note: "" },
-      city: { value: "", status: "pending", note: "" },
-      state: { value: "", status: "pending", note: "" },
-      zipCode: { value: "", status: "pending", note: "" },
+      street12: { value: "", status: "pending", note: "" },
+      street22: { value: "", status: "pending", note: "" },
+      city22: { value: "", status: "pending", note: "" },
+      state22: { value: "", status: "pending", note: "" },
+      zipCode22: { value: "", status: "pending", note: "" },
     },
   ];
   const authData = useAuth();
@@ -150,9 +150,15 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (uid) => {
     try {
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      let docRef = "";
+      if (uid) {
+        docRef = doc(db, "truck_driver_applications", uid);
+      } else {
+        docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      }
+
       const docSnap = await getDoc(docRef);
 
       const applicationData = {
@@ -227,11 +233,11 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     setLocalFormData([
       ...localFormData,
       {
-        street1: { value: "", status: "pending", note: "" },
-        street2: { value: "", status: "pending", note: "" },
-        city: { value: "", status: "pending", note: "" },
-        state: { value: "", status: "pending", note: "" },
-        zipCode: { value: "", status: "pending", note: "" },
+        street12: { value: "", status: "pending", note: "" },
+        street22: { value: "", status: "pending", note: "" },
+        city22: { value: "", status: "pending", note: "" },
+        state22: { value: "", status: "pending", note: "" },
+        zipCode22: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -272,23 +278,23 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                 <div>
                   <FormLabelWithStatus
                     label="Street 1"
-                    id={`street1`}
-                    status={address?.street1?.status}
-                    note={address?.street1?.note}
+                    id={`street12`}
+                    status={address?.street12?.status}
+                    note={address?.street12?.note}
                     index={index}
-                    fieldName="street1"
+                    fieldName="street12"
                     uid={uid}
                     important={true}
                   />
                   <input
                     type="text"
-                    name="street1"
-                    id={`street1-${index}`}
-                    value={address?.street1?.value}
+                    name="street12"
+                    id={`street12-${index}`}
+                    value={address?.street12?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("street1", index)}
+                    disabled={hasValue("street12", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("street1", index)
+                      hasValue("street12", index)
                         ? ""
                         : "bg-white border-gray-300"
                     }`}
@@ -297,23 +303,23 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                 <div>
                   <FormLabelWithStatus
                     label="Street 2"
-                    id={`street2`}
-                    status={address?.street2?.status}
-                    note={address?.street2?.note}
+                    id={`street22`}
+                    status={address?.street22?.status}
+                    note={address?.street22?.note}
                     index={index}
-                    fieldName="street2"
+                    fieldName="street22"
                     uid={uid}
                     important={true}
                   />
                   <input
                     type="text"
-                    name="street2"
-                    id={`street2-${index}`}
-                    value={address?.street2?.value}
+                    name="street22"
+                    id={`street22-${index}`}
+                    value={address?.street22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("street2", index)}
+                    disabled={hasValue("street22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("street2", index)
+                      hasValue("street22", index)
                         ? ""
                         : "bg-white border-gray-300"
                     }`}
@@ -322,68 +328,72 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                 <div>
                   <FormLabelWithStatus
                     label="City"
-                    id={`city`}
-                    status={address?.city?.status}
-                    note={address?.city?.note}
+                    id={`city22`}
+                    status={address?.city22?.status}
+                    note={address?.city22?.note}
                     index={index}
-                    fieldName="city"
+                    fieldName="city22"
                     uid={uid}
                     important={true}
                   />
                   <input
                     type="text"
-                    name="city"
-                    id={`city-${index}`}
-                    value={address?.city?.value}
+                    name="city22"
+                    id={`city22-${index}`}
+                    value={address?.city22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("city", index)}
+                    disabled={hasValue("city22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("city", index) ? "" : "bg-white border-gray-300"
+                      hasValue("city22", index)
+                        ? ""
+                        : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
                 <div>
                   <FormLabelWithStatus
                     label="State"
-                    id={`state`}
-                    status={address?.state?.status}
-                    note={address?.state?.note}
+                    id={`state22`}
+                    status={address?.state22?.status}
+                    note={address?.state22?.note}
                     index={index}
-                    fieldName="state"
+                    fieldName="state22"
                     uid={uid}
                     important={true}
                   />
                   <input
                     type="text"
-                    name="state"
-                    id={`state-${index}`}
-                    value={address?.state?.value}
+                    name="state22"
+                    id={`state22-${index}`}
+                    value={address?.state22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("state", index)}
+                    disabled={hasValue("state22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("state", index) ? "" : "bg-white border-gray-300"
+                      hasValue("state22", index)
+                        ? ""
+                        : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
                 <div>
                   <FormLabelWithStatus
                     label="Zip Code"
-                    id={`zipCode`}
-                    status={address?.zipCode?.status}
-                    note={address?.zipCode?.note}
+                    id={`zipCode22`}
+                    status={address?.zipCode22?.status}
+                    note={address?.zipCode22?.note}
                     index={index}
-                    fieldName="zipCode"
+                    fieldName="zipCode22"
                     uid={uid}
                   />
                   <input
                     type="text"
-                    name="zipCode"
-                    id={`zipCode-${index}`}
-                    value={address?.zipCode?.value}
+                    name="zipCode22"
+                    id={`zipCode22-${index}`}
+                    value={address?.zipCode22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("zipCode", index)}
+                    disabled={hasValue("zipCode22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("zipCode", index)
+                      hasValue("zipCode22", index)
                         ? ""
                         : "bg-white border-gray-300"
                     }`}

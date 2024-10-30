@@ -37,58 +37,60 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     window.scrollTo(0, 0);
   }, []); // Empty dependency array means this effect runs once, on mount
 
-  const [addressFields, setAddressFields] = useState(
-    addressField.length > 0
-      ? addressField
-      : [
-          {
-            date: { value: "", status: "pending", note: "" },
-            accidentType: { value: "", status: "pending", note: "" },
-            location: { value: "", status: "pending", note: "" },
-            fatalities: { value: "", status: "pending", note: "" },
-            penalties: { value: "", status: "pending", note: "" },
-            comments: { value: "", status: "pending", note: "" },
-          },
-        ]
-  );
+  const [addressFields, setAddressFields] = useState(() => {
+    if (addressField.length > 0) {
+      return addressField;
+    }
+    return [
+      {
+        date41: { value: "", status: "pending", note: "" },
+        accidentType: { value: "", status: "pending", note: "" },
+        location41: { value: "", status: "pending", note: "" },
+        fatalities: { value: "", status: "pending", note: "" },
+        penalties41: { value: "", status: "pending", note: "" },
+        comments41: { value: "", status: "pending", note: "" },
+      },
+    ];
+  });
 
   useEffect(() => {
     if (addressFields.length === 0) {
       setAddressFields([
         {
-          date: { value: "", status: "pending", note: "" },
+          date41: { value: "", status: "pending", note: "" },
           accidentType: { value: "", status: "pending", note: "" },
-          location: { value: "", status: "pending", note: "" },
+          location41: { value: "", status: "pending", note: "" },
           fatalities: { value: "", status: "pending", note: "" },
-          penalties: { value: "", status: "pending", note: "" },
-          comments: { value: "", status: "pending", note: "" },
+          penalties41: { value: "", status: "pending", note: "" },
+          comments41: { value: "", status: "pending", note: "" },
         },
       ]);
     }
   }, [addressFields]);
-  const [trafficConvictionFields, setTrafficConvictionFields] = useState(
-    trafficConvictionField.length > 0
-      ? trafficConvictionField
-      : [
-          {
-            date: { value: "", status: "pending", note: "" },
-            offenseType: { value: "", status: "pending", note: "" },
-            location: { value: "", status: "pending", note: "" },
-            penalties: { value: "", status: "pending", note: "" },
-            comments: { value: "", status: "pending", note: "" },
-          },
-        ]
-  );
+  const [trafficConvictionFields, setTrafficConvictionFields] = useState(() => {
+    if (trafficConvictionField.length > 0) {
+      return trafficConvictionField;
+    }
+    return [
+      {
+        date42: { value: "", status: "pending", note: "" },
+        offenseType: { value: "", status: "pending", note: "" },
+        location42: { value: "", status: "pending", note: "" },
+        penalties42: { value: "", status: "pending", note: "" },
+        comments42: { value: "", status: "pending", note: "" },
+      },
+    ];
+  });
 
   useEffect(() => {
     if (trafficConvictionFields.length === 0) {
       setTrafficConvictionFields([
         {
-          date: { value: "", status: "pending", note: "" },
+          date42: { value: "", status: "pending", note: "" },
           offenseType: { value: "", status: "pending", note: "" },
-          location: { value: "", status: "pending", note: "" },
-          penalties: { value: "", status: "pending", note: "" },
-          comments: { value: "", status: "pending", note: "" },
+          location42: { value: "", status: "pending", note: "" },
+          penalties42: { value: "", status: "pending", note: "" },
+          comments42: { value: "", status: "pending", note: "" },
         },
       ]);
     }
@@ -104,12 +106,12 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const { editStatus, setEditStatus } = useEdit();
   const hasValue = useCallback(
     (fieldType, fieldName, index) => {
-      // If in edit mode, fields should remain enabled
+      // If in edit mode or user is admin, fields should remain enabled
       if (currentUser && currentUser.userType !== "Admin") {
         if (editStatus) {
           return false;
         }
-        console.log("saving", isSaveClicked);
+
         // If form hasn't been saved yet, keep fields enabled for editing
         if (!isSaveClicked) {
           return false;
@@ -117,9 +119,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
 
         // Handle address fields
         if (fieldType === "address") {
-          // If index is out of bounds, disable field
+          // Check if this is a newly added field (not in original addressField array)
           if (index >= addressField.length) {
-            return true;
+            return false; // Never disable newly added fields
           }
 
           const field = addressField[index]?.[fieldName];
@@ -129,20 +131,25 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
 
         // Handle traffic conviction fields
         if (fieldType === "traffic") {
-          // If index is out of bounds, disable field
+          // Check if this is a newly added field (not in original trafficConvictionField array)
           if (index >= trafficConvictionField.length) {
-            return true;
+            return false; // Never disable newly added fields
           }
 
           const field = trafficConvictionField[index]?.[fieldName];
           // Disable field only if it has a value after save has been clicked
           return field?.value ? true : false;
         }
-
-        return false;
       }
+      return false;
     },
-    [isSaveClicked, editStatus, addressField, trafficConvictionField]
+    [
+      isSaveClicked,
+      editStatus,
+      addressField,
+      trafficConvictionField,
+      currentUser,
+    ]
   );
 
   // Helper functions
@@ -243,27 +250,40 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const validateAddressFields = () => {
     const newErrors = addressFields.map((field) => {
       const fieldErrors = {};
-      Object.entries(field).forEach(([key, value]) => {
-        if (value.value.trim() === "") {
+
+      // Iterate over each field and check if the value property is empty
+      Object.entries(field).forEach(([key, fieldObject]) => {
+        // Check if the value property exists and is empty
+        if (!fieldObject.value || fieldObject.value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
+
       return fieldErrors;
     });
+
+    // Update the error state with the new errors
     setAddressErrors(newErrors);
+
+    // Return true if there are no errors in any of the fields
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
 
+  // Also fix the validateTrafficFields function for consistency
   const validateTrafficFields = () => {
     const newErrors = trafficConvictionFields.map((field) => {
       const fieldErrors = {};
-      Object.entries(field).forEach(([key, value]) => {
-        if (value.value.trim() === "") {
+
+      Object.entries(field).forEach(([key, fieldObject]) => {
+        // Check if the value property exists and is empty
+        if (!fieldObject.value || fieldObject.value.trim() === "") {
           fieldErrors[key] = "This field is required";
         }
       });
+
       return fieldErrors;
     });
+
     setTrafficErrors(newErrors);
     return newErrors.every((err) => Object.keys(err).length === 0);
   };
@@ -305,7 +325,6 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
         }
-
         await updateDoc(docRef, updateObject);
       } else {
         // For new documents, set the completedForms to the current form number
@@ -431,30 +450,26 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     }, [clicked]);
   }
   const addAddressFields = () => {
-    setAddressFields([
-      ...addressFields,
-      {
-        date: { value: "", status: "pending", note: "" },
-        accidentType: { value: "", status: "pending", note: "" },
-        location: { value: "", status: "pending", note: "" },
-        fatalities: { value: "", status: "pending", note: "" },
-        penalties: { value: "", status: "pending", note: "" },
-        comments: { value: "", status: "pending", note: "" },
-      },
-    ]);
+    const newField = {
+      date41: { value: "", status: "pending", note: "" },
+      accidentType: { value: "", status: "pending", note: "" },
+      location41: { value: "", status: "pending", note: "" },
+      fatalities: { value: "", status: "pending", note: "" },
+      penalties41: { value: "", status: "pending", note: "" },
+      comments41: { value: "", status: "pending", note: "" },
+    };
+    setAddressFields((prev) => [...prev, newField]);
   };
 
   const addTrafficFields = () => {
-    setTrafficConvictionFields([
-      ...trafficConvictionFields,
-      {
-        date: { value: "", status: "pending", note: "" },
-        offenseType: { value: "", status: "pending", note: "" },
-        location: { value: "", status: "pending", note: "" },
-        penalties: { value: "", status: "pending", note: "" },
-        comments: { value: "", status: "pending", note: "" },
-      },
-    ]);
+    const newField = {
+      date42: { value: "", status: "pending", note: "" },
+      offenseType: { value: "", status: "pending", note: "" },
+      location42: { value: "", status: "pending", note: "" },
+      penalties42: { value: "", status: "pending", note: "" },
+      comments42: { value: "", status: "pending", note: "" },
+    };
+    setTrafficConvictionFields((prev) => [...prev, newField]);
   };
   const removeAddressField = (index) => {
     setAddressFields(addressFields.filter((_, i) => i !== index));
@@ -516,33 +531,33 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Date"
-                      id={`date`}
-                      status={address.date.status}
-                      note={address.date.note}
+                      id={`date41`}
+                      status={address.date41.status}
+                      note={address.date41.note}
                       index={index}
-                      fieldName="date"
+                      fieldName="date41"
                       uid={uid}
                     />
                     <input
-                      type="date"
-                      name="date"
-                      id={`date-${index}`}
-                      value={address.date.value}
+                      type="date41"
+                      name="date41"
+                      id={`date41-${index}`}
+                      value={address.date41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("date", index)}
+                      disabled={hasAddressValue("date41", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        addressErrors[index]?.date
+                        addressErrors[index]?.date41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("date", index)
+                        hasAddressValue("date41", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {addressErrors[index] && addressErrors[index].date && (
+                    {addressErrors[index] && addressErrors[index].date41 && (
                       <p className="mt-1 text-xs text-red-500">
-                        {addressErrors[index].date}
+                        {addressErrors[index].date41}
                       </p>
                     )}
                   </div>
@@ -583,35 +598,36 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Location"
-                      id={`location`}
-                      status={address.location.status}
-                      note={address.location.note}
+                      id={`location41`}
+                      status={address.location41.status}
+                      note={address.location41.note}
                       index={index}
-                      fieldName="location"
+                      fieldName="location41"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="location"
-                      id={`location-${index}`}
-                      value={address.location.value}
+                      name="location41"
+                      id={`location41-${index}`}
+                      value={address.location41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("location", index)}
+                      disabled={hasAddressValue("location41", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        addressErrors[index]?.location
+                        addressErrors[index]?.location41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("location", index)
+                        hasAddressValue("location41", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {addressErrors[index] && addressErrors[index].location && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {addressErrors[index].location}
-                      </p>
-                    )}
+                    {addressErrors[index] &&
+                      addressErrors[index].location41 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addressErrors[index].location41}
+                        </p>
+                      )}
                   </div>
                   <div>
                     <FormLabelWithStatus
@@ -650,68 +666,70 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Penalties"
-                      id={`penalties`}
-                      status={address.penalties.status}
-                      note={address.penalties.note}
+                      id={`penalties41`}
+                      status={address.penalties41.status}
+                      note={address.penalties41.note}
                       index={index}
-                      fieldName="penalties"
+                      fieldName="penalties41"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="penalties"
-                      id={`penalties-${index}`}
-                      value={address.penalties.value}
+                      name="penalties41"
+                      id={`penalties41-${index}`}
+                      value={address.penalties41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("penalties", index)}
+                      disabled={hasAddressValue("penalties41", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        addressErrors[index]?.penalties
+                        addressErrors[index]?.penalties41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("penalties", index)
+                        hasAddressValue("penalties41", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {addressErrors[index] && addressErrors[index].penalties && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {addressErrors[index].penalties}
-                      </p>
-                    )}
+                    {addressErrors[index] &&
+                      addressErrors[index].penalties41 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addressErrors[index].penalties41}
+                        </p>
+                      )}
                   </div>
                   <div>
                     <FormLabelWithStatus
                       label="Comments"
-                      id={`comments`}
-                      status={address.comments.status}
-                      note={address.comments.note}
+                      id={`comments41`}
+                      status={address.comments41.status}
+                      note={address.comments41.note}
                       index={index}
-                      fieldName="comments"
+                      fieldName="comments41"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="comments"
-                      id={`comments-${index}`}
-                      value={address.comments.value}
+                      name="comments41"
+                      id={`comments41-${index}`}
+                      value={address.comments41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("comments", index)}
+                      disabled={hasAddressValue("comments41", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        addressErrors[index]?.comments
+                        addressErrors[index]?.comments41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("comments", index)
+                        hasAddressValue("comments41", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {addressErrors[index] && addressErrors[index].comments && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {addressErrors[index].comments}
-                      </p>
-                    )}
+                    {addressErrors[index] &&
+                      addressErrors[index].comments41 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addressErrors[index].comments41}
+                        </p>
+                      )}
                   </div>
                   {currentUser.userType !== "Admin" ? (
                     <div className="flex items-center mt-4">
@@ -776,33 +794,33 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Date"
-                      id={`date`}
-                      status={traffic.date.status}
-                      note={traffic.date.note}
+                      id={`date42`}
+                      status={traffic.date42.status}
+                      note={traffic.date42.note}
                       index={index}
-                      fieldName="date"
+                      fieldName="date42"
                       uid={uid}
                     />
                     <input
-                      type="date"
-                      name="date"
-                      id={`date-${index}`}
-                      value={traffic.date.value}
+                      type="date42"
+                      name="date42"
+                      id={`date42-${index}`}
+                      value={traffic.date42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("date", index)}
+                      disabled={hasTrafficValue("date42", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        trafficErrors[index]?.date
+                        trafficErrors[index]?.date42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("date", index)
+                        hasTrafficValue("date42", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {trafficErrors[index] && trafficErrors[index].date && (
+                    {trafficErrors[index] && trafficErrors[index].date42 && (
                       <p className="mt-1 text-xs text-red-500">
-                        {trafficErrors[index].date}
+                        {trafficErrors[index].date42}
                       </p>
                     )}
                   </div>
@@ -843,101 +861,104 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Location"
-                      id={`location`}
-                      status={traffic.location.status}
-                      note={traffic.location.note}
+                      id={`location42`}
+                      status={traffic.location42.status}
+                      note={traffic.location42.note}
                       index={index}
-                      fieldName="location"
+                      fieldName="location42"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="location"
-                      id={`location-${index}`}
-                      value={traffic.location.value}
+                      name="location42"
+                      id={`location42-${index}`}
+                      value={traffic.location42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("location", index)}
+                      disabled={hasTrafficValue("location42", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        trafficErrors[index]?.location
+                        trafficErrors[index]?.location42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("location", index)
+                        hasTrafficValue("location42", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {trafficErrors[index] && trafficErrors[index].location && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {trafficErrors[index].location}
-                      </p>
-                    )}
+                    {trafficErrors[index] &&
+                      trafficErrors[index].location42 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {trafficErrors[index].location42}
+                        </p>
+                      )}
                   </div>
                   <div>
                     <FormLabelWithStatus
                       label="Penalties"
-                      id={`penalties`}
-                      status={traffic.penalties.status}
-                      note={traffic.penalties.note}
+                      id={`penalties42`}
+                      status={traffic.penalties42.status}
+                      note={traffic.penalties42.note}
                       index={index}
-                      fieldName="penalties"
+                      fieldName="penalties42"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="penalties"
-                      id={`penalties-${index}`}
-                      value={traffic.penalties.value}
+                      name="penalties42"
+                      id={`penalties42-${index}`}
+                      value={traffic.penalties42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("penalties", index)}
+                      disabled={hasTrafficValue("penalties42", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        trafficErrors[index]?.penalties
+                        trafficErrors[index]?.penalties42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("penalties", index)
+                        hasTrafficValue("penalties42", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {trafficErrors[index] && trafficErrors[index].penalties && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {trafficErrors[index].penalties}
-                      </p>
-                    )}
+                    {trafficErrors[index] &&
+                      trafficErrors[index].penalties42 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {trafficErrors[index].penalties42}
+                        </p>
+                      )}
                   </div>
                   <div>
                     <FormLabelWithStatus
                       label="Comments"
-                      id={`comments`}
-                      status={traffic.comments.status}
-                      note={traffic.comments.note}
+                      id={`comments42`}
+                      status={traffic.comments42.status}
+                      note={traffic.comments42.note}
                       index={index}
-                      fieldName="comments"
+                      fieldName="comments42"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="comments"
-                      id={`comments-${index}`}
-                      value={traffic.comments.value}
+                      name="comments42"
+                      id={`comments42-${index}`}
+                      value={traffic.comments42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("comments", index)}
+                      disabled={hasTrafficValue("comments42", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        trafficErrors[index]?.comments
+                        trafficErrors[index]?.comments42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("comments", index)
+                        hasTrafficValue("comments42", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {trafficErrors[index] && trafficErrors[index].comments && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {trafficErrors[index].comments}
-                      </p>
-                    )}
+                    {trafficErrors[index] &&
+                      trafficErrors[index].comments42 && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {trafficErrors[index].comments42}
+                        </p>
+                      )}
                   </div>
                   {currentUser.userType !== "Admin" ? (
                     <div className="flex items-center mt-4">

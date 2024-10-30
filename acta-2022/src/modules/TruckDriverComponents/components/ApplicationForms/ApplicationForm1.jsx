@@ -102,35 +102,38 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const saveForm1 = async () => {
+  const saveForm1 = async (isSubmit = false) => {
     const applicationData = {
       ...formData,
     };
-    await saveToFirebase(1, applicationData);
+    await saveToFirebase(1, applicationData, isSubmit);
   };
-  const saveToFirebase = async (formNumber, formData) => {
+  const saveToFirebase = async (formNumber, formData, isSubmit = false) => {
     try {
       const docRef = doc(db, "truck_driver_applications", currentUser.uid);
       const docSnap = await getDoc(docRef);
 
       // Create the update object with the form data
-      const formDataToSave = {
+      const formUpdate = {
         ...formData,
         submittedAt: new Date(),
+        isSubmitted: isSubmit,
       };
 
+      let updateObject = {
+        [`form${formNumber}`]: formUpdate,
+      };
       // Reference to the specific document in the collection
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
-
+        const currentSavedForms = existingData.savedForms || 0;
+        if (1 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 1;
+        }
         // Only update completedForms if the new form number is higher
-        const updateObject = {
-          [`form${formNumber}`]: formDataToSave,
-          savedForms: formNumber,
-        };
-
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
         }
@@ -138,11 +141,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         // Document exists, update it
         await updateDoc(docRef, updateObject);
       } else {
-        // Document does not exist, create it
+        // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
-          [`form${formNumber}`]: formDataToSave,
+          ...updateObject,
+          savedForms: 1,
           completedForms: formNumber,
-          savedForms: formNumber,
         });
       }
 
@@ -172,7 +175,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
           driverStatus: "pending",
         });
-
+        const docRef = doc(db, "truck_driver_applications", uid);
+        await updateDoc(docRef, {
+          applicationStatus: "pending",
+          applicationStatusDate: new Date().toISOString(),
+        });
         console.log("Driver status updated to 'Filled' successfully.");
       } else {
         console.error("No matching driver found in the collection.");
@@ -652,88 +659,88 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
             </div>
             <div>
               <SingleLabelLogic
-                htmlFor="city"
+                htmlFor="city11"
                 labelName="City"
-                value={formData?.city?.value}
-                status={formData?.city?.status}
-                note={formData?.city?.note}
-                fieldName="city"
+                value={formData?.city11?.value}
+                status={formData?.city11?.status}
+                note={formData?.city11?.note}
+                fieldName="city11"
                 uid={uid}
               />
               <input
                 type="text"
-                name="city"
-                id="city"
-                value={formData?.city?.value}
+                name="city11"
+                id="city11"
+                value={formData?.city11?.value}
                 onChange={handleChange}
-                disabled={hasValue("city")} // Disable if has value
+                disabled={hasValue("city11")} // Disable if has value
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.city ? "border-red-500 border-2" : ""
+                  errors.city11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("city") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("city11") ? "" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
-              {errors.city && (
+              {errors.city11 && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
-                  {errors.city}
+                  {errors.city11}
                 </p>
               )}
             </div>
             <div>
               <SingleLabelLogic
-                htmlFor="state"
+                htmlFor="state11"
                 labelName="State"
-                value={formData?.state?.value}
-                status={formData?.state?.status}
-                note={formData?.state?.note}
-                fieldName="state"
+                value={formData?.state11?.value}
+                status={formData?.state11?.status}
+                note={formData?.state11?.note}
+                fieldName="state11"
                 uid={uid}
               />
               <input
                 type="text"
-                name="state"
-                id="state"
-                value={formData?.state?.value}
+                name="state11"
+                id="state11"
+                value={formData?.state11?.value}
                 onChange={handleChange}
-                disabled={hasValue("state")} // Disable if has value
+                disabled={hasValue("state11")} // Disable if has value
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.state ? "border-red-500 border-2" : ""
+                  errors.state11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("state") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("state11") ? "" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
-              {errors.state && (
+              {errors.state11 && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
-                  {errors.state}
+                  {errors.state11}
                 </p>
               )}
             </div>
             <div>
               <SingleLabelLogic
-                htmlFor="zipCode"
+                htmlFor="zipCode11"
                 labelName="Zip Code"
-                value={formData?.zipCode?.value}
-                status={formData?.zipCode?.status}
-                note={formData?.zipCode?.note}
-                fieldName="zipCode"
+                value={formData?.zipCode11?.value}
+                status={formData?.zipCode11?.status}
+                note={formData?.zipCode11?.note}
+                fieldName="zipCode11"
                 uid={uid}
               />
               <input
                 type="number"
-                name="zipCode"
-                id="zipCode"
-                value={formData?.zipCode?.value}
+                name="zipCode11"
+                id="zipCode11"
+                value={formData?.zipCode11?.value}
                 onChange={handleChange}
-                disabled={hasValue("zipCode")} // Disable if has value
+                disabled={hasValue("zipCode11")} // Disable if has value
                 className={`w-full p-2 mt-1 border rounded-md ${
-                  errors.zipCode ? "border-red-500 border-2" : ""
+                  errors.zipCode11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("zipCode") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("zipCode11") ? "" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
-              {errors.zipCode && (
+              {errors.zipCode11 && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
-                  {errors.zipCode}
+                  {errors.zipCode11}
                 </p>
               )}
             </div>

@@ -44,9 +44,9 @@ export const AdminProvider = ({ children }) => {
     payExpected: { value: "", status: "pending", note: "" },
     street1: { value: "", status: "pending", note: "" },
     street2: { value: "", status: "pending", note: "" },
-    city: { value: "", status: "pending", note: "" },
-    state: { value: "", status: "pending", note: "" },
-    zipCode: { value: "", status: "pending", note: "" },
+    city11: { value: "", status: "pending", note: "" },
+    state11: { value: "", status: "pending", note: "" },
+    zipCode11: { value: "", status: "pending", note: "" },
     cellPhone: { value: "", status: "pending", note: "" },
     Email: { value: "", status: "pending", note: "" },
     EmergencyContact: { value: "", status: "pending", note: "" },
@@ -83,20 +83,20 @@ export const AdminProvider = ({ children }) => {
 
   const [addressField, setAddressField] = useState([
     {
-      date: { value: "", status: "pending", note: "" },
+      date41: { value: "", status: "pending", note: "" },
       accidentType: { value: "", status: "pending", note: "" },
-      location: { value: "", status: "pending", note: "" },
+      location41: { value: "", status: "pending", note: "" },
       fatalities: { value: "", status: "pending", note: "" },
-      penalties: { value: "", status: "pending", note: "" },
-      comments: { value: "", status: "pending", note: "" },
+      penalties41: { value: "", status: "pending", note: "" },
+      comments41: { value: "", status: "pending", note: "" },
     },
   ]);
 
   const [violationField, setViolationField] = useState([
     {
-      date: { value: "", status: "pending", note: "" },
-      offense: { value: "", status: "pending", note: "" },
-      location: { value: "", status: "pending", note: "" },
+      date61: { value: "", status: "pending", note: "" },
+      offense61: { value: "", status: "pending", note: "" },
+      location61: { value: "", status: "pending", note: "" },
       vehicleOperated: { value: "", status: "pending", note: "" },
     },
   ]);
@@ -110,11 +110,11 @@ export const AdminProvider = ({ children }) => {
 
   const [trafficConvictionField, setTrafficConvictionField] = useState([
     {
-      date: { value: "", status: "pending", note: "" },
+      date42: { value: "", status: "pending", note: "" },
       offenseType: { value: "", status: "pending", note: "" },
-      location: { value: "", status: "pending", note: "" },
-      penalties: { value: "", status: "pending", note: "" },
-      comments: { value: "", status: "pending", note: "" },
+      location42: { value: "", status: "pending", note: "" },
+      penalties42: { value: "", status: "pending", note: "" },
+      comments42: { value: "", status: "pending", note: "" },
     },
   ]);
 
@@ -122,7 +122,7 @@ export const AdminProvider = ({ children }) => {
     {
       LicenseNo: { value: "", status: "pending", note: "" },
       type: { value: "", status: "pending", note: "" },
-      state: { value: "", status: "pending", note: "" },
+      state53: { value: "", status: "pending", note: "" },
       expiryDate: { value: "", status: "pending", note: "" },
     },
   ]);
@@ -132,10 +132,10 @@ export const AdminProvider = ({ children }) => {
       statesOperated: { value: "", status: "pending", note: "" },
       ClassEquipment: { value: "", status: "pending", note: "" },
       EquipmentType: { value: "", status: "pending", note: "" },
-      DateFrom: { value: "", status: "pending", note: "" },
-      DateTo: { value: "", status: "pending", note: "" },
+      DateFrom51: { value: "", status: "pending", note: "" },
+      DateTo51: { value: "", status: "pending", note: "" },
       ApproximatelyMiles: { value: "", status: "pending", note: "" },
-      comments: { value: "", status: "pending", note: "" },
+      comments51: { value: "", status: "pending", note: "" },
     },
   ]);
 
@@ -143,19 +143,19 @@ export const AdminProvider = ({ children }) => {
     {
       school: { value: "", status: "pending", note: "" },
       educationLevel: { value: "", status: "pending", note: "" },
-      DateFrom: { value: "", status: "pending", note: "" },
-      DateTo: { value: "", status: "pending", note: "" },
-      comments: { value: "", status: "pending", note: "" },
+      DateFrom52: { value: "", status: "pending", note: "" },
+      DateTo52: { value: "", status: "pending", note: "" },
+      comments52: { value: "", status: "pending", note: "" },
     },
   ]);
 
   const [FormData, setFormData] = useState([
     {
-      street1: { value: "", status: "pending", note: "" },
-      street2: { value: "", status: "pending", note: "" },
-      city: { value: "", status: "pending", note: "" },
-      state: { value: "", status: "pending", note: "" },
-      zipCode: { value: "", status: "pending", note: "" },
+      street12: { value: "", status: "pending", note: "" },
+      street22: { value: "", status: "pending", note: "" },
+      city22: { value: "", status: "pending", note: "" },
+      state22: { value: "", status: "pending", note: "" },
+      zipCode22: { value: "", status: "pending", note: "" },
     },
   ]);
 
@@ -167,15 +167,15 @@ export const AdminProvider = ({ children }) => {
 
   const [FormData3, setFormData3] = useState([
     {
-      companyName: { value: "", status: "pending", note: "" },
-      street: { value: "", status: "pending", note: "" },
-      city: { value: "", status: "pending", note: "" },
-      zipCode: { value: "", status: "pending", note: "" },
+      companyName31: { value: "", status: "pending", note: "" },
+      street31: { value: "", status: "pending", note: "" },
+      city31: { value: "", status: "pending", note: "" },
+      zipCode31: { value: "", status: "pending", note: "" },
       contactPerson: { value: "", status: "pending", note: "" },
-      phone: { value: "", status: "pending", note: "" },
+      phone31: { value: "", status: "pending", note: "" },
       fax1: { value: "", status: "pending", note: "" },
-      from: { value: "", status: "pending", note: "" },
-      to: { value: "", status: "pending", note: "" },
+      from31: { value: "", status: "pending", note: "" },
+      to31: { value: "", status: "pending", note: "" },
       position: { value: "", status: "pending", note: "" },
       salary: { value: "", status: "pending", note: "" },
       leavingReason: { value: "", status: "pending", note: "" },
@@ -199,7 +199,7 @@ export const AdminProvider = ({ children }) => {
 
   const fetchUserData = useCallback((uid) => {
     if (!uid) return Promise.resolve();
-    console.log("fetchUserData", uid);
+
     setCurrentUserId(uid);
     const docRef = doc(db, "truck_driver_applications", uid);
 
@@ -382,9 +382,9 @@ export const AdminProvider = ({ children }) => {
       payExpected: { value: "", status: "pending", note: "" },
       street1: { value: "", status: "pending", note: "" },
       street2: { value: "", status: "pending", note: "" },
-      city: { value: "", status: "pending", note: "" },
-      state: { value: "", status: "pending", note: "" },
-      zipCode: { value: "", status: "pending", note: "" },
+      city11: { value: "", status: "pending", note: "" },
+      state11: { value: "", status: "pending", note: "" },
+      zipCode11: { value: "", status: "pending", note: "" },
       cellPhone: { value: "", status: "pending", note: "" },
       Email: { value: "", status: "pending", note: "" },
       EmergencyContact: { value: "", status: "pending", note: "" },

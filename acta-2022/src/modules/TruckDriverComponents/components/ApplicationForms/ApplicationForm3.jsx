@@ -85,8 +85,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
-        const currentCompletedForms = existingData.completedForms || 0;
 
+        const currentCompletedForms = existingData.completedForms || 0;
+        const currentSavedForms = existingData.savedForms || 0;
+        if (3 > currentSavedForms) {
+          // 2 is the current form number
+          updateObject.savedForms = 3;
+        }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
@@ -120,13 +125,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     const newErrors = localFormData.map((field) => {
       const fieldErrors = {};
       const requiredFields = [
-        "companyName",
-        "city",
-        "zipCode",
+        "companyName31",
+        "city31",
+        "zipCode31",
         "contactPerson",
-        "phone",
-        "from",
-        "to",
+        "phone31",
+        "from31",
+        "to31",
         "position",
         "leavingReason",
         "subjectToFMCSRs",
@@ -166,7 +171,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (uid) => {
     console.log("editStatus", editStatus);
     try {
       if (currentUser.userType !== "Admin") {
@@ -224,7 +229,12 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         }
       }
 
-      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      let docRef = "";
+      if (uid) {
+        docRef = doc(db, "truck_driver_applications", uid);
+      } else {
+        docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      }
       const docSnap = await getDoc(docRef);
       const applicationData = {
         EmploymentHistory: localFormData,
@@ -277,15 +287,15 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     setLocalFormData([
       ...localFormData,
       {
-        companyName: { value: "", status: "pending", note: "" },
-        street: { value: "", status: "pending", note: "" },
-        city: { value: "", status: "pending", note: "" },
-        zipCode: { value: "", status: "pending", note: "" },
+        companyName31: { value: "", status: "pending", note: "" },
+        street31: { value: "", status: "pending", note: "" },
+        city31: { value: "", status: "pending", note: "" },
+        zipCode31: { value: "", status: "pending", note: "" },
         contactPerson: { value: "", status: "pending", note: "" },
-        phone: { value: "", status: "pending", note: "" },
+        phone31: { value: "", status: "pending", note: "" },
         fax1: { value: "", status: "pending", note: "" },
-        from: { value: "", status: "pending", note: "" },
-        to: { value: "", status: "pending", note: "" },
+        from31: { value: "", status: "pending", note: "" },
+        to31: { value: "", status: "pending", note: "" },
         position: { value: "", status: "pending", note: "" },
         salary: { value: "", status: "pending", note: "" },
         leavingReason: { value: "", status: "pending", note: "" },
@@ -383,33 +393,33 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Company Name"
-                      id={`companyName-${index}`}
-                      status={field.companyName.status}
-                      note={field.companyName.note}
+                      id={`companyName31-${index}`}
+                      status={field.companyName31.status}
+                      note={field.companyName31.note}
                       index={index}
-                      fieldName="companyName"
+                      fieldName="companyName31"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="companyName"
-                      id={`companyName-${index}`}
-                      value={field.companyName.value}
+                      name="companyName31"
+                      id={`companyName31-${index}`}
+                      value={field.companyName31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("companyName", index)}
+                      disabled={hasValue("companyName31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.companyName
+                        errors[index]?.companyName31
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasValue("companyName", index)
+                        hasValue("companyName31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.companyName && (
+                    {errors[index]?.companyName31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].companyName}
+                        {errors[index].companyName31}
                       </p>
                     )}
                   </div>
@@ -417,32 +427,32 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Street"
-                      id="street"
-                      status={field.street.status}
-                      note={field.street.note}
+                      id="street31"
+                      status={field.street31.status}
+                      note={field.street31.note}
                       index={index}
-                      fieldName="street"
+                      fieldName="street31"
                       uid={uid}
                       important={true}
                     />
                     <input
                       type="text"
-                      name="street"
-                      id={`street-${index}`}
-                      value={field.street.value}
+                      name="street31"
+                      id={`street31-${index}`}
+                      value={field.street31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("street", index)}
+                      disabled={hasValue("street31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.street ? "border-red-500 border-2" : ""
+                        errors[index]?.street31 ? "border-red-500 border-2" : ""
                       } ${
-                        hasValue("street", index)
+                        hasValue("street31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.street && (
+                    {errors[index]?.street31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].street}
+                        {errors[index].street31}
                       </p>
                     )}
                   </div>
@@ -450,31 +460,31 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="City,State"
-                      id="city"
-                      status={field.city.status}
-                      note={field.city.note}
+                      id="city31"
+                      status={field.city31.status}
+                      note={field.city31.note}
                       index={index}
-                      fieldName="city"
+                      fieldName="city31"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="city"
-                      id={`city-${index}`}
-                      value={field.city.value}
+                      name="city31"
+                      id={`city31-${index}`}
+                      value={field.city31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("city", index)}
+                      disabled={hasValue("city31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.city ? "border-red-500 border-2" : ""
+                        errors[index]?.city31 ? "border-red-500 border-2" : ""
                       } ${
-                        hasValue("city", index)
+                        hasValue("city31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.city && (
+                    {errors[index]?.city31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].city}
+                        {errors[index].city31}
                       </p>
                     )}
                   </div>
@@ -482,31 +492,33 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Zip Code"
-                      id="zipCode"
-                      status={field.zipCode.status}
-                      note={field.zipCode.note}
+                      id="zipCode31"
+                      status={field.zipCode31.status}
+                      note={field.zipCode31.note}
                       index={index}
-                      fieldName="zipCode"
+                      fieldName="zipCode31"
                       uid={uid}
                     />
                     <input
                       type="number"
-                      name="zipCode"
-                      id={`zipCode-${index}`}
-                      value={field.zipCode.value}
+                      name="zipCode31"
+                      id={`zipCode31-${index}`}
+                      value={field.zipCode31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("zipCode", index)}
+                      disabled={hasValue("zipCode31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.zipCode ? "border-red-500 border-2" : ""
+                        errors[index]?.zipCode31
+                          ? "border-red-500 border-2"
+                          : ""
                       } ${
-                        hasValue("zipCode", index)
+                        hasValue("zipCode31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.zipCode && (
+                    {errors[index]?.zipCode31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].zipCode}
+                        {errors[index].zipCode31}
                       </p>
                     )}
                   </div>
@@ -548,31 +560,31 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Phone #"
-                      id="phone"
-                      status={field.phone.status}
-                      note={field.phone.note}
+                      id="phone31"
+                      status={field.phone31.status}
+                      note={field.phone31.note}
                       index={index}
-                      fieldName="phone"
+                      fieldName="phone31"
                       uid={uid}
                     />
                     <input
                       type="text"
-                      name="phone"
-                      id={`phone-${index}`}
-                      value={field.phone.value}
+                      name="phone31"
+                      id={`phone31-${index}`}
+                      value={field.phone31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("phone", index)}
+                      disabled={hasValue("phone31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.phone ? "border-red-500 border-2" : ""
+                        errors[index]?.phone31 ? "border-red-500 border-2" : ""
                       } ${
-                        hasValue("phone", index)
+                        hasValue("phone31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.phone && (
+                    {errors[index]?.phone31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].phone}
+                        {errors[index].phone31}
                       </p>
                     )}
                   </div>
@@ -613,32 +625,32 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="From"
-                      id="from"
-                      status={field.from.status}
-                      note={field.from.note}
+                      id="from31"
+                      status={field.from31.status}
+                      note={field.from31.note}
                       index={index}
-                      fieldName="from"
+                      fieldName="from31"
                       uid={uid}
                     />
                     <input
                       type="date"
-                      name="from"
-                      id={`from-${index}`}
+                      name="from31"
+                      id={`from31-${index}`}
                       min={new Date().toISOString().split("T")[0]}
-                      value={field.from.value}
+                      value={field.from31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("from", index)}
+                      disabled={hasValue("from31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.from ? "border-red-500 border-2" : ""
+                        errors[index]?.from31 ? "border-red-500 border-2" : ""
                       } ${
-                        hasValue("from", index)
+                        hasValue("from31", index)
                           ? ""
                           : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.from && (
+                    {errors[index]?.from31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].from}
+                        {errors[index].from31}
                       </p>
                     )}
                   </div>
@@ -646,30 +658,32 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="To"
-                      id="to"
-                      status={field.to.status}
-                      note={field.to.note}
+                      id="to31"
+                      status={field.to31.status}
+                      note={field.to31.note}
                       index={index}
-                      fieldName="to"
+                      fieldName="to31"
                       uid={uid}
                     />
                     <input
                       type="date"
-                      name="to"
-                      id={`to-${index}`}
+                      name="to31"
+                      id={`to31-${index}`}
                       max={new Date().toISOString().split("T")[0]}
-                      value={field.to.value}
+                      value={field.to31.value}
                       onChange={(e) => handleInputChange(index, e)}
-                      disabled={hasValue("to", index)}
+                      disabled={hasValue("to31", index)}
                       className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.to ? "border-red-500 border-2" : ""
+                        errors[index]?.to31 ? "border-red-500 border-2" : ""
                       } ${
-                        hasValue("to", index) ? "" : "bg-white border-gray-300"
+                        hasValue("to31", index)
+                          ? ""
+                          : "bg-white border-gray-300"
                       }`}
                     />
-                    {errors[index]?.to && (
+                    {errors[index]?.to31 && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors[index].to}
+                        {errors[index].to31}
                       </p>
                     )}
                   </div>
@@ -776,9 +790,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       <FormLabelWithStatus
                         htmlFor="subjectToFMCSRs"
                         label="Were you subject to the FMCSRs* while employed?"
-                        status={field.subjectToFMCSRs.status}
+                        status={field?.subjectToFMCSRs?.status}
                         note={field?.subjectToFMCSRs?.note}
                         fieldName="subjectToFMCSRs"
+                        index={index}
                         uid={uid}
                       />
                       <div className="mt-2">
@@ -824,9 +839,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       <FormLabelWithStatus
                         htmlFor="jobDesignatedAsSafetySensitive"
                         label="Was your job designated as a safety-sensitive function in any DOT-regulated mode subject to the drug and alcohol testing requirements."
-                        status={field.jobDesignatedAsSafetySensitive.status}
-                        note={field.jobDesignatedAsSafetySensitive.note}
+                        status={field?.jobDesignatedAsSafetySensitive?.status}
+                        note={field?.jobDesignatedAsSafetySensitive?.note}
                         fieldName="jobDesignatedAsSafetySensitive"
+                        index={index}
                         uid={uid}
                       />
                       <div className="mt-2">

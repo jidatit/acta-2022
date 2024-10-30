@@ -37,9 +37,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
       ? violationField
       : [
           {
-            date: { value: "", status: "pending", note: "" },
-            offense: { value: "", status: "pending", note: "" },
-            location: { value: "", status: "pending", note: "" },
+            date61: { value: "", status: "pending", note: "" },
+            offense61: { value: "", status: "pending", note: "" },
+            location61: { value: "", status: "pending", note: "" },
             vehicleOperated: { value: "", status: "pending", note: "" },
           },
         ]
@@ -61,9 +61,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     if (violationFields.length === 0) {
       setViolationFields([
         {
-          date: { value: "", status: "pending", note: "" },
-          offense: { value: "", status: "pending", note: "" },
-          location: { value: "", status: "pending", note: "" },
+          date61: { value: "", status: "pending", note: "" },
+          offense61: { value: "", status: "pending", note: "" },
+          location61: { value: "", status: "pending", note: "" },
           vehicleOperated: { value: "", status: "pending", note: "" },
         },
       ]);
@@ -289,9 +289,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     setViolationFields([
       ...violationFields,
       {
-        date: { value: "", status: "pending", note: "" },
-        offense: { value: "", status: "pending", note: "" },
-        location: { value: "", status: "pending", note: "" },
+        date61: { value: "", status: "pending", note: "" },
+        offense61: { value: "", status: "pending", note: "" },
+        location61: { value: "", status: "pending", note: "" },
         vehicleOperated: { value: "", status: "pending", note: "" },
       },
     ]);
@@ -364,97 +364,97 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                     <div>
                       <FormLabelWithStatus
                         label="Date"
-                        id={`date`}
-                        status={address.date?.status}
-                        note={address.date?.note}
+                        id={`date61`}
+                        status={address.date61?.status}
+                        note={address.date61?.note}
                         index={index}
-                        fieldName="date"
+                        fieldName="date61"
                         uid={uid}
                       />
                       <input
-                        type="date"
-                        name="date"
-                        id={`date-${index}`}
-                        value={address.date?.value}
+                        type="date61"
+                        name="date61"
+                        id={`date61-${index}`}
+                        value={address.date61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("date", index)}
+                        disabled={hasValue("date61", index)}
                         className={`w-full p-2 mt-1 border rounded-md ${
-                          errors[index]?.date ? "border-red-500 border-2" : ""
+                          errors[index]?.date61 ? "border-red-500 border-2" : ""
                         } ${
-                          hasValue("date", index)
+                          hasValue("date61", index)
                             ? ""
                             : "bg-white border-gray-300"
                         }`}
                       />
-                      {errors[index] && errors[index].date && (
+                      {errors[index] && errors[index].date61 && (
                         <p className="mt-1 text-xs text-red-500">
-                          {errors[index].date}
+                          {errors[index].date61}
                         </p>
                       )}
                     </div>
                     <div>
                       <FormLabelWithStatus
                         label="Offense"
-                        id={`offense`}
-                        status={address.offense?.status}
-                        note={address.offense?.note}
+                        id={`offense61`}
+                        status={address.offense61?.status}
+                        note={address.offense61?.note}
                         index={index}
-                        fieldName="offense"
+                        fieldName="offense61"
                         uid={uid}
                       />
                       <input
                         type="text"
-                        name="offense"
-                        id={`offense-${index}`}
-                        value={address.offense?.value}
+                        name="offense61"
+                        id={`offense61-${index}`}
+                        value={address.offense61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("offense", index)}
+                        disabled={hasValue("offense61", index)}
                         className={`w-full p-2 mt-1 border rounded-md ${
-                          errors[index]?.offense
+                          errors[index]?.offense61
                             ? "border-red-500 border-2"
                             : ""
                         } ${
-                          hasValue("offense", index)
+                          hasValue("offense61", index)
                             ? ""
                             : "bg-white border-gray-300"
                         }`}
                       />
-                      {errors[index] && errors[index].offense && (
+                      {errors[index] && errors[index].offense61 && (
                         <p className="mt-1 text-xs text-red-500">
-                          {errors[index].offense}
+                          {errors[index].offense61}
                         </p>
                       )}
                     </div>
                     <div>
                       <FormLabelWithStatus
                         label="Location"
-                        id={`location`}
-                        status={address.location?.status}
-                        note={address.location?.note}
+                        id={`location61`}
+                        status={address.location61?.status}
+                        note={address.location61?.note}
                         index={index}
-                        fieldName="location"
+                        fieldName="location61"
                         uid={uid}
                       />
                       <input
                         type="text"
-                        name="location"
-                        id={`location-${index}`}
-                        value={address.location?.value}
+                        name="location61"
+                        id={`location61-${index}`}
+                        value={address.location61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("location", index)}
+                        disabled={hasValue("location61", index)}
                         className={`w-full p-2 mt-1 border rounded-md ${
-                          errors[index]?.location
+                          errors[index]?.location61
                             ? "border-red-500 border-2"
                             : ""
                         } ${
-                          hasValue("location", index)
+                          hasValue("location61", index)
                             ? ""
                             : "bg-white border-gray-300"
                         }`}
                       />
-                      {errors[index] && errors[index].location && (
+                      {errors[index] && errors[index].location61 && (
                         <p className="mt-1 text-xs text-red-500">
-                          {errors[index].location}
+                          {errors[index].location61}
                         </p>
                       )}
                     </div>

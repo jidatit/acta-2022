@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../index.css";
 import image from "../../images/pngwing.com.png";
@@ -89,6 +89,24 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
   const [logoPreview, setLogoPreview] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
+  const updateCompletedSections = useCallback(() => {
+    if (completedForms) {
+      for (let i = 0; i <= 11; i++) {
+        const section = `Section ${i + 1}`;
+        if (completedForms >= i && !completedSections.includes(section)) {
+          setCompletedSections((prevSections) => {
+            const newSections = [...prevSections, section];
+            localStorage.setItem(
+              "completedSections",
+              JSON.stringify(newSections)
+            );
+            return newSections;
+          });
+        }
+      }
+    }
+  }, [completedForms, completedSections]);
+
   useEffect(() => {
     const fetchCompanyInfo = async () => {
       const companyCollection = collection(db, "companyInfo");
@@ -96,7 +114,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       const companyData = companySnapshot.docs.map((doc) => doc.data());
 
       if (companyData.length > 0) {
-        setCompanyInfo(companyData[0]); // Assuming you want the first document
+        setCompanyInfo(companyData[0]);
         setLogoPreview(companyData[0].logoUrl);
       }
     };
@@ -104,12 +122,43 @@ const SideBar = ({ isSidebarExpanded }) => {
     fetchCompanyInfo();
   }, []);
   useEffect(() => {
-    // Load completed sections from local storage
     const savedSections =
       JSON.parse(localStorage.getItem("completedSections")) || [];
     setCompletedSections(savedSections);
   }, []);
 
+  useEffect(() => {
+    const fetchCompletedForms = async () => {
+      if (!currentUser) return;
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const completedFormsData = data.completedForms || null;
+          setCompletedForms(completedFormsData);
+        }
+      });
+    };
+
+    fetchCompletedForms();
+  }, [currentUser]);
+  useEffect(() => {
+    const checkAccessAndRedirect = () => {
+      const currentPath = location.pathname;
+      const requestedSection = routeToSectionMap[currentPath];
+      const requestedFormIndex = sections.indexOf(requestedSection) + 1;
+
+      // Allow access to the next form after the last completed one
+      if (completedForms !== null && requestedFormIndex > completedForms + 1) {
+        toast.error("You do not have access to this form.");
+        navigate(`/TruckDriverLayout/ApplicationForm${completedForms + 1}`);
+      } else if (requestedSection) {
+        setCurrentSection(requestedSection);
+      }
+    };
+
+    checkAccessAndRedirect();
+  }, [location.pathname, completedForms]);
   useEffect(() => {
     const currentPath = location.pathname;
     const correspondingSection = routeToSectionMap[currentPath];
@@ -187,46 +236,23 @@ const SideBar = ({ isSidebarExpanded }) => {
   };
 
   const handleSectionClick = (section, index) => {
-    if (section === "Section 1") {
-      // Navigate to ApplicationForm1 without resetting completed sections
-      navigate("/TruckDriverLayout/ApplicationForm1");
-      // Ensure Section 1 is in the list of completed sections
-      if (!completedSections.includes(section)) {
-        setCompletedSections((prevSections) => {
-          const newSections = [...prevSections, section];
-          localStorage.setItem(
-            "completedSections",
-            JSON.stringify(newSections)
-          );
-          return newSections;
-        });
-      }
-      // Set the current section
-      setCurrentSection("Section 1");
+    const sectionFormIndex = index + 1;
+
+    // Allow access only up to the next form after completed forms
+    if (sectionFormIndex > completedForms + 1) {
+      toast.error("Access restricted. Complete the previous forms first.");
       return;
     }
+
     if (!isSaveClicked) {
       toast(
         "Please save the current form before navigating to another section."
       );
       return;
     }
-    const previousSectionsCompleted = sections
-      .slice(0, index)
-      .every((sec) => completedSections.includes(sec));
-    if (!previousSectionsCompleted) {
-      toast.error(
-        "Please complete the previous sections before moving forward."
-      );
-      return;
-    }
 
-    if (completedSections.includes(section) || index === 0) {
-      setCurrentSection(section);
-      navigate(`/TruckDriverLayout/ApplicationForm${index + 1}`);
-    } else {
-      toast.error("Please complete the previous sections first.");
-    }
+    setCurrentSection(section);
+    navigate(`/TruckDriverLayout/ApplicationForm${sectionFormIndex}`);
   };
 
   const handleEdit = () => {

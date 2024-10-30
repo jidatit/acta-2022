@@ -286,15 +286,14 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
         const existingData = docSnap.data();
         const currentCompletedForms = existingData.completedForms || 0;
         const currentSavedForms = existingData.savedForms || 0;
-        if (4 > currentSavedForms) {
+        if (5 > currentSavedForms) {
           // 2 is the current form number
-          updateObject.savedForms = 4;
+          updateObject.savedForms = 5;
         }
         // Only update completedForms if the new form number is higher
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
         }
-
         await updateDoc(docRef, updateObject);
       } else {
         // For new documents, set the completedForms to the current form number
@@ -452,7 +451,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     const newField = {
       LicenseNo: { value: "", status: "pending", note: "" },
       type: { value: "", status: "pending", note: "" },
-      state: { value: "", status: "pending", note: "" },
+      state53: { value: "", status: "pending", note: "" },
       expiryDate: { value: "", status: "pending", note: "" },
     };
 
@@ -466,10 +465,10 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
         statesOperated: { value: "", status: "pending", note: "" },
         ClassEquipment: { value: "", status: "pending", note: "" },
         EquipmentType: { value: "", status: "pending", note: "" },
-        DateFrom: { value: "", status: "pending", note: "" },
-        DateTo: { value: "", status: "pending", note: "" },
+        DateFrom51: { value: "", status: "pending", note: "" },
+        DateTo51: { value: "", status: "pending", note: "" },
         ApproximatelyMiles: { value: "", status: "pending", note: "" },
-        comments: { value: "", status: "pending", note: "" },
+        comments51: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -480,9 +479,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
       {
         school: { value: "", status: "pending", note: "" },
         educationLevel: { value: "", status: "pending", note: "" },
-        DateFrom: { value: "", status: "pending", note: "" },
-        DateTo: { value: "", status: "pending", note: "" },
-        comments: { value: "", status: "pending", note: "" },
+        DateFrom52: { value: "", status: "pending", note: "" },
+        DateTo52: { value: "", status: "pending", note: "" },
+        comments52: { value: "", status: "pending", note: "" },
       },
     ]);
   };
@@ -590,23 +589,23 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               <div>
                 <FormLabelWithStatus
                   label="State"
-                  id={`state`}
-                  status={license.state.status} // Adjust as necessary based on your state
-                  note={license.state.note} // Adjust as necessary based on your state
+                  id={`state53`}
+                  status={license.state53.status} // Adjust as necessary based on your state53
+                  note={license.state53.note} // Adjust as necessary based on your state53
                   index={index}
-                  fieldName="state"
+                  fieldName="state53"
                   uid={uid}
                   important={true}
                 />
                 <input
                   type="text"
-                  name="state"
-                  id={`state-${index}`}
-                  value={license.state.value}
+                  name="state53"
+                  id={`state53-${index}`}
+                  value={license.state53.value}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
-                  disabled={hasLicenseValue("state", index)}
+                  disabled={hasLicenseValue("state53", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    hasLicenseValue("state", index)
+                    hasLicenseValue("state53", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
@@ -786,70 +785,70 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               <div>
                 <FormLabelWithStatus
                   label="Date To"
-                  id={`DateTo`}
-                  status={experience.DateTo.status}
-                  note={experience.DateTo.note}
+                  id={`DateTo51`}
+                  status={experience.DateTo51.status}
+                  note={experience.DateTo51.note}
                   index={index}
-                  fieldName="DateTo"
+                  fieldName="DateTo51"
                   uid={uid}
                 />
                 <input
                   type="date"
-                  name="DateTo"
-                  id={`DateTo-${index}`}
-                  value={experience.DateTo.value}
+                  name="DateTo51"
+                  id={`DateTo51-${index}`}
+                  value={experience.DateTo51.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
-                  disabled={hasExperienceValue("DateTo", index)}
+                  disabled={hasExperienceValue("DateTo51", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverExperienceErrors[index]?.DateTo
+                    driverExperienceErrors[index]?.DateTo51
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasExperienceValue("DateTo", index)
+                    hasExperienceValue("DateTo51", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverExperienceErrors[index] &&
-                  driverExperienceErrors[index].DateTo && (
+                  driverExperienceErrors[index].DateTo51 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverExperienceErrors[index].DateTo}
+                      {driverExperienceErrors[index].DateTo51}
                     </p>
                   )}
               </div>
               <div>
                 <FormLabelWithStatus
                   label="Date From"
-                  id={`DateFrom`}
-                  status={experience.DateFrom.status}
-                  note={experience.DateFrom.note}
+                  id={`DateFrom51`}
+                  status={experience.DateFrom51.status}
+                  note={experience.DateFrom51.note}
                   index={index}
-                  fieldName="DateFrom"
+                  fieldName="DateFrom51"
                   uid={uid}
                 />
                 <input
                   type="date"
-                  name="DateFrom"
-                  id={`DateFrom-${index}`}
-                  value={experience.DateFrom.value}
+                  name="DateFrom51"
+                  id={`DateFrom51-${index}`}
+                  value={experience.DateFrom51.value}
                   min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  disabled={hasExperienceValue("DateFrom", index)}
+                  disabled={hasExperienceValue("DateFrom51", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverExperienceErrors[index]?.DateFrom
+                    driverExperienceErrors[index]?.DateFrom51
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasExperienceValue("DateFrom", index)
+                    hasExperienceValue("DateFrom51", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverExperienceErrors[index] &&
-                  driverExperienceErrors[index].DateFrom && (
+                  driverExperienceErrors[index].DateFrom51 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverExperienceErrors[index].DateFrom}
+                      {driverExperienceErrors[index].DateFrom51}
                     </p>
                   )}
               </div>
@@ -892,35 +891,35 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               <div>
                 <FormLabelWithStatus
                   label="Comments"
-                  id={`comments`}
-                  status={experience.comments.status}
-                  note={experience.comments.note}
+                  id={`comments51`}
+                  status={experience.comments51.status}
+                  note={experience.comments51.note}
                   index={index}
-                  fieldName="comments"
+                  fieldName="comments51"
                   uid={uid}
                 />
 
                 <input
                   type="text"
-                  name="comments"
-                  id={`comments-${index}`}
-                  value={experience.comments.value}
+                  name="comments51"
+                  id={`comments51-${index}`}
+                  value={experience.comments51.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  disabled={hasExperienceValue("comments", index)}
+                  disabled={hasExperienceValue("comments51", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverExperienceErrors[index]?.comments
+                    driverExperienceErrors[index]?.comments51
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasExperienceValue("comments", index)
+                    hasExperienceValue("comments51", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverExperienceErrors[index] &&
-                  driverExperienceErrors[index].comments && (
+                  driverExperienceErrors[index].comments51 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverExperienceErrors[index].comments}
+                      {driverExperienceErrors[index].comments51}
                     </p>
                   )}
               </div>
@@ -1037,70 +1036,70 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               <div>
                 <FormLabelWithStatus
                   label="Date from"
-                  id={`DateFrom`}
-                  status={education.DateFrom.status} // Adjust the status logic as needed
-                  note={education.DateFrom.note} // Adjust the note logic as needed
+                  id={`DateFrom52`}
+                  status={education.DateFrom52.status} // Adjust the status logic as needed
+                  note={education.DateFrom52.note} // Adjust the note logic as needed
                   index={index}
-                  fieldName="DateFrom"
+                  fieldName="DateFrom52"
                   uid={uid}
                 />
                 <input
                   type="date"
-                  name="DateFrom"
-                  id={`DateFrom-${index}`}
-                  value={education.DateFrom.value}
+                  name="DateFrom52"
+                  id={`DateFrom52-${index}`}
+                  value={education.DateFrom52.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   min={new Date().toISOString().split("T")[0]}
-                  disabled={hasEducationValue("DateFrom", index)}
+                  disabled={hasEducationValue("DateFrom52", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverEducationError[index]?.DateFrom
+                    driverEducationError[index]?.DateFrom52
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasEducationValue("DateFrom", index)
+                    hasEducationValue("DateFrom52", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverEducationError[index] &&
-                  driverEducationError[index].DateFrom && (
+                  driverEducationError[index].DateFrom52 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverEducationError[index].DateFrom}
+                      {driverEducationError[index].DateFrom52}
                     </p>
                   )}
               </div>
               <div>
                 <FormLabelWithStatus
                   label="Date To"
-                  id={`DateTo`}
-                  status={education.DateTo.status} // Adjust the status logic as needed
-                  note={education.DateTo.note} // Adjust the note logic as needed
+                  id={`DateTo52`}
+                  status={education.DateTo52.status} // Adjust the status logic as needed
+                  note={education.DateTo52.note} // Adjust the note logic as needed
                   index={index}
-                  fieldName="DateTo"
+                  fieldName="DateTo52"
                   uid={uid}
                 />
                 <input
                   type="date"
-                  name="DateTo"
-                  id={`DateTo-${index}`}
-                  value={education.DateTo.value}
+                  name="DateTo52"
+                  id={`DateTo52-${index}`}
+                  value={education.DateTo52.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
                   max={new Date().toISOString().split("T")[0]}
-                  disabled={hasEducationValue("DateTo", index)}
+                  disabled={hasEducationValue("DateTo52", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverEducationError[index]?.DateTo
+                    driverEducationError[index]?.DateTo52
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasEducationValue("DateTo", index)
+                    hasEducationValue("DateTo52", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverEducationError[index] &&
-                  driverEducationError[index].DateTo && (
+                  driverEducationError[index].DateTo52 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverEducationError[index].DateTo}
+                      {driverEducationError[index].DateTo52}
                     </p>
                   )}
               </div>
@@ -1108,34 +1107,34 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               <div>
                 <FormLabelWithStatus
                   label="Comments"
-                  id={`comments`}
-                  status={education.comments.status} // Adjust the status logic as needed
-                  note={education.comments.note} // Adjust the note logic as needed
+                  id={`comments52`}
+                  status={education.comments52.status} // Adjust the status logic as needed
+                  note={education.comments52.note} // Adjust the note logic as needed
                   index={index}
-                  fieldName="comments"
+                  fieldName="comments52"
                   uid={uid}
                 />
                 <input
                   type="text"
-                  name="comments"
-                  id={`comments-${index}`}
-                  value={education.comments.value}
+                  name="comments52"
+                  id={`comments52-${index}`}
+                  value={education.comments52.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  disabled={hasEducationValue("comments", index)}
+                  disabled={hasEducationValue("comments52", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
-                    driverEducationError[index]?.comments
+                    driverEducationError[index]?.comments52
                       ? "border-red-500 border-2"
                       : ""
                   } ${
-                    hasEducationValue("comments", index)
+                    hasEducationValue("comments52", index)
                       ? ""
                       : "bg-white border-gray-300"
                   }`}
                 />
                 {driverEducationError[index] &&
-                  driverEducationError[index].comments && (
+                  driverEducationError[index].comments52 && (
                     <p className="mt-1 text-xs text-red-500">
-                      {driverEducationError[index].comments}
+                      {driverEducationError[index].comments52}
                     </p>
                   )}
               </div>

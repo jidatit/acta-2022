@@ -534,10 +534,10 @@ const SingleLabelLogic = ({
                       >
                         <ul className="flex flex-col z-50">
                           <li
-                            className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
+                            className="flex flex-row text-gray-300 gap-x-2 items-center px-4 rounded-xl cursor-pointer"
                             onClick={() => {}}
                           >
-                            <div className="hover:bg-red-500 text-red-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <div className=" text-gray-300 transition-all duration-200 ease-in-out p-3 rounded-full">
                               <FaRegTimesCircle size={20} />
                             </div>
                             Field Rejected
@@ -654,11 +654,8 @@ const SingleLabelLogic = ({
                       ref={dropdownRef}
                     >
                       <ul className="flex flex-col z-50">
-                        <li
-                          className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer"
-                          onClick={handleApproveApplication}
-                        >
-                          <div className="hover:bg-green-500 text-green-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                        <li className="flex flex-row text-gray-300 gap-x-2 z-20 items-center px-4 rounded-xl ">
+                          <div className=" text-gray-300 transition-all duration-200 ease-in-out p-3 rounded-full">
                             <FaRegCheckCircle size={20} />
                           </div>
                           Field Approved

@@ -172,7 +172,11 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
           driverStatus: "filled",
         });
-
+        const docRef = doc(db, "truck_driver_applications", uid);
+        await updateDoc(docRef, {
+          applicationStatus: "filled",
+          applicationStatusDate: new Date().toISOString(),
+        });
         console.log("Driver status updated to 'Filled' successfully.");
       } else {
         console.error("No matching driver found in the collection.");
@@ -347,6 +351,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                     note={field.currentlyWorking.note} // Adjust the note accordingly
                     fieldName="currentlyWorking"
                     uid={uid}
+                    index={index}
                   />
                   <div className="mt-2">
                     <label className="inline-flex items-center">
@@ -398,6 +403,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                     note={field.workingForAnotherEmployer.note} // Adjust the note accordingly
                     fieldName="workingForAnotherEmployer"
                     uid={uid}
+                    index={index}
                   />
                   <div className="mt-2">
                     <label className="inline-flex items-center">

@@ -314,6 +314,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                     note={field.testedPositiveEver.note}
                     fieldName="testedPositiveEver"
                     uid={uid}
+                    index={index}
                   />
 
                   <div className="mt-2">
@@ -367,6 +368,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                       fieldName="DOTCompletion"
                       uid={uid}
                       important={true}
+                      index={index}
                     />
                     <div className="mt-2">
                       <label className="inline-flex items-center">

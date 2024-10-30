@@ -88,7 +88,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
     };
 
     fetchFormData();
-  }, [uid, currentFormIndex]);
+  }, [uid]);
   useEffect(() => {
     const fetchStatus = async () => {
       try {
@@ -111,6 +111,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
 
   const CurrentForm = forms[currentFormIndex];
   const isLastForm = currentFormIndex === forms.length - 1;
+
   const handleNext = () => {
     const nextIndex = currentFormIndex + 1;
     if (availableForms.includes(nextIndex)) {
@@ -314,6 +315,13 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
       setIsSubmitting(false);
     }
   };
+  const handleDotClick = (index) => {
+    if (availableForms.includes(index)) {
+      setCurrentFormIndex(index);
+    } else {
+      toast.warning("This form is not available yet.");
+    }
+  };
 
   return (
     <div className="fixed inset-0 w-screen bg-black bg-opacity-50 h-screen z-50 flex justify-center items-center overflow-hidden">
@@ -383,6 +391,12 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
                       ? `Form ${index + 1}`
                       : "Not available yet"
                   }
+                  onClick={() => handleDotClick(index)}
+                  style={{
+                    cursor: availableForms.includes(index)
+                      ? "pointer"
+                      : "default",
+                  }}
                 />
               ))}
             </div>

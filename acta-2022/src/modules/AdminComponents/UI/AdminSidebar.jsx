@@ -176,7 +176,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                   style: {
                     borderRadius: "12px",
                     padding: "8px",
-                    maxWidth: "400px",
+                    maxWidth: "600px",
                     width: "90%",
                   },
                 }}
