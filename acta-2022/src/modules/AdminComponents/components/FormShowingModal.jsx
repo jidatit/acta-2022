@@ -325,7 +325,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
 
   return (
     <div className="fixed inset-0 w-screen bg-black bg-opacity-50 h-screen z-50 flex justify-center items-center overflow-hidden">
-      <div className="bg-white rounded-lg shadow-xl w-[96%] smd:w-[90%] h-[90%] mx-4 flex flex-col ">
+      <div className="bg-white rounded-lg shadow-xl w-[96%] md:w-[97%] xl:w-[90%] h-[90%] mx-4 flex flex-col ">
         {/* Fixed Header */}
         <div className="p-6 relative flex-shrink-0">
           <button
