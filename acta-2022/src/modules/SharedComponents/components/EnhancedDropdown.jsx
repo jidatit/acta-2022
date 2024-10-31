@@ -64,7 +64,7 @@ const EnhancedStatusDropdown = ({
   return (
     <>
       <div
-        className="inline-flex w-[80%] items-center space-x-2"
+        className="inline-flex w-full md:w-[80%] items-center space-x-2"
         ref={triggerRef}
       >
         <h3
