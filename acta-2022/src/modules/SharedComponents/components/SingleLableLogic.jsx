@@ -41,6 +41,18 @@ const SingleLabelLogic = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const handleDropdownToggle = () => {
     setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
   };
@@ -396,7 +408,10 @@ const SingleLabelLogic = ({
                   </div>
 
                   {showDropdown && (
-                    <div className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60">
+                    <div
+                      className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                      ref={dropdownRef}
+                    >
                       <ul className="flex flex-col">
                         <li
                           className="flex flex-row gap-x-2 items-center px-4 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
