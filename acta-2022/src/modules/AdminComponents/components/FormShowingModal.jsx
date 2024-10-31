@@ -25,6 +25,7 @@ import {
 import { db } from "../../../config/firebaseConfig";
 import { toast } from "react-toastify";
 import FormStatusHeader from "./FormStatusHeader";
+import FormNavigationButtons from "./FormNavigationButtons";
 
 const forms = [
   ApplicationForm,
@@ -405,63 +406,16 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
           {/* Buttons Container */}
           <div className="flex flex-row justify-between items-center w-full gap-x-2 md:-mt-4">
             {/* Left - Back Button */}
-            <div className="flex-shrink-0">
-              <button
-                onClick={handleBack}
-                disabled={currentFormIndex === 0}
-                className={`px-4 py-2 rounded ${
-                  currentFormIndex === 0
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
-                }`}
-              >
-                Back
-              </button>
-            </div>
-
-            {/* Right - Action Buttons */}
-            <div className="flex gap-x-2">
-              <button
-                type="submit"
-                onClick={handleClick}
-                className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700"
-              >
-                Save
-              </button>
-
-              {isLastForm ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => handleApplicationStatus("rejected")}
-                    disabled={isSubmitting}
-                    className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-700 disabled:opacity-50"
-                  >
-                    Reject Application
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleApplicationStatus("approved")}
-                    disabled={isSubmitting}
-                    className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-700 disabled:opacity-50"
-                  >
-                    Approve Application
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleNext}
-                  disabled={!isNextEnabled()}
-                  className={`px-4 py-2 rounded ${
-                    !isNextEnabled()
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-blue-500 hover:bg-blue-600 text-white"
-                  }`}
-                >
-                  Next
-                </button>
-              )}
-            </div>
+            <FormNavigationButtons
+              currentFormIndex={currentFormIndex}
+              handleBack={handleBack}
+              handleClick={handleClick}
+              handleNext={handleNext}
+              handleApplicationStatus={handleApplicationStatus}
+              isLastForm={isLastForm}
+              isSubmitting={isSubmitting}
+              isNextEnabled={isNextEnabled}
+            />
           </div>
         </div>
       </div>
