@@ -10,11 +10,13 @@ import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../../SharedUiComponents/Loader";
 import { Camera } from "lucide-react";
+import { current } from "@reduxjs/toolkit";
 
 const SignInPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuth();
   const [logoPreview, setLogoPreview] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
   useEffect(() => {
@@ -104,17 +106,25 @@ const SignInPage = () => {
 
       // Show success message before navigation
       await toast.success("You signed in successfully", {
-        duration: 2000, // Adjust duration as needed
-        position: "top-right", // Adjust position as needed
+        duration: 2000,
+        position: "top-right",
       });
 
       // Small delay to ensure toast is visible
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Navigate based on user type
-      if (userData.id.startsWith("admin")) {
+      // Use userData instead of currentUser for navigation
+      if (userData.userType === "Admin") {
+        await toast.success("You signed in successfully", {
+          duration: 2000,
+          position: "top-right",
+        });
         navigate("/AdminLayout/users");
       } else {
+        await toast.success("You signed in successfully", {
+          duration: 2000,
+          position: "top-right",
+        });
         navigate("/TruckDriverLayout/applicationForm1");
       }
     } catch (error) {
@@ -142,7 +152,6 @@ const SignInPage = () => {
         case "auth/too-many-requests":
           errorMessage = "Too many failed attempts. Please try again later.";
           break;
-        // Add more error cases as needed
       }
 
       toast.error(errorMessage);
