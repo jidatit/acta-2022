@@ -349,7 +349,7 @@ const FormLabelWithStatus = ({
 
       const data = docSnap.data();
       const updatedData = { ...data };
-
+      console.log("updated data: " + index);
       // Array of keys that we want to check for updates
       const arrayKeys = [
         "previousAddresses",
@@ -528,7 +528,7 @@ const FormLabelWithStatus = ({
 
                   {showDropdown && (
                     <div
-                      className="absolute top-8 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                      className="absolute top-8 smd:left-0 right-10 z-20 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
                       ref={dropdownRef}
                     >
                       <ul className="flex flex-col">
@@ -672,7 +672,7 @@ const FormLabelWithStatus = ({
                     />
                     {isDropdownOpen && (
                       <div
-                        className="absolute top-8 z-50 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
+                        className="absolute top-8 z-50 smd:left-0 right-10 bg-white border border-gray-300 shadow-lg rounded-md py-2 w-60"
                         ref={dropdownRef}
                       >
                         <ul className="flex flex-col z-50">
@@ -797,7 +797,7 @@ const FormLabelWithStatus = ({
                   />
                   {isDropdownOpen && (
                     <div
-                      className="absolute top-8 bg-white border border-gray-300 z-50 shadow-lg rounded-md py-2 w-60"
+                      className="absolute top-8 bg-white smd:left-0 right-10 border border-gray-300 z-50 shadow-lg rounded-md py-2 w-60"
                       ref={dropdownRef}
                     >
                       <ul className="flex flex-col z-50">
