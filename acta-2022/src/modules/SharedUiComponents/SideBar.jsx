@@ -17,7 +17,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
 import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { Camera } from "lucide-react";
+import { Camera, LogOutIcon } from "lucide-react";
 import { Button } from "@mui/material";
 import { useEdit } from "../../../EditContext";
 const SideBar = ({ isSidebarExpanded }) => {
@@ -258,6 +258,21 @@ const SideBar = ({ isSidebarExpanded }) => {
   const handleEdit = () => {
     handleEditStatus(true);
   };
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmLogout = () => {
+    handleLogout();
+    handleDialogClose();
+  };
   return (
     <div
       className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
@@ -405,106 +420,187 @@ const SideBar = ({ isSidebarExpanded }) => {
             </Dialog>
           </>
         </div>
-        <div className="flex flex-col w-full h-full gap-y-4">
-          <Link
-            to="/TruckDriverLayout/ApplicationForm1"
-            className={`w-full flex justify-between items-center transition-all duration-300 ease-in-out rounded-md ${
-              activeItem === "JobApplication"
-                ? "bg-white text-blue-800 rounded-md"
-                : "hover:bg-white hover:text-blue-900 rounded-md text-white"
-            }`}
-            onClick={() => handleItemClick("JobApplication")}
-          >
-            <p
-              className={`w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios ${
-                activeItem === "JobApplication" ? "text-blue-800" : ""
+        <div className="flex flex-col justify-between w-full h-full">
+          <div className="flex flex-col w-full gap-y-4">
+            <Link
+              to="/TruckDriverLayout/ApplicationForm1"
+              className={`w-full flex justify-between items-center transition-all duration-300 ease-in-out rounded-md ${
+                activeItem === "JobApplication"
+                  ? "bg-white text-blue-800 rounded-md"
+                  : "hover:bg-white hover:text-blue-900 rounded-md text-white"
               }`}
+              onClick={() => handleItemClick("JobApplication")}
             >
-              Job Application
-            </p>
-            <span className="relative right-5">
-              {isSectionsVisible ? (
-                <BsChevronUp className="inline" />
-              ) : (
-                <BsChevronDown className="inline" />
-              )}
-            </span>
-          </Link>
-          {isSectionsVisible && ( // Conditional rendering of sections
-            <div className="flex flex-col w-full gap-y-2">
-              <div className="w-full h-full overflow-hidden">
-                <div
-                  className={`block smd:hidden absolute border-l-2 border-white left-[1.9rem] `}
-                  style={{
-                    height: `calc(${sections.length} * 2rem - 2.9rem)`, // Adjust the multiplier and subtractor based on spacing needs
-                  }}
-                ></div>
-                <div
-                  className=" block md:hidden absolute border-l-2 border-white left-[1.9rem]"
-                  style={{
-                    height: `calc(${sections.length} * 2.42rem - 0.75rem)`, // Height for small screens and above
-                  }}
-                ></div>
-                <div
-                  className="hidden md:block absolute border-l-2 border-white left-[1.9rem]"
-                  style={{
-                    height: `calc(${sections.length} * 6.12rem - 32.1rem)`, // Height for medium screens and above
-                  }}
-                ></div>
-                <ul className="relative space-y-4 md:space-y-5">
-                  {sections.map((section, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center text-white cursor-pointer"
-                      onClick={() => handleSectionClick(section, index)}
-                    >
-                      <div
-                        className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
-                          section === "Section 1" ||
-                          completedSections.includes(section)
-                            ? "bg-white border-1 border-blue-500"
-                            : "bg-blue-500 border-2 border-white"
-                        }`}
+              <p
+                className={`w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios ${
+                  activeItem === "JobApplication" ? "text-blue-800" : ""
+                }`}
+              >
+                Job Application
+              </p>
+              <span className="relative right-5">
+                {isSectionsVisible ? (
+                  <BsChevronUp className="inline" />
+                ) : (
+                  <BsChevronDown className="inline" />
+                )}
+              </span>
+            </Link>
+            {isSectionsVisible && ( // Conditional rendering of sections
+              <div className="flex flex-col w-full gap-y-2">
+                <div className="w-full h-full overflow-hidden">
+                  <div
+                    className={`block smd:hidden absolute border-l-2 border-white left-[1.9rem] `}
+                    style={{
+                      height: `calc(${sections.length} * 2rem - 2.9rem)`, // Adjust the multiplier and subtractor based on spacing needs
+                    }}
+                  ></div>
+                  <div
+                    className=" block md:hidden absolute border-l-2 border-white left-[1.9rem]"
+                    style={{
+                      height: `calc(${sections.length} * 2.42rem - 0.75rem)`, // Height for small screens and above
+                    }}
+                  ></div>
+                  <div
+                    className="hidden md:block absolute border-l-2 border-white left-[1.9rem]"
+                    style={{
+                      height: `calc(${sections.length} * 6.12rem - 32.1rem)`, // Height for medium screens and above
+                    }}
+                  ></div>
+                  <ul className="relative space-y-4 md:space-y-5">
+                    {sections.map((section, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center text-white cursor-pointer"
+                        onClick={() => handleSectionClick(section, index)}
                       >
-                        {currentSection === section && (
-                          <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
-                        )}
-                      </div>
-                      <span
-                        className={`ml-4 ${
-                          section === "Section 1" ||
-                          completedSections.includes(section)
-                            ? "text-white"
-                            : "text-gray-300"
-                        }`}
-                      >
-                        {section}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                        <div
+                          className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
+                            section === "Section 1" ||
+                            completedSections.includes(section)
+                              ? "bg-white border-1 border-blue-500"
+                              : "bg-blue-500 border-2 border-white"
+                          }`}
+                        >
+                          {currentSection === section && (
+                            <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
+                          )}
+                        </div>
+                        <span
+                          className={`ml-4 ${
+                            section === "Section 1" ||
+                            completedSections.includes(section)
+                              ? "text-white"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          {section}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          )}
-          <Link
-            to={"/TruckDriverLayout/CompanyInformation"}
-            className={`w-full transition-all duration-300 ease-in-out rounded-md ${
-              activeItem === "CompanyInformation"
-                ? "bg-white rounded-md "
-                : "hover:bg-white rounded-md hover:text-blue-900"
-            }`}
-            onClick={() => handleItemClick("CompanyInformation")}
-          >
-            <p
-              className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
+            )}
+            <Link
+              to={"/TruckDriverLayout/CompanyInformation"}
+              className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "CompanyInformation"
-                  ? "text-blue-800"
-                  : "text-white"
+                  ? "bg-white rounded-md "
+                  : "hover:bg-white rounded-md hover:text-blue-900"
               }`}
+              onClick={() => handleItemClick("CompanyInformation")}
             >
-              CompanyInformation
-            </p>
-          </Link>
+              <p
+                className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
+                  activeItem === "CompanyInformation"
+                    ? "text-blue-800"
+                    : "text-white"
+                }`}
+              >
+                CompanyInformation
+              </p>
+            </Link>
+          </div>
+          <div className="w-full ">
+            <Link
+              to=""
+              className={`w-full transition-all duration-300 ease-in-out rounded-md ${
+                activeItem === "Logout"
+                  ? "bg-white rounded-md shadow-lg"
+                  : "hover:bg-white rounded-md hover:text-blue-900"
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleItemClick("Logout");
+                handleDialogOpen();
+              }}
+            >
+              <div
+                className={`w-full md:-mt-0 -mt-24 p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-blue-900 ${
+                  activeItem === "Logout" ? "text-blue-800" : "text-white"
+                }`}
+              >
+                <LogOutIcon className="w-5 h-5" />
+                <span>Logout</span>
+              </div>
+            </Link>
+
+            <Dialog
+              open={openDialog}
+              onClose={handleDialogClose}
+              PaperProps={{
+                style: {
+                  borderRadius: "12px",
+                  padding: "8px",
+                  maxWidth: "600px",
+                  width: "90%",
+                },
+              }}
+            >
+              <DialogTitle
+                style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "600",
+                  color: "#1e3a8a",
+                  paddingBottom: "8px",
+                }}
+              >
+                Confirm Logout
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText
+                  style={{
+                    color: "#4b5563",
+                    fontSize: "1rem",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Are you sure you want to logout? This will end your current
+                  session.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions
+                style={{
+                  padding: "16px",
+                  gap: "8px",
+                }}
+              >
+                <button
+                  onClick={handleDialogClose}
+                  className="px-6 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmLogout}
+                  className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium"
+                >
+                  Logout
+                </button>
+              </DialogActions>
+            </Dialog>
+          </div>
         </div>
       </div>
     </div>
