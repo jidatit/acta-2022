@@ -12,9 +12,10 @@ import { db, auth } from "../../../config/firebaseConfig";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Camera } from "lucide-react";
-
+import Loader from "../../SharedUiComponents/Loader";
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selected, setSelected] = useState("SignUp As");
@@ -61,6 +62,7 @@ const SignUpPage = () => {
 
   const RegisterUser = async (e) => {
     e.preventDefault(); // Prevent default form submission
+    setLoading(true);
     try {
       if (formData.password !== formData.confirmPassword) {
         return toast.error("Passwords do not match!");
@@ -103,6 +105,7 @@ const SignUpPage = () => {
       setSelected("SignUp As");
 
       toast.success("You registered successfully!");
+      setLoading(false);
       if (collectionName === "admin") {
         setTimeout(() => {
           navigate("/AdminLayout/users");
@@ -113,8 +116,9 @@ const SignUpPage = () => {
         }, 3000);
       }
     } catch (err) {
+      setLoading(false);
       console.error(err);
-      toast.error(`Registration failed: ${err.message}`);
+      toast.error(`Registration failed`);
     }
   };
 
@@ -148,7 +152,7 @@ const SignUpPage = () => {
 
       <div className="flex flex-col gap-y-5 ssm:gap-y-10 justify-center rounded-md items-center w-[95%] md:w-[60%] h-[92%] smd:h-full bg-white ">
         <h1 className="w-full text-lg ssm:text-2xl md:text-3xl font-bold text-center text-black">
-          Sign Up Your Account
+          Sign Up
         </h1>
         <form
           className="flex flex-col gap-y-3 ssm:gap-y-5 justify-center items-center w-[90%] smd:w-[80%]"
@@ -225,11 +229,14 @@ const SignUpPage = () => {
               )}
             </span>
           </div>
-          <input
+          <button
             type="submit"
             className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
-            value="Sign Up"
-          />
+            disabled={loading}
+          >
+            {loading ? <Loader /> : "Sign Up"}
+          </button>
+
           <div className="flex flex-row items-center justify-center gap-x-1">
             <span className="font-radios">Already Signed Up?</span>
             <Link

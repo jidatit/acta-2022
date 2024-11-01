@@ -48,53 +48,105 @@ const SignInPage = () => {
       [id]: value,
     });
   };
+  const queryCollection = async (collectionName, uid) => {
+    const q = query(collection(db, collectionName), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))[0];
+    }
+    return null;
+  };
 
+  // Enhanced getUserInfo function
+  const getUserInfo = async (uid) => {
+    if (!uid) return null;
+
+    try {
+      // Check in both collections
+      const adminData = await queryCollection("admin", uid);
+      if (adminData) return adminData;
+
+      const driverData = await queryCollection("TruckDrivers", uid);
+      if (driverData) return driverData;
+
+      return null;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
   // Step 3: Handle form submission
   const LoginUser = async (e) => {
     e.preventDefault();
-    setLoading(true); // Prevent default form submission
+    setLoading(true);
+
     try {
-      // Attempt to sign in the user with email and password
+      // First attempt authentication
       const userCredential = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
       const user = userCredential.user;
-      //console.log("User signed in:", user);
 
-      const queryCollection = async (collectionName) => {
-        const q = query(
-          collection(db, collectionName),
-          where("uid", "==", user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          return querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }))[0];
-        } else {
-          return null;
-        }
-      };
-      toast.success("You signed in successfully");
-      // Check in "admins" collection
-      let userData = await queryCollection("admin");
-      if (userData) {
-        setLoading(false); // Stop loading
-        navigate("/AdminLayout/users");
+      // Check if user exists in database
+      const userData = await getUserInfo(user.uid);
+
+      if (!userData) {
+        // User exists in Authentication but not in database
+        await auth.signOut(); // Sign out the user
+        toast.error("Account not found in the system. Please contact support.");
+        return;
       }
 
-      userData = await queryCollection("TruckDrivers");
-      if (userData) {
-        setLoading(false); // Stop loading
+      // Show success message before navigation
+      await toast.success("You signed in successfully", {
+        duration: 2000, // Adjust duration as needed
+        position: "top-right", // Adjust position as needed
+      });
+
+      // Small delay to ensure toast is visible
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Navigate based on user type
+      if (userData.id.startsWith("admin")) {
+        navigate("/AdminLayout/users");
+      } else {
         navigate("/TruckDriverLayout/applicationForm1");
       }
     } catch (error) {
-      // Stop loading in case of error
+      console.error("Login error:", error);
+      let errorMessage = "Sign-in failed: Your email or password is incorrect";
 
-      toast.error("Sign-in failed: Your Email or password is incorrect ");
+      // Handle specific Firebase auth errors
+      switch (error.code) {
+        case "auth/user-not-found":
+          errorMessage = "No account exists with this email";
+          break;
+        case "auth/wrong-password":
+          errorMessage = "Incorrect password";
+          break;
+        case "auth/invalid-email":
+          errorMessage = "Invalid email format";
+          break;
+        case "auth/user-disabled":
+          errorMessage = "This account has been disabled";
+          break;
+        case "auth/network-request-failed":
+          errorMessage =
+            "Network error. Please check your internet connection.";
+          break;
+        case "auth/too-many-requests":
+          errorMessage = "Too many failed attempts. Please try again later.";
+          break;
+        // Add more error cases as needed
+      }
+
+      toast.error(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
@@ -130,7 +182,7 @@ const SignInPage = () => {
 
       <div className="flex flex-col gap-y-10 justify-center rounded-md items-center w-[90%] md:w-[50%] h-[80%] ssm:h-[70%] md:h-full bg-white">
         <h1 className="w-full text-2xl md:text-3xl font-bold text-center text-black">
-          Login to Your Account
+          Login
         </h1>
         <form
           className="flex flex-col items-center justify-center w-[80%] md:w-[60%] gap-y-5 "

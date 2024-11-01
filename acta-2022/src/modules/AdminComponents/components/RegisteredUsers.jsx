@@ -14,54 +14,17 @@ import { db } from "../../../config/firebaseConfig";
 import FormShowingModal from "./FormShowingModal";
 import EnhancedStatusDropdown from "../../SharedComponents/components/EnhancedDropdown";
 import { toast } from "react-toastify";
+import { deleteUser } from "firebase/auth";
+import { useAuth } from "../../../AuthContext";
 
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
+  const { currentUser } = useAuth();
   const [currentUserId, setCurrentUserId] = useState(null);
-  let dropdownRef = useRef(null);
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      name: "Hassan Ali Iqbal",
-      status: "Pending",
-      date: "1st July 2020",
-      time: "12:30 AM",
-    },
-    {
-      id: 2,
-      name: "Hassan Ali Iqbal",
-      status: "Approved",
-      date: "1st July 2020",
-      time: "12:30 AM",
-    },
-    {
-      id: 3,
-      name: "Hassan Ali Iqbal",
-      status: "Declined",
-      date: "1st July 2020",
-      time: "12:30 AM",
-    },
-    {
-      id: 4,
-      name: "Hassan Ali Iqbal",
-      status: "Future Lead",
-      date: "1st July 2020",
-      time: "12:30 AM",
-    },
-    {
-      id: 5,
-      name: "Hassan Ali Iqbal",
-      status: "Need Review",
-      date: "1st July 2020",
-      time: "12:30 AM",
-    },
-    // More rows can be added here...
-  ]);
 
   const [truckDrivers, setTruckDrivers] = useState([]); // State for truck driver data
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // Store the selected user for deletion
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown visibility
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -113,6 +76,10 @@ const RegisteredUsers = () => {
 
           // Delete from truck_driver_applications collection where uid is document ID
           await deleteDoc(doc(db, "truck_driver_applications", selectedUid));
+          const user = currentUser;
+          if (user && user.uid === selectedUid) {
+            await deleteUser(user);
+          }
         } catch (error) {
           console.error(`Error deleting user ${selectedUid}:`, error);
           throw error; // Re-throw to handle in outer catch

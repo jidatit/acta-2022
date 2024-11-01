@@ -559,34 +559,49 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        try {
-          setCurrentUserId(user.uid);
-          setIsEmailVerified(user.emailVerified);
+      try {
+        if (user) {
           const userData = await getUserInfo(user.uid);
-          setCurrentUser(userData);
-          localStorage.setItem("currentUser", JSON.stringify(userData));
-          localStorage.setItem(
-            "isEmailVerified",
-            JSON.stringify(user.emailVerified)
-          );
-          setLoading(false);
-          //console.log(userData);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
+
+          if (userData) {
+            // Only store user data if it exists in database
+            setCurrentUser(userData);
+            setCurrentUserId(user.uid);
+            setIsEmailVerified(user.emailVerified);
+
+            // Only store in localStorage if we have valid data
+            localStorage.setItem("currentUser", JSON.stringify(userData));
+            localStorage.setItem(
+              "isEmailVerified",
+              JSON.stringify(user.emailVerified)
+            );
+          } else {
+            // User exists in Auth but not in database - clean up
+            await auth.signOut();
+            throw new Error("User not found in database");
+          }
+        } else {
+          // User is signed out - clean up everything
           setCurrentUser(null);
+          setCurrentUserId(null);
           setIsEmailVerified(false);
-          setLoading(false);
           localStorage.removeItem("currentUser");
           localStorage.removeItem("isEmailVerified");
         }
-      } else {
+      } catch (error) {
+        console.error("Auth state change error:", error);
+        // Clean up everything on error
         setCurrentUser(null);
+        setCurrentUserId(null);
+        setIsEmailVerified(false);
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("isEmailVerified");
+      } finally {
         setLoading(false);
       }
     });
 
-    return () => unsubscribe(); // Clean up subscription
+    return () => unsubscribe();
   }, []);
   const handleLogout = async () => {
     try {
@@ -603,14 +618,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error signing out:", error);
     }
   };
-  const verifyEmail = async () => {
-    try {
-      await sendEmailVerification(auth.currentUser);
-      //console.log("Email verification sent!");
-    } catch (error) {
-      toast.error("Error sending email verification:", error);
-    }
-  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -618,7 +626,7 @@ export const AuthProvider = ({ children }) => {
         isEmailVerified,
         handleLogout,
         loading,
-        verifyEmail,
+
         FormData,
         FormData1,
         setFormData1,
