@@ -83,16 +83,13 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
         }
 
         // If no violations checkbox is checked, disable all fields
-        if (noViolationChecked) {
-          return true;
-        }
 
         // Check if the field exists and has a value
         const field = violationField[index]?.[fieldName];
         return field?.value ? true : false;
       }
     },
-    [editStatus, isSaveClicked, noViolationChecked, violationField]
+    [editStatus, isSaveClicked, noViolationChecked, violationFields]
   );
 
   const handleBack = () => {
