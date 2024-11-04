@@ -1,4 +1,3 @@
-// ./src/components/EmailVerifiedScreen.js
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,7 +8,6 @@ const EmailVerifiedScreen = () => {
   const navigate = useNavigate();
   const { currentUser, isEmailVerified } = useAuth();
   const [isVerifying, setIsVerifying] = useState(true);
-
   const [searchParams] = useSearchParams();
   const auth = getAuth();
 
@@ -25,60 +23,53 @@ const EmailVerifiedScreen = () => {
 
       try {
         await applyActionCode(auth, actionCode);
+        await auth.currentUser.reload(); // Reload the user to get updated email verification status
+        localStorage.setItem("isEmailVerified", "true");
         toast.success("Email verified successfully!");
-        // setTimeout(() => {
-        //   navigate("/user_portal", { replace: true });
-        //   window.location.reload(); // This forces a refresh after navigation
-        // }, 2000);
+
+        // Wait for Firebase to update and then redirect
+        setTimeout(() => {
+          navigate("/TruckDriverLayout/ApplicationForm1", { replace: true });
+          window.location.reload();
+        }, 2000);
       } catch (error) {
         console.error("Error verifying email:", error);
         toast.error("Failed to verify email. Please try again.");
+        navigate("/signIn", { replace: true });
       } finally {
         setIsVerifying(false);
       }
     };
 
     verifyEmail();
-  }, [searchParams, auth, navigate]);
-
-  const handleLoginRedirect = () => {
-    if (currentUser) {
-      //console.log(currentUser);
-
-      if (isEmailVerified) {
-        //console.log("emailVerified");
-
-        if (currentUser.userType === "TruckDriver") {
-          toast.success("redirecting to TruckDriver dashboard");
-          setTimeout(() => {
-            navigate("/TruckDriverLayout/ApplicationForm1");
-          }, 3000);
-        }
-      } else {
-        toast.error("email not Verified");
-      }
-    }
-  };
+  }, [searchParams, auth, navigate, currentUser, isEmailVerified]);
 
   return (
     <div className="flex items-center justify-center min-h-screen w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
-          Email Verified!
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your email has been successfully verified. You can now proceed to log
-          in by clicking on below button and access your account.
-        </p>
-        <button
-          onClick={handleLoginRedirect}
-          className="bg-green-500 text-white font-semibold px-6 py-2 rounded-md transition hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-        >
-          Go to Dashboard
-        </button>
+        {isVerifying ? (
+          <>
+            <h1 className="text-2xl font-bold bg-red-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
+              Email Verifying.....
+            </h1>
+            <p className="text-black text-[17px] mb-6 font-radios">
+              We are verifying Your Email Please wait for a while until it got
+              verified.....
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold bg-green-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
+              Email Verified!
+            </h1>
+            <p className="text-black text-[17px] mb-6 font-radios">
+              Your email has been successfully verified. Now We are Proceeding
+              you to the Your Dashboard in a Second ......
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
 };
-
 export default EmailVerifiedScreen;

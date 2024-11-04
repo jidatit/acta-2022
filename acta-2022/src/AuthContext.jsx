@@ -562,37 +562,26 @@ export const AuthProvider = ({ children }) => {
       try {
         if (user) {
           const userData = await getUserInfo(user.uid);
-
           if (userData) {
-            // Only store user data if it exists in database
             setCurrentUser(userData);
-            setCurrentUserId(user.uid);
             setIsEmailVerified(user.emailVerified);
-
-            // Only store in localStorage if we have valid data
             localStorage.setItem("currentUser", JSON.stringify(userData));
             localStorage.setItem(
               "isEmailVerified",
-              JSON.stringify(user.emailVerified)
+              user.emailVerified.toString()
             );
           } else {
-            // User exists in Auth but not in database - clean up
-            await auth.signOut();
             throw new Error("User not found in database");
           }
         } else {
-          // User is signed out - clean up everything
           setCurrentUser(null);
-          setCurrentUserId(null);
           setIsEmailVerified(false);
           localStorage.removeItem("currentUser");
           localStorage.removeItem("isEmailVerified");
         }
       } catch (error) {
         console.error("Auth state change error:", error);
-        // Clean up everything on error
         setCurrentUser(null);
-        setCurrentUserId(null);
         setIsEmailVerified(false);
         localStorage.removeItem("currentUser");
         localStorage.removeItem("isEmailVerified");

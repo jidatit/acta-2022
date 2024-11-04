@@ -7,13 +7,26 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const TruckDriverLayout = () => {
   const navigate = useNavigate();
-  const { isEmailVerified } = useAuth();
+  const { isEmailVerified, currentUser } = useAuth();
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
 
   const toggleSidebar = () => {
     setSidebarExpanded(!isSidebarExpanded);
   };
+  // useEffect(() => {
+  //   // Check both current auth state and user type
+  //   if (!currentUser || !isEmailVerified) {
+  //     navigate("/signIn", { replace: true });
+  //     return;
+  //   }
+
+  //   if (currentUser.userType !== "TruckDriver") {
+  //     navigate("/signIn", { replace: true });
+  //   }
+  // }, [currentUser, isEmailVerified, navigate]);
+
+  // Rest of your component remains the same...
 
   useEffect(() => {
     const handleResize = () => {

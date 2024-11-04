@@ -61,7 +61,7 @@ const SignUpPage = () => {
   };
 
   const RegisterUser = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     setLoading(true);
     try {
       if (formData.password !== formData.confirmPassword) {
@@ -94,7 +94,6 @@ const SignUpPage = () => {
         await sendEmailVerification(user);
       }
 
-      // Clear the form fields after successful registration
       setFormData({
         firstName: "",
         lastName: "",
@@ -118,10 +117,21 @@ const SignUpPage = () => {
     } catch (err) {
       setLoading(false);
       console.error(err);
-      toast.error(`Registration failed`);
+
+      // Check for specific Firebase error codes
+      if (err.code === "auth/email-already-in-use") {
+        toast.error(
+          "You are Blocked By Admins. Please use a different email or try logging in."
+        );
+      } else if (err.code === "auth/invalid-email") {
+        toast.error("Invalid email address. Please check your email format.");
+      } else if (err.code === "auth/weak-password") {
+        toast.error("Password is too weak. Please use a stronger password.");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
     }
   };
-
   return (
     <div className="flex flex-row items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]">
       <div className="hidden md:flex flex-col gap-y-6 justify-center items-center w-[50%] h-full">

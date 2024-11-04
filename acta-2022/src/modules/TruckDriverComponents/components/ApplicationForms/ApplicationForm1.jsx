@@ -93,7 +93,12 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
 
       // Check if the value is a string before trimming
       if (typeof value === "string" && !value.trim()) {
-        if (key !== "street2" && key !== "referredBy" && key !== "Email") {
+        if (
+          key !== "street2" &&
+          key !== "referredBy" &&
+          key !== "Email" &&
+          key !== "referredBy"
+        ) {
           newErrors[key] = "This field is required";
         }
       }
