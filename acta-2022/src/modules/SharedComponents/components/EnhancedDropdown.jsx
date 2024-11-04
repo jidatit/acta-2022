@@ -68,7 +68,7 @@ const EnhancedStatusDropdown = ({
         ref={triggerRef}
       >
         <h3
-          className={`px-3 py-2 text-white w-full rounded-md text-sm font-medium ${getStatusColor(
+          className={`px-3 py-2 text-white w-full capitalize rounded-md text-sm font-medium ${getStatusColor(
             selectedStatus
           )}`}
         >
@@ -100,7 +100,7 @@ const EnhancedStatusDropdown = ({
                     selectedStatus === option
                       ? "bg-gray-100 text-gray-900"
                       : "text-gray-900"
-                  } group flex items-center w-full px-4 py-2 text-sm hover:bg-blue-400 transition-colors duration-150`}
+                  } group flex items-center capitalize w-full px-4 py-2 text-sm hover:bg-blue-400 transition-colors duration-150`}
                   onClick={() => handleStatusChange(option)}
                 >
                   {option}

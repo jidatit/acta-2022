@@ -508,20 +508,35 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
-      <div className="flex flex-row items-start justify-center w-full ">
-        <div className="flex flex-col items-start justify-start w-[98%]">
-          <h1 className="w-full mb-4 text-lg smd:text-xl font-bold text-black">
-            List all driver licenses or permits held in the past 3 years
-          </h1>
-          <p className="text-[17px] smd:text-lg text-black font-radios">
-            Provide accident record and forfeitures record for previous 3 years
-          </p>
+      <div className="flex flex-col w-full justify-end">
+        <div className="flex flex-row items-start justify-center w-full ">
+          <div className="flex flex-col items-start justify-start w-[98%]">
+            <h1 className="w-full mb-4 text-lg smd:text-xl font-bold text-black">
+              List all driver licenses or permits held in the past 3 years
+            </h1>
+            <p className="text-[17px] smd:text-lg text-black font-radios">
+              Provide accident record and forfeitures record for previous 3
+              years
+            </p>
+          </div>
+          {currentUser.userType !== "Admin" && (
+            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          )}
         </div>
         {currentUser.userType !== "Admin" && (
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          <div className="flex justify-end">
+            {editStatus === true ? (
+              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:ON
+              </h1>
+            ) : (
+              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:OFF
+              </h1>
+            )}
+          </div>
         )}
       </div>
-
       {/* First Form */}
       <div className="flex flex-col w-full gap-y-8 -mt-4">
         <form className="w-full bg-white shadow-md">
@@ -556,7 +571,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   disabled={hasLicenseValue("LicenseNo", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     hasLicenseValue("LicenseNo", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -581,7 +596,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   disabled={hasLicenseValue("type", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     hasLicenseValue("type", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -606,7 +621,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   disabled={hasLicenseValue("state53", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     hasLicenseValue("state53", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -632,7 +647,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   disabled={hasLicenseValue("LicenseNo", index)}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     hasLicenseValue("LicenseNo", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -703,7 +718,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("statesOperated", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -737,7 +752,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("ClassEquipment", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -771,7 +786,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("EquipmentType", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -806,7 +821,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("DateTo51", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -841,7 +856,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("DateFrom51", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -877,7 +892,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("ApproximatelyMiles", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -912,7 +927,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasExperienceValue("comments51", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -989,7 +1004,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasEducationValue("school", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -1022,7 +1037,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasEducationValue("educationLevel", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -1057,7 +1072,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasEducationValue("DateFrom52", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -1092,7 +1107,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasEducationValue("DateTo52", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />
@@ -1127,7 +1142,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       : ""
                   } ${
                     hasEducationValue("comments52", index)
-                      ? ""
+                      ? "text-gray-400"
                       : "bg-white border-gray-300"
                   }`}
                 />

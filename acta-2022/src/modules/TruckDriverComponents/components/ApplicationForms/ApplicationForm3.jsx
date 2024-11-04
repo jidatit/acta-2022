@@ -361,12 +361,27 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
       }`}
     >
       <div className=" flex flex-col items-start justify-start w-full ">
-        <div className="flex flex-row items-start justify-between w-full">
-          <h1 className="w-full mb-4 text-xl font-bold text-black">
-            Employment History*
-          </h1>
+        <div className="flex flex-col w-full justify-end">
+          <div className="flex flex-row items-start justify-between w-full">
+            <h1 className="w-full mb-4 text-xl font-bold text-black">
+              Employment History*
+            </h1>
+            {currentUser.userType !== "Admin" && (
+              <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            )}
+          </div>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            <div className="flex justify-end mt-2 mb-2">
+              {editStatus === true ? (
+                <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
+                  Edit Mode:ON
+                </h1>
+              ) : (
+                <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
+                  Edit Mode:OFF
+                </h1>
+              )}
+            </div>
           )}
         </div>
         <p className="mt-3 text-[16px] md:text-lg px-1 smd:p-0 text-justify text-black font-radios">
@@ -413,7 +428,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           : ""
                       } ${
                         hasValue("companyName31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -446,7 +461,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.street31 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("street31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -478,7 +493,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.city31 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("city31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -512,7 +527,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           : ""
                       } ${
                         hasValue("zipCode31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -546,7 +561,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           : ""
                       } ${
                         hasValue("contactPerson", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -578,7 +593,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.phone31 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("phone31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -611,7 +626,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.fax1 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("fax1", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -644,7 +659,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.from31 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("from31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -677,7 +692,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.to31 ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("to31", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -709,7 +724,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.position ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("position", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -742,7 +757,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.salary ? "border-red-500 border-2" : ""
                       } ${
                         hasValue("salary", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />
@@ -774,7 +789,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         errors[index]?.leavingReason ? "border-red-500" : ""
                       } ${
                         hasValue("leavingReason", index)
-                          ? ""
+                          ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
                     />

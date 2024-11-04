@@ -253,20 +253,34 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "max-h-[85vh] " : "min-h-[94.9vh]"
       }`}
     >
-      <div className="flex flex-row items-start justify-start w-full ">
-        <div className="flex flex-col items-start justify-start w-full">
-          <h1 className="w-full mb-4 text-xl font-bold text-black">
-            Previous Addresses
-          </h1>
-          <p className="text-lg text-black font-radios">
-            List all addresses in previous three years
-          </p>
+      <div className="flex flex-col w-full justify-end">
+        <div className="flex flex-row items-start justify-start w-full ">
+          <div className="flex flex-col items-start justify-start w-full">
+            <h1 className="w-full mb-4 text-xl font-bold text-black">
+              Previous Addresses
+            </h1>
+            <p className="text-lg text-black font-radios">
+              List all addresses in previous three years
+            </p>
+          </div>
+          {currentUser.userType !== "Admin" && (
+            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          )}
         </div>
         {currentUser.userType !== "Admin" && (
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          <div className="flex justify-end">
+            {editStatus === true ? (
+              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:ON
+              </h1>
+            ) : (
+              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:OFF
+              </h1>
+            )}
+          </div>
         )}
       </div>
-
       <div className="flex flex-col w-full gap-y-8 h-full">
         <form className="w-full p-6 bg-white shadow-md h-[50vh] border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
@@ -295,7 +309,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("street12", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
                       hasValue("street12", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />
@@ -320,7 +334,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("street22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
                       hasValue("street22", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />
@@ -345,7 +359,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("city22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
                       hasValue("city22", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />
@@ -370,7 +384,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("state22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
                       hasValue("state22", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />
@@ -394,7 +408,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("zipCode22", index)}
                     className={`w-full p-2 mt-1 border rounded-md  ${
                       hasValue("zipCode22", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />

@@ -435,7 +435,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
-      <div className=" flex flex-col items-start justify-start w-full">
+      <div className=" flex flex-col w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
             Statement of On-Duty Hours*
@@ -444,6 +444,19 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
             <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
+        {currentUser.userType !== "Admin" && (
+          <div className="flex justify-end mt-2 ">
+            {editStatus === true ? (
+              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:ON
+              </h1>
+            ) : (
+              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:OFF
+              </h1>
+            )}
+          </div>
+        )}
       </div>
 
       <div className=" flex flex-col w-full flex-wrap">
@@ -494,7 +507,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day1 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day1", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -533,7 +546,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day1HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -572,7 +585,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day2 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day2", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -611,7 +624,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day2HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -650,7 +663,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day3 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day3", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -689,7 +702,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day3HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -728,7 +741,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day4 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day4", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -767,7 +780,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day4HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -806,7 +819,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day5 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day5", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -845,7 +858,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day5HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -884,7 +897,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day6 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day6", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -923,7 +936,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day6HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -962,7 +975,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.day7 ? "border-red-500 border-2" : ""
                           } ${
                             hasValue("day7", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -1001,7 +1014,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                               : ""
                           } ${
                             hasValue("day7HoursWorked", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                         />
@@ -1035,7 +1048,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                       errors[index]?.TotalHours ? "border-red-500 border-2" : ""
                     } ${
                       hasValue("TotalHours", index)
-                        ? ""
+                        ? " text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />
@@ -1083,7 +1096,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                             errors[index]?.relievedTime ? "border-red-500" : ""
                           } ${
                             hasValue("relievedTime", index)
-                              ? ""
+                              ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
                           min="09:00"
@@ -1128,7 +1141,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                         : ""
                     } ${
                       hasValue("relievedDate", index)
-                        ? ""
+                        ? "text-gray-400"
                         : "bg-white border-gray-300"
                     }`}
                   />

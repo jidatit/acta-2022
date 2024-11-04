@@ -7,6 +7,7 @@ import {
   BsChevronDown,
   BsChevronUp,
   BsThreeDotsVertical,
+  BsX,
 } from "react-icons/bs";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,11 +16,19 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { toast } from "react-toastify";
-import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Camera, LogOutIcon } from "lucide-react";
 import { Button } from "@mui/material";
 import { useEdit } from "../../../EditContext";
+import { DataArrayTwoTone } from "@mui/icons-material";
+
 const SideBar = ({ isSidebarExpanded }) => {
   const { currentUser, handleLogout, isSaveClicked } = useAuth();
   const [activeItem, setActiveItem] = useState("JobApplication");
@@ -147,10 +156,14 @@ const SideBar = ({ isSidebarExpanded }) => {
       const currentPath = location.pathname;
       const requestedSection = routeToSectionMap[currentPath];
       const requestedFormIndex = sections.indexOf(requestedSection) + 1;
-
+      console.log(
+        "Request",
+        requestedSection,
+        requestedFormIndex,
+        completedForms
+      );
       // Allow access to the next form after the last completed one
-      if (completedForms !== null && requestedFormIndex > completedForms + 1) {
-        toast.error("You do not have access to this form.");
+      if (requestedFormIndex >= completedForms + 1) {
         navigate(`/TruckDriverLayout/ApplicationForm${completedForms + 1}`);
       } else if (requestedSection) {
         setCurrentSection(requestedSection);
@@ -240,7 +253,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
     // Allow access only up to the next form after completed forms
     if (sectionFormIndex > completedForms + 1) {
-      toast.error("Access restricted. Complete the previous forms first.");
+      toast.error("Please complete all required fields to continue");
       return;
     }
 
@@ -273,6 +286,84 @@ const SideBar = ({ isSidebarExpanded }) => {
     handleLogout();
     handleDialogClose();
   };
+
+  const [applicationData, setApplicationData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(db, "truck_driver_applications", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setApplicationData(docSnap.data());
+      }
+    };
+
+    fetchData();
+  }, [currentUser]);
+  const checkSectionRejection = (formNumber) => {
+    const formKey = `form${formNumber}`;
+    if (!applicationData || !applicationData[formKey]) return false;
+
+    const arrayKeys = [
+      "previousAddresses",
+      "EmploymentHistory",
+      "accidentRecords",
+      "trafficConvictions",
+      "driverExperience",
+      "driverLicensePermit",
+      "educationHistory",
+      "extraSkills",
+      "violationRecords",
+      "AlcoholDrugTest",
+      "onDutyHours",
+      "compensatedWork",
+    ];
+
+    const checkStatusInObject = (obj) => {
+      if (!obj || typeof obj !== "object") return false;
+
+      // Check direct status field
+      if (obj.status === "rejected") return true;
+
+      // Check array fields
+      for (const key of arrayKeys) {
+        if (obj[key] && Array.isArray(obj[key])) {
+          for (const item of obj[key]) {
+            // Check each field in array item
+            for (const fieldKey in item) {
+              if (item[fieldKey]?.status === "rejected") {
+                return true;
+              }
+            }
+          }
+        }
+      }
+
+      // Check all other fields in the object
+      for (const key in obj) {
+        if (obj[key] && typeof obj[key] === "object") {
+          // Skip array fields as they're already checked
+          if (!arrayKeys.includes(key)) {
+            if (checkStatusInObject(obj[key])) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    };
+
+    return checkStatusInObject(applicationData[formKey]);
+  };
+  const isSectionCompleted = (section, index) => {
+    // Section 1 is always accessible
+    if (section === "Section 1") return true;
+
+    // A section is completed only if its index is less than or equal to completedForms
+    return completedForms !== null && index <= completedForms;
+  };
+
   return (
     <div
       className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
@@ -468,36 +559,46 @@ const SideBar = ({ isSidebarExpanded }) => {
                     }}
                   ></div>
                   <ul className="relative space-y-4 md:space-y-5">
-                    {sections.map((section, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center text-white cursor-pointer"
-                        onClick={() => handleSectionClick(section, index)}
-                      >
-                        <div
-                          className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
-                            section === "Section 1" ||
-                            completedSections.includes(section)
-                              ? "bg-white border-1 border-blue-500"
-                              : "bg-blue-500 border-2 border-white"
-                          }`}
+                    {sections.map((section, index) => {
+                      const hasRejectedFields = checkSectionRejection(
+                        index + 1
+                      );
+                      const isCompleted = isSectionCompleted(section, index);
+
+                      return (
+                        <li
+                          key={index}
+                          className="flex items-center text-white cursor-pointer"
+                          onClick={() => handleSectionClick(section, index)}
                         >
-                          {currentSection === section && (
-                            <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
-                          )}
-                        </div>
-                        <span
-                          className={`ml-4 ${
-                            section === "Section 1" ||
-                            completedSections.includes(section)
-                              ? "text-white"
-                              : "text-gray-300"
-                          }`}
-                        >
-                          {section}
-                        </span>
-                      </li>
-                    ))}
+                          <div
+                            className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
+                              isCompleted
+                                ? "bg-white border-1 border-blue-500"
+                                : "bg-blue-500 border-2 border-white"
+                            }`}
+                          >
+                            {currentSection === section && (
+                              <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
+                            )}
+                          </div>
+                          <div className="flex items-center ml-4">
+                            <span
+                              className={`${
+                                isCompleted ? "text-white" : "text-gray-300"
+                              }`}
+                            >
+                              {section}
+                            </span>
+                            {hasRejectedFields && (
+                              <div className="flex items-center ml-2">
+                                <BsX className="text-red-500 text-xl bg-white rounded-full" />
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
@@ -518,7 +619,7 @@ const SideBar = ({ isSidebarExpanded }) => {
                     : "text-white"
                 }`}
               >
-                CompanyInformation
+                Company Information
               </p>
             </Link>
           </div>

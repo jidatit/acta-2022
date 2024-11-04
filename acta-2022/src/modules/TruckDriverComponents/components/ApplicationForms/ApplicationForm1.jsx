@@ -277,15 +277,31 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
   }, [clicked, currentUser, uid]);
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
-      <div className="flex flex-row items-center justify-center w-full ">
-        <h1 className="w-full text-xl font-bold text-center text-black">
-          Application Form
-        </h1>
+      <div className="flex flex-col gap-y-4 w-full">
+        <div className="flex flex-row items-center justify-center w-full ">
+          <h1 className="w-full text-xl font-bold text-center text-black">
+            Application Form
+          </h1>
+          {currentUser.userType !== "Admin" && (
+            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          )}
+        </div>
         {currentUser.userType !== "Admin" && (
-          <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+          <div className="flex justify-end">
+            {editStatus === true ? (
+              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:ON
+              </h1>
+            ) : (
+              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
+                Edit Mode:OFF
+              </h1>
+            )}
+          </div>
         )}
       </div>
-      <div className=" flex flex-col w-full gap-y-8">
+
+      <div className=" flex flex-col w-full gap-y-8 -mt-6">
         <form className="w-full rounded-md shadow-md border-b-1 border-b-gray-400">
           {/* Line 1: Applicant Name */}
           <div className="mb-6">
@@ -308,7 +324,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               className={`w-full p-2 mt-1 border rounded-md ${
                 errors.applicantName ? "border-red-500 border-2" : ""
               } ${
-                hasValue("applicantName") ? " " : "bg-white border-gray-300" // Explicitly set bg-white when not disabled
+                hasValue("applicantName")
+                  ? "text-gray-400"
+                  : "bg-white border-gray-300" // Explicitly set bg-white when not disabled
               }`}
             />
             {errors.applicantName && (
@@ -340,7 +358,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={hasValue("appliedDate")}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.appliedDate ? "border-red-500 border-2" : ""
-                } ${hasValue("appliedDate") ? "" : "bg-white border-gray-300"}`}
+                } ${
+                  hasValue("appliedDate")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300"
+                }`}
               />
               {errors.appliedDate && (
                 <p className="mt-1 text-[15px] font-radios text-red-500">
@@ -368,7 +390,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-[12px] mt-0.5 border rounded-md ${
                   errors.positionApplied ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("positionApplied") ? "" : "bg-white border-gray-300"
+                  hasValue("positionApplied")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300"
                 }`}
               >
                 <option value="">Select Position</option>
@@ -400,7 +424,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={hasValue("ssn")}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.ssn ? "border-red-500 border-2" : ""
-                } ${hasValue("ssn") ? "" : "bg-white border-gray-300"}`}
+                } ${
+                  hasValue("ssn") ? "text-gray-400" : "bg-white border-gray-300"
+                }`}
               />
               {errors.ssn && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -432,7 +458,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={hasValue("DOB")}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.DOB ? "border-red-500 border-2" : ""
-                } ${hasValue("DOB") ? "" : "bg-white border-gray-300"}`}
+                } ${
+                  hasValue("DOB") ? "text-gray-400" : "bg-white border-gray-300"
+                }`}
               />
               {errors.DOB && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -462,7 +490,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("gender")}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
-                    } ${hasValue("gender") ? "" : "bg-white border-gray-300"}`}
+                    } ${
+                      hasValue("gender")
+                        ? "text-gray-400"
+                        : "bg-white border-gray-300"
+                    }`}
                   />
                   <span className="ml-2">Male</span>
                 </label>
@@ -476,7 +508,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     disabled={hasValue("gender")}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
-                    } ${hasValue("gender") ? "" : "bg-white border-gray-300"}`}
+                    } ${
+                      hasValue("gender")
+                        ? "text-gray-400"
+                        : "bg-white border-gray-300"
+                    }`}
                   />
                   <span className="ml-2">Female</span>
                 </label>
@@ -507,7 +543,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={hasValue("referredBy")}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.referredBy ? "border-red-500 border-2" : ""
-                } ${hasValue("referredBy") ? "" : "bg-white border-gray-300"}`}
+                } ${
+                  hasValue("referredBy")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300"
+                }`}
               />
             </div>
           </div>
@@ -590,7 +630,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.payExpected ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("payExpected") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("payExpected")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.payExpected && (
@@ -623,7 +665,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street1 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("street1") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("street1")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.street1 && (
@@ -653,7 +697,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street2 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("street2") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("street2")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
             </div>
@@ -677,7 +723,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.city11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("city11") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("city11")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.city11 && (
@@ -706,7 +754,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.state11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("state11") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("state11")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.state11 && (
@@ -735,7 +785,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.zipCode11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("zipCode11") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("zipCode11")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.zipCode11 && (
@@ -764,7 +816,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.cellPhone ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("cellPhone") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("cellPhone")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.cellPhone && (
@@ -821,7 +875,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.EmergencyContact ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("EmergencyContact") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("EmergencyContact")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.EmergencyContact && (
@@ -851,7 +907,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.Relationship ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("Relationship") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("Relationship")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.Relationship && (
@@ -881,7 +939,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDL ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("CDL") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("CDL") ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.CDL && (
@@ -911,7 +969,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLState ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("CDLState") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("CDLState")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.CDLState && (
@@ -941,7 +1001,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLClass ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("CDLClass") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                  hasValue("CDLClass")
+                    ? "text-gray-400"
+                    : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.CDLClass && (
@@ -974,7 +1036,9 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               className={`w-full p-2 mt-1 border rounded-md ${
                 errors.CDLExpirationDate ? "border-red-500 border-2" : ""
               } ${
-                hasValue("CDLExpirationDate") ? "" : "bg-white border-gray-300" // Add gray background if has value
+                hasValue("CDLExpirationDate")
+                  ? "text-gray-400"
+                  : "bg-white border-gray-300" // Add gray background if has value
               }`}
             />
             {errors.CDLExpirationDate && (

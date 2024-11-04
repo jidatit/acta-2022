@@ -32,6 +32,7 @@ import AdminLayout from "./modules/AdminComponents/layout/AdminLayout";
 import RegisteredUsers from "./modules/AdminComponents/components/RegisteredUsers";
 import CompanyInformationForm from "./modules/AdminComponents/components/CompanyInfo";
 import CompanyInformationUser from "./modules/TruckDriverComponents/components/CompanyInformationUser";
+import EmailVerifiedScreen from "./modules/AdminComponents/components/EmailVerificationResult";
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-screen loading-spinner">
@@ -74,6 +75,7 @@ function App() {
                 <Route path="verificationPage" element={<VerificationPage />} />
                 <Route path="signIn" element={<SignInPage />} />
                 <Route path="forgotPassword" element={<ForgotPassword />} />
+                <Route path="emailVerified" element={<EmailVerifiedScreen />} />
               </Route>
               <Route path="/TruckDriverLayout" element={<TruckDriverLayout />}>
                 <Route
