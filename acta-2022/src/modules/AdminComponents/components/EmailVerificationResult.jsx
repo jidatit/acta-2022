@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../AuthContext";
 import { applyActionCode, getAuth } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { Camera } from "lucide-react";
 
 const EmailVerifiedScreen = () => {
   const navigate = useNavigate();
@@ -10,7 +13,23 @@ const EmailVerifiedScreen = () => {
   const [isVerifying, setIsVerifying] = useState(true);
   const [searchParams] = useSearchParams();
   const auth = getAuth();
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [companyInfo, setCompanyInfo] = useState(null);
 
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      const companyCollection = collection(db, "companyInfo");
+      const companySnapshot = await getDocs(companyCollection);
+      const companyData = companySnapshot.docs.map((doc) => doc.data());
+
+      if (companyData.length > 0) {
+        setCompanyInfo(companyData[0]);
+        setLogoPreview(companyData[0].logoUrl);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, []);
   useEffect(() => {
     const verifyEmail = async () => {
       const actionCode = searchParams.get("oobCode");
@@ -31,7 +50,7 @@ const EmailVerifiedScreen = () => {
         setTimeout(() => {
           navigate("/TruckDriverLayout/ApplicationForm1", { replace: true });
           window.location.reload();
-        }, 2000);
+        }, 3000);
       } catch (error) {
         console.error("Error verifying email:", error);
         toast.error("Failed to verify email. Please try again.");
@@ -45,8 +64,22 @@ const EmailVerifiedScreen = () => {
   }, [searchParams, auth, navigate, currentUser, isEmailVerified]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full text-center">
+    <div className="flex flex-col bg-white items-center justify-center min-h-screen w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
+      <div className="w-full mt-4 p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
+        {logoPreview ? (
+          <img
+            src={logoPreview}
+            alt="Company logo preview"
+            className="w-16 h-16 text-center rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full">
+            <Camera className="w-8 h-8 text-gray-400" />
+            <span className="mt-2 text-sm text-gray-500">Upload Logo</span>
+          </div>
+        )}
+      </div>
+      <div className=" shadow-lg rounded-lg p-8 w-full text-center">
         {isVerifying ? (
           <>
             <h1 className="text-2xl font-bold bg-red-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
