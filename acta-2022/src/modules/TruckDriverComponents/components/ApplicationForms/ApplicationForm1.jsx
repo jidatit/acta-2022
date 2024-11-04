@@ -97,7 +97,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           key !== "street2" &&
           key !== "referredBy" &&
           key !== "Email" &&
-          key !== "referredBy"
+          key !== "payExpected"
         ) {
           newErrors[key] = "This field is required";
         }

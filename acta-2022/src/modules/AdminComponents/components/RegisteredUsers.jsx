@@ -21,10 +21,10 @@ const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
   const { currentUser } = useAuth();
   const [currentUserId, setCurrentUserId] = useState(null);
-
-  const [truckDrivers, setTruckDrivers] = useState([]); // State for truck driver data
+  const [truckDrivers, setTruckDrivers] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // Store the selected user for deletion
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -43,7 +43,7 @@ const RegisteredUsers = () => {
 
     return () => unsubscribe();
   }, []);
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
+
   // Function to confirm delete
   const handleSelectRow = (uid, name) => {
     setSelectedUserIds((prev) =>
@@ -146,16 +146,12 @@ const RegisteredUsers = () => {
   };
   const handleStatusChange = async (documentId, newStatus) => {
     try {
-      // Update Firestore directly using the document ID
       await updateDoc(doc(db, "TruckDrivers", documentId), {
         driverStatus: newStatus,
         statusUpdateDate: new Date().toISOString(),
       });
-
-      // No need to manually update state as onSnapshot will handle it
     } catch (error) {
       console.error("Error updating status:", error);
-      // Optionally show an error toast/notification here
     }
   };
   const statusOptions = [
@@ -180,6 +176,10 @@ const RegisteredUsers = () => {
       default:
         return "bg-gray-200";
     }
+  };
+  const openModalWithUser = (uid) => {
+    setCurrentUserId(uid);
+    setOpenModal(true); // Ensure `currentUserId` is set before opening modal
   };
 
   return (
@@ -232,9 +232,6 @@ const RegisteredUsers = () => {
                 <td className=" px-2 py-3">--</td>{" "}
                 {/* Placeholder for time or remove this column */}
                 <td className=" px-2 py-3">
-                  {/* <button className="bg-blue-500 text-white py-1 px-3 rounded mr-2">
-                  View
-                </button> */}
                   <button
                     className={`py-1 px-10 rounded ${
                       driver.driverStatus === "registered"
@@ -243,22 +240,21 @@ const RegisteredUsers = () => {
                     }`}
                     onClick={() => {
                       if (driver.driverStatus !== "registered") {
-                        setCurrentUserId(driver.uid);
-                        setOpenModal(true);
+                        openModalWithUser(driver.uid);
                       }
                     }}
                     disabled={driver.driverStatus === "registered"}
                   >
                     Edit
                   </button>
-                  <>
+                  {openModal && currentUserId === driver.uid && (
                     <FormShowingModal
                       uid={currentUserId}
                       openModal={openModal}
                       setOpenModal={setOpenModal}
                       driverStatus={driver.driverStatus}
                     />
-                  </>
+                  )}
                 </td>
               </tr>
             ))}

@@ -15,7 +15,7 @@ const FormStatusHeader = ({ formData, applicationStatus, driverStatus }) => {
     }
     return count;
   };
-
+  console.log(`Filled Syntax ${driverStatus}`);
   // Get status color based on application status
 
   const getStatusColor = (status) => {
