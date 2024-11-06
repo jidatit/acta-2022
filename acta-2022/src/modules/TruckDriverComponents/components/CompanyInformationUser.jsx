@@ -16,6 +16,7 @@ export default function CompanyInformationUser() {
     address: "",
     phoneNumber: "",
     fax: "",
+    website: "",
   });
   const [companyId, setCompanyId] = useState(null);
   const [logo, setLogo] = useState(null);
@@ -33,6 +34,7 @@ export default function CompanyInformationUser() {
           address: companyData.address,
           phoneNumber: companyData.phoneNumber,
           fax: companyData.fax,
+          website: companyData.website,
         });
         setCompanyId(companyId);
         if (companyData.logoUrl) {
@@ -125,6 +127,19 @@ export default function CompanyInformationUser() {
                 id="fax"
                 name="fax"
                 value={formData.fax}
+                className="w-full p-2 border-1 border-gray-200 rounded bg-gray-100"
+                disabled
+              />
+            </div>
+            <div>
+              <label htmlFor="website" className="block font-medium mb-2">
+                Website
+              </label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                value={formData.website}
                 className="w-full p-2 border-1 border-gray-200 rounded bg-gray-100"
                 disabled
               />

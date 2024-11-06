@@ -4,8 +4,10 @@ import { db, storage } from "../../../config/firebaseConfig";
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 import { Camera } from "lucide-react";
 import { toast } from "react-toastify";
@@ -16,6 +18,7 @@ export default function CompanyInformationForm() {
     address: "",
     phoneNumber: "",
     fax: "",
+    website: "",
   });
   const [companyId, setCompanyId] = useState(null); // Store company document ID
   const [logo, setLogo] = useState(null);
@@ -34,6 +37,7 @@ export default function CompanyInformationForm() {
           address: companyData.address,
           phoneNumber: companyData.phoneNumber,
           fax: companyData.fax,
+          website: companyData.website,
         });
         setCompanyId(companyId); // Store the document ID
         if (companyData.logoUrl) {
@@ -72,41 +76,49 @@ export default function CompanyInformationForm() {
     setError("");
 
     try {
-      // Upload logo to Firebase Storage
-      let logoUrl = "";
+      // Upload logo to Firebase Storage if a new logo was selected
+      let logoUrl = logoPreview; // Preserve existing logo URL if no new logo is uploaded
       if (logo) {
         const storageRef = ref(
           storage,
           `company-logos/${Date.now()}-${logo.name}`
         );
-        const uploadResult = await uploadBytes(storageRef, logo, {
-          headers: {
-            "Access-Control-Allow-Origin": "http://localhost:5173",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-          },
-        });
+        const uploadResult = await uploadBytes(storageRef, logo);
         logoUrl = await getDownloadURL(uploadResult.ref);
       }
 
-      // Save company information to Firestore
-      await addDoc(collection(db, "companyInfo"), {
+      // Prepare company data to be saved or updated
+      const companyData = {
         ...formData,
         logoUrl,
-        createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+      };
 
-      // Reset form
-      setFormData({
-        companyName: "",
-        address: "",
-        phoneNumber: "",
-        fax: "",
-      });
-      setLogo(null);
-      setLogoPreview(null);
+      if (companyId) {
+        // Update existing company document
+        await setDoc(doc(db, "companyInfo", companyId), companyData, {
+          merge: true,
+        });
+        toast.success("Company information updated successfully!");
+      } else {
+        // Add new company document if none exists
+        await addDoc(collection(db, "companyInfo"), {
+          ...companyData,
+          createdAt: serverTimestamp(),
+        });
+        toast.success("Company information saved successfully!");
 
-      toast.success("Company information saved successfully!");
+        // Reset form after creating new entry
+        setFormData({
+          companyName: "",
+          address: "",
+          phoneNumber: "",
+          fax: "",
+          website: "",
+        });
+        setLogo(null);
+        setLogoPreview(null);
+      }
     } catch (err) {
       setError("Error saving company information. Please try again.");
       toast.error("Error saving company information. Please try again.");
@@ -220,6 +232,20 @@ export default function CompanyInformationForm() {
               value={formData.fax}
               onChange={handleInputChange}
               className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label htmlFor="website" className="block font-medium mb-2">
+              Website
+            </label>
+            <input
+              type="text"
+              id="website"
+              name="website"
+              value={formData.website}
+              onChange={handleInputChange}
+              className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
             />
           </div>
         </div>
