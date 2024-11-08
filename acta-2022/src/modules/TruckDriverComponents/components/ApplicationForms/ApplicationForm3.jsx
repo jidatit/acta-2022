@@ -10,6 +10,14 @@ import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -17,17 +25,44 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { isSaveClicked, setIsSaveClicked, FormData3 } =
+  const { isSaveClicked, setIsSaveClicked, FormData3, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   const [localFormData, setLocalFormData] = useState(FormData3 || [{}]);
 
   const { editStatus, setEditStatus } = useEdit();
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
 
+  const checkIfAllFieldsApproved = useCallback(() => {
+    return localFormData.every((form) =>
+      Object.values(form).every((field) => field.status === "approved")
+    );
+  }, [localFormData]);
+  useEffect(() => {
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [editStatus, localFormData, checkIfAllFieldsApproved]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
   // Simplified hasValue function using context
 
   const hasValue = useCallback(
     (fieldName, index) => {
+      let toValue = checkIfAllFieldsApproved();
+      if (
+        (toValue || applicationStatus === "approved") &&
+        currentUser.userType !== "Admin"
+      ) {
+        setEditStatus(false);
+        return true;
+      }
       if (currentUser && currentUser.userType !== "Admin") {
         const fieldHasValue = FormData3?.[index]?.[fieldName]?.value;
         return fieldHasValue && !editStatus;
@@ -360,6 +395,34 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
+      <Dialog
+        open={isApprovedModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="approved-dialog-title"
+        aria-describedby="approved-dialog-description"
+      >
+        <DialogTitle id="approved-dialog-title">
+          Form Approval Status
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="approved-dialog-description">
+            All fields have been approved by the admin, so editing is not
+            allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className=" flex flex-col items-start justify-start w-full ">
         <div className="flex flex-col w-full justify-end">
           <div className="flex flex-row items-start justify-between w-full">
@@ -372,7 +435,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
           </div>
           {currentUser.userType !== "Admin" && (
             <div className="flex justify-end mt-2 mb-2">
-              {editStatus === true ? (
+              {editStatus === true && !checkIfAllFieldsApproved() ? (
                 <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                   Edit Mode:ON
                 </h1>

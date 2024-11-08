@@ -10,7 +10,14 @@ import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label
 import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLogic";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -24,7 +31,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     DriverLicensePermit,
     DriverExperience,
     EducationHistory,
-
+    applicationStatus,
     ExtraSkills,
   } = currentUser?.userType === "Admin" ? adminAuthData : authData;
 
@@ -45,11 +52,56 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const [driverEducationError, setDriverEducationError] = useState([]);
   // State to track if the checkboxes are checked
   const { editStatus, setEditStatus } = useEdit();
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
+  const checkIfAllFieldsApproved = useCallback(() => {
+    const allFieldsApproved = (fields) =>
+      fields.every((field) =>
+        Object.values(field).every((subField) => subField.status === "approved")
+      );
+
+    const allDriverLicenseApproved = allFieldsApproved(driverLicensePermit);
+    const allDriverExperienceApproved = allFieldsApproved(driverExperience);
+    const allEducationHistoryApproved = allFieldsApproved(educationHistory);
+    const allExtraSkillsApproved = Object.values(extraSkills).every(
+      (field) => field.status === "approved"
+    );
+
+    return (
+      allDriverLicenseApproved &&
+      allDriverExperienceApproved &&
+      allEducationHistoryApproved &&
+      allExtraSkillsApproved
+    );
+  }, [driverLicensePermit, driverExperience, educationHistory, extraSkills]);
+  useEffect(() => {
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [editStatus, checkIfAllFieldsApproved]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
   const hasValue = useCallback(
     (formType, fieldName, index = 0) => {
       // If in edit mode, enable all fields
+      let toValue = checkIfAllFieldsApproved();
+      if (
+        (toValue || applicationStatus === "approved") &&
+        currentUser.userType !== "Admin"
+      ) {
+        setEditStatus(false);
+        return true;
+      }
       if (currentUser && currentUser.userType !== "Admin") {
-        if (editStatus || isEditing) {
+        if (
+          editStatus ||
+          (isEditing && (!toValue || applicationStatus === "approved"))
+        ) {
           return false;
         }
 
@@ -523,9 +575,37 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
             <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
+        <Dialog
+          open={isApprovedModalOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="approved-dialog-title"
+          aria-describedby="approved-dialog-description"
+        >
+          <DialogTitle id="approved-dialog-title">
+            Form Approval Status
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="approved-dialog-description">
+              All fields have been approved by the admin, so editing is not
+              allowed.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseModal}
+              variant="outline"
+              sx={{
+                backgroundColor: "red",
+                color: "white",
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end">
-            {editStatus === true ? (
+            {editStatus === true && !checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>

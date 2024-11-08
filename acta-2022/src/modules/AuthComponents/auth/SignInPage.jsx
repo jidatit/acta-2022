@@ -100,7 +100,9 @@ const SignInPage = () => {
       if (!userData) {
         // User exists in Authentication but not in database
         await auth.signOut(); // Sign out the user
-        toast.error("Account not found in the system. Please contact support.");
+        toast.error(
+          "You are Blocked By Admins. Please use a different email or try logging in."
+        );
         return;
       }
 
@@ -134,7 +136,8 @@ const SignInPage = () => {
       // Handle specific Firebase auth errors
       switch (error.code) {
         case "auth/user-not-found":
-          errorMessage = "No account exists with this email";
+          errorMessage =
+            "You are Blocked By Admins. Please use a different email or try logging in.";
           break;
         case "auth/wrong-password":
           errorMessage = "Incorrect password";

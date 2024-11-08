@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completedForms, setCompletedForms] = useState(null);
+  const [applicationStatus, setApplicationStatus] = useState(null);
   const [noViolationChecked, setNoViolationChecked] = useState(false);
   const [noAccidentsCheckeds, setNoAccidentsChecked] = useState(false);
   const [noTrafficConvictionsCheckeds, setNoTrafficConvictionsChecked] =
@@ -202,6 +203,7 @@ export const AuthProvider = ({ children }) => {
           const data = docSnap.data();
           const completedFormsData = data.completedForms || null;
           setCompletedForms(completedFormsData);
+          setApplicationStatus(data.applicationStatus);
           localStorage.setItem(
             "completedForms",
             JSON.stringify(completedFormsData)
@@ -647,6 +649,7 @@ export const AuthProvider = ({ children }) => {
         setFormData8,
         formData9,
         setFormData9,
+        applicationStatus,
       }}
     >
       {children}

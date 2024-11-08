@@ -8,6 +8,14 @@ import { toast } from "react-toastify";
 import { useAuthAdmin } from "../../../../AdminContext";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import { useEdit } from "../../../../../EditContext";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const initialFields = [
@@ -24,18 +32,25 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
 
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { setIsSaveClicked, FormData } =
+  const { setIsSaveClicked, FormData, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
-
+  console.log("Setting", applicationStatus);
   const [localFormData, setLocalFormData] = useState(FormData || [{}]);
   const { editStatus, setEditStatus } = useEdit();
   const [savedFields, setSavedFields] = useState([]);
   // Simplified hasValue function using context
-
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
   const hasValue = useCallback(
     (fieldName, index) => {
       // Check if FormData exists and has the index
-
+      let toValue = checkIfAllFieldsApproved();
+      if (
+        (toValue || applicationStatus === "approved") &&
+        currentUser.userType !== "Admin"
+      ) {
+        setEditStatus(false);
+        return true;
+      }
       if (currentUser && currentUser.userType !== "Admin") {
         const fieldHasValue = FormData?.[index]?.[fieldName]?.value;
         return fieldHasValue && !editStatus;
@@ -43,6 +58,24 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     },
     [FormData, editStatus]
   );
+  const checkIfAllFieldsApproved = useCallback(() => {
+    return FormData.every((form) =>
+      Object.values(form).every((field) => field.status === "approved")
+    );
+  }, [FormData]);
+  useEffect(() => {
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [editStatus, FormData, checkIfAllFieldsApproved]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
 
   useEffect(() => {
     if (uid) {
@@ -253,6 +286,34 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "max-h-[85vh] " : "min-h-[94.9vh]"
       }`}
     >
+      <Dialog
+        open={isApprovedModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="approved-dialog-title"
+        aria-describedby="approved-dialog-description"
+      >
+        <DialogTitle id="approved-dialog-title">
+          Form Approval Status
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="approved-dialog-description">
+            All fields have been approved by the admin, so editing is not
+            allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="flex flex-col w-full justify-end">
         <div className="flex flex-row items-start justify-start w-full ">
           <div className="flex flex-col items-start justify-start w-full">
@@ -269,7 +330,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end">
-            {editStatus === true ? (
+            {editStatus === true && !checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>

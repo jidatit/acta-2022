@@ -8,6 +8,14 @@ import { FaBell } from "react-icons/fa";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const defaultFormData = [
     {
@@ -36,7 +44,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const { editStatus, setEditStatus } = useEdit();
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { isSaveClicked, setIsSaveClicked, formData8 } =
+  const { isSaveClicked, setIsSaveClicked, formData8, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   useEffect(() => {
@@ -48,6 +56,27 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const [localFormData, setLocalFormData] = useState(
     formData8 || defaultFormData
   );
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
+
+  const checkIfAllFieldsApproved = useCallback(() => {
+    localFormData.every((field) =>
+      Object.values(field).every((subField) => subField.status === "approved")
+    );
+  }, [localFormData]);
+  useEffect(() => {
+    // If editStatus is true and all fields are approved, disable edit mode
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [editStatus, checkIfAllFieldsApproved]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
   const [errors, setErrors] = useState([]);
   const convertTimeToAMPM = (timeString) => {
     if (!timeString) return "";
@@ -60,6 +89,15 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   };
   const hasValue = (fieldName, index) => {
     // If we don't have access to localFormData or it's not an array, return false
+    let toValue = checkIfAllFieldsApproved();
+
+    if (
+      (toValue || applicationStatus === "approved") &&
+      currentUser.userType !== "Admin"
+    ) {
+      setEditStatus(false);
+      return true;
+    }
     if (currentUser && currentUser.userType !== "Admin") {
       if (!formData8 || !Array.isArray(formData8)) return false;
 
@@ -70,7 +108,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
       const fieldData = field[fieldName];
 
       // If we're in edit mode, enable all fields regardless of value
-      if (editStatus) {
+      if (editStatus && (!toValue || applicationStatus === "approved")) {
         return false;
       }
 
@@ -435,6 +473,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
+      <Dialog
+        open={isApprovedModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="approved-dialog-title"
+        aria-describedby="approved-dialog-description"
+      >
+        <DialogTitle id="approved-dialog-title">
+          Form Approval Status
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="approved-dialog-description">
+            All fields have been approved by the admin, so editing is not
+            allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className=" flex flex-col w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -446,7 +512,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true ? (
+            {editStatus === true && !checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>

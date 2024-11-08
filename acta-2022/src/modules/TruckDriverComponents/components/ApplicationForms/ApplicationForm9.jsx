@@ -1,7 +1,7 @@
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../AuthContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   collection,
   doc,
@@ -18,13 +18,20 @@ import SingleLabelLogic from "../../../SharedComponents/components/SingleLableLo
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
   const adminAuthData = useAuthAdmin();
   const { fetchUserData, currentUser } = adminAuthData;
-  const { isSaveClicked, setIsSaveClicked, formData9 } =
+  const { isSaveClicked, setIsSaveClicked, formData9, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
   useEffect(() => {
     if (uid) {
@@ -34,6 +41,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   const [localFormData, setLocalFormData] = useState(formData9);
   const [errors, setErrors] = useState([]);
   const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
   useEffect(() => {
     // Scroll to the top of the page when the component is mounted
     window.scrollTo(0, 0);
@@ -48,7 +56,35 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
     //console.log(localFormData);
   }, [formData9]);
   const { editStatus, setEditStatus } = useEdit();
+  const checkIfAllFieldsApproved = useCallback(() => {
+    return localFormData.every((field) =>
+      Object.values(field).every((subField) => subField.status === "approved")
+    );
+  }, [localFormData]);
+  useEffect(() => {
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [editStatus, checkIfAllFieldsApproved]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
+
   const hasValue = (fieldName, index) => {
+    let toValue = checkIfAllFieldsApproved();
+
+    if (
+      (toValue || applicationStatus === "approved") &&
+      currentUser.userType !== "Admin"
+    ) {
+      setEditStatus(false);
+      return true;
+    }
     // Guard clauses for safety
     if (currentUser && currentUser.userType !== "Admin") {
       if (!formData9 || !Array.isArray(formData9)) return false;
@@ -60,7 +96,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
       if (!fieldData) return false;
 
       // If in edit mode, enable all fields
-      if (editStatus) {
+      if (editStatus && (!toValue || applicationStatus === "approved")) {
         return false;
       }
 
@@ -314,6 +350,34 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
+      <Dialog
+        open={isApprovedModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="approved-dialog-title"
+        aria-describedby="approved-dialog-description"
+      >
+        <DialogTitle id="approved-dialog-title">
+          Form Approval Status
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="approved-dialog-description">
+            All fields have been approved by the admin, so editing is not
+            allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="flex flex-col w-full justify-end">
         <div className="flex flex-row items-start justify-start w-full ">
           <div className=" flex flex-col items-start justify-start w-full">
@@ -327,7 +391,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true ? (
+            {editStatus === true && !checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router";
-
 import {
   doc,
   setDoc,
@@ -20,6 +19,14 @@ import { useAuthAdmin } from "../../../../AdminContext";
 import { useAuth } from "../../../../AuthContext";
 import { useEdit } from "../../../../../EditContext";
 
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
 const ApplicationForm = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
 
@@ -28,7 +35,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
   const adminAuthData = useAuthAdmin();
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { setIsSaveClicked, FormData1 } =
+  const { setIsSaveClicked, FormData1, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   const [errors, setErrors] = useState({});
@@ -40,6 +47,14 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
   // Simplified hasValue function using context
   const hasValue = useCallback(
     (fieldName) => {
+      let toValue = checkAllFieldsApproved();
+      if (
+        (toValue || applicationStatus === "approved") &&
+        currentUser.userType !== "Admin"
+      ) {
+        setEditStatus(false);
+        return true;
+      }
       if (currentUser.userType !== "Admin") {
         const fieldHasValue =
           FormData1?.[fieldName]?.value &&
@@ -49,6 +64,65 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
     },
     [FormData1, editStatus]
   );
+  const [showModal, setShowModal] = useState(false);
+  const checkAllFieldsApproved = useCallback(() => {
+    // First check if FormData1 exists and has fields
+    if (!FormData1 || typeof FormData1 !== "object") {
+      return false;
+    }
+
+    // Get all required fields that need to be checked
+    const requiredFields = [
+      "applicantName",
+      "appliedDate",
+      "positionApplied",
+      "ssn",
+      "DOB",
+      "gender",
+      "legalRightToWork",
+      "street1",
+      "city11",
+      "state11",
+      "zipCode11",
+      "cellPhone",
+      "EmergencyContact",
+      "Relationship",
+      "CDL",
+      "CDLState",
+      "CDLClass",
+      "CDLExpirationDate",
+      "EverBeenDeniedALicense",
+      "PermitPrivilegeOfLicense",
+      "TestedPositiveOrRefusedDotDrug",
+      "EverConvictedOfFelony",
+    ];
+    // Check if all required fields exist and are approved
+    const allFieldsApproved = requiredFields.every((fieldName) => {
+      // Check if the field exists in FormData1
+      if (!FormData1[fieldName]) {
+        return false;
+      }
+      // Check if the status is "approved"
+      return FormData1[fieldName].status === "approved";
+    });
+
+    return allFieldsApproved;
+  }, [FormData1]); // Add FormData1 as dependency
+
+  useEffect(() => {
+    // Only check and show modal if user is not admin
+    if (currentUser?.userType !== "Admin" && editStatus) {
+      const isAllApproved = checkAllFieldsApproved();
+      if (isAllApproved || applicationStatus === "approved") {
+        setShowModal(true);
+      }
+    }
+  }, [editStatus, checkAllFieldsApproved, currentUser?.userType]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditStatus(false);
+  };
 
   useEffect(() => {
     if (uid) {
@@ -293,7 +367,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end">
-            {editStatus === true ? (
+            {editStatus === true && !checkAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -305,7 +379,31 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           </div>
         )}
       </div>
-
+      <>
+        <Dialog open={showModal} onClose={handleCloseModal}>
+          <DialogTitle className="text-lg font-semibold">
+            Cannot Edit Approved Form
+          </DialogTitle>
+          <DialogContent className="py-4">
+            <p>
+              All fields in this form have been approved by the admin. You
+              cannot make any changes.
+            </p>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseModal}
+              variant="outline"
+              sx={{
+                backgroundColor: "red",
+                color: "white",
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
       <div className=" flex flex-col w-full gap-y-8 -mt-6">
         <form className="w-full rounded-md shadow-md border-b-1 border-b-gray-400">
           {/* Line 1: Applicant Name */}

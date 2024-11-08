@@ -144,12 +144,21 @@ const RegisteredUsers = () => {
 
     return `${day}${suffix(day)} ${month} ${year}`;
   };
-  const handleStatusChange = async (documentId, newStatus) => {
+  const handleStatusChange = async (documentId, newStatus, appId) => {
     try {
+      // Update the driver status in the "TruckDrivers" collection
       await updateDoc(doc(db, "TruckDrivers", documentId), {
         driverStatus: newStatus,
         statusUpdateDate: new Date().toISOString(),
       });
+
+      // Update the application status in the "truck_driver_applications" collection
+      const userApplicationDoc = doc(db, "truck_driver_applications", appId);
+      await updateDoc(userApplicationDoc, {
+        applicationStatus: newStatus,
+      });
+
+      toast.success("Status updated successfully!");
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -222,7 +231,7 @@ const RegisteredUsers = () => {
                     initialStatus={driver.driverStatus}
                     options={statusOptions}
                     onStatusChange={(value) =>
-                      handleStatusChange(driver.id, value)
+                      handleStatusChange(driver.id, value, driver.uid)
                     } // Use driver.id here
                     getStatusColor={getStatusColor}
                   />
@@ -295,8 +304,8 @@ const RegisteredUsers = () => {
                   />
                 </svg>
               </button>
-              <div className="flex flex-col items-center justify-center gap-y-5">
-                <p className="text-center text-xl font-radios mt-4">
+              <div className="flex flex-col items-center justify-center gap-y-0">
+                <p className="text-center text-xl font-radios mt-4 p-4">
                   Are you sure you want to delete this driver? Because if You
                   will Delete this Driver it will get Permanently Blocked.{" "}
                 </p>

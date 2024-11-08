@@ -8,7 +8,14 @@ import { toast } from "react-toastify";
 import FormLabelWithStatus from "../../../SharedComponents/components/Form3Label";
 import { useAuthAdmin } from "../../../../AdminContext";
 import { useEdit } from "../../../../../EditContext";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -17,6 +24,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const [trafficErrors, setTrafficErrors] = useState([]);
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
   const {
     isSaveClicked,
     setIsSaveClicked,
@@ -24,6 +32,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     trafficConvictionField,
     noAccidentsCheckeds,
     noTrafficConvictionsCheckeds,
+    applicationStatus,
   } = currentUser?.userType === "Admin" ? adminAuthData : authData;
 
   useEffect(() => {
@@ -104,11 +113,50 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const [noTrafficConvictionsChecked, setNoTrafficConvictionsChecked] =
     useState(noTrafficConvictionsCheckeds);
   const { editStatus, setEditStatus } = useEdit();
+
+  const checkIfAllFieldsApproved = useCallback(() => {
+    const allAddressFieldsApproved = addressFields.every((field) =>
+      Object.values(field).every((subField) => subField.status === "approved")
+    );
+    const allTrafficFieldsApproved = trafficConvictionFields.every((field) =>
+      Object.values(field).every((subField) => subField.status === "approved")
+    );
+
+    return allAddressFieldsApproved && allTrafficFieldsApproved;
+  }, [addressFields, trafficConvictionFields]);
+
+  useEffect(() => {
+    if (
+      editStatus &&
+      (checkIfAllFieldsApproved() || applicationStatus === "approved")
+    ) {
+      setEditStatus(false);
+      setIsApprovedModalOpen(true);
+    }
+  }, [
+    editStatus,
+    addressFields,
+    trafficConvictionFields,
+    checkIfAllFieldsApproved,
+  ]);
+
+  const handleCloseModal = () => {
+    setIsApprovedModalOpen(false);
+  };
+
   const hasValue = useCallback(
     (fieldType, fieldName, index) => {
       // If in edit mode or user is admin, fields should remain enabled
+      let toValue = checkIfAllFieldsApproved();
+      if (
+        (toValue || applicationStatus === "approved") &&
+        currentUser.userType !== "Admin"
+      ) {
+        setEditStatus(false);
+        return true;
+      }
       if (currentUser && currentUser.userType !== "Admin") {
-        if (editStatus) {
+        if (editStatus && (!toValue || applicationStatus === "approved")) {
           return false;
         }
 
@@ -489,6 +537,34 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
         currentUser.userType === "Admin" ? "min-h-[85vh]" : "min-h-[94.9vh]"
       }`}
     >
+      <Dialog
+        open={isApprovedModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="approved-dialog-title"
+        aria-describedby="approved-dialog-description"
+      >
+        <DialogTitle id="approved-dialog-title">
+          Form Approval Status
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="approved-dialog-description">
+            All fields have been approved by the admin, so editing is not
+            allowed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="flex flex-col w-full justify-end">
         <div className="flex flex-row items-start gap-x-2 justify-start w-full">
           <div className="flex flex-col items-start justify-start w-full smd:ml-0">
@@ -502,7 +578,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true ? (
+            {editStatus === true && !checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
