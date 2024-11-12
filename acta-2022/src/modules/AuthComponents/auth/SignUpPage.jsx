@@ -138,7 +138,7 @@ const SignUpPage = () => {
               <img
                 src={logoPreview}
                 alt="Company logo preview"
-                className="w-[80%] rounded-xl text-center mx-auto object-cover"
+                className="w-[80%] max-h-[48vh] h-[40vh] rounded-xl text-center mx-auto object-contain"
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full">

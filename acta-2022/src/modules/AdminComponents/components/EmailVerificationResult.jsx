@@ -64,43 +64,45 @@ const EmailVerifiedScreen = () => {
   }, [searchParams, auth, navigate, currentUser, isEmailVerified]);
 
   return (
-    <div className="flex flex-col bg-white items-center justify-center w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
-      <div className="w-full mt-4 p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
-        {logoPreview ? (
-          <img
-            src={logoPreview}
-            alt="Company logo preview"
-            className="w-16 h-16 text-center rounded-full object-cover"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full">
-            <Camera className="w-8 h-8 text-gray-400" />
-            <span className="mt-2 text-sm text-gray-500">Upload Logo</span>
-          </div>
-        )}
-      </div>
-      <div className=" shadow-lg rounded-lg p-8 w-full text-center">
-        {isVerifying ? (
-          <>
-            <h1 className="text-2xl font-bold bg-red-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
-              Email Verifying.....
-            </h1>
-            <p className="text-black text-[17px] mb-6 font-radios">
-              We are verifying Your Email Please wait for a while until it got
-              verified.....
-            </p>
-          </>
-        ) : (
-          <>
-            <h1 className="text-2xl font-bold bg-green-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
-              Email Verified!
-            </h1>
-            <p className="text-black text-[17px] mb-6 font-radios">
-              Your email has been successfully verified. Now We are Proceeding
-              you to the Your Dashboard in a Second ......
-            </p>
-          </>
-        )}
+    <div className="flex flex-col h-[94.5vh] items-center justify-center ">
+      <div className="h-auto rounded-lg bg-white w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[60%] bg-gradient-to-br p-4 ">
+        <div className="w-full  mt-4 p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
+          {logoPreview ? (
+            <img
+              src={logoPreview}
+              alt="Company logo preview"
+              className="w-16 h-16 text-center rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full">
+              <Camera className="w-8 h-8 text-gray-400" />
+              <span className="mt-2 text-sm text-gray-500">Upload Logo</span>
+            </div>
+          )}
+        </div>
+        <div className="  p-8 w-full text-center">
+          {isVerifying ? (
+            <>
+              <h1 className="text-2xl font-bold bg-red-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
+                Email Verifying.....
+              </h1>
+              <p className="text-black text-[17px] mb-6 font-radios">
+                We are verifying Your Email Please wait for a while until it got
+                verified.....
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl font-bold bg-green-500 py-3 px-4 rounded-xl shadow-md text-white mb-4">
+                Email Verified!
+              </h1>
+              <p className="text-black text-[17px] mb-6 font-radios">
+                Your email has been successfully verified. Now We are Proceeding
+                you to the Your Dashboard in a Second ......
+              </p>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
