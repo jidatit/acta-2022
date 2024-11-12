@@ -78,7 +78,7 @@ const VerificationPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-screen bg-[#3B82F6] h-screen">
-      <div className="relative flex flex-col items-center justify-center h-auto p-12 py-6 bg-white rounded-lg shadow-lg overfslow-hidden sm:py-12">
+      <div className="relative flex flex-col items-center justify-center h-auto p-12 py-6 bg-white rounded-lg shadow-lg overflow-hidden sm:py-12">
         <div className="max-w-xl px-5 text-center">
           <div className="flex w-full">
             <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black bg-white rounded-lg">
