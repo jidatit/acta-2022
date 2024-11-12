@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { toast } from "react-toastify";
-
+import { MdNoteAlt } from "react-icons/md";
 // Assuming `currentUser.userType` is passed as a prop to the component
 const SingleLabelLogic = ({
   htmlFor,
@@ -449,7 +449,7 @@ const SingleLabelLogic = ({
                           }}
                         >
                           <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                            <FaPencil size={20} />
+                            <MdNoteAlt size={20} />
                           </div>
                           <span className="text-sm font-medium">
                             {note ? "View Note" : "Add Note"}
@@ -574,7 +574,7 @@ const SingleLabelLogic = ({
                             }
                           >
                             <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaPencil size={20} />
+                              <MdNoteAlt size={20} />
                             </div>
                             {note ? "View note" : "Add note"}
                           </li>
@@ -705,7 +705,7 @@ const SingleLabelLogic = ({
                       className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
                       onClick={handleViewNote}
                     >
-                      <FaPencil size={10} />
+                      <MdNoteAlt size={10} />
 
                       <p className="text-xs font-radios">View note</p>
                     </div>

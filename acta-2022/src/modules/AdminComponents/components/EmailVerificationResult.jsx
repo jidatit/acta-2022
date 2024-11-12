@@ -64,7 +64,7 @@ const EmailVerifiedScreen = () => {
   }, [searchParams, auth, navigate, currentUser, isEmailVerified]);
 
   return (
-    <div className="flex flex-col bg-white items-center justify-center min-h-screen w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
+    <div className="flex flex-col bg-white items-center justify-center w-[90%] sssm:w-[80%] md:w-[56%] lg:w-[40%] bg-gradient-to-br p-4">
       <div className="w-full mt-4 p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
         {logoPreview ? (
           <img

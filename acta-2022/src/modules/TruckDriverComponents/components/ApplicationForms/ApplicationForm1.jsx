@@ -219,6 +219,25 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
 
         // Document exists, update it
         await updateDoc(docRef, updateObject);
+        const collectionName = "TruckDrivers";
+
+        // Query to find the document with the specific UID
+        const truckDriversQuery = query(
+          collection(db, collectionName),
+          where("uid", "==", currentUser.uid)
+        );
+
+        const querySnapshot = await getDocs(truckDriversQuery);
+
+        if (!querySnapshot.empty) {
+          // Get the first matching document
+          const truckDriverDoc = querySnapshot.docs[0];
+
+          // Update driverStatus to "Filled"
+          await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+            name: formData.applicantName.value,
+          });
+        }
       } else {
         // For new documents, set the completedForms to the current form number
         await setDoc(docRef, {
@@ -354,6 +373,8 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       setClicked(false);
     }
   }, [clicked, currentUser, uid]);
+  const isDisabled = checkAllFieldsApproved();
+
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-col gap-y-4 w-full">
@@ -367,7 +388,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end">
-            {editStatus === true && !checkAllFieldsApproved() ? (
+            {!checkAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -423,13 +444,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               id="applicantName"
               value={formData?.applicantName?.value}
               onChange={handleChange}
-              disabled={hasValue("applicantName")}
+              disabled={isDisabled}
               className={`w-full p-2 mt-1 border rounded-md ${
                 errors.applicantName ? "border-red-500 border-2" : ""
               } ${
-                hasValue("applicantName")
-                  ? "text-gray-400"
-                  : "bg-white border-gray-300" // Explicitly set bg-white when not disabled
+                isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Explicitly set bg-white when not disabled
               }`}
             />
             {errors.applicantName && (
@@ -458,14 +477,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 value={formData?.appliedDate?.value}
                 onChange={handleChange}
                 max={new Date().toISOString().split("T")[0]}
-                disabled={hasValue("appliedDate")}
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.appliedDate ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("appliedDate")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300"
-                }`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               />
               {errors.appliedDate && (
                 <p className="mt-1 text-[15px] font-radios text-red-500">
@@ -489,14 +504,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="positionApplied"
                 value={formData?.positionApplied?.value}
                 onChange={handleChange}
-                disabled={hasValue("positionApplied")}
+                disabled={isDisabled}
                 className={`w-full p-[12px] mt-0.5 border rounded-md ${
                   errors.positionApplied ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("positionApplied")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300"
-                }`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               >
                 <option value="">Select Position</option>
                 <option value="position1">Position 1</option>
@@ -524,12 +535,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="ssn"
                 value={formData?.ssn?.value}
                 onChange={handleChange}
-                disabled={hasValue("ssn")}
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.ssn ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("ssn") ? "text-gray-400" : "bg-white border-gray-300"
-                }`}
+                } ${isDisabled}`}
               />
               {errors.ssn && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -558,12 +567,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 value={formData?.DOB?.value}
                 onChange={handleChange}
                 max={new Date().toISOString().split("T")[0]}
-                disabled={hasValue("DOB")}
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.DOB ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("DOB") ? "text-gray-400" : "bg-white border-gray-300"
-                }`}
+                } ${isDisabled}`}
               />
               {errors.DOB && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -590,13 +597,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     value="male"
                     checked={formData?.gender?.value === "male"}
                     onChange={handleChange}
-                    disabled={hasValue("gender")}
+                    disabled={isDisabled}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
                     } ${
-                      hasValue("gender")
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                   <span className="ml-2">Male</span>
@@ -608,13 +613,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     value="female"
                     checked={formData?.gender?.value === "female"}
                     onChange={handleChange}
-                    disabled={hasValue("gender")}
+                    disabled={isDisabled}
                     className={`text-blue-500 form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
                     } ${
-                      hasValue("gender")
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                   <span className="ml-2">Female</span>
@@ -643,14 +646,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="referredBy"
                 value={formData?.referredBy?.value}
                 onChange={handleChange}
-                disabled={hasValue("referredBy")}
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.referredBy ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("referredBy")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300"
-                }`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               />
             </div>
           </div>
@@ -675,14 +674,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     value="yes"
                     checked={formData?.legalRightToWork?.value === "yes"}
                     onChange={handleChange}
-                    disabled={hasValue("legalRightToWork")}
+                    disabled={isDisabled}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
-                    } ${
-                      hasValue("legalRightToWork")
-                        ? ""
-                        : "bg-white border-gray-300"
-                    }`}
+                    } ${isDisabled ? "" : "bg-white border-gray-300"}`}
                   />
                   <span className="ml-2">Yes</span>
                 </label>
@@ -693,14 +688,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     value="no"
                     checked={formData?.legalRightToWork?.value === "no"}
                     onChange={handleChange}
-                    disabled={hasValue("legalRightToWork")}
+                    disabled={isDisabled}
                     className={`text-blue-500 form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
-                    } ${
-                      hasValue("legalRightToWork")
-                        ? ""
-                        : "bg-white border-gray-300"
-                    }`}
+                    } ${isDisabled ? "" : "bg-white border-gray-300"}`}
                   />
                   <span className="ml-2">No</span>
                 </label>
@@ -729,13 +720,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="payExpected"
                 value={formData?.payExpected?.value}
                 onChange={handleChange}
-                disabled={hasValue("payExpected")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.payExpected ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("payExpected")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.payExpected && (
@@ -764,13 +753,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="street1"
                 value={formData?.street1?.value}
                 onChange={handleChange}
-                disabled={hasValue("street1")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street1 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("street1")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.street1 && (
@@ -796,13 +783,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="street2"
                 value={formData?.street2?.value}
                 onChange={handleChange}
-                disabled={hasValue("street2")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.street2 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("street2")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
             </div>
@@ -822,13 +807,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="city11"
                 value={formData?.city11?.value}
                 onChange={handleChange}
-                disabled={hasValue("city11")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.city11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("city11")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.city11 && (
@@ -853,13 +836,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="state11"
                 value={formData?.state11?.value}
                 onChange={handleChange}
-                disabled={hasValue("state11")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.state11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("state11")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.state11 && (
@@ -884,13 +865,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="zipCode11"
                 value={formData?.zipCode11?.value}
                 onChange={handleChange}
-                disabled={hasValue("zipCode11")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.zipCode11 ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("zipCode11")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.zipCode11 && (
@@ -915,13 +894,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="cellPhone"
                 value={formData?.cellPhone?.value}
                 onChange={handleChange}
-                disabled={hasValue("cellPhone")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.cellPhone ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("cellPhone")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.cellPhone && (
@@ -945,7 +922,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 required
                 name="Email"
                 id="Email"
-                disabled={true}
+                disabled={isDisabled}
                 value={currentUser.email}
                 onChange={handleChange}
                 className={`w-full p-2 mt-1 border rounded-md text-gray-400 ${
@@ -974,13 +951,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="EmergencyContact"
                 value={formData?.EmergencyContact?.value}
                 onChange={handleChange}
-                disabled={hasValue("EmergencyContact")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.EmergencyContact ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("EmergencyContact")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.EmergencyContact && (
@@ -1006,13 +981,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="Relationship"
                 value={formData?.Relationship?.value}
                 onChange={handleChange}
-                disabled={hasValue("Relationship")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.Relationship ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("Relationship")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.Relationship && (
@@ -1038,12 +1011,10 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="CDL"
                 value={formData?.CDL?.value}
                 onChange={handleChange}
-                disabled={hasValue("CDL")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDL ? "border-red-500 border-2" : ""
-                } ${
-                  hasValue("CDL") ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
-                }`}
+                } ${isDisabled}`}
               />
               {errors.CDL && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -1068,13 +1039,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="CDLState"
                 value={formData?.CDLState?.value}
                 onChange={handleChange}
-                disabled={hasValue("CDLState")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLState ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("CDLState")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.CDLState && (
@@ -1100,13 +1069,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 id="CDLClass"
                 value={formData?.CDLClass?.value}
                 onChange={handleChange}
-                disabled={hasValue("CDLClass")} // Disable if has value
+                disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDLClass ? "border-red-500 border-2" : ""
                 } ${
-                  hasValue("CDLClass")
-                    ? "text-gray-400"
-                    : "bg-white border-gray-300" // Add gray background if has value
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.CDLClass && (
@@ -1135,13 +1102,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               value={formData?.CDLExpirationDate?.value}
               onChange={handleChange}
               min={new Date().toISOString().split("T")[0]}
-              disabled={hasValue("CDLExpirationDate")} // Disable if has value
+              disabled={isDisabled}
               className={`w-full p-2 mt-1 border rounded-md ${
                 errors.CDLExpirationDate ? "border-red-500 border-2" : ""
               } ${
-                hasValue("CDLExpirationDate")
-                  ? "text-gray-400"
-                  : "bg-white border-gray-300" // Add gray background if has value
+                isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
               }`}
             />
             {errors.CDLExpirationDate && (
@@ -1169,15 +1134,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="yes"
                   checked={formData?.EverBeenDeniedALicense?.value === "yes"}
                   onChange={handleChange}
-                  disabled={hasValue("EverBeenDeniedALicense")} // Disable if has value
+                  disabled={isDisabled}
                   className={`text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("EverBeenDeniedALicense")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -1189,15 +1152,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="no"
                   checked={formData?.EverBeenDeniedALicense?.value === "no"}
                   onChange={handleChange}
-                  disabled={hasValue("EverBeenDeniedALicense")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.EverBeenDeniedALicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("EverBeenDeniedALicense")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">No</span>
@@ -1229,15 +1190,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="yes"
                   checked={formData?.PermitPrivilegeOfLicense?.value === "yes"}
                   onChange={handleChange}
-                  disabled={hasValue("PermitPrivilegeOfLicense")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("PermitPrivilegeOfLicense")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -1249,15 +1208,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="no"
                   checked={formData?.PermitPrivilegeOfLicense?.value === "no"}
                   onChange={handleChange}
-                  disabled={hasValue("PermitPrivilegeOfLicense")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.PermitPrivilegeOfLicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("PermitPrivilegeOfLicense")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">No</span>
@@ -1292,15 +1249,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     formData?.TestedPositiveOrRefusedDotDrug?.value === "yes"
                   }
                   onChange={handleChange}
-                  disabled={hasValue("TestedPositiveOrRefusedDotDrug")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("TestedPositiveOrRefusedDotDrug")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -1314,15 +1269,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     formData?.TestedPositiveOrRefusedDotDrug?.value === "no"
                   }
                   onChange={handleChange}
-                  disabled={hasValue("TestedPositiveOrRefusedDotDrug")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("TestedPositiveOrRefusedDotDrug")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">No</span>
@@ -1353,15 +1306,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="yes"
                   checked={formData?.EverConvictedOfFelony?.value === "yes"}
                   onChange={handleChange}
-                  disabled={hasValue("EverConvictedOfFelony")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("EverConvictedOfFelony")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">Yes</span>
@@ -1373,15 +1324,13 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   value="no"
                   checked={formData?.EverConvictedOfFelony?.value === "no"}
                   onChange={handleChange}
-                  disabled={hasValue("EverConvictedOfFelony")} // Disable if has value
+                  disabled={isDisabled}
                   className={` text-blue-500 form-radio ${
                     errors.EverConvictedOfFelony
                       ? "border-red-500 border-2"
                       : "border-gray-300"
                   } ${
-                    hasValue("EverConvictedOfFelony")
-                      ? ""
-                      : "bg-white border-gray-300" // Add gray background if has value
+                    isDisabled ? "" : "bg-white border-gray-300" // Add gray background if has value
                   }`}
                 />
                 <span className="ml-2">No</span>

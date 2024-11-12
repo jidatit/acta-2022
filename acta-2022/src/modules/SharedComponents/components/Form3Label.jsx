@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { useEffect, useRef, useState } from "react";
+import { MdNoteAlt } from "react-icons/md";
 const FormLabelWithStatus = ({
   label,
   id,
@@ -568,7 +569,7 @@ const FormLabelWithStatus = ({
                           }}
                         >
                           <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                            <FaPencil size={20} />
+                            <MdNoteAlt size={20} />
                           </div>
                           <span className="text-sm font-medium">
                             {note ? "View Note" : "Add Note"}
@@ -702,7 +703,7 @@ const FormLabelWithStatus = ({
                             }
                           >
                             <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
-                              <FaPencil size={20} />
+                              <MdNoteAlt size={20} />
                             </div>
                             {note ? "View note" : "Add note"}
                           </li>
@@ -837,7 +838,7 @@ const FormLabelWithStatus = ({
                       className="flex flex-row gap-x-1 p-1 rounded-xl items-center bg-gray-200 border-1 border-gray-400 cursor-pointer"
                       onClick={handleViewNote}
                     >
-                      <FaPencil size={10} />
+                      <MdNoteAlt size={10} />
 
                       <p className="text-xs font-radios">View note</p>
                     </div>

@@ -279,7 +279,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     const updatedFormData = localFormData.filter((_, i) => i !== index);
     setLocalFormData(updatedFormData);
   };
-
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12  ${
@@ -330,7 +330,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -367,11 +367,9 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`street12-${index}`}
                     value={address?.street12?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("street12", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("street12", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
@@ -392,11 +390,9 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`street22-${index}`}
                     value={address?.street22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("street22", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("street22", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
@@ -417,11 +413,9 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`city22-${index}`}
                     value={address?.city22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("city22", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("city22", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
@@ -442,11 +436,9 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`state22-${index}`}
                     value={address?.state22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("state22", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("state22", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                 </div>
@@ -466,11 +458,9 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                     id={`zipCode22-${index}`}
                     value={address?.zipCode22?.value}
                     onChange={(e) => handleChange(e, index)}
-                    disabled={hasValue("zipCode22", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md  ${
-                      hasValue("zipCode22", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                 </div>

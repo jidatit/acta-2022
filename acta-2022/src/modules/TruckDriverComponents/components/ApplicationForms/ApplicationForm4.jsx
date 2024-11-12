@@ -530,7 +530,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     );
     setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
   };
-
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
@@ -578,7 +578,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -634,13 +634,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`date41-${index}`}
                       value={address.date41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("date41", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.date41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("date41", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -667,13 +667,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`accidentType-${index}`}
                       value={address.accidentType.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("accidentType", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.accidentType
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("accidentType", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -701,13 +701,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`location41-${index}`}
                       value={address.location41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("location41", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.location41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("location41", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -735,13 +735,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`fatalities-${index}`}
                       value={address.fatalities.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("fatalities", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.fatalities
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("fatalities", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -769,13 +769,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`penalties41-${index}`}
                       value={address.penalties41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("penalties41", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.penalties41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("penalties41", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -803,13 +803,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`comments41-${index}`}
                       value={address.comments41.value}
                       onChange={(e) => handleAddressChange(e, index)}
-                      disabled={hasAddressValue("comments41", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.comments41
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasAddressValue("comments41", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -897,13 +897,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`date42-${index}`}
                       value={traffic.date42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("date42", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.date42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("date42", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -930,13 +930,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`offenseType-${index}`}
                       value={traffic.offenseType.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("offenseType", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.offenseType
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("offenseType", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -964,13 +964,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`location42-${index}`}
                       value={traffic.location42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("location42", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.location42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("location42", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -998,13 +998,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`penalties42-${index}`}
                       value={traffic.penalties42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("penalties42", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.penalties42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("penalties42", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}
@@ -1032,13 +1032,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       id={`comments42-${index}`}
                       value={traffic.comments42.value}
                       onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={hasTrafficValue("comments42", index)}
+                      disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.comments42
                           ? "border-red-500 border-2"
                           : ""
                       } ${
-                        hasTrafficValue("comments42", index)
+                        isDisabled
                           ? "text-gray-400"
                           : "bg-white border-gray-300"
                       }`}

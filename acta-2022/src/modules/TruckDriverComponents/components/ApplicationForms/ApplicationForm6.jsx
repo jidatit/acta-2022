@@ -334,6 +334,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     setViolationFields(violationFields.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
   };
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-6 pr-4 ${
@@ -382,7 +383,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 mb-2">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -453,11 +454,11 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`date61-${index}`}
                         value={address.date61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("date61", index)}
+                        disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.date61 ? "border-red-500 border-2" : ""
                         } ${
-                          hasValue("date61", index)
+                          isDisabled
                             ? "text-gray-400"
                             : "bg-white border-gray-300"
                         }`}
@@ -484,13 +485,13 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`offense61-${index}`}
                         value={address.offense61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("offense61", index)}
+                        disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.offense61
                             ? "border-red-500 border-2"
                             : ""
                         } ${
-                          hasValue("offense61", index)
+                          isDisabled
                             ? "text-gray-400"
                             : "bg-white border-gray-300"
                         }`}
@@ -517,13 +518,13 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`location61-${index}`}
                         value={address.location61?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("location61", index)}
+                        disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.location61
                             ? "border-red-500 border-2"
                             : ""
                         } ${
-                          hasValue("location61", index)
+                          isDisabled
                             ? "text-gray-400"
                             : "bg-white border-gray-300"
                         }`}
@@ -550,13 +551,13 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         id={`vehicleOperated-${index}`}
                         value={address.vehicleOperated?.value}
                         onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={hasValue("vehicleOperated", index)}
+                        disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.vehicleOperated
                             ? "border-red-500 border-2"
                             : ""
                         } ${
-                          hasValue("vehicleOperated", index)
+                          isDisabled
                             ? "text-gray-400"
                             : "bg-white border-gray-300"
                         }`}

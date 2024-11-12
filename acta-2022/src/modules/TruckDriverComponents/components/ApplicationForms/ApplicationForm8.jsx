@@ -466,7 +466,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
 
     setIsSaveClicked(allFieldsEmpty);
   };
-
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full pr-4 ${
@@ -512,7 +512,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -568,11 +568,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day1-${index}`}
                           value={field.day1.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day1", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day1 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day1", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -605,13 +605,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day1HoursWorked-${index}`}
                           value={field.day1HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day1HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day1HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day1HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -646,11 +646,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day2-${index}`}
                           value={field.day2.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day2", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day2 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day2", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -683,13 +683,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day2HoursWorked-${index}`}
                           value={field.day2HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day2HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day2HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day2HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -724,11 +724,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day3-${index}`}
                           value={field.day3.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day3", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day3 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day3", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -761,13 +761,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day3HoursWorked-${index}`}
                           value={field.day3HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day3HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day3HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day3HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -802,11 +802,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day4-${index}`}
                           value={field.day4.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day4", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day4 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day4", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -839,13 +839,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day4HoursWorked-${index}`}
                           value={field.day4HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day4HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day4HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day4HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -880,11 +880,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day5-${index}`}
                           value={field.day5.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day5", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day5 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day5", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -917,13 +917,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day5HoursWorked-${index}`}
                           value={field.day5HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day5HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day5HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day5HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -958,11 +958,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day6-${index}`}
                           value={field.day6.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day6", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day6 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day6", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -995,13 +995,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day6HoursWorked-${index}`}
                           value={field.day6HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day6HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day6HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day6HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -1036,11 +1036,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day7-${index}`}
                           value={field.day7.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day7", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day7 ? "border-red-500 border-2" : ""
                           } ${
-                            hasValue("day7", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -1073,13 +1073,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`day7HoursWorked-${index}`}
                           value={field.day7HoursWorked.value}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("day7HoursWorked", index)}
+                          disabled={isDisabled}
                           className={`w-full p-2 mt-1 border rounded-md ${
                             errors[index]?.day7HoursWorked
                               ? "border-red-500 border-2"
                               : ""
                           } ${
-                            hasValue("day7HoursWorked", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -1109,13 +1109,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                     id={`TotalHours-${index}`}
                     value={field.TotalHours.value}
                     onChange={(e) => handleInputChange(index, e)}
-                    disabled={hasValue("TotalHours", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2 mt-1 border rounded-md ${
                       errors[index]?.TotalHours ? "border-red-500 border-2" : ""
                     } ${
-                      hasValue("TotalHours", index)
-                        ? " text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? " text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                   {errors[index]?.TotalHours && (
@@ -1157,11 +1155,11 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           type="time"
                           id={`time-${index}`}
                           name="relievedTime"
-                          disabled={hasValue("relievedTime", index)}
+                          disabled={isDisabled}
                           className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
                             errors[index]?.relievedTime ? "border-red-500" : ""
                           } ${
-                            hasValue("relievedTime", index)
+                            isDisabled
                               ? "text-gray-400"
                               : "bg-white border-gray-300"
                           }`}
@@ -1200,15 +1198,13 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                     id={`relievedDate-${index}`}
                     value={field.relievedDate.value}
                     onChange={(e) => handleInputChange(index, e)}
-                    disabled={hasValue("relievedDate", index)}
+                    disabled={isDisabled}
                     className={`w-full p-2.5 mt-1 border rounded-md ${
                       errors[index]?.relievedDate
                         ? "border-red-500 border-2"
                         : ""
                     } ${
-                      hasValue("relievedDate", index)
-                        ? "text-gray-400"
-                        : "bg-white border-gray-300"
+                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
                     }`}
                   />
                   {errors[index]?.relievedDate && (

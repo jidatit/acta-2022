@@ -344,6 +344,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
     // );
     // setIsSaveClicked(allFieldsEmpty);
   };
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
@@ -391,7 +392,7 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt-2 ">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -440,9 +441,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="yes"
                         checked={field.currentlyWorking.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("currentlyWorking", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("currentlyWorking", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}
@@ -456,9 +457,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.currentlyWorking.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("currentlyWorking", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("currentlyWorking", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}
@@ -494,9 +495,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                           field.workingForAnotherEmployer.value === "yes"
                         }
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("workingForAnotherEmployer", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("workingForAnotherEmployer", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}
@@ -510,9 +511,9 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.workingForAnotherEmployer.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("workingForAnotherEmployer", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("workingForAnotherEmployer", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}

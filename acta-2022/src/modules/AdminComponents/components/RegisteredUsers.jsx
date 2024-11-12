@@ -194,7 +194,7 @@ const RegisteredUsers = () => {
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-row justify-between items-center w-full">
-        <h1 className="text-2xl font-bold">Registered Users</h1>
+        <h1 className="text-2xl font-bold">Registered Drivers</h1>
         <MdOutlineDeleteOutline
           size={30}
           className="cursor-pointer"
@@ -225,7 +225,7 @@ const RegisteredUsers = () => {
                     }
                   />
                 </td>
-                <td className=" px-2 py-3">{`${driver.firstName} ${driver.lastName}`}</td>
+                <td className=" px-2 py-3">{`${driver.name}`}</td>
                 <td className="px-2 py-3 whitespace-nowrap">
                   <EnhancedStatusDropdown
                     initialStatus={driver.driverStatus}

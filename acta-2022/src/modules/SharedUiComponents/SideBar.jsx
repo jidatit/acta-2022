@@ -41,7 +41,7 @@ const SideBar = ({ isSidebarExpanded }) => {
   const dropdownRef = useRef(null);
   const [isSectionsVisible, setIsSectionsVisible] = useState(false); // State to manage section visibility
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const { handleEditStatus } = useEdit();
+  // const { handleEditStatus } = useEdit();
   const handleLogoutClick = (e) => {
     e.preventDefault();
     setShowLogoutDialog(true);
@@ -268,9 +268,9 @@ const SideBar = ({ isSidebarExpanded }) => {
     navigate(`/TruckDriverLayout/ApplicationForm${sectionFormIndex}`);
   };
 
-  const handleEdit = () => {
-    handleEditStatus(true);
-  };
+  // const handleEdit = () => {
+  //   handleEditStatus(true);
+  // };
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -396,9 +396,7 @@ const SideBar = ({ isSidebarExpanded }) => {
             /> */}
             <div className="flex flex-col w-full md:justify-start md:items-start ">
               <p className="text-[14px] text-white font-radios pl-4">
-                {currentUser
-                  ? currentUser.firstName + currentUser.lastName
-                  : "Guest"}
+                {currentUser ? currentUser.name : "Guest"}
               </p>
               <p className="text-[12px] pl-4 text-start text-white w-full font-radios">
                 {"Welcome Back"}
@@ -416,15 +414,6 @@ const SideBar = ({ isSidebarExpanded }) => {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
-                    <a
-                      href="#"
-                      onClick={handleEdit}
-                      className="block px-4 py-2 text-sm text-gray-700 font-radios hover:bg-gray-100"
-                    >
-                      Edit
-                    </a>
-                  </div>
                   <div>
                     <a
                       href="#"

@@ -21,8 +21,7 @@ const SignUpPage = () => {
   const [selected, setSelected] = useState("SignUp As");
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -81,8 +80,7 @@ const SignUpPage = () => {
 
       await addDoc(collection(db, collectionName), {
         uid: user.uid,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        name: formData.name,
         email: formData.email,
         password: hashedPassword,
         userType: "TruckDriver",
@@ -95,8 +93,7 @@ const SignUpPage = () => {
       }
 
       setFormData({
-        firstName: "",
-        lastName: "",
+        name: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -171,19 +168,10 @@ const SignUpPage = () => {
           <div className="flex flex-col w-full gap-4 md:flex-row">
             <input
               type="text"
-              id="firstName"
+              id="name"
               className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="text"
-              id="lastName"
-              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
-              placeholder="Last Name"
-              value={formData.lastName}
+              placeholder="username"
+              value={formData.name}
               onChange={handleInputChange}
               required
             />

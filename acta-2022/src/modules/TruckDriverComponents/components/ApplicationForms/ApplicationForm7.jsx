@@ -304,7 +304,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
 
     setErrors(updatedErrors);
   };
-
+  const isDisabled = checkIfAllFieldsApproved();
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${
@@ -353,7 +353,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
         </div>
         {currentUser.userType !== "Admin" && (
           <div className="flex justify-end mt- m-2">
-            {editStatus === true && !checkIfAllFieldsApproved() ? (
+            {!checkIfAllFieldsApproved() ? (
               <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
                 Edit Mode:ON
               </h1>
@@ -409,9 +409,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         value="yes"
                         checked={field.testedPositiveEver.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("testedPositiveEver", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("testedPositiveEver", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}
@@ -425,9 +425,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         value="no"
                         checked={field.testedPositiveEver.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
-                        disabled={hasValue("testedPositiveEver", index)}
+                        disabled={isDisabled}
                         className={`text-blue-500 form-radio ${
-                          hasValue("testedPositiveEver", index)
+                          isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
                         }`}
@@ -462,9 +462,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           value="yes"
                           checked={field.DOTCompletion.value === "yes"}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("DOTCompletion", index)}
+                          disabled={isDisabled}
                           className={`text-blue-500 form-radio ${
-                            hasValue("DOTCompletion", index)
+                            isDisabled
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-white cursor-pointer"
                           }`}
@@ -478,9 +478,9 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           value="no"
                           checked={field.DOTCompletion.value === "no"}
                           onChange={(e) => handleInputChange(index, e)}
-                          disabled={hasValue("DOTCompletion", index)}
+                          disabled={isDisabled}
                           className={`text-blue-500 form-radio ${
-                            hasValue("DOTCompletion", index)
+                            isDisabled
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-white cursor-pointer"
                           }`}
