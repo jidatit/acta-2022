@@ -347,7 +347,25 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         if (formNumber > currentCompletedForms) {
           updateObject.completedForms = formNumber;
         }
+        const collectionName = "TruckDrivers";
 
+        // Query to find the document with the specific UID
+        const truckDriversQuery = query(
+          collection(db, collectionName),
+          where("uid", "==", uid)
+        );
+
+        const querySnapshot = await getDocs(truckDriversQuery);
+
+        if (!querySnapshot.empty) {
+          // Get the first matching document
+          const truckDriverDoc = querySnapshot.docs[0];
+
+          // Update driverStatus to "Filled"
+          await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+            name: formData.applicantName.value,
+          });
+        }
         // Document exists, update it
         await updateDoc(docRef, updateObject);
       } else {
@@ -355,6 +373,26 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
         await setDoc(docRef, {
           [`form${formNumber}`]: formDataToSave,
           savedForms: formNumber,
+        });
+      }
+
+      const collectionName = "TruckDrivers";
+
+      // Query to find the document with the specific UID
+      const truckDriversQuery = query(
+        collection(db, collectionName),
+        where("uid", "==", currentUser.uid)
+      );
+
+      const querySnapshot = await getDocs(truckDriversQuery);
+
+      if (!querySnapshot.empty) {
+        // Get the first matching document
+        const truckDriverDoc = querySnapshot.docs[0];
+
+        // Update driverStatus to "Filled"
+        await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+          name: formData.applicantName.value,
         });
       }
       if (currentUser.userType !== "Admin") {
@@ -386,19 +424,6 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
             <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
-        {currentUser.userType !== "Admin" && (
-          <div className="flex justify-end">
-            {!checkAllFieldsApproved() ? (
-              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:ON
-              </h1>
-            ) : (
-              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:OFF
-              </h1>
-            )}
-          </div>
-        )}
       </div>
       <>
         <Dialog open={showModal} onClose={handleCloseModal}>
@@ -443,6 +468,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               name="applicantName"
               id="applicantName"
               value={formData?.applicantName?.value}
+              placeholder={currentUser.name}
               onChange={handleChange}
               disabled={isDisabled}
               className={`w-full p-2 mt-1 border rounded-md ${

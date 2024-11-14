@@ -328,19 +328,6 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
-        {currentUser.userType !== "Admin" && (
-          <div className="flex justify-end">
-            {!checkIfAllFieldsApproved() ? (
-              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:ON
-              </h1>
-            ) : (
-              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:OFF
-              </h1>
-            )}
-          </div>
-        )}
       </div>
       <div className="flex flex-col w-full gap-y-8 h-full">
         <form className="w-full p-6 bg-white shadow-md h-[50vh] border-b-1 border-b-gray-400">

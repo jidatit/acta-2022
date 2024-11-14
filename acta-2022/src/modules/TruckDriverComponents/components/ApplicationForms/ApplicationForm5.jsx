@@ -604,19 +604,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
             </Button>
           </DialogActions>
         </Dialog>
-        {currentUser.userType !== "Admin" && (
-          <div className="flex justify-end">
-            {!checkIfAllFieldsApproved() ? (
-              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:ON
-              </h1>
-            ) : (
-              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:OFF
-              </h1>
-            )}
-          </div>
-        )}
       </div>
       {/* First Form */}
       <div className="flex flex-col w-full gap-y-8 -mt-4">

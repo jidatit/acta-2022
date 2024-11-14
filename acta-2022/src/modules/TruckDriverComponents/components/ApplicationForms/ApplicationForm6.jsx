@@ -381,19 +381,6 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
             <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
-        {currentUser.userType !== "Admin" && (
-          <div className="flex justify-end mt-2 mb-2">
-            {!checkIfAllFieldsApproved() ? (
-              <h1 className="bg-green-500 font-radios text-white py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:ON
-              </h1>
-            ) : (
-              <h1 className="bg-red-500 font-radios text-white  py-2.5 px-4 rounded-xl shadow-md">
-                Edit Mode:OFF
-              </h1>
-            )}
-          </div>
-        )}
       </div>
       <p className=" text-[16px] smd:text-lg text-black font-radios  -mt-4 ">
         Each driver shall furnish the list required in accordance with paragraph
