@@ -564,7 +564,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.ssn ? "border-red-500 border-2" : ""
-                } ${isDisabled}`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               />
               {errors.ssn && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -596,7 +596,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.DOB ? "border-red-500 border-2" : ""
-                } ${isDisabled}`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               />
               {errors.DOB && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
@@ -1040,7 +1040,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 disabled={isDisabled}
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.CDL ? "border-red-500 border-2" : ""
-                } ${isDisabled}`}
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
               />
               {errors.CDL && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">

@@ -25,7 +25,7 @@ const RegisteredUsers = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "TruckDrivers"),
@@ -49,6 +49,7 @@ const RegisteredUsers = () => {
     setSelectedUserIds((prev) =>
       prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
     );
+    console.log("name", name);
     setSelectedUser(name);
   };
 
@@ -60,47 +61,72 @@ const RegisteredUsers = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      // Delete from TruckDrivers collection
-      const truckDriversRef = collection(db, "TruckDrivers");
-      const querySnapshot = await getDocs(truckDriversRef);
+      setLoading(true);
+      const userRef = "TruckDrivers";
 
-      const deletePromises = selectedUserIds.map(async (selectedUid) => {
-        try {
-          // Delete from TruckDrivers collection where uid is in document data
-          const docToDelete = querySnapshot.docs.find(
-            (doc) => doc.data().uid === selectedUid
-          );
-          if (docToDelete) {
-            await deleteDoc(doc(db, "TruckDrivers", docToDelete.id));
-          }
+      // Define a reusable function to delete a user
+      const deleteUserById = async (selectedUid) => {
+        // Delete from TruckDrivers collection via API
+        const response = await fetch(`http://localhost:5000/Admin/deleteUser`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ uid: selectedUid, userRef: userRef }),
+        });
 
-          // Delete from truck_driver_applications collection where uid is document ID
-          await deleteDoc(doc(db, "truck_driver_applications", selectedUid));
-          const user = currentUser;
-          if (user && user.uid === selectedUid) {
-            await deleteUser(user);
-          }
-        } catch (error) {
-          console.error(`Error deleting user ${selectedUid}:`, error);
-          throw error; // Re-throw to handle in outer catch
+        const data = await response.json();
+
+        if (!response.ok) {
+          setLoading(false);
+          throw new Error(data.message || "Failed to delete user via API");
+        }
+
+        // Delete from truck_driver_applications Firestore collection
+
+        return data.message; // Return success message
+      };
+
+      // Map over selectedUserIds and delete users concurrently
+      const deleteResults = await Promise.allSettled(
+        selectedUserIds.map((uid) => deleteUserById(uid))
+      );
+
+      // Process the results
+      const successfulDeletions = [];
+      deleteResults.forEach((result, index) => {
+        const uid = selectedUserIds[index];
+        if (result.status === "fulfilled") {
+          successfulDeletions.push(uid);
+        } else {
+          setLoading(false);
+          console.error(`Error deleting user `);
+          toast.error(`Error deleting user `, {
+            autoClose: 2000,
+          });
         }
       });
 
-      await Promise.all(deletePromises);
-
       // Update local state
       setTruckDrivers((prevDrivers) =>
-        prevDrivers.filter((driver) => !selectedUserIds.includes(driver.uid))
+        prevDrivers.filter(
+          (driver) => !successfulDeletions.includes(driver.uid)
+        )
       );
-
+      setLoading(false);
       setSelectedUserIds([]);
       setShowDeleteModal(false);
-      toast.success("Selected drivers deleted successfully");
+
+      if (successfulDeletions.length) {
+        toast.success("Selected drivers deleted successfully");
+      }
     } catch (error) {
+      setLoading(false);
       console.error("Error deleting users:", error);
       toast.error("Error deleting selected drivers");
     }
   };
+
   const formatDate = (timestamp) => {
     // Check if the timestamp is an object with seconds and nanoseconds
     if (
@@ -220,9 +246,7 @@ const RegisteredUsers = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox"
-                    onChange={() =>
-                      handleSelectRow(driver.uid, driver.firstName)
-                    }
+                    onChange={() => handleSelectRow(driver.uid, driver.name)}
                   />
                 </td>
                 <td className=" px-2 py-3">{`${driver.name}`}</td>
@@ -321,9 +345,35 @@ const RegisteredUsers = () => {
                   </button>
                   <button
                     onClick={handleConfirmDelete}
-                    className="bg-blue-600 text-white py-2.5 px-6 rounded-xl"
+                    className={`bg-blue-600 text-white py-2.5 px-6 rounded-xl ${
+                      loading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    disabled={loading} // Disable button while loading
                   >
-                    Delete
+                    {loading ? (
+                      <div className="flex items-center">
+                        {/* Spinner */}
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                        </svg>
+                        Deleting...
+                      </div>
+                    ) : (
+                      "Delete"
+                    )}
                   </button>
                 </div>
               </div>
