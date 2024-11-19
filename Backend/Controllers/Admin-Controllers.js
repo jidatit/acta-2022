@@ -2,7 +2,6 @@ import admin from "firebase-admin";
 import { serviceAccount } from "../config/serviceAcc.js";
 
 // Adjust the path accordingly
-console.log("service account: " + serviceAccount);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   //   databaseURL: "https://acta-2022-default-rtdb.firebaseio.com/",
@@ -114,11 +113,9 @@ export const UnblockUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   const { uid, userRef } = req.body;
-  console.log("User deleted", uid);
   if (!uid) {
     return res.status(400).json({ message: "UID is required" });
   }
-  console.log("userref", userRef);
   const result = await deleteDriver(uid, userRef);
   if (result.success) {
     res.status(200).json({ message: "User deleted successfully" });

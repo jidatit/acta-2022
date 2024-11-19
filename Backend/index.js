@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // Add your new frontend URL here
+      `${process.env.FRONTEND_URL}`, // Add your new frontend URL here
     ],
     credentials: true,
   })
