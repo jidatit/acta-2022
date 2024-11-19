@@ -1,5 +1,3 @@
-import { current } from "@reduxjs/toolkit";
-
 const FormNavigationButtons = ({
   currentFormIndex,
   handleBack,

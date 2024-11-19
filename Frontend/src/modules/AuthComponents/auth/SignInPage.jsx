@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../../SharedUiComponents/Loader";
 import { Camera } from "lucide-react";
-import { current } from "@reduxjs/toolkit";
 
 const SignInPage = () => {
   const navigate = useNavigate();

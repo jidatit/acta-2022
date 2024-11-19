@@ -67,13 +67,16 @@ const RegisteredUsers = () => {
       // Define a reusable function to delete a user
       const deleteUserById = async (selectedUid) => {
         // Delete from TruckDrivers collection via API
-        const response = await fetch(`http://localhost:5000/Admin/deleteUser`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ uid: selectedUid, userRef: userRef }),
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/Admin/deleteUser`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ uid: selectedUid, userRef: userRef }),
+          }
+        );
 
         const data = await response.json();
 
