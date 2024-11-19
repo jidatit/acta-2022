@@ -8,8 +8,8 @@ import {
 
 const AdminRoutes = express.Router();
 
-AdminRoutes.post("/createUser", createUser);
-AdminRoutes.post("/blockUser", blockUser);
-AdminRoutes.post("/UnblockUser", UnblockUser);
+// AdminRoutes.post("/createUser", createUser);
+// AdminRoutes.post("/blockUser", blockUser);
+// AdminRoutes.post("/UnblockUser", UnblockUser);
 AdminRoutes.delete("/deleteUser", deleteUser);
 export default AdminRoutes;
