@@ -15,7 +15,7 @@ app.use(
     origin: [
       `${process.env.FRONTEND_URL}`, // Add your new frontend URL here
     ],
-    credentials: true,
+    // credentials: true,
   })
 );
 
