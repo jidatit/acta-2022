@@ -437,7 +437,7 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         uid={uid}
                       />
                       <input
-                        type="date61"
+                        type="date"
                         name="date61"
                         id={`date61-${index}`}
                         value={address.date61?.value}

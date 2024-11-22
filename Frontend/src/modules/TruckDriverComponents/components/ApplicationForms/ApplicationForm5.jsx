@@ -705,7 +705,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="expiryDate"
                   id={`expiryDate-${index}`}
                   value={license.expiryDate.value}
-                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverLicenseChange(e, index)}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${

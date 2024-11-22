@@ -617,7 +617,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       uid={uid}
                     />
                     <input
-                      type="date41"
+                      type="date"
                       name="date41"
                       id={`date41-${index}`}
                       value={address.date41.value}
@@ -880,7 +880,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       uid={uid}
                     />
                     <input
-                      type="date42"
+                      type="date"
                       name="date42"
                       id={`date42-${index}`}
                       value={traffic.date42.value}
