@@ -411,7 +411,8 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       setClicked(false);
     }
   }, [clicked, currentUser, uid]);
-  const isDisabled = checkAllFieldsApproved();
+  const isDisabled =
+    checkAllFieldsApproved() || applicationStatus === "approved";
 
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">

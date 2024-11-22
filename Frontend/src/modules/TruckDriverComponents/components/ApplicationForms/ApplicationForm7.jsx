@@ -304,7 +304,8 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
 
     setErrors(updatedErrors);
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${

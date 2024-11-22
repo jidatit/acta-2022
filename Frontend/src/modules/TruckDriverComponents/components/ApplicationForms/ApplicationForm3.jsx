@@ -389,7 +389,8 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4 ${
@@ -702,7 +703,6 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       type="date"
                       name="from31"
                       id={`from31-${index}`}
-                      min={new Date().toISOString().split("T")[0]}
                       value={field.from31.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
@@ -735,7 +735,6 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       type="date"
                       name="to31"
                       id={`to31-${index}`}
-                      max={new Date().toISOString().split("T")[0]}
                       value={field.to31.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}

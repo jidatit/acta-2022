@@ -32,8 +32,11 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
 
   const { fetchUserData, currentUser } = adminAuthData;
   // Use object destructuring with default values
-  const { setIsSaveClicked, FormData, applicationStatus } =
-    currentUser?.userType === "Admin" ? adminAuthData : authData;
+  const {
+    setIsSaveClicked,
+    FormData = [],
+    applicationStatus,
+  } = currentUser?.userType === "Admin" ? adminAuthData : authData;
   console.log("Setting", applicationStatus);
   const [localFormData, setLocalFormData] = useState(FormData || [{}]);
   const { editStatus, setEditStatus } = useEdit();
@@ -59,8 +62,13 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     [FormData, editStatus]
   );
   const checkIfAllFieldsApproved = useCallback(() => {
+    if (!Array.isArray(FormData)) {
+      console.error("FormData is not an array:", FormData);
+      return false;
+    }
+
     return FormData.every((form) =>
-      Object.values(form).every((field) => field.status === "approved")
+      Object.values(form)?.every((field) => field.status === "approved")
     );
   }, [FormData]);
   useEffect(() => {
@@ -279,7 +287,8 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     const updatedFormData = localFormData.filter((_, i) => i !== index);
     setLocalFormData(updatedFormData);
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12  ${

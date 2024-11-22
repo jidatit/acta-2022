@@ -530,7 +530,8 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     );
     setTrafficErrors(trafficErrors.filter((_, i) => i !== index));
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${

@@ -554,7 +554,8 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     setEducationHistory(educationHistory.filter((_, i) => i !== index));
     setDriverEducationError(driverEducationError.filter((_, i) => i !== index));
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4 ${
@@ -867,7 +868,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`DateTo51-${index}`}
                   value={experience.DateTo51.value}
                   onChange={(e) => handleDriverExpChange(e, index)}
-                  max={new Date().toISOString().split("T")[0]}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.DateTo51
@@ -899,7 +899,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="DateFrom51"
                   id={`DateFrom51-${index}`}
                   value={experience.DateFrom51.value}
-                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleDriverExpChange(e, index)}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
@@ -1106,7 +1105,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`DateFrom52-${index}`}
                   value={education.DateFrom52.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  min={new Date().toISOString().split("T")[0]}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverEducationError[index]?.DateFrom52
@@ -1139,7 +1137,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   id={`DateTo52-${index}`}
                   value={education.DateTo52.value}
                   onChange={(e) => handleEducationHistoryChange(e, index)}
-                  max={new Date().toISOString().split("T")[0]}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverEducationError[index]?.DateTo52

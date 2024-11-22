@@ -343,7 +343,8 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
     // );
     // setIsSaveClicked(allFieldsEmpty);
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full gap-y-6 pr-4 ${

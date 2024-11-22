@@ -59,10 +59,24 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
 
   const checkIfAllFieldsApproved = useCallback(() => {
-    localFormData.every((field) =>
-      Object.values(field).every((subField) => subField.status === "approved")
+    if (!Array.isArray(localFormData)) {
+      console.error("localFormData is not an array:", localFormData);
+      return false;
+    }
+    return localFormData.every((field) =>
+      Object.values(field || {}).every(
+        (subField) => subField.status === "approved"
+      )
     );
   }, [localFormData]);
+  useEffect(() => {
+    if (Array.isArray(formData8)) {
+      setLocalFormData(formData8);
+    } else {
+      console.error("formData8 is not an array:", formData8);
+      setLocalFormData(defaultFormData);
+    }
+  }, [formData8]);
   useEffect(() => {
     // If editStatus is true and all fields are approved, disable edit mode
     if (
@@ -274,7 +288,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
     });
 
     setErrors(newErrors);
-    return newErrors.every(
+    return newErrors?.every(
       (fieldErrors) => Object.keys(fieldErrors).length === 0
     );
   };
@@ -458,15 +472,16 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
 
     setErrors(updatedErrors);
 
-    const allFieldsEmpty = localFormData.every((address) =>
-      Object.values(address).every(
+    const allFieldsEmpty = localFormData?.every((address) =>
+      Object.values(address)?.every(
         (fieldValue) => fieldValue.value.trim() === ""
       )
     );
 
     setIsSaveClicked(allFieldsEmpty);
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full pr-4 ${

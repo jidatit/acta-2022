@@ -334,7 +334,8 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     setViolationFields(violationFields.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
   };
-  const isDisabled = checkIfAllFieldsApproved();
+  const isDisabled =
+    checkIfAllFieldsApproved() || applicationStatus === "approved";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-y-hidden overflow-x-hidden w-full gap-y-6 pr-4 ${
