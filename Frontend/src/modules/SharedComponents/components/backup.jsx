@@ -477,7 +477,7 @@ const SingleLabelLogic = ({
                   </div>
                   <div className="relative">
                     <FaPencil
-                      className="text-blue-500 cursor-pointer relative z-10"
+                      className="text-black cursor-pointer relative z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
@@ -510,7 +510,7 @@ const SingleLabelLogic = ({
                 </div>
                 <div className="relative">
                   <FaPencil
-                    className="text-blue-500 cursor-pointer relative z-10"
+                    className="text-black cursor-pointer relative z-10"
                     onClick={handleDropdownToggle}
                   />
                   {isDropdownOpen && (

@@ -8,7 +8,7 @@ const ApplicationForm10 = () => {
             Application Status
           </h1>
         </div>
-        <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+        <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
       </div>
       <div className="flex flex-col gap-y-5 w-full md:w-[95%]">
         <p className="text-black font-radios text-lg">
