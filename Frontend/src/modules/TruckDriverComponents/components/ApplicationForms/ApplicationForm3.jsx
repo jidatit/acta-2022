@@ -432,7 +432,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
               Employment History*
             </h1>
             {currentUser.userType !== "Admin" && (
-              <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+              <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
             )}
           </div>
         </div>
@@ -870,7 +870,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             checked={field.subjectToFMCSRs.value === "yes"}
                             onChange={(e) => handleInputChange(index, e)}
                             disabled={isDisabled}
-                            className="text-blue-500 form-radio"
+                            className="text-black form-radio"
                           />
                           <span className="ml-2">Yes</span>
                         </label>
@@ -882,7 +882,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             checked={field.subjectToFMCSRs.value === "no"}
                             onChange={(e) => handleInputChange(index, e)}
                             disabled={isDisabled}
-                            className="text-blue-500 form-radio"
+                            className="text-black form-radio"
                           />
                           <span className="ml-2">No</span>
                         </label>
@@ -922,7 +922,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             }
                             onChange={(e) => handleInputChange(index, e)}
                             disabled={isDisabled}
-                            className="text-blue-500 form-radio"
+                            className="text-black form-radio"
                           />
                           <span className="ml-2">Yes</span>
                         </label>
@@ -937,7 +937,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                             }
                             onChange={(e) => handleInputChange(index, e)}
                             disabled={isDisabled}
-                            className="text-blue-500 form-radio"
+                            className="text-black form-radio"
                           />
                           <span className="ml-2">No</span>
                         </label>
@@ -969,7 +969,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
               <button
                 type="button"
                 onClick={handleAddCompany}
-                className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
               >
                 Add More
               </button>
@@ -996,7 +996,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+                className="px-4 py-2 ml-4 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
               >
                 Next
               </button>

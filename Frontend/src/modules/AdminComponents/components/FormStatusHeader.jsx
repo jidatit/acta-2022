@@ -27,7 +27,7 @@ const FormStatusHeader = ({ formData, applicationStatus, driverStatus }) => {
       case "rejected":
         return "bg-red-400";
       case "filled":
-        return "bg-blue-400";
+        return "bg-black";
       case "registered":
         return "bg-orange-400";
       default:
@@ -39,7 +39,7 @@ const FormStatusHeader = ({ formData, applicationStatus, driverStatus }) => {
 
   return (
     <div className="smd:ml-4 flex flex-wrap items-center gap-2">
-      <span className="bg-blue-500 text-white text-xs font-medium px-3.5 py-2.5 rounded-full">
+      <span className="bg-black text-white text-xs font-medium px-3.5 py-2.5 rounded-full">
         {filledCount}/9 Forms Filled
       </span>
 

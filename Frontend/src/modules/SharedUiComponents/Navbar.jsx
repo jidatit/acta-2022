@@ -10,7 +10,7 @@ const Navbar = () => {
     <div className="flex flex-row items-center justify-between px-12 py-4 bg-transparent border-b-1 border-b-gray-300">
       <div className="flex w-full">
         {/* Conditionally render the userType only if currentUser is not null */}
-        <h1 className="text-2xl font-bold text-blue-800 font-radios">
+        <h1 className="text-2xl font-bold text-black font-radios">
           {currentUser ? (
             `${currentUser.userType} Dashboard`
           ) : (
@@ -52,7 +52,7 @@ const Navbar = () => {
                 <MenuItem>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-blue-800 font-radios "
+                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-black font-radios "
                     onClick={handleLogout}
                   >
                     Logout

@@ -21,7 +21,7 @@ const FormNavigationButtons = ({
             className={`w-full px-4 py-2 rounded ${
               currentFormIndex === 0
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-black hover:bg-[#353535] text-white"
             }`}
           >
             Back
@@ -63,7 +63,7 @@ const FormNavigationButtons = ({
             className={` px-4 py-2 rounded ${
               !isNextEnabled()
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-black hover:bg-[#353535] text-white"
             }`}
           >
             Next
@@ -83,7 +83,7 @@ const FormNavigationButtons = ({
             className={`w-full px-4 py-2 rounded ${
               currentFormIndex === 0
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-black hover:bg-[#353535] text-white"
             }`}
           >
             Back
@@ -125,7 +125,7 @@ const FormNavigationButtons = ({
               className={` px-4 py-2 rounded ${
                 !isNextEnabled()
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "bg-black hover:bg-[#353535] text-white"
               }`}
             >
               Next
@@ -146,7 +146,7 @@ const FormNavigationButtons = ({
           className={`px-4 py-2 rounded ${
             currentFormIndex === 0
               ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
+              : "bg-black hover:bg-[#353535] text-white"
           }`}
         >
           Back

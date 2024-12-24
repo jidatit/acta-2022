@@ -123,7 +123,7 @@ const FormField = ({
 
             <div className="relative">
               <FaPencil
-                className="text-blue-500 cursor-pointer"
+                className="text-black cursor-pointer"
                 onClick={handleDropdownToggle}
               />
               {isDropdownOpen && (

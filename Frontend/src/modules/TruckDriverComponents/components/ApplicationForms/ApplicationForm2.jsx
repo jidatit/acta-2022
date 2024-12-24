@@ -334,7 +334,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             </p>
           </div>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            <FaBell className="p-2 text-white bg-[#353535] rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
       </div>
@@ -479,7 +479,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
               <button
                 type="button"
                 onClick={addAddressFields}
-                className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
               >
                 Add More
               </button>
@@ -506,7 +506,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+                className="px-4 py-2 ml-4 font-semibold text-white bg-[#353535] rounded-md hover:bg-[#353535]"
               >
                 Next
               </button>

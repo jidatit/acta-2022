@@ -521,7 +521,7 @@ const FormLabelWithStatus = ({
               <>
                 <div className="w-full smd:w-max flex items-center flex-row gap-x-3 relative">
                   <div
-                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center text-xl text-blue-500 cursor-pointer z-10"
+                    className="flex flex-row gap-x-1 p-1 rounded-xl items-center text-xl text-black cursor-pointer z-10"
                     onClick={handleToggleDropdown}
                   >
                     <FaPencil size={16} />
@@ -568,7 +568,7 @@ const FormLabelWithStatus = ({
                             setShowDropdown(false);
                           }}
                         >
-                          <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                          <div className="hover:bg-black text-black transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                             <MdNoteAlt size={20} />
                           </div>
                           <span className="text-sm font-medium">
@@ -668,7 +668,7 @@ const FormLabelWithStatus = ({
                 <div className="flex flex-row gap-x-3 items-center w-full smd:w-max">
                   <div className="relative">
                     <FaPencil
-                      className="text-blue-500 cursor-pointer z-10"
+                      className="text-black cursor-pointer z-10"
                       onClick={handleDropdownToggle}
                     />
                     {isDropdownOpen && (
@@ -702,7 +702,7 @@ const FormLabelWithStatus = ({
                               note === "" ? handleAddNote : handleViewNote
                             }
                           >
-                            <div className="hover:bg-blue-500 text-blue-500 transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
+                            <div className="hover:bg-black text-black transition-all duration-200 ease-in-out hover:text-white p-3 rounded-full">
                               <MdNoteAlt size={20} />
                             </div>
                             {note ? "View note" : "Add note"}
@@ -793,7 +793,7 @@ const FormLabelWithStatus = ({
               <div className="w-full flex items-center justify-end gap-x-3 smd:w-max">
                 <div className="relative ">
                   <FaPencil
-                    className="text-blue-500 cursor-pointer z-10"
+                    className="text-black cursor-pointer z-10"
                     onClick={handleDropdownToggle} // Toggle dropdown on click
                   />
                   {isDropdownOpen && (

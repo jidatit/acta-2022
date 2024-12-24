@@ -169,7 +169,7 @@ const SignUpPage = () => {
             <input
               type="text"
               id="name"
-              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="username"
               value={formData.name}
               onChange={handleInputChange}
@@ -179,7 +179,7 @@ const SignUpPage = () => {
           <input
             type="email"
             id="email"
-            className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+            className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
             placeholder="Email Address"
             value={formData.email}
             onChange={handleInputChange}
@@ -189,7 +189,7 @@ const SignUpPage = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
@@ -210,7 +210,7 @@ const SignUpPage = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleInputChange}
@@ -239,7 +239,7 @@ const SignUpPage = () => {
             <span className="font-radios">Already Signed Up?</span>
             <Link
               to="/signIn"
-              className="font-bold text-blue-500 hover:text-blue-700"
+              className="font-bold text-black hover:text-black"
             >
               Login
             </Link>

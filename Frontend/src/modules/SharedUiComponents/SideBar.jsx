@@ -366,7 +366,7 @@ const SideBar = ({ isSidebarExpanded }) => {
 
   return (
     <div
-      className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
+      className={`z-50 h-full w-full overflow-y-hidden bg-black ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >
@@ -506,14 +506,14 @@ const SideBar = ({ isSidebarExpanded }) => {
               to="/TruckDriverLayout/ApplicationForm1"
               className={`w-full flex justify-between items-center transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "JobApplication"
-                  ? "bg-white text-blue-800 rounded-md"
-                  : "hover:bg-white hover:text-blue-900 rounded-md text-white"
+                  ? "bg-white text-black rounded-md"
+                  : "hover:bg-white hover:text-[#3b3b3b] rounded-md text-white"
               }`}
               onClick={() => handleItemClick("JobApplication")}
             >
               <p
                 className={`w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios ${
-                  activeItem === "JobApplication" ? "text-blue-800" : ""
+                  activeItem === "JobApplication" ? "text-black" : ""
                 }`}
               >
                 Job Application
@@ -563,12 +563,12 @@ const SideBar = ({ isSidebarExpanded }) => {
                           <div
                             className={`relative flex items-center justify-center w-6 h-6 rounded-full ${
                               isCompleted
-                                ? "bg-white border-1 border-blue-500"
-                                : "bg-blue-500 border-2 border-white"
+                                ? "bg-white border-1 border-white"
+                                : "bg-black border-2 border-white"
                             }`}
                           >
                             {currentSection === section && (
-                              <div className="w-3 h-3 bg-blue-800 rounded-full"></div>
+                              <div className="w-3 h-3 bg-black rounded-full"></div>
                             )}
                           </div>
                           <div className="flex items-center ml-4">
@@ -597,14 +597,14 @@ const SideBar = ({ isSidebarExpanded }) => {
               className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "CompanyInformation"
                   ? "bg-white rounded-md "
-                  : "hover:bg-white rounded-md hover:text-blue-900"
+                  : "hover:bg-white rounded-md hover:text-[#353535]"
               }`}
               onClick={() => handleItemClick("CompanyInformation")}
             >
               <p
-                className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-blue-900 ${
+                className={`flex justify-between items-center w-full px-2 py-2 smd:px-3 rounded-md text-[14px] smd:text-[17px] font-radios hover:bg-white hover:text-[#353535] ${
                   activeItem === "CompanyInformation"
-                    ? "text-blue-800"
+                    ? "text-black"
                     : "text-white"
                 }`}
               >
@@ -618,7 +618,7 @@ const SideBar = ({ isSidebarExpanded }) => {
               className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "Logout"
                   ? "bg-white rounded-md shadow-lg"
-                  : "hover:bg-white rounded-md hover:text-blue-900"
+                  : "hover:bg-white rounded-md hover:text-[#353535]"
               }`}
               onClick={(e) => {
                 e.preventDefault();
@@ -627,8 +627,8 @@ const SideBar = ({ isSidebarExpanded }) => {
               }}
             >
               <div
-                className={`w-full md:-mt-0 -mt-24 p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-blue-900 ${
-                  activeItem === "Logout" ? "text-blue-800" : "text-white"
+                className={`w-full md:-mt-0 -mt-24 p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-[#353535] ${
+                  activeItem === "Logout" ? "text-black" : "text-white"
                 }`}
               >
                 <LogOutIcon className="w-5 h-5" />
@@ -684,7 +684,7 @@ const SideBar = ({ isSidebarExpanded }) => {
                 </button>
                 <button
                   onClick={handleConfirmLogout}
-                  className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium"
+                  className="px-6 py-2 rounded-lg bg-black text-white hover:bg-[#353535] transition-all duration-200 font-medium"
                 >
                   Logout
                 </button>

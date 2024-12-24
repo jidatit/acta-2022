@@ -422,7 +422,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
             Application Form
           </h1>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
       </div>
@@ -625,7 +625,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     checked={formData?.gender?.value === "male"}
                     onChange={handleChange}
                     disabled={isDisabled}
-                    className={`text-blue-500 form-radio ${
+                    className={`text-black form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
                     } ${
                       isDisabled ? "text-gray-400" : "bg-white border-gray-300"
@@ -641,7 +641,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     checked={formData?.gender?.value === "female"}
                     onChange={handleChange}
                     disabled={isDisabled}
-                    className={`text-blue-500 form-radio ${
+                    className={`text-black form-radio ${
                       errors.gender ? "border-red-500 border-2" : ""
                     } ${
                       isDisabled ? "text-gray-400" : "bg-white border-gray-300"
@@ -702,7 +702,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     checked={formData?.legalRightToWork?.value === "yes"}
                     onChange={handleChange}
                     disabled={isDisabled}
-                    className={`text-blue-500 form-radio ${
+                    className={`text-black form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
                     } ${isDisabled ? "" : "bg-white border-gray-300"}`}
                   />
@@ -716,7 +716,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                     checked={formData?.legalRightToWork?.value === "no"}
                     onChange={handleChange}
                     disabled={isDisabled}
-                    className={`text-blue-500 form-radio ${
+                    className={`text-black form-radio ${
                       errors.legalRightToWork ? "border-red-500 border-2" : ""
                     } ${isDisabled ? "" : "bg-white border-gray-300"}`}
                   />
@@ -1162,7 +1162,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.EverBeenDeniedALicense?.value === "yes"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={`text-blue-500 form-radio ${
+                  className={`text-black form-radio ${
                     errors.EverBeenDeniedALicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1180,7 +1180,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.EverBeenDeniedALicense?.value === "no"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.EverBeenDeniedALicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1218,7 +1218,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.PermitPrivilegeOfLicense?.value === "yes"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.PermitPrivilegeOfLicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1236,7 +1236,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.PermitPrivilegeOfLicense?.value === "no"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.PermitPrivilegeOfLicense
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1277,7 +1277,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   }
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1297,7 +1297,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   }
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.TestedPositiveOrRefusedDotDrug
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1334,7 +1334,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.EverConvictedOfFelony?.value === "yes"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.EverConvictedOfFelony
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1352,7 +1352,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                   checked={formData?.EverConvictedOfFelony?.value === "no"}
                   onChange={handleChange}
                   disabled={isDisabled}
-                  className={` text-blue-500 form-radio ${
+                  className={` text-black form-radio ${
                     errors.EverConvictedOfFelony
                       ? "border-red-500 border-2"
                       : "border-gray-300"
@@ -1384,7 +1384,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-700"
+              className="px-4 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
             >
               Next
             </button>

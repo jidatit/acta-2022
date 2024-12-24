@@ -383,8 +383,8 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
                   className={`w-3 h-3 rounded-full ${
                     availableForms.includes(index)
                       ? currentFormIndex === index
-                        ? "bg-blue-600"
-                        : "bg-blue-400"
+                        ? "bg-black"
+                        : "bg-[#1f1f1f]"
                       : "bg-gray-300"
                   }`}
                   title={

@@ -57,7 +57,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
   };
   return (
     <div
-      className={`z-50 h-full w-full overflow-y-hidden bg-blue-[#0086D9] ${
+      className={`z-50 h-full w-full overflow-y-hidden bg-black ${
         !isSidebarExpanded ? "hidden md:flex" : "flex"
       }`}
     >
@@ -85,14 +85,14 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
               className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "RegisteredDrivers"
                   ? "bg-white rounded-md shadow-lg"
-                  : "hover:bg-white rounded-md hover:text-blue-900"
+                  : "hover:bg-white rounded-md hover:text-[#353535]"
               }`}
               onClick={() => handleItemClick("RegisteredDrivers")}
             >
               <p
-                className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 ${
+                className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] ${
                   activeItem === "RegisteredDrivers"
-                    ? "text-blue-800"
+                    ? "text-black"
                     : "text-white"
                 }`}
               >
@@ -104,14 +104,14 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
               className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                 activeItem === "CompanyInformation"
                   ? "bg-white rounded-md shadow-lg"
-                  : "hover:bg-white rounded-md hover:text-blue-900"
+                  : "hover:bg-white rounded-md hover:text-[#353535]"
               }`}
               onClick={() => handleItemClick("CompanyInformation")}
             >
               <p
-                className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 ${
+                className={`w-full p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] ${
                   activeItem === "CompanyInformation"
-                    ? "text-blue-800"
+                    ? "text-black"
                     : "text-white"
                 }`}
               >
@@ -124,22 +124,22 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
             {/* {companyInfo && (
               <div className="flex flex-col gap-y-1">
                 <p
-                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] text-white`}
                 >
                   Name: {companyInfo.companyName || "N/A"}
                 </p>
                 <p
-                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] text-white`}
                 >
                   Phone: {companyInfo.phoneNumber || "N/A"}
                 </p>
                 <p
-                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] text-white`}
                 >
                   Address: {companyInfo.address || "N/A"}
                 </p>
                 <p
-                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-blue-900 text-white`}
+                  className={`w-full px-3 py-2 lg:p-3 rounded-md font-radios hover:bg-white hover:text-[#353535] text-white`}
                 >
                   Fax: {companyInfo.fax || "www.Acta.com"}
                 </p>
@@ -151,7 +151,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                 className={`w-full transition-all duration-300 ease-in-out rounded-md ${
                   activeItem === "Logout"
                     ? "bg-white rounded-md shadow-lg"
-                    : "hover:bg-white rounded-md hover:text-blue-900"
+                    : "hover:bg-white rounded-md hover:text-[#353535]"
                 }`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -160,8 +160,8 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                 }}
               >
                 <div
-                  className={`w-full p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-blue-900 ${
-                    activeItem === "Logout" ? "text-blue-800" : "text-white"
+                  className={`w-full p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-[#353535] ${
+                    activeItem === "Logout" ? "text-black" : "text-white"
                   }`}
                 >
                   <LogOutIcon className="w-5 h-5" />
@@ -217,7 +217,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                   </button>
                   <button
                     onClick={handleConfirmLogout}
-                    className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium"
+                    className="px-6 py-2 rounded-lg bg-black text-white hover:bg-[#353535] transition-all duration-200 font-medium"
                   >
                     Logout
                   </button>

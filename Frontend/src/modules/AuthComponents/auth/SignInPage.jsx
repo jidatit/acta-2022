@@ -163,7 +163,7 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-screen h-[85vh] overflow-hidden ssm:h-screen p-3 bg-[#3B82F6]">
+    <div className="flex flex-row items-center justify-center w-screen h-[85vh] overflow-hidden ssm:h-screen p-3 bg-black">
       <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <div className="flex items-center justify-center w-full">
           <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
@@ -202,7 +202,7 @@ const SignInPage = () => {
           <input
             type="email"
             id="email"
-            className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+            className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
             placeholder="Email Address"
             value={formData.email}
             onChange={handleInputChange} // Handle input change
@@ -213,7 +213,7 @@ const SignInPage = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-blue-500 focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
+              className="block w-full p-4 text-sm text-gray-900 bg-blue-100 rounded-lg focus:ring-black focus:border-gray-400 dark:placeholder-gray-500 dark:focus:border-gray-400 dark:shadow-sm-light"
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
@@ -241,7 +241,7 @@ const SignInPage = () => {
             </Link>
             <button
               type="submit"
-              className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-indigo-600 rounded shadow-md cursor-pointer font-radios shadow-indigo-500/20 hover:bg-indigo-700"
+              className="inline-block w-full px-5 py-3 mt-3 font-medium text-white bg-black rounded shadow-md cursor-pointer font-radios hover:bg-[#353535] "
               disabled={loading}
             >
               {loading ? <Loader /> : "Sign In"}
@@ -252,7 +252,7 @@ const SignInPage = () => {
             <span className="font-radios">Already Signed In?</span>
             <Link
               to={"/signUp"}
-              className="font-bold text-blue-500 hover:text-blue-700"
+              className="font-bold text-black hover:text-[#272727]"
             >
               Sign Up
             </Link>

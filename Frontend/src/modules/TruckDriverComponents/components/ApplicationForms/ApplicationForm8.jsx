@@ -522,7 +522,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
             Statement of On-Duty Hours*
           </h1>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
       </div>
@@ -1158,7 +1158,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`time-${index}`}
                           name="relievedTime"
                           disabled={isDisabled}
-                          className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-3.5 smd:p-2.5 ${
+                          className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black w-full p-3.5 smd:p-2.5 ${
                             errors[index]?.relievedTime ? "border-red-500" : ""
                           } ${
                             isDisabled
@@ -1238,7 +1238,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+                className="px-4 py-2 ml-4 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
               >
                 Next
               </button>

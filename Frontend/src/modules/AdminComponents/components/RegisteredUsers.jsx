@@ -272,7 +272,7 @@ const RegisteredUsers = () => {
                     className={`py-1 px-10 rounded ${
                       driver.driverStatus === "registered"
                         ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-black text-white hover:bg-[#353535]"
                     }`}
                     onClick={() => {
                       if (driver.driverStatus !== "registered") {

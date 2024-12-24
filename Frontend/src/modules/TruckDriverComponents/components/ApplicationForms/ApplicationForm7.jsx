@@ -349,7 +349,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
             </h1>
           </div>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg-blue-700 rounded-md shadow-lg cursor-pointer text-4xl" />
+            <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
       </div>
@@ -398,7 +398,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         checked={field.testedPositiveEver.value === "yes"}
                         onChange={(e) => handleInputChange(index, e)}
                         disabled={isDisabled}
-                        className={`text-blue-500 form-radio ${
+                        className={`text-black form-radio ${
                           isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
@@ -414,7 +414,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                         checked={field.testedPositiveEver.value === "no"}
                         onChange={(e) => handleInputChange(index, e)}
                         disabled={isDisabled}
-                        className={`text-blue-500 form-radio ${
+                        className={`text-black form-radio ${
                           isDisabled
                             ? "bg-gray-100 cursor-not-allowed"
                             : "bg-white cursor-pointer"
@@ -451,7 +451,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           checked={field.DOTCompletion.value === "yes"}
                           onChange={(e) => handleInputChange(index, e)}
                           disabled={isDisabled}
-                          className={`text-blue-500 form-radio ${
+                          className={`text-black form-radio ${
                             isDisabled
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-white cursor-pointer"
@@ -467,7 +467,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
                           checked={field.DOTCompletion.value === "no"}
                           onChange={(e) => handleInputChange(index, e)}
                           disabled={isDisabled}
-                          className={`text-blue-500 form-radio ${
+                          className={`text-black form-radio ${
                             isDisabled
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-white cursor-pointer"
@@ -506,7 +506,7 @@ const ApplicationForm7 = ({ uid, clicked, setClicked }) => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 ml-4 font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+                className="px-4 py-2 ml-4 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
               >
                 Next
               </button>

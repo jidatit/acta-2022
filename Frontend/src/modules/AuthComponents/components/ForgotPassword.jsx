@@ -86,7 +86,7 @@ const ForgotPassword = () => {
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-600">
                 Remember your password?
                 <Link
-                  className="font-medium text-blue-600 decoration-2 ml-2 hover:underline"
+                  className="font-medium text-[#353535] decoration-2 ml-2 hover:underline"
                   to={"/signIn"}
                 >
                   Login here
@@ -110,7 +110,7 @@ const ForgotPassword = () => {
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        className="block w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-md shadow-sm focus:border-black focus:ring-black"
                         required
                         aria-describedby="email-error"
                       />
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                   </div>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white transition-all bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white transition-all bg-black border border-transparent rounded-md hover:bg-[#353535] focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                   >
                     Reset password
                   </button>
