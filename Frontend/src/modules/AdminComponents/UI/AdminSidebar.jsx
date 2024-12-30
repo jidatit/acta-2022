@@ -185,7 +185,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
                   style={{
                     fontSize: "1.25rem",
                     fontWeight: "600",
-                    color: "#1e3a8a",
+                    color: "black",
                     paddingBottom: "8px",
                   }}
                 >

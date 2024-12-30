@@ -195,6 +195,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       // Create the update object with the form data
       const formUpdate = {
         ...formData,
+        Email: {
+          value: formData?.Email?.value || currentUser.email,
+          status: formData?.Email?.status || "pending",
+          note: formData?.Email?.note || "",
+        },
         submittedAt: new Date(),
         isSubmitted: isSubmit,
       };
@@ -327,6 +332,11 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
 
       const formDataToSave = {
         ...formData,
+        Email: {
+          value: formData?.Email?.value || currentUser.email,
+          status: formData?.Email?.status || "pending",
+          note: formData?.Email?.note || "",
+        },
         submittedAt: new Date(),
       };
 
@@ -363,6 +373,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
 
           // Update driverStatus to "Filled"
           await updateDoc(doc(db, collectionName, truckDriverDoc.id), {
+            Email: formData?.Email?.value || currentUser.email,
             name: formData.applicantName.value,
           });
         }
@@ -949,11 +960,19 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 required
                 name="Email"
                 id="Email"
-                disabled={isDisabled}
-                value={currentUser.email}
+                disabled={currentUser.userType !== "Admin"}
+                value={
+                  currentUser.userType == "Admin"
+                    ? formData?.Email?.value
+                    : formData?.Email?.value || currentUser.email
+                }
                 onChange={handleChange}
-                className={`w-full p-2 mt-1 border rounded-md text-gray-400 ${
-                  errors.Email ? "border-red-500 border-2" : ""
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  currentUser.userType !== "Admin"
+                    ? "text-gray-400 "
+                    : "text-black"
+                }${errors.Email ? "border-red-500 border-2" : ""} ${
+                  isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
                 }`}
               />
               {errors.Email && (

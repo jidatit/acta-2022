@@ -486,11 +486,11 @@ const SideBar = ({ isSidebarExpanded }) => {
                   onClick={handleLogoutConfirm}
                   variant="contained"
                   sx={{
-                    backgroundColor: "rgb(37 99 235)",
+                    backgroundColor: "black",
                     color: "white",
                     textTransform: "none",
                     "&:hover": {
-                      backgroundColor: "rgb(29 78 216)",
+                      backgroundColor: "#353535",
                     },
                   }}
                 >
@@ -627,7 +627,7 @@ const SideBar = ({ isSidebarExpanded }) => {
               }}
             >
               <div
-                className={`w-full md:-mt-0 -mt-24 p-3 rounded-md font-radios flex items-center gap-2 hover:bg-white hover:text-[#353535] ${
+                className={`w-full md:-mt-0 -mt-24 p-3 rounded-md font-radios flex text-white items-center gap-2 hover:bg-white hover:text-[#353535] ${
                   activeItem === "Logout" ? "text-black" : "text-white"
                 }`}
               >
@@ -652,7 +652,7 @@ const SideBar = ({ isSidebarExpanded }) => {
                 style={{
                   fontSize: "1.25rem",
                   fontWeight: "600",
-                  color: "#1e3a8a",
+                  color: "black",
                   paddingBottom: "8px",
                 }}
               >
@@ -684,7 +684,8 @@ const SideBar = ({ isSidebarExpanded }) => {
                 </button>
                 <button
                   onClick={handleConfirmLogout}
-                  className="px-6 py-2 rounded-lg bg-black text-white hover:bg-[#353535] transition-all duration-200 font-medium"
+                  style={{ backgroundColor: "black" }}
+                  className="px-6 py-2 rounded-lg bg-black text-white logoutButton hover:bg-[#353535] transition-all duration-200 font-medium"
                 >
                   Logout
                 </button>

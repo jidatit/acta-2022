@@ -23,7 +23,7 @@ const RegisteredUsers = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [truckDrivers, setTruckDrivers] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -34,6 +34,12 @@ const RegisteredUsers = () => {
           id: doc.id,
           ...doc.data(),
         }));
+        // Sort by dateCreated: latest first
+        drivers.sort((a, b) => {
+          const dateA = a.dateCreated?.seconds || 0;
+          const dateB = b.dateCreated?.seconds || 0;
+          return dateB - dateA; // Descending order
+        });
         setTruckDrivers(drivers);
       },
       (error) => {
@@ -49,13 +55,14 @@ const RegisteredUsers = () => {
     setSelectedUserIds((prev) =>
       prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
     );
-    console.log("name", name);
-    setSelectedUser(name);
+    setSelectedUser((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    );
   };
-
+  console.log("selected", selectedUser);
   const handleDeleteClick = () => {
     if (selectedUserIds.length > 0) {
-      setShowDeleteModal(true);
+      setShowDeleteModal(!showDeleteModal);
     }
   };
 
@@ -82,6 +89,7 @@ const RegisteredUsers = () => {
 
         if (!response.ok) {
           setLoading(false);
+          setShowDeleteModal(false);
           throw new Error(data.message || "Failed to delete user via API");
         }
 
@@ -125,6 +133,7 @@ const RegisteredUsers = () => {
       }
     } catch (error) {
       setLoading(false);
+      setShowDeleteModal(false);
       console.error("Error deleting users:", error);
       toast.error("Error deleting selected drivers");
     }
@@ -336,8 +345,10 @@ const RegisteredUsers = () => {
                   Are you sure you want to delete this driver? Because if You
                   will Delete this Driver it will get Permanently Blocked.{" "}
                 </p>
-                <p className="text-center text-lg font-radios ">
-                  "{selectedUser ? selectedUser : ""}"
+                <p className="text-center text-lg font-radios">
+                  {selectedUser && selectedUser.length > 0
+                    ? `"${selectedUser.join(", ")}"`
+                    : ""}
                 </p>
                 <div className="flex justify-center gap-4 mt-4">
                   <button
