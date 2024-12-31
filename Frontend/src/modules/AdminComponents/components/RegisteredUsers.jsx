@@ -62,7 +62,7 @@ const RegisteredUsers = () => {
   console.log("selected", selectedUser);
   const handleDeleteClick = () => {
     if (selectedUserIds.length > 0) {
-      setShowDeleteModal(!showDeleteModal);
+      setShowDeleteModal(true);
     }
   };
 
@@ -110,6 +110,7 @@ const RegisteredUsers = () => {
         if (result.status === "fulfilled") {
           successfulDeletions.push(uid);
         } else {
+          setShowDeleteModal(false);
           setLoading(false);
           console.error(`Error deleting user `);
           toast.error(`Error deleting user `, {
@@ -130,6 +131,7 @@ const RegisteredUsers = () => {
 
       if (successfulDeletions.length) {
         toast.success("Selected drivers deleted successfully");
+        setShowDeleteModal(false);
       }
     } catch (error) {
       setLoading(false);
@@ -359,7 +361,7 @@ const RegisteredUsers = () => {
                   </button>
                   <button
                     onClick={handleConfirmDelete}
-                    className={`bg-blue-600 text-white py-2.5 px-6 rounded-xl ${
+                    className={`bg-black text-white py-2.5 px-6 rounded-xl ${
                       loading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     disabled={loading} // Disable button while loading
