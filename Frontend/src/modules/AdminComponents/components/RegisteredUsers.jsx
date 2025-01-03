@@ -344,8 +344,7 @@ const RegisteredUsers = () => {
               </button>
               <div className="flex flex-col items-center justify-center gap-y-0">
                 <p className="text-center text-xl font-radios mt-4 p-4">
-                  Are you sure you want to delete this driver? Because if You
-                  will Delete this Driver it will get Permanently Blocked.{" "}
+                  Are you sure you want to delete this driver? {" "}
                 </p>
                 <p className="text-center text-lg font-radios">
                   {selectedUser && selectedUser.length > 0
