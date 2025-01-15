@@ -28,15 +28,105 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   const { isSaveClicked, setIsSaveClicked, FormData3, applicationStatus } =
     currentUser?.userType === "Admin" ? adminAuthData : authData;
 
-  const [localFormData, setLocalFormData] = useState(FormData3 || [{}]);
-
+  const [localFormData, setLocalFormData] = useState(() => {
+    if (Array.isArray(FormData3) && FormData3.length > 0) {
+      return FormData3.map((data) => ({
+        ...data,
+        gapReason: { value: "", status: "pending", note: "" },
+      }));
+    }
+    return [
+      {
+        companyName31: { value: "", status: "pending", note: "" },
+        street31: { value: "", status: "pending", note: "" },
+        city31: { value: "", status: "pending", note: "" },
+        zipCode31: { value: "", status: "pending", note: "" },
+        contactPerson: { value: "", status: "pending", note: "" },
+        phone31: { value: "", status: "pending", note: "" },
+        fax1: { value: "", status: "pending", note: "" },
+        from31: { value: "", status: "pending", note: "" },
+        to31: { value: "", status: "pending", note: "" },
+        position: { value: "", status: "pending", note: "" },
+        salary: { value: "", status: "pending", note: "" },
+        leavingReason: { value: "", status: "pending", note: "" },
+        subjectToFMCSRs: { value: "", status: "pending", note: "" },
+        jobDesignatedAsSafetySensitive: {
+          value: "",
+          status: "pending",
+          note: "",
+        },
+        gapReason: { value: "", status: "pending", note: "" },
+      },
+    ];
+  });
+  useEffect(() => {
+    if (Array.isArray(FormData3) && FormData3 !== null) {
+      setLocalFormData(
+        FormData3.map((data) => ({
+          ...data,
+          gapReason: { value: "", status: "pending", note: "" },
+        }))
+      );
+    } else {
+      setLocalFormData([
+        {
+          companyName31: { value: "", status: "pending", note: "" },
+          street31: { value: "", status: "pending", note: "" },
+          city31: { value: "", status: "pending", note: "" },
+          zipCode31: { value: "", status: "pending", note: "" },
+          contactPerson: { value: "", status: "pending", note: "" },
+          phone31: { value: "", status: "pending", note: "" },
+          fax1: { value: "", status: "pending", note: "" },
+          from31: { value: "", status: "pending", note: "" },
+          to31: { value: "", status: "pending", note: "" },
+          position: { value: "", status: "pending", note: "" },
+          salary: { value: "", status: "pending", note: "" },
+          leavingReason: { value: "", status: "pending", note: "" },
+          subjectToFMCSRs: { value: "", status: "pending", note: "" },
+          jobDesignatedAsSafetySensitive: {
+            value: "",
+            status: "pending",
+            note: "",
+          },
+          gapReason: { value: "", status: "pending", note: "" },
+        },
+      ]);
+    }
+  }, [FormData3]);
   const { editStatus, setEditStatus } = useEdit();
   const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
 
+  // const checkIfAllFieldsApproved = useCallback(() => {
+  //   return localFormData?.every((form) =>
+  //     Object?.values(form)?.every((field) => field?.status === "approved")
+  //   );
+  // }, [localFormData]);
   const checkIfAllFieldsApproved = useCallback(() => {
-    return localFormData.every((form) =>
-      Object.values(form).every((field) => field.status === "approved")
-    );
+    // First check if localFormData exists and is an array
+    if (!Array.isArray(localFormData)) {
+      return false;
+    }
+
+    // Then check if the array is empty
+    if (localFormData.length === 0) {
+      return false;
+    }
+
+    // Now safely check all fields
+    return localFormData.every((form) => {
+      // Check if form is an object
+      if (!form || typeof form !== "object") {
+        return false;
+      }
+
+      // Get all values and check their status
+      return Object.values(form).every((field) => {
+        // Check if field exists and has a status property
+        return (
+          field && typeof field === "object" && field.status === "approved"
+        );
+      });
+    });
   }, [localFormData]);
   useEffect(() => {
     if (
@@ -89,7 +179,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   }, []);
 
   const [errors, setErrors] = useState([]);
-
+  const [gapErrors, setGapErrors] = useState([]);
   useEffect(() => {
     setIsSaveClicked(true);
   }, []);
@@ -157,7 +247,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   };
 
   const validateForm = () => {
-    const newErrors = localFormData.map((field) => {
+    const newErrors = localFormData.map((field, index) => {
       const fieldErrors = {};
       const requiredFields = [
         "companyName31",
@@ -178,6 +268,11 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
           fieldErrors[key] = "This field is required";
         }
       });
+
+      // Validate gapReason if a gap error exists
+      if (gapErrors[index] && field.gapReason.value.trim() === "") {
+        fieldErrors.gapReason = "Please explain the gap.";
+      }
 
       return fieldErrors;
     });
@@ -335,6 +430,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         salary: { value: "", status: "pending", note: "" },
         leavingReason: { value: "", status: "pending", note: "" },
         subjectToFMCSRs: { value: "", status: "pending", note: "" },
+        gapReason: { value: "", status: "pending", note: "" }, // New field
         jobDesignatedAsSafetySensitive: {
           value: "",
           status: "pending",
@@ -347,36 +443,92 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedFields = localFormData.map((field, i) =>
-      i === index
-        ? {
-            ...field,
-            [name.replace(`company-${index}-`, "")]: {
-              ...field[name.replace(`company-${index}-`, "")],
-              value,
-            },
-          }
-        : field
-    );
+    let updatedFields = [...localFormData];
+    if (name === `gapReason-${index}`) {
+      updatedFields[index].gapReason.value = value;
+      setLocalFormData(updatedFields);
+      return;
+    }
+    // Validate date fields for the current instance
+    const fromDate = updatedFields[index]?.from31?.value;
+    const toDate = updatedFields[index]?.to31?.value;
+
+    let updatedErrors = [...errors];
+    let showError = false;
+
+    // Validate current instance dates
+    if (
+      name.includes("to31") &&
+      fromDate &&
+      new Date(value) <= new Date(fromDate)
+    ) {
+      toast.error("End date must be after the start date.");
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        to31: "End date must be after the start date.",
+      };
+      updatedFields[index].to31.value = ""; // Clear invalid field
+      showError = true;
+    } else if (
+      name.includes("from31") &&
+      toDate &&
+      new Date(toDate) <= new Date(value)
+    ) {
+      toast.error("Start date must be before the end date.");
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        from31: "Start date must be before the end date.",
+      };
+      updatedFields[index].from31.value = ""; // Clear invalid field
+      showError = true;
+    } else {
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        [name.replace(`company-${index}-`, "")]: "",
+      };
+    }
+
+    // Update field values only if no errors
+    if (!showError) {
+      updatedFields = updatedFields.map((field, i) =>
+        i === index
+          ? {
+              ...field,
+              [name.replace(`company-${index}-`, "")]: {
+                ...field[name.replace(`company-${index}-`, "")],
+                value,
+              },
+            }
+          : field
+      );
+    }
+
+    // Check for gaps between instances
+    let gapErrors = Array(updatedFields.length).fill(null);
+    for (let i = 1; i < updatedFields.length; i++) {
+      const prevToDate = updatedFields[i - 1]?.to31?.value;
+      const currentFromDate = updatedFields[i]?.from31?.value;
+
+      if (prevToDate && currentFromDate) {
+        const prevDate = new Date(prevToDate);
+        const currentDate = new Date(currentFromDate);
+
+        const monthDifference =
+          currentDate.getMonth() -
+          prevDate.getMonth() +
+          12 * (currentDate.getFullYear() - prevDate.getFullYear());
+
+        if (monthDifference > 1) {
+          gapErrors[i] = "Please explain the gap of more than one month.";
+        }
+      }
+    }
 
     setLocalFormData(updatedFields);
-
-    const updatedErrors = errors.map((error, i) =>
-      i === index
-        ? {
-            ...error,
-            [name.replace(`company-${index}-`, "")]:
-              (name.includes("subjectToFMCSRs") ||
-                name.includes("jobDesignatedAsSafetySensitive")) &&
-              value.trim() === ""
-                ? "This field is required"
-                : "",
-          }
-        : error
-    );
-
     setErrors(updatedErrors);
+    setGapErrors(gapErrors); // Track gap errors for rendering text areas
 
+    // Check if all fields are empty
     const allFieldsEmpty = updatedFields.every((address) =>
       Object.values(address).every(
         (fieldValue) => fieldValue.value.trim() === ""
@@ -454,15 +606,15 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
       <div className=" flex flex-col gap-y-4 flex-wrap ">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
           {Array.isArray(localFormData) &&
-            localFormData.map((field, index) => (
+            localFormData?.map((field, index) => (
               <div key={index} className="mb-6">
                 <div className="grid w-full grid-cols-1 gap-4 mb-6 md:grid-cols-3">
                   <div>
                     <FormLabelWithStatus
                       label="Company Name"
                       id={`companyName31-${index}`}
-                      status={field.companyName31.status}
-                      note={field.companyName31.note}
+                      status={field?.companyName31?.status}
+                      note={field?.companyName31?.note}
                       index={index}
                       fieldName="companyName31"
                       uid={uid}
@@ -471,7 +623,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       type="text"
                       name="companyName31"
                       id={`companyName31-${index}`}
-                      value={field.companyName31.value}
+                      value={field?.companyName31?.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
@@ -495,7 +647,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                     <FormLabelWithStatus
                       label="Street"
                       id="street31"
-                      status={field.street31.status}
+                      status={field?.street31.status}
                       note={field.street31.note}
                       index={index}
                       fieldName="street31"
@@ -506,7 +658,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       type="text"
                       name="street31"
                       id={`street31-${index}`}
-                      value={field.street31.value}
+                      value={field?.street31?.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
@@ -948,6 +1100,39 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         </p>
                       )}
                     </div>
+                    {(gapErrors[index] ||
+                      localFormData[index]?.gapReason?.value) && (
+                      <div>
+                        <FormLabelWithStatus
+                          label="Employment Gap Reason"
+                          id={`gapReason-${index}`}
+                          status={field.gapReason.status}
+                          note={field.gapReason.note}
+                          index={index}
+                          fieldName={`gapReason`}
+                          uid={uid}
+                        />
+                        <div className="gap-explanation w-[50%]">
+                          {/* {gapErrors[index] && (
+                            <p className="gap-error-text text-red-500">
+                              {gapErrors[index]}
+                            </p>
+                          )} */}
+                          <textarea
+                            name={`gapReason-${index}`}
+                            value={localFormData[index]?.gapReason?.value || ""}
+                            onChange={(e) => handleInputChange(index, e)}
+                            placeholder="Please explain the gap."
+                            className="gap-textarea w-full h-24 p-2 rounded-lg outline-none border-1 border-gray-300"
+                          ></textarea>
+                          {errors[index]?.gapReason && (
+                            <p className="error-text text-red-500">
+                              {errors[index]?.gapReason}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex items-center mt-4">
                       {index !== 0 && ( // Only show remove button for dynamically added fields

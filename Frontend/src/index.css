@@ -29,3 +29,15 @@ body {
 .logoutButton{
   background-color: black !important;
 }
+@keyframes moveUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-move-up-down {
+  animation: moveUpDown 1.5s infinite;
+}

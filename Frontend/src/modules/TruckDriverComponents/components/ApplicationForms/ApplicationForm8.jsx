@@ -16,6 +16,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { AlertTriangle } from "lucide-react";
 const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const defaultFormData = [
     {
@@ -287,7 +288,7 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
       return fieldErrors;
     });
 
-    setErrors(newErrors);
+    // setErrors(newErrors);
     return newErrors?.every(
       (fieldErrors) => Object.keys(fieldErrors).length === 0
     );
@@ -297,14 +298,14 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
     e.preventDefault();
     setIsSaveClicked(false);
 
-    if (validateForm()) {
-      setIsSaveClicked(true);
+    // if (validateForm()) {
+    setIsSaveClicked(true);
 
-      await saveForm8(true);
-      navigate("/TruckDriverLayout/ApplicationForm9");
-    } else {
-      toast.error("Please complete all required fields to continue");
-    }
+    await saveForm8(true);
+    navigate("/TruckDriverLayout/ApplicationForm9");
+    // } else {
+    //   toast.error("Please complete all required fields to continue");
+    // }
   };
 
   const handleSave = async (uid) => {
@@ -481,7 +482,9 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
     setIsSaveClicked(allFieldsEmpty);
   };
   const isDisabled =
-    checkIfAllFieldsApproved() || applicationStatus === "approved";
+    checkIfAllFieldsApproved() ||
+    applicationStatus === "approved" ||
+    currentUser.userType == "TruckDriver";
   return (
     <div
       className={`flex flex-col items-start justify-start overflow-x-hidden w-full pr-4 ${
@@ -516,6 +519,18 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {currentUser.userType === "TruckDriver" && (
+        <div
+          className="p-4 mt-4 mb-4 text-sm text-white rounded-lg bg-black w-full flex items-center gap-2 animate-move-up-down"
+          role="alert"
+        >
+          <AlertTriangle className="h-5 w-5 -mt-0.5" />
+          <div>
+            <span className="font-bold">FORM ALERT !</span> YOU CANT FILL THIS
+            FORM THIS FORM WILL BE ONLY FILLED BY ADMIN
+          </div>
+        </div>
+      )}
       <div className=" flex flex-col w-full">
         <div className="flex flex-row items-start justify-between w-full">
           <h1 className="w-full mb-4 text-xl font-bold text-black">
@@ -1158,8 +1173,10 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           id={`time-${index}`}
                           name="relievedTime"
                           disabled={isDisabled}
-                          className={` bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black w-full p-3.5 smd:p-2.5 ${
-                            errors[index]?.relievedTime ? "border-red-500" : ""
+                          className={` bg-gray-50 leading-none  text-sm rounded-lg focus:ring-black focus:border-black w-full p-3.5 smd:p-2.5 ${
+                            errors[index]?.relievedTime
+                              ? "border-red-500 border-2"
+                              : ""
                           } ${
                             isDisabled
                               ? "text-gray-400"
@@ -1169,9 +1186,9 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           max="18:00"
                           required
                           value={
-                            field.relievedTime?.value
-                              ? formatTimeForInput(field.relievedTime)
-                              : ""
+                            field.relievedTime?.value == "00:00"
+                              ? ""
+                              : formatTimeForInput(field.relievedTime)
                           }
                           onChange={(e) => handleInputChange(index, e)}
                         />

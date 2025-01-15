@@ -174,6 +174,7 @@ export const AuthProvider = ({ children }) => {
       salary: { value: "", status: "pending", note: "" },
       leavingReason: { value: "", status: "pending", note: "" },
       subjectToFMCSRs: { value: "", status: "pending", note: "" },
+      gapReason: { value: "", status: "pending", note: "" },
       jobDesignatedAsSafetySensitive: {
         value: "",
         status: "pending",
