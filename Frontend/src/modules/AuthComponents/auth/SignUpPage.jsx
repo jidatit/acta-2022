@@ -9,7 +9,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { db, auth } from "../../../config/firebaseConfig";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, onSnapshot } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Camera } from "lucide-react";
 import Loader from "../../SharedUiComponents/Loader";
@@ -30,19 +30,47 @@ const SignUpPage = () => {
   const [logoPreview, setLogoPreview] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
   useEffect(() => {
-    const fetchCompanyInfo = async () => {
-      const companyCollection = collection(db, "companyInfo");
-      const companySnapshot = await getDocs(companyCollection);
-      const companyData = companySnapshot.docs.map((doc) => doc.data());
+    // Try to get cached data first
 
-      if (companyData.length > 0) {
-        setCompanyInfo(companyData[0]); // Assuming you want the first document
-        setLogoPreview(companyData[0].logoUrl);
+    const cachedLogoUrl = localStorage.getItem("companyLogo");
+    const lastFetchTimestamp = localStorage.getItem("lastCompanyInfoFetch");
+
+    if (cachedLogoUrl) {
+      // setCompanyInfo(JSON.parse(cachedCompanyInfo));
+      setLogoPreview(cachedLogoUrl);
+    }
+
+    // Set up real-time listener for changes
+    const companyCollection = collection(db, "companyInfo");
+    const unsubscribe = onSnapshot(companyCollection, (snapshot) => {
+      const companyData = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))[0]; // Getting first document
+
+      if (companyData) {
+        // Compare with cached data
+        const cachedData = JSON.parse(
+          localStorage.getItem("companyInfo") || "{}"
+        );
+
+        // Check if data has changed
+        if (JSON.stringify(cachedData) !== JSON.stringify(companyData)) {
+          // Update state
+          setCompanyInfo(companyData);
+          setLogoPreview(companyData.logoUrl);
+
+          // Update cache
+          // localStorage.setItem("companyInfo", JSON.stringify(companyData));
+          localStorage.setItem("companyLogo", companyData.logoUrl);
+          localStorage.setItem("lastCompanyInfoFetch", Date.now().toString());
+        }
       }
-    };
+    });
 
-    fetchCompanyInfo();
-  }, []);
+    // Cleanup listener
+    return () => unsubscribe();
+  }, [db]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

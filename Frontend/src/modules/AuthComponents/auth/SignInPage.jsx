@@ -5,7 +5,13 @@ import { auth, db } from "../../../config/firebaseConfig";
 import image from "../../../images/rafiki.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { IoMdEye } from "react-icons/io";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Loader from "../../SharedUiComponents/Loader";
@@ -19,19 +25,63 @@ const SignInPage = () => {
   const [logoPreview, setLogoPreview] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
   useEffect(() => {
-    const fetchCompanyInfo = async () => {
-      const companyCollection = collection(db, "companyInfo");
-      const companySnapshot = await getDocs(companyCollection);
-      const companyData = companySnapshot.docs.map((doc) => doc.data());
+    // Try to get cached data first
 
-      if (companyData.length > 0) {
-        setCompanyInfo(companyData[0]); // Assuming you want the first document
-        setLogoPreview(companyData[0].logoUrl);
+    const cachedLogoUrl = localStorage.getItem("companyLogo");
+    const lastFetchTimestamp = localStorage.getItem("lastCompanyInfoFetch");
+
+    if (cachedLogoUrl) {
+      // setCompanyInfo(JSON.parse(cachedCompanyInfo));
+      setLogoPreview(cachedLogoUrl);
+    }
+
+    // Set up real-time listener for changes
+    const companyCollection = collection(db, "companyInfo");
+    const unsubscribe = onSnapshot(companyCollection, (snapshot) => {
+      const companyData = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))[0]; // Getting first document
+
+      if (companyData) {
+        // Compare with cached data
+        const cachedData = JSON.parse(
+          localStorage.getItem("companyInfo") || "{}"
+        );
+
+        // Check if data has changed
+        if (JSON.stringify(cachedData) !== JSON.stringify(companyData)) {
+          // Update state
+          setCompanyInfo(companyData);
+          setLogoPreview(companyData.logoUrl);
+
+          // Update cache
+          // localStorage.setItem("companyInfo", JSON.stringify(companyData));
+          localStorage.setItem("companyLogo", companyData.logoUrl);
+          localStorage.setItem("lastCompanyInfoFetch", Date.now().toString());
+        }
       }
-    };
+    });
 
-    fetchCompanyInfo();
-  }, []);
+    // Cleanup listener
+    return () => unsubscribe();
+  }, [db]);
+  const refreshCache = async () => {
+    const companyCollection = collection(db, "companyInfo");
+    const companySnapshot = await getDocs(companyCollection);
+    const companyData = companySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }))[0];
+
+    if (companyData) {
+      setCompanyInfo(companyData);
+      setLogoPreview(companyData.logoUrl);
+      localStorage.setItem("companyInfo", JSON.stringify(companyData));
+      localStorage.setItem("companyLogo", companyData.logoUrl);
+      localStorage.setItem("lastCompanyInfoFetch", Date.now().toString());
+    }
+  };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -166,7 +216,7 @@ const SignInPage = () => {
     <div className="flex flex-row items-center justify-center w-screen h-[85vh] overflow-hidden ssm:h-screen p-3 bg-black">
       <div className="hidden md:flex flex-col gap-y-10 justify-center items-center w-[50%] h-full ">
         <div className="flex items-center justify-center w-full">
-          <div className="w-full p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
+          <div className=" p-2 smd:px-3 flex items-center justify-center smd:py-2 text-lg smd:text-2xl font-bold text-black rounded-lg">
             {logoPreview ? (
               <img
                 src={logoPreview}
