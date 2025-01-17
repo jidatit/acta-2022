@@ -440,16 +440,20 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     ]);
     setErrors([...errors, {}]); // Add an empty error object for the new company
   };
-
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     let updatedFields = [...localFormData];
+
+    // If updating gap reason, only update if there's actually a gap error
     if (name === `gapReason-${index}`) {
-      updatedFields[index].gapReason.value = value;
-      setLocalFormData(updatedFields);
+      if (errors[index]?.hasGap) {
+        updatedFields[index].gapReason.value = value;
+        setLocalFormData(updatedFields);
+      }
       return;
     }
-    // Validate date fields for the current instance
+
+    // Existing date validation logic
     const fromDate = updatedFields[index]?.from31?.value;
     const toDate = updatedFields[index]?.to31?.value;
 
@@ -467,7 +471,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         ...updatedErrors[index],
         to31: "End date must be after the start date.",
       };
-      updatedFields[index].to31.value = ""; // Clear invalid field
+      updatedFields[index].to31.value = "";
       showError = true;
     } else if (
       name.includes("from31") &&
@@ -479,7 +483,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         ...updatedErrors[index],
         from31: "Start date must be before the end date.",
       };
-      updatedFields[index].from31.value = ""; // Clear invalid field
+      updatedFields[index].from31.value = "";
       showError = true;
     } else {
       updatedErrors[index] = {
@@ -503,8 +507,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
       );
     }
 
-    // Check for gaps between instances
+    // Check for gaps between instances using precise day calculation
     let gapErrors = Array(updatedFields.length).fill(null);
+    let updatedErrorsWithGaps = [...updatedErrors];
+
     for (let i = 1; i < updatedFields.length; i++) {
       const prevToDate = updatedFields[i - 1]?.to31?.value;
       const currentFromDate = updatedFields[i]?.from31?.value;
@@ -513,20 +519,41 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         const prevDate = new Date(prevToDate);
         const currentDate = new Date(currentFromDate);
 
-        const monthDifference =
-          currentDate.getMonth() -
-          prevDate.getMonth() +
-          12 * (currentDate.getFullYear() - prevDate.getFullYear());
+        // Calculate the exact number of days between dates
+        const timeDifference = currentDate.getTime() - prevDate.getTime();
+        const daysDifference = Math.floor(
+          timeDifference / (1000 * 60 * 60 * 24)
+        );
 
-        if (monthDifference > 1) {
+        if (daysDifference > 30) {
+          // Check for gaps more than 31 days
           gapErrors[i] = "Please explain the gap of more than one month.";
+          // Mark that this index has a gap error
+          updatedErrorsWithGaps[i] = {
+            ...updatedErrorsWithGaps[i],
+            hasGap: true,
+          };
+
+          // Initialize gap reason if it doesn't exist
+          if (!updatedFields[i].gapReason) {
+            updatedFields[i].gapReason = { value: "" };
+          }
+        } else {
+          // Clear gap error and hasGap flag if gap no longer exists
+          if (updatedErrorsWithGaps[i]) {
+            updatedErrorsWithGaps[i].hasGap = false;
+          }
+          // Clear gap reason if gap no longer exists
+          if (updatedFields[i].gapReason) {
+            updatedFields[i].gapReason.value = "";
+          }
         }
       }
     }
 
     setLocalFormData(updatedFields);
-    setErrors(updatedErrors);
-    setGapErrors(gapErrors); // Track gap errors for rendering text areas
+    setErrors(updatedErrorsWithGaps);
+    setGapErrors(gapErrors);
 
     // Check if all fields are empty
     const allFieldsEmpty = updatedFields.every((address) =>
@@ -536,36 +563,48 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     );
     setIsSaveClicked(allFieldsEmpty);
   };
+
   const getMinToDate = (field) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+
     if (field.from31.value) {
       const fromDate = new Date(field.from31.value);
       // Add one day to fromDate to ensure "to" date must be after
       fromDate.setDate(fromDate.getDate() + 1);
+
+      // Return the minimum date between today and one day after fromDate
+      if (today < fromDate) {
+        return today.toISOString().split("T")[0];
+      }
       return fromDate.toISOString().split("T")[0];
     }
     return undefined;
   };
-
   // Get max date for "from" field based on "to" date
   const getMaxFromDate = (field) => {
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+
     if (field.to31.value) {
       const toDate = new Date(field.to31.value);
+      // Return the earlier date between today and one day before the "to" date
+      if (toDate > today) {
+        return today.toISOString().split("T")[0];
+      }
       // Subtract one day from toDate to ensure "from" date must be before
       toDate.setDate(toDate.getDate() - 1);
       return toDate.toISOString().split("T")[0];
     }
-    return undefined;
+    // If no "to" date is set, just return today as the maximum
+    return today.toISOString().split("T")[0];
   };
 
   // Get min date for "from" field based on previous instance's "to" date
+  // Remove the min date restriction based on previous instances
   const getMinFromDate = (field, index, localFormData) => {
-    if (index > 0 && localFormData[index - 1]?.to31?.value) {
-      const prevToDate = new Date(localFormData[index - 1].to31.value);
-      // Add one day to prevToDate to prevent overlap
-      prevToDate.setDate(prevToDate.getDate() + 1);
-      return prevToDate.toISOString().split("T")[0];
-    }
-    return undefined;
+    return undefined; // Allow any date to be selected
   };
   const removeCompany = (index) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
@@ -923,6 +962,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
                       min={getMinToDate(field)}
+                      max={new Date().toISOString().split("T")[0]} // Add this line to prevent future dates
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.to31 ? "border-red-500 border-2" : ""
                       } ${
