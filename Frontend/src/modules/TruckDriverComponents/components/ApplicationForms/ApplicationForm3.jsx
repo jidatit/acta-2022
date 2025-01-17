@@ -536,7 +536,37 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     );
     setIsSaveClicked(allFieldsEmpty);
   };
+  const getMinToDate = (field) => {
+    if (field.from31.value) {
+      const fromDate = new Date(field.from31.value);
+      // Add one day to fromDate to ensure "to" date must be after
+      fromDate.setDate(fromDate.getDate() + 1);
+      return fromDate.toISOString().split("T")[0];
+    }
+    return undefined;
+  };
 
+  // Get max date for "from" field based on "to" date
+  const getMaxFromDate = (field) => {
+    if (field.to31.value) {
+      const toDate = new Date(field.to31.value);
+      // Subtract one day from toDate to ensure "from" date must be before
+      toDate.setDate(toDate.getDate() - 1);
+      return toDate.toISOString().split("T")[0];
+    }
+    return undefined;
+  };
+
+  // Get min date for "from" field based on previous instance's "to" date
+  const getMinFromDate = (field, index, localFormData) => {
+    if (index > 0 && localFormData[index - 1]?.to31?.value) {
+      const prevToDate = new Date(localFormData[index - 1].to31.value);
+      // Add one day to prevToDate to prevent overlap
+      prevToDate.setDate(prevToDate.getDate() + 1);
+      return prevToDate.toISOString().split("T")[0];
+    }
+    return undefined;
+  };
   const removeCompany = (index) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
@@ -858,6 +888,8 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       value={field.from31.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
+                      max={getMaxFromDate(field)}
+                      min={getMinFromDate(field, index, localFormData)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.from31 ? "border-red-500 border-2" : ""
                       } ${
@@ -890,6 +922,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                       value={field.to31.value}
                       onChange={(e) => handleInputChange(index, e)}
                       disabled={isDisabled}
+                      min={getMinToDate(field)}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         errors[index]?.to31 ? "border-red-500 border-2" : ""
                       } ${

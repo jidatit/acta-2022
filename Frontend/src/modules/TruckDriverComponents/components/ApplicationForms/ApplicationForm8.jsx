@@ -526,8 +526,8 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
         >
           <AlertTriangle className="h-5 w-5 -mt-0.5" />
           <div>
-            <span className="font-bold">FORM ALERT !</span> YOU CANT FILL THIS
-            FORM THIS FORM WILL BE ONLY FILLED BY ADMIN
+            <span className="font-bold">FORM ALERT !</span> THIS FORM IS TO BE
+            FILLED BY THE ADMIN.
           </div>
         </div>
       )}
