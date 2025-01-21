@@ -18,6 +18,10 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import dayjs from "dayjs";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -440,6 +444,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     ]);
     setErrors([...errors, {}]); // Add an empty error object for the new company
   };
+
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     let updatedFields = [...localFormData];
@@ -564,48 +569,43 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     setIsSaveClicked(allFieldsEmpty);
   };
 
-  const getMinToDate = (field) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+  const handleDateChange = (index, name, value) => {
+    const formattedDate = value ? dayjs(value).format("YYYY-MM-DD") : null; // Ensure null for invalid dates
+    handleInputChange(index, { target: { name, value: formattedDate } });
+  };
 
+  // Get min date for "to" field based on "from" date
+  const getMinToDate = (field) => {
     if (field.from31.value) {
       const fromDate = new Date(field.from31.value);
-      // Add one day to fromDate to ensure "to" date must be after
-      fromDate.setDate(fromDate.getDate() + 1);
-
-      // Return the minimum date between today and one day after fromDate
-      if (today < fromDate) {
-        return today.toISOString().split("T")[0];
-      }
+      fromDate.setDate(fromDate.getDate() + 1); // Ensure "To" date is at least one day after "From"
       return fromDate.toISOString().split("T")[0];
     }
-    return undefined;
+    return null; // Allow unrestricted dates if "From" date is not set
   };
+
   // Get max date for "from" field based on "to" date
   const getMaxFromDate = (field) => {
-    // Get today's date
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+    today.setHours(0, 0, 0, 0); // Reset time to midnight
 
     if (field.to31.value) {
       const toDate = new Date(field.to31.value);
-      // Return the earlier date between today and one day before the "to" date
-      if (toDate > today) {
-        return today.toISOString().split("T")[0];
-      }
-      // Subtract one day from toDate to ensure "from" date must be before
-      toDate.setDate(toDate.getDate() - 1);
-      return toDate.toISOString().split("T")[0];
+      toDate.setDate(toDate.getDate() - 1); // Ensure "from" date is before "to"
+
+      // Return the earlier date between today and one day before "to" date
+      return toDate < today
+        ? toDate.toISOString().split("T")[0]
+        : today.toISOString().split("T")[0];
     }
-    // If no "to" date is set, just return today as the maximum
-    return today.toISOString().split("T")[0];
+    return today.toISOString().split("T")[0]; // Default to today's date
   };
 
-  // Get min date for "from" field based on previous instance's "to" date
-  // Remove the min date restriction based on previous instances
+  // Allow any date to be selected for "from" field
   const getMinFromDate = (field, index, localFormData) => {
-    return undefined; // Allow any date to be selected
+    return null; // No restriction on minimum date for "from"
   };
+
   const removeCompany = (index) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
@@ -910,73 +910,101 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                     )}
                   </div>
 
-                  <div>
-                    <FormLabelWithStatus
-                      label="From"
-                      id="from31"
-                      status={field.from31.status}
-                      note={field.from31.note}
-                      index={index}
-                      fieldName="from31"
-                      uid={uid}
-                    />
-                    <input
-                      type="date"
-                      name="from31"
-                      id={`from31-${index}`}
-                      value={field.from31.value}
-                      onChange={(e) => handleInputChange(index, e)}
-                      disabled={isDisabled}
-                      max={getMaxFromDate(field)}
-                      min={getMinFromDate(field, index, localFormData)}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.from31 ? "border-red-500 border-2" : ""
-                      } ${
-                        isDisabled
-                          ? "text-gray-400"
-                          : "bg-white border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.from31 && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].from31}
-                      </p>
-                    )}
-                  </div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <div>
+                      <FormLabelWithStatus
+                        label="From"
+                        id="from31"
+                        status={field.from31.status}
+                        note={field.from31.note}
+                        index={index}
+                        fieldName="from31"
+                        uid={uid}
+                      />
+                      <DatePicker
+                        disabled={isDisabled}
+                        value={
+                          field.from31.value ? dayjs(field.from31.value) : null
+                        }
+                        onChange={(newValue) =>
+                          handleDateChange(
+                            index,
+                            `from31`,
+                            newValue?.toISOString()
+                          )
+                        }
+                        maxDate={dayjs(getMaxFromDate(field))}
+                        minDate={dayjs(
+                          getMinFromDate(field, index, localFormData)
+                        )}
+                        renderInput={(params) => (
+                          <input
+                            {...params.inputProps}
+                            className={`w-full p-2 mt-1 border rounded-md ${
+                              errors[index]?.from31
+                                ? "border-red-500 border-2"
+                                : ""
+                            } ${
+                              isDisabled
+                                ? "text-gray-400"
+                                : "bg-white border-gray-300"
+                            }`}
+                          />
+                        )}
+                      />
+                      {errors[index]?.from31 && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors[index].from31}
+                        </p>
+                      )}
+                    </div>
 
-                  <div>
-                    <FormLabelWithStatus
-                      label="To"
-                      id="to31"
-                      status={field.to31.status}
-                      note={field.to31.note}
-                      index={index}
-                      fieldName="to31"
-                      uid={uid}
-                    />
-                    <input
-                      type="date"
-                      name="to31"
-                      id={`to31-${index}`}
-                      value={field.to31.value}
-                      onChange={(e) => handleInputChange(index, e)}
-                      disabled={isDisabled}
-                      min={getMinToDate(field)}
-                      max={new Date().toISOString().split("T")[0]} // Add this line to prevent future dates
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        errors[index]?.to31 ? "border-red-500 border-2" : ""
-                      } ${
-                        isDisabled
-                          ? "text-gray-400"
-                          : "bg-white border-gray-300"
-                      }`}
-                    />
-                    {errors[index]?.to31 && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors[index].to31}
-                      </p>
-                    )}
-                  </div>
+                    <div>
+                      <FormLabelWithStatus
+                        label="To"
+                        id="to31"
+                        status={field.to31.status}
+                        note={field.to31.note}
+                        index={index}
+                        fieldName="to31"
+                        uid={uid}
+                      />
+                      <DatePicker
+                        disabled={isDisabled}
+                        value={
+                          field.to31.value ? dayjs(field.to31.value) : null
+                        }
+                        onChange={(newValue) =>
+                          handleDateChange(
+                            index,
+                            `to31`,
+                            newValue?.toISOString()
+                          )
+                        }
+                        maxDate={dayjs()} // Prevent future dates
+                        minDate={dayjs(getMinToDate(field))}
+                        renderInput={(params) => (
+                          <input
+                            {...params.inputProps}
+                            className={`w-full p-2 mt-1 border rounded-md ${
+                              errors[index]?.to31
+                                ? "border-red-500 border-2"
+                                : ""
+                            } ${
+                              isDisabled
+                                ? "text-gray-400"
+                                : "bg-white border-gray-300"
+                            }`}
+                          />
+                        )}
+                      />
+                      {errors[index]?.to31 && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors[index].to31}
+                        </p>
+                      )}
+                    </div>
+                  </LocalizationProvider>
 
                   <div>
                     <FormLabelWithStatus

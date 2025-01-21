@@ -41,3 +41,10 @@ body {
 .animate-move-up-down {
   animation: moveUpDown 1.5s infinite;
 }
+.MuiTextField-root{
+  width: 100% !important;
+  margin-top: 3px !important;
+}
+.MuiTextField-root .MuiInputBase-input{
+  padding: 9.5px !important;
+}
