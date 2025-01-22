@@ -26,6 +26,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { CustomDatePicker } from "../CustomDatePicker";
 
 const ApplicationForm = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
@@ -424,7 +425,14 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
   }, [clicked, currentUser, uid]);
   const isDisabled =
     checkAllFieldsApproved() || applicationStatus === "approved";
-
+  const handleDateChange = (fieldName, newValue) => {
+    handleChange({
+      target: {
+        name: fieldName,
+        value: newValue,
+      },
+    });
+  };
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-col gap-y-4 w-full">
@@ -508,7 +516,17 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 fieldName="appliedDate"
                 uid={uid}
               />
-              <input
+              <CustomDatePicker
+                value={formData?.appliedDate?.value}
+                onChange={(newValue) =>
+                  handleDateChange("appliedDate", newValue)
+                }
+                maxDate={new Date().toISOString().split("T")[0]}
+                disabled={isDisabled}
+                error={!!errors.appliedDate}
+                errorMessage={errors.appliedDate}
+              />
+              {/* <input
                 type="date"
                 name="appliedDate"
                 id="appliedDate"
@@ -524,7 +542,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 <p className="mt-1 text-[15px] font-radios text-red-500">
                   {errors.appliedDate}
                 </p>
-              )}
+              )} */}
             </div>
 
             <div>
@@ -598,7 +616,15 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 fieldName="DOB"
                 uid={uid}
               />
-              <input
+              <CustomDatePicker
+                value={formData?.DOB?.value}
+                onChange={(newValue) => handleDateChange("DOB", newValue)}
+                maxDate={new Date().toISOString().split("T")[0]}
+                disabled={isDisabled}
+                error={!!errors.DOB}
+                errorMessage={errors.DOB}
+              />
+              {/* <input
                 type="date"
                 name="DOB"
                 id="DOB"
@@ -609,12 +635,12 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 className={`w-full p-2 mt-1 border rounded-md ${
                   errors.DOB ? "border-red-500 border-2" : ""
                 } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
-              />
-              {errors.DOB && (
+              /> */}
+              {/* {errors.DOB && (
                 <p className="mt-1 text-[15px] font-radios text-red-500 ">
                   {errors.DOB}
                 </p>
-              )}
+              )} */}
             </div>
 
             <div>
@@ -1141,7 +1167,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               fieldName="CDLExpirationDate"
               uid={uid}
             />
-            <input
+            {/* <input
               type="date"
               name="CDLExpirationDate"
               id="CDLExpirationDate"
@@ -1154,12 +1180,22 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               } ${
                 isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
               }`}
+            /> */}
+            <CustomDatePicker
+              value={formData?.CDLExpirationDate?.value}
+              onChange={(newValue) =>
+                handleDateChange("CDLExpirationDate", newValue)
+              }
+              maxDate={new Date().toISOString().split("T")[0]}
+              disabled={isDisabled}
+              error={!!errors.CDLExpirationDate}
+              errorMessage={errors.CDLExpirationDate}
             />
-            {errors.CDLExpirationDate && (
+            {/* {errors.CDLExpirationDate && (
               <p className="mt-1 text-[15px] font-radios text-red-500 ">
                 {errors.CDLExpirationDate}
               </p>
-            )}
+            )} */}
           </div>
           <div className="mb-6">
             <SingleLabelLogic

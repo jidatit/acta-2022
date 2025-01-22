@@ -16,6 +16,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -246,42 +249,54 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm3");
   };
-  const handleAddressChange = (e, index) => {
+  const handleAddressChange = (newValue, index, fieldName) => {
     if (noAccidentsChecked) return;
-
-    const { name, value } = e.target;
 
     setAddressFields((prevFields) =>
       prevFields.map((field, i) =>
-        i === index ? { ...field, [name]: { ...field[name], value } } : field
+        i === index
+          ? {
+              ...field,
+              [fieldName]: {
+                ...field[fieldName],
+                value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "",
+              },
+            }
+          : field
       )
     );
 
     setAddressErrors((prevErrors) => {
       const updatedErrors = [...prevErrors];
-      if (updatedErrors[index] && updatedErrors[index][name]) {
-        const { [name]: removedError, ...remainingErrors } =
+      if (updatedErrors[index] && updatedErrors[index][fieldName]) {
+        const { [fieldName]: removedError, ...remainingErrors } =
           updatedErrors[index];
         updatedErrors[index] = remainingErrors;
       }
       return updatedErrors;
     });
   };
-  const handleTrafficChange = (e, index) => {
+  const handleTrafficChange = (newValue, index, fieldName) => {
     if (noTrafficConvictionsChecked) return;
-
-    const { name, value } = e.target;
 
     setTrafficConvictionFields((prevFields) =>
       prevFields.map((field, i) =>
-        i === index ? { ...field, [name]: { ...field[name], value } } : field
+        i === index
+          ? {
+              ...field,
+              [fieldName]: {
+                ...field[fieldName],
+                value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "",
+              },
+            }
+          : field
       )
     );
 
     setTrafficErrors((prevErrors) => {
       const updatedErrors = [...prevErrors];
-      if (updatedErrors[index] && updatedErrors[index][name]) {
-        const { [name]: removedError, ...remainingErrors } =
+      if (updatedErrors[index] && updatedErrors[index][fieldName]) {
+        const { [fieldName]: removedError, ...remainingErrors } =
           updatedErrors[index];
         updatedErrors[index] = remainingErrors;
       }
@@ -609,30 +624,42 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Date"
-                      id={`date41`}
+                      id={`date41-${index}`}
                       status={address.date41.status}
                       note={address.date41.note}
                       index={index}
                       fieldName="date41"
                       uid={uid}
                     />
-                    <input
-                      type="date"
-                      name="date41"
-                      id={`date41-${index}`}
-                      value={address.date41.value}
-                      onChange={(e) => handleAddressChange(e, index)}
-                      disabled={isDisabled}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        addressErrors[index]?.date41
-                          ? "border-red-500 border-2"
-                          : ""
-                      } ${
-                        isDisabled
-                          ? "text-gray-400"
-                          : "bg-white border-gray-300"
-                      }`}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        value={
+                          address.date41.value
+                            ? dayjs(address.date41.value)
+                            : null
+                        }
+                        onChange={(newValue) =>
+                          handleAddressChange(newValue, index, "date41")
+                        }
+                        disabled={isDisabled}
+                        maxDate={dayjs()} // Restricts selection to today or earlier
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: !!addressErrors[index]?.date41,
+                            helperText: addressErrors[index]?.date41,
+                            sx: {
+                              "& .MuiInputBase-root": {
+                                backgroundColor: isDisabled
+                                  ? "rgb(249, 250, 251)"
+                                  : "white",
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+
                     {addressErrors[index] && addressErrors[index].date41 && (
                       <p className="mt-1 text-xs text-red-500">
                         {addressErrors[index].date41}
@@ -872,30 +899,41 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   <div>
                     <FormLabelWithStatus
                       label="Date"
-                      id={`date42`}
+                      id={`date42-${index}`}
                       status={traffic.date42.status}
                       note={traffic.date42.note}
                       index={index}
                       fieldName="date42"
                       uid={uid}
                     />
-                    <input
-                      type="date"
-                      name="date42"
-                      id={`date42-${index}`}
-                      value={traffic.date42.value}
-                      onChange={(e) => handleTrafficChange(e, index)}
-                      disabled={isDisabled}
-                      className={`w-full p-2 mt-1 border rounded-md ${
-                        trafficErrors[index]?.date42
-                          ? "border-red-500 border-2"
-                          : ""
-                      } ${
-                        isDisabled
-                          ? "text-gray-400"
-                          : "bg-white border-gray-300"
-                      }`}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        value={
+                          traffic.date42.value
+                            ? dayjs(traffic.date42.value)
+                            : null
+                        }
+                        onChange={(newValue) =>
+                          handleTrafficChange(newValue, index, "date42")
+                        }
+                        disabled={isDisabled}
+                        maxDate={dayjs()} // Restricts selection to today or earlier
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: !!trafficErrors[index]?.date42,
+                            helperText: trafficErrors[index]?.date42,
+                            sx: {
+                              "& .MuiInputBase-root": {
+                                backgroundColor: isDisabled
+                                  ? "rgb(249, 250, 251)"
+                                  : "white",
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
                     {trafficErrors[index] && trafficErrors[index].date42 && (
                       <p className="mt-1 text-xs text-red-500">
                         {trafficErrors[index].date42}

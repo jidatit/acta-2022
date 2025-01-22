@@ -17,6 +17,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { AlertTriangle } from "lucide-react";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   const defaultFormData = [
     {
@@ -481,6 +484,15 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
 
     setIsSaveClicked(allFieldsEmpty);
   };
+  const handleDateChange = (fieldName, newValue, index) => {
+    const formattedDate = newValue ? newValue.format("YYYY-MM-DD") : "";
+    handleInputChange(index, {
+      target: {
+        name: fieldName,
+        value: formattedDate,
+      },
+    });
+  };
   const isDisabled =
     checkIfAllFieldsApproved() ||
     applicationStatus === "approved" ||
@@ -579,21 +591,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day1"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day1"
-                          id={`day1-${index}`}
-                          value={field.day1.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day1 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day1?.value ? dayjs(field.day1.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day1", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day1
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day1,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day1 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day1}
@@ -657,21 +682,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day2"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day2"
-                          id={`day2-${index}`}
-                          value={field.day2.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day2 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day2?.value ? dayjs(field.day2.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day2", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day2
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day2,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day2 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day2}
@@ -735,21 +773,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day3"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day3"
-                          id={`day3-${index}`}
-                          value={field.day3.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day3 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day3?.value ? dayjs(field.day3.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day3", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day3
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day3,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day3 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day3}
@@ -813,21 +864,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day4"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day4"
-                          id={`day4-${index}`}
-                          value={field.day4.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day4 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day4?.value ? dayjs(field.day4.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day4", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day4
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day4,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day4 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day4}
@@ -891,21 +955,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day5"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day5"
-                          id={`day5-${index}`}
-                          value={field.day5.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day5 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day5?.value ? dayjs(field.day5.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day5", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day5
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day5,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day5 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day5}
@@ -969,21 +1046,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day6"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day6"
-                          id={`day6-${index}`}
-                          value={field.day6.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day6 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day6?.value ? dayjs(field.day6.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day6", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day6
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day6,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day6 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day6}
@@ -1047,21 +1137,34 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                           fieldName="day7"
                           uid={uid}
                         />
-                        <input
-                          type="date"
-                          name="day7"
-                          id={`day7-${index}`}
-                          value={field.day7.value}
-                          onChange={(e) => handleInputChange(index, e)}
-                          disabled={isDisabled}
-                          className={`w-full p-2 mt-1 border rounded-md ${
-                            errors[index]?.day7 ? "border-red-500 border-2" : ""
-                          } ${
-                            isDisabled
-                              ? "text-gray-400"
-                              : "bg-white border-gray-300"
-                          }`}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={
+                              field.day7?.value ? dayjs(field.day7.value) : null
+                            }
+                            onChange={(newValue) =>
+                              handleDateChange("day7", newValue, index)
+                            }
+                            disabled={isDisabled}
+                            maxDate={dayjs()}
+                            className={`w-full ${
+                              errors[index]?.day7
+                                ? "border-red-500 border-2"
+                                : ""
+                            }`}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                error: !!errors[index]?.day7,
+                                className: `w-full ${
+                                  isDisabled
+                                    ? "text-gray-400"
+                                    : "bg-white border-gray-300"
+                                }`,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
                         {errors[index]?.day7 && (
                           <p className="mt-1 text-sm text-red-500">
                             {errors[index].day7}
@@ -1211,21 +1314,36 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
                     fieldName="relievedDate"
                     uid={uid}
                   />
-                  <input
-                    type="date"
-                    name="relievedDate"
-                    id={`relievedDate-${index}`}
-                    value={field.relievedDate.value}
-                    onChange={(e) => handleInputChange(index, e)}
-                    disabled={isDisabled}
-                    className={`w-full p-2.5 mt-1 border rounded-md ${
-                      errors[index]?.relievedDate
-                        ? "border-red-500 border-2"
-                        : ""
-                    } ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      value={
+                        field.relievedDate?.value
+                          ? dayjs(field.relievedDate.value)
+                          : null
+                      }
+                      onChange={(newValue) =>
+                        handleDateChange("relievedDate", newValue, index)
+                      }
+                      disabled={isDisabled}
+                      maxDate={dayjs()}
+                      className={`w-full ${
+                        errors[index]?.relievedDate
+                          ? "border-red-500 border-2"
+                          : ""
+                      }`}
+                      slotProps={{
+                        textField: {
+                          size: "small",
+                          error: !!errors[index]?.relievedDate,
+                          className: `w-full ${
+                            isDisabled
+                              ? "text-gray-400"
+                              : "bg-white border-gray-300"
+                          }`,
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
                   {errors[index]?.relievedDate && (
                     <p className="mt-1 text-sm text-red-500">
                       {errors[index].relievedDate}

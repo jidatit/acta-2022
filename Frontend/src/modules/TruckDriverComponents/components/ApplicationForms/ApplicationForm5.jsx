@@ -18,6 +18,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
   const navigate = useNavigate();
   const authData = useAuth();
@@ -211,60 +214,156 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     setExtraSkills(ExtraSkills);
   }, [DriverExperience, DriverLicensePermit, EducationHistory, ExtraSkills]);
 
-  const handleDriverLicenseChange = (e, index) => {
-    const { name, value } = e.target;
+  const handleDriverLicenseChange = (newValue, name, index) => {
+    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
+
     setDriverLicensePermit((prev) => {
-      const updated = [...prev];
+      // Ensure prev is an array and has the required index
+      const updated = Array.isArray(prev) ? [...prev] : [];
+      if (!updated[index]) {
+        updated[index] = {};
+      }
+      if (!updated[index][name]) {
+        updated[index][name] = {};
+      }
+
       updated[index] = {
         ...updated[index],
-        [name]: { ...updated[index][name], value },
+        [name]: { ...updated[index][name], value: formattedValue },
       };
       return updated;
     });
   };
 
-  const handleDriverExpChange = (e, index) => {
-    const { name, value } = e.target;
+  const handleDriverExpChange = (newValue, name, index) => {
+    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
 
-    // Update only the specific field within the driverExperience array
-    setDriverExperience((prevFields) =>
-      prevFields.map((field, i) =>
-        i === index ? { ...field, [name]: { ...field[name], value } } : field
-      )
-    );
+    setDriverExperience((prevFields) => {
+      // Ensure prevFields is an array
+      const prev = Array.isArray(prevFields) ? prevFields : [];
 
-    // Mark as editing when typing
+      const updatedFields = prev.map((field, i) => {
+        if (i !== index) return field;
+        if (!field) field = {};
+        if (!field[name]) field[name] = {};
+
+        const updatedField = {
+          ...field,
+          [name]: { ...field[name], value: formattedValue },
+        };
+
+        // Date validation
+        if (name === "DateTo51" && updatedField.DateFrom51?.value) {
+          const dateFrom = dayjs(updatedField.DateFrom51.value);
+          const dateTo = dayjs(formattedValue);
+          if (dateTo.isBefore(dateFrom)) {
+            setDriverExperienceErrors((prev) => {
+              const updated = [...(prev || [])];
+              if (!updated[index]) updated[index] = {};
+              updated[index].DateTo51 = "Date To cannot be before Date From";
+              return updated;
+            });
+            return field; // Return original field to prevent invalid date
+          }
+        }
+
+        if (name === "DateFrom51" && updatedField.DateTo51?.value) {
+          const dateFrom = dayjs(formattedValue);
+          const dateTo = dayjs(updatedField.DateTo51.value);
+          if (dateFrom.isAfter(dateTo)) {
+            setDriverExperienceErrors((prev) => {
+              const updated = [...(prev || [])];
+              if (!updated[index]) updated[index] = {};
+              updated[index].DateFrom51 = "Date From cannot be after Date To";
+              return updated;
+            });
+            return field; // Return original field to prevent invalid date
+          }
+        }
+
+        return updatedField;
+      });
+
+      return updatedFields;
+    });
+
     setIsEditing(false);
 
-    // Clear errors if the field is filled
     setDriverExperienceErrors((prevErrors) => {
-      if (prevErrors[index] && prevErrors[index][name] && value.trim() !== "") {
-        const updatedErrors = [...prevErrors];
-        delete updatedErrors[index][name];
-        return updatedErrors;
+      if (!prevErrors?.[index]?.[name] || formattedValue.trim() === "") {
+        return prevErrors;
       }
-      return prevErrors;
+
+      const updatedErrors = [...prevErrors];
+      if (!updatedErrors[index]) updatedErrors[index] = {};
+      delete updatedErrors[index][name];
+      return updatedErrors;
     });
   };
 
-  const handleEducationHistoryChange = (e, index) => {
-    const { name, value } = e.target;
+  const handleEducationHistoryChange = (newValue, name, index) => {
+    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
 
-    // Update only the specific field within the educationHistory array
-    setEducationHistory((prevFields) =>
-      prevFields.map((field, i) =>
-        i === index ? { ...field, [name]: { ...field[name], value } } : field
-      )
-    );
+    setEducationHistory((prevFields) => {
+      // Ensure prevFields is an array
+      const prev = Array.isArray(prevFields) ? prevFields : [];
+
+      const updatedFields = prev.map((field, i) => {
+        if (i !== index) return field;
+        if (!field) field = {};
+        if (!field[name]) field[name] = {};
+
+        const updatedField = {
+          ...field,
+          [name]: { ...field[name], value: formattedValue },
+        };
+
+        // Date validation
+        if (name === "DateTo52" && updatedField.DateFrom52?.value) {
+          const dateFrom = dayjs(updatedField.DateFrom52.value);
+          const dateTo = dayjs(formattedValue);
+          if (dateTo.isBefore(dateFrom)) {
+            setDriverEducationError((prev) => {
+              const updated = [...(prev || [])];
+              if (!updated[index]) updated[index] = {};
+              updated[index].DateTo52 = "Date To cannot be before Date From";
+              return updated;
+            });
+            return field; // Return original field to prevent invalid date
+          }
+        }
+
+        if (name === "DateFrom52" && updatedField.DateTo52?.value) {
+          const dateFrom = dayjs(formattedValue);
+          const dateTo = dayjs(updatedField.DateTo52.value);
+          if (dateFrom.isAfter(dateTo)) {
+            setDriverEducationError((prev) => {
+              const updated = [...(prev || [])];
+              if (!updated[index]) updated[index] = {};
+              updated[index].DateFrom52 = "Date From cannot be after Date To";
+              return updated;
+            });
+            return field; // Return original field to prevent invalid date
+          }
+        }
+
+        return updatedField;
+      });
+
+      return updatedFields;
+    });
+
     setIsEditing(false);
-    // Clear specific error if the field is now filled
+
     setDriverEducationError((prevErrors) => {
-      if (prevErrors[index] && prevErrors[index][name] && value.trim() !== "") {
-        const updatedErrors = [...prevErrors];
-        delete updatedErrors[index][name];
-        return updatedErrors;
+      if (!prevErrors?.[index]?.[name] || formattedValue.trim() === "") {
+        return prevErrors;
       }
-      return prevErrors;
+
+      const updatedErrors = [...prevErrors];
+      if (!updatedErrors[index]) updatedErrors[index] = {};
+      delete updatedErrors[index][name];
+      return updatedErrors;
     });
   };
 
@@ -693,24 +792,39 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 <FormLabelWithStatus
                   label="Expiration date"
                   id={`expiryDate`}
-                  status={license.expiryDate.status} // Adjust as necessary based on your state
-                  note={license.expiryDate.note} // Adjust as necessary based on your state
+                  status={license?.expiryDate?.status || ""}
+                  note={license?.expiryDate?.note || ""}
                   index={index}
                   fieldName="expiryDate"
                   uid={uid}
                   important={true}
                 />
-                <input
-                  type="date"
-                  name="expiryDate"
-                  id={`expiryDate-${index}`}
-                  value={license.expiryDate.value}
-                  onChange={(e) => handleDriverLicenseChange(e, index)}
-                  disabled={isDisabled}
-                  className={`w-full p-2 mt-1 border rounded-md ${
-                    isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                  }`}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={
+                      license?.expiryDate?.value
+                        ? dayjs(license.expiryDate.value)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleDriverLicenseChange(newValue, "expiryDate", index)
+                    }
+                    disabled={isDisabled}
+                    maxDate={dayjs()}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        sx: {
+                          "& .MuiInputBase-root": {
+                            backgroundColor: isDisabled
+                              ? "rgb(249, 250, 251)"
+                              : "white",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </div>
               {currentUser.userType !== "Admin" ? (
                 <div className="flex items-center mt-4">
@@ -851,63 +965,49 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     </p>
                   )}
               </div>
-              <div>
-                <FormLabelWithStatus
-                  label="Date To"
-                  id={`DateTo51`}
-                  status={experience.DateTo51.status}
-                  note={experience.DateTo51.note}
-                  index={index}
-                  fieldName="DateTo51"
-                  uid={uid}
-                />
-                <input
-                  type="date"
-                  name="DateTo51"
-                  id={`DateTo51-${index}`}
-                  value={experience.DateTo51.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
-                  disabled={isDisabled}
-                  className={`w-full p-2 mt-1 border rounded-md ${
-                    driverExperienceErrors[index]?.DateTo51
-                      ? "border-red-500 border-2"
-                      : ""
-                  } ${
-                    isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                  }`}
-                />
-                {driverExperienceErrors[index] &&
-                  driverExperienceErrors[index].DateTo51 && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {driverExperienceErrors[index].DateTo51}
-                    </p>
-                  )}
-              </div>
+
               <div>
                 <FormLabelWithStatus
                   label="Date From"
                   id={`DateFrom51`}
-                  status={experience.DateFrom51.status}
-                  note={experience.DateFrom51.note}
+                  status={experience?.DateFrom51?.status || ""}
+                  note={experience?.DateFrom51?.note || ""}
                   index={index}
                   fieldName="DateFrom51"
                   uid={uid}
                 />
-                <input
-                  type="date"
-                  name="DateFrom51"
-                  id={`DateFrom51-${index}`}
-                  value={experience.DateFrom51.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
-                  disabled={isDisabled}
-                  className={`w-full p-2 mt-1 border rounded-md ${
-                    driverExperienceErrors[index]?.DateFrom51
-                      ? "border-red-500 border-2"
-                      : ""
-                  } ${
-                    isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                  }`}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={
+                      experience?.DateFrom51?.value
+                        ? dayjs(experience.DateFrom51.value)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleDriverExpChange(newValue, "DateFrom51", index)
+                    }
+                    maxDate={
+                      experience?.DateTo51?.value
+                        ? dayjs(experience.DateTo51.value)
+                        : undefined
+                    }
+                    disabled={isDisabled}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!driverExperienceErrors?.[index]?.DateFrom51,
+                        helperText: driverExperienceErrors?.[index]?.DateFrom51,
+                        sx: {
+                          "& .MuiInputBase-root": {
+                            backgroundColor: isDisabled
+                              ? "rgb(249, 250, 251)"
+                              : "white",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
                 {driverExperienceErrors[index] &&
                   driverExperienceErrors[index].DateFrom51 && (
                     <p className="mt-1 text-xs text-red-500">
@@ -915,7 +1015,55 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     </p>
                   )}
               </div>
-
+              <div>
+                <FormLabelWithStatus
+                  label="Date To"
+                  id={`DateTo51`}
+                  status={experience?.DateTo51?.status || ""}
+                  note={experience?.DateTo51?.note || ""}
+                  index={index}
+                  fieldName="DateTo51"
+                  uid={uid}
+                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={
+                      experience?.DateTo51?.value
+                        ? dayjs(experience.DateTo51.value)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleDriverExpChange(newValue, "DateTo51", index)
+                    }
+                    minDate={
+                      experience?.DateFrom51?.value
+                        ? dayjs(experience.DateFrom51.value)
+                        : undefined
+                    }
+                    disabled={isDisabled}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!driverExperienceErrors?.[index]?.DateTo51,
+                        helperText: driverExperienceErrors?.[index]?.DateTo51,
+                        sx: {
+                          "& .MuiInputBase-root": {
+                            backgroundColor: isDisabled
+                              ? "rgb(249, 250, 251)"
+                              : "white",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                {driverExperienceErrors[index] &&
+                  driverExperienceErrors[index].DateTo51 && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {driverExperienceErrors[index].DateTo51}
+                    </p>
+                  )}
+              </div>
               <div>
                 <FormLabelWithStatus
                   label=" Approximately no of miles"
@@ -1092,27 +1240,48 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 <FormLabelWithStatus
                   label="Date from"
                   id={`DateFrom52`}
-                  status={education.DateFrom52.status} // Adjust the status logic as needed
-                  note={education.DateFrom52.note} // Adjust the note logic as needed
+                  status={education.DateFrom52.status}
+                  note={education.DateFrom52.note}
                   index={index}
                   fieldName="DateFrom52"
                   uid={uid}
                 />
-                <input
-                  type="date"
-                  name="DateFrom52"
-                  id={`DateFrom52-${index}`}
-                  value={education.DateFrom52.value}
-                  onChange={(e) => handleEducationHistoryChange(e, index)}
-                  disabled={isDisabled}
-                  className={`w-full p-2 mt-1 border rounded-md ${
-                    driverEducationError[index]?.DateFrom52
-                      ? "border-red-500 border-2"
-                      : ""
-                  } ${
-                    isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                  }`}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={
+                      education.DateFrom52.value
+                        ? dayjs(education.DateFrom52.value)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleEducationHistoryChange(
+                        newValue,
+                        "DateFrom52",
+                        index
+                      )
+                    }
+                    maxDate={
+                      education?.DateTo52?.value
+                        ? dayjs(education.DateTo52.value)
+                        : undefined
+                    }
+                    disabled={isDisabled}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!driverEducationError[index]?.DateFrom52,
+                        helperText: driverEducationError[index]?.DateFrom52,
+                        sx: {
+                          "& .MuiInputBase-root": {
+                            backgroundColor: isDisabled
+                              ? "rgb(249, 250, 251)"
+                              : "white",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
                 {driverEducationError[index] &&
                   driverEducationError[index].DateFrom52 && (
                     <p className="mt-1 text-xs text-red-500">
@@ -1124,27 +1293,44 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                 <FormLabelWithStatus
                   label="Date To"
                   id={`DateTo52`}
-                  status={education.DateTo52.status} // Adjust the status logic as needed
-                  note={education.DateTo52.note} // Adjust the note logic as needed
+                  status={education.DateTo52.status}
+                  note={education.DateTo52.note}
                   index={index}
                   fieldName="DateTo52"
                   uid={uid}
                 />
-                <input
-                  type="date"
-                  name="DateTo52"
-                  id={`DateTo52-${index}`}
-                  value={education.DateTo52.value}
-                  onChange={(e) => handleEducationHistoryChange(e, index)}
-                  disabled={isDisabled}
-                  className={`w-full p-2 mt-1 border rounded-md ${
-                    driverEducationError[index]?.DateTo52
-                      ? "border-red-500 border-2"
-                      : ""
-                  } ${
-                    isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                  }`}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={
+                      education.DateTo52.value
+                        ? dayjs(education.DateTo52.value)
+                        : null
+                    }
+                    onChange={(newValue) =>
+                      handleEducationHistoryChange(newValue, "DateTo52", index)
+                    }
+                    minDate={
+                      education?.DateFrom52?.value
+                        ? dayjs(education.DateFrom52.value)
+                        : undefined
+                    }
+                    disabled={isDisabled}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!driverEducationError[index]?.DateTo52,
+                        helperText: driverEducationError[index]?.DateTo52,
+                        sx: {
+                          "& .MuiInputBase-root": {
+                            backgroundColor: isDisabled
+                              ? "rgb(249, 250, 251)"
+                              : "white",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
                 {driverEducationError[index] &&
                   driverEducationError[index].DateTo52 && (
                     <p className="mt-1 text-xs text-red-500">

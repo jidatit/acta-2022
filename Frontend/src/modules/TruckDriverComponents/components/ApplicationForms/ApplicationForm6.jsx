@@ -16,6 +16,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
   const authData = useAuth();
   const adminAuthData = useAuthAdmin();
@@ -137,15 +140,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm5");
   };
-  const handleViolationFieldChange = (e, index) => {
+  const handleViolationFieldChange = (newValue, name, index) => {
     if (noViolationCheckeds) return;
 
-    const { name, value } = e.target;
+    // Convert the dayjs date object to YYYY-MM-DD string or empty string if null
+    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
 
     // Copy the specific field object to avoid mutating state directly
     const updatedField = {
       ...violationFields[index],
-      [name]: { ...violationFields[index][name], value },
+      [name]: { ...violationFields[index][name], value: formattedValue },
     };
 
     // Replace only the updated field in the array
@@ -430,27 +434,44 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                       <FormLabelWithStatus
                         label="Date"
                         id={`date61`}
-                        status={address.date61?.status}
-                        note={address.date61?.note}
+                        status={address?.date61?.status || ""}
+                        note={address?.date61?.note || ""}
                         index={index}
                         fieldName="date61"
                         uid={uid}
                       />
-                      <input
-                        type="date"
-                        name="date61"
-                        id={`date61-${index}`}
-                        value={address.date61?.value}
-                        onChange={(e) => handleViolationFieldChange(e, index)}
-                        disabled={isDisabled}
-                        className={`w-full p-2 mt-1 border rounded-md ${
-                          errors[index]?.date61 ? "border-red-500 border-2" : ""
-                        } ${
-                          isDisabled
-                            ? "text-gray-400"
-                            : "bg-white border-gray-300"
-                        }`}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          value={
+                            address?.date61?.value
+                              ? dayjs(address.date61.value)
+                              : null
+                          }
+                          onChange={(newValue) =>
+                            handleViolationFieldChange(
+                              newValue,
+                              "date61",
+                              index
+                            )
+                          }
+                          disabled={isDisabled}
+                          maxDate={dayjs()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: !!errors?.[index]?.date61,
+                              helperText: errors?.[index]?.date61,
+                              sx: {
+                                "& .MuiInputBase-root": {
+                                  backgroundColor: isDisabled
+                                    ? "rgb(249, 250, 251)"
+                                    : "white",
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </LocalizationProvider>
                       {errors[index] && errors[index].date61 && (
                         <p className="mt-1 text-xs text-red-500">
                           {errors[index].date61}
