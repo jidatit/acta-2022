@@ -214,8 +214,13 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     setExtraSkills(ExtraSkills);
   }, [DriverExperience, DriverLicensePermit, EducationHistory, ExtraSkills]);
 
-  const handleDriverLicenseChange = (newValue, name, index) => {
-    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
+  const handleDriverLicenseChange = (e, name, index) => {
+    const formattedValue =
+      name === "expiryDate"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
 
     setDriverLicensePermit((prev) => {
       // Ensure prev is an array and has the required index
@@ -235,8 +240,13 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     });
   };
 
-  const handleDriverExpChange = (newValue, name, index) => {
-    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
+  const handleDriverExpChange = (e, name, index) => {
+    const formattedValue =
+      name === "DateFrom51" || name === "DateTo51"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
 
     setDriverExperience((prevFields) => {
       // Ensure prevFields is an array
@@ -301,8 +311,13 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
     });
   };
 
-  const handleEducationHistoryChange = (newValue, name, index) => {
-    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
+  const handleEducationHistoryChange = (e, name, index) => {
+    const formattedValue =
+      name === "DateFrom52" || name === "DateTo52"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
 
     setEducationHistory((prevFields) => {
       // Ensure prevFields is an array
@@ -735,7 +750,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="LicenseNo"
                   id={`LicenseNo-${index}`}
                   value={license.LicenseNo.value}
-                  onChange={(e) => handleDriverLicenseChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverLicenseChange(e, "LicenseNo", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     isDisabled ? "text-gray-400" : "bg-white border-gray-300"
@@ -758,7 +775,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="type"
                   id={`type-${index}`}
                   value={license.type.value}
-                  onChange={(e) => handleDriverLicenseChange(e, index)}
+                  onChange={(e) => handleDriverLicenseChange(e, "type", index)}
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     isDisabled ? "text-gray-400" : "bg-white border-gray-300"
@@ -781,7 +798,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="state53"
                   id={`state53-${index}`}
                   value={license.state53.value}
-                  onChange={(e) => handleDriverLicenseChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverLicenseChange(e, "state53", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     isDisabled ? "text-gray-400" : "bg-white border-gray-300"
@@ -884,7 +903,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="statesOperated"
                   id={`statesOperated-${index}`}
                   value={experience.statesOperated.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverExpChange(e, "statesOperated", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.statesOperated
@@ -916,7 +937,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="ClassEquipment"
                   id={`ClassEquipment-${index}`}
                   value={experience.ClassEquipment.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverExpChange(e, "ClassEquipment", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.ClassEquipment
@@ -948,7 +971,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="EquipmentType"
                   id={`EquipmentType-${index}`}
                   value={experience.EquipmentType.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverExpChange(e, "EquipmentType", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.EquipmentType
@@ -986,11 +1011,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     onChange={(newValue) =>
                       handleDriverExpChange(newValue, "DateFrom51", index)
                     }
-                    maxDate={
-                      experience?.DateTo51?.value
-                        ? dayjs(experience.DateTo51.value)
-                        : undefined
-                    }
+                    maxDate={dayjs()}
                     disabled={isDisabled}
                     slotProps={{
                       textField: {
@@ -1035,6 +1056,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     onChange={(newValue) =>
                       handleDriverExpChange(newValue, "DateTo51", index)
                     }
+                    maxDate={dayjs()}
                     minDate={
                       experience?.DateFrom51?.value
                         ? dayjs(experience.DateFrom51.value)
@@ -1080,7 +1102,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="ApproximatelyMiles"
                   id={`ApproximatelyMiles-${index}`}
                   value={experience.ApproximatelyMiles.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverExpChange(e, "ApproximatelyMiles", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.ApproximatelyMiles
@@ -1113,7 +1137,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="comments51"
                   id={`comments51-${index}`}
                   value={experience.comments51.value}
-                  onChange={(e) => handleDriverExpChange(e, index)}
+                  onChange={(e) =>
+                    handleDriverExpChange(e, "comments51", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverExperienceErrors[index]?.comments51
@@ -1188,7 +1214,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="school"
                   id={`school-${index}`}
                   value={educationHistory[index].school.value} // Make sure you reference the correct array
-                  onChange={(e) => handleEducationHistoryChange(e, index)}
+                  onChange={(e) =>
+                    handleEducationHistoryChange(e, "school", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverEducationError[index]?.school
@@ -1219,7 +1247,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="educationLevel"
                   id={`educationLevel-${index}`}
                   value={education.educationLevel.value}
-                  onChange={(e) => handleEducationHistoryChange(e, index)}
+                  onChange={(e) =>
+                    handleEducationHistoryChange(e, "educationLevel", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverEducationError[index]?.educationLevel
@@ -1260,11 +1290,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                         index
                       )
                     }
-                    maxDate={
-                      education?.DateTo52?.value
-                        ? dayjs(education.DateTo52.value)
-                        : undefined
-                    }
+                    maxDate={dayjs()}
                     disabled={isDisabled}
                     slotProps={{
                       textField: {
@@ -1309,6 +1335,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                     onChange={(newValue) =>
                       handleEducationHistoryChange(newValue, "DateTo52", index)
                     }
+                    maxDate={dayjs()}
                     minDate={
                       education?.DateFrom52?.value
                         ? dayjs(education.DateFrom52.value)
@@ -1354,7 +1381,9 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                   name="comments52"
                   id={`comments52-${index}`}
                   value={education.comments52.value}
-                  onChange={(e) => handleEducationHistoryChange(e, index)}
+                  onChange={(e) =>
+                    handleEducationHistoryChange(e, "comments52", index)
+                  }
                   disabled={isDisabled}
                   className={`w-full p-2 mt-1 border rounded-md ${
                     driverEducationError[index]?.comments52

@@ -140,11 +140,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm5");
   };
-  const handleViolationFieldChange = (newValue, name, index) => {
+  const handleViolationFieldChange = (e, name, index) => {
+    const formattedValue =
+      name === "date61"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
     if (noViolationCheckeds) return;
 
     // Convert the dayjs date object to YYYY-MM-DD string or empty string if null
-    const formattedValue = newValue ? dayjs(newValue).format("YYYY-MM-DD") : "";
 
     // Copy the specific field object to avoid mutating state directly
     const updatedField = {
@@ -493,7 +498,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         name="offense61"
                         id={`offense61-${index}`}
                         value={address.offense61?.value}
-                        onChange={(e) => handleViolationFieldChange(e, index)}
+                        onChange={(e) =>
+                          handleViolationFieldChange(e, "offense61", index)
+                        }
                         disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.offense61
@@ -526,7 +533,9 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         name="location61"
                         id={`location61-${index}`}
                         value={address.location61?.value}
-                        onChange={(e) => handleViolationFieldChange(e, index)}
+                        onChange={(e) =>
+                          handleViolationFieldChange(e, "location61", index)
+                        }
                         disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.location61
@@ -559,7 +568,13 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                         name="vehicleOperated"
                         id={`vehicleOperated-${index}`}
                         value={address.vehicleOperated?.value}
-                        onChange={(e) => handleViolationFieldChange(e, index)}
+                        onChange={(e) =>
+                          handleViolationFieldChange(
+                            e,
+                            "vehicleOperated",
+                            index
+                          )
+                        }
                         disabled={isDisabled}
                         className={`w-full p-2 mt-1 border rounded-md ${
                           errors[index]?.vehicleOperated

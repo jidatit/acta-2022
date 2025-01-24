@@ -27,7 +27,7 @@ const FormStatusHeader = ({ formData, applicationStatus, driverStatus }) => {
       case "rejected":
         return "bg-red-400";
       case "filled":
-        return "bg-black";
+        return "bg-blue-400";
       case "registered":
         return "bg-orange-400";
       default:

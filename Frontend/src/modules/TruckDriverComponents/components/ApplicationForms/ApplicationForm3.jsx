@@ -496,7 +496,22 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         [name.replace(`company-${index}-`, "")]: "",
       };
     }
-
+    if (
+      (name.includes("from31") && isOverlapping(index, value, true)) ||
+      (name.includes("to31") && isOverlapping(index, value, false))
+    ) {
+      toast.error("Selected date overlaps with an existing date range.");
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        [name]: "Selected date overlaps with an existing date range.",
+      };
+      showError = true;
+    } else {
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        [name]: "",
+      };
+    }
     // Update field values only if no errors
     if (!showError) {
       updatedFields = updatedFields.map((field, i) =>
@@ -524,8 +539,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         const prevDate = new Date(prevToDate);
         const currentDate = new Date(currentFromDate);
 
-        // Calculate the exact number of days between dates
-        const timeDifference = currentDate.getTime() - prevDate.getTime();
+        // Calculate the exact number of days between dates (absolute difference)
+        const timeDifference = Math.abs(
+          currentDate.getTime() - prevDate.getTime()
+        );
         const daysDifference = Math.floor(
           timeDifference / (1000 * 60 * 60 * 24)
         );
@@ -583,7 +600,12 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     }
     return null; // Allow unrestricted dates if "From" date is not set
   };
-
+  const isDateDisabled = (date, index) => {
+    return (
+      isOverlapping(index, date.toISOString().split("T")[0], true) ||
+      isOverlapping(index, date.toISOString().split("T")[0], false)
+    );
+  };
   // Get max date for "from" field based on "to" date
   const getMaxFromDate = (field) => {
     const today = new Date();
@@ -604,6 +626,29 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   // Allow any date to be selected for "from" field
   const getMinFromDate = (field, index, localFormData) => {
     return null; // No restriction on minimum date for "from"
+  };
+  const isOverlapping = (index, date, isFromDate) => {
+    for (let i = 0; i < localFormData.length; i++) {
+      if (i !== index) {
+        const instanceFrom = new Date(localFormData[i]?.from31?.value);
+        const instanceTo = new Date(localFormData[i]?.to31?.value);
+        const selectedDate = new Date(date);
+
+        if (
+          instanceFrom &&
+          instanceTo &&
+          ((isFromDate &&
+            selectedDate >= instanceFrom &&
+            selectedDate <= instanceTo) || // From date overlaps
+            (!isFromDate &&
+              selectedDate >= instanceFrom &&
+              selectedDate <= instanceTo)) // To date overlaps
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   const removeCompany = (index) => {
@@ -934,6 +979,9 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           )
                         }
                         maxDate={dayjs(getMaxFromDate(field))}
+                        shouldDisableDate={(date) =>
+                          isDateDisabled(date, index)
+                        }
                         minDate={dayjs(
                           getMinFromDate(field, index, localFormData)
                         )}
@@ -983,6 +1031,9 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         }
                         maxDate={dayjs()} // Prevent future dates
                         minDate={dayjs(getMinToDate(field))}
+                        shouldDisableDate={(date) =>
+                          isDateDisabled(date, index)
+                        }
                         renderInput={(params) => (
                           <input
                             {...params.inputProps}

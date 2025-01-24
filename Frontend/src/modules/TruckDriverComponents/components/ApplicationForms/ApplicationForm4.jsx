@@ -249,7 +249,13 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
     // Navigate back to the previous form
     navigate("/TruckDriverLayout/ApplicationForm3");
   };
-  const handleAddressChange = (newValue, index, fieldName) => {
+  const handleAddressChange = (e, index, fieldName) => {
+    const newValue =
+      fieldName === "date41"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
     if (noAccidentsChecked) return;
 
     setAddressFields((prevFields) =>
@@ -259,7 +265,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
               ...field,
               [fieldName]: {
                 ...field[fieldName],
-                value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "",
+                value: newValue, // Directly use the input value
               },
             }
           : field
@@ -276,8 +282,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
       return updatedErrors;
     });
   };
-  const handleTrafficChange = (newValue, index, fieldName) => {
+
+  const handleTrafficChange = (e, index, fieldName) => {
     if (noTrafficConvictionsChecked) return;
+
+    const newValue =
+      fieldName === "date42"
+        ? e
+          ? dayjs(e).format("YYYY-MM-DD")
+          : "" // Handle DatePicker input
+        : e.target.value; // Handle text input
 
     setTrafficConvictionFields((prevFields) =>
       prevFields.map((field, i) =>
@@ -286,7 +300,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
               ...field,
               [fieldName]: {
                 ...field[fieldName],
-                value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "",
+                value: newValue, // Assign the resolved value
               },
             }
           : field
@@ -681,7 +695,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="accidentType"
                       id={`accidentType-${index}`}
                       value={address.accidentType.value}
-                      onChange={(e) => handleAddressChange(e, index)}
+                      onChange={(e) =>
+                        handleAddressChange(e, index, "accidentType")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.accidentType
@@ -715,7 +731,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="location41"
                       id={`location41-${index}`}
                       value={address.location41.value}
-                      onChange={(e) => handleAddressChange(e, index)}
+                      onChange={(e) =>
+                        handleAddressChange(e, index, "location41")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.location41
@@ -749,7 +767,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="fatalities"
                       id={`fatalities-${index}`}
                       value={address.fatalities.value}
-                      onChange={(e) => handleAddressChange(e, index)}
+                      onChange={(e) =>
+                        handleAddressChange(e, index, "fatalities")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.fatalities
@@ -783,7 +803,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="penalties41"
                       id={`penalties41-${index}`}
                       value={address.penalties41.value}
-                      onChange={(e) => handleAddressChange(e, index)}
+                      onChange={(e) =>
+                        handleAddressChange(e, index, "penalties41")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.penalties41
@@ -817,7 +839,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="comments41"
                       id={`comments41-${index}`}
                       value={address.comments41.value}
-                      onChange={(e) => handleAddressChange(e, index)}
+                      onChange={(e) =>
+                        handleAddressChange(e, index, "comments41")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         addressErrors[index]?.comments41
@@ -955,7 +979,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="offenseType"
                       id={`offenseType-${index}`}
                       value={traffic.offenseType.value}
-                      onChange={(e) => handleTrafficChange(e, index)}
+                      onChange={(e) =>
+                        handleTrafficChange(e, index, "offenseType")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.offenseType
@@ -989,7 +1015,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="location42"
                       id={`location42-${index}`}
                       value={traffic.location42.value}
-                      onChange={(e) => handleTrafficChange(e, index)}
+                      onChange={(e) =>
+                        handleTrafficChange(e, index, "location42")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.location42
@@ -1023,7 +1051,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="penalties42"
                       id={`penalties42-${index}`}
                       value={traffic.penalties42.value}
-                      onChange={(e) => handleTrafficChange(e, index)}
+                      onChange={(e) =>
+                        handleTrafficChange(e, index, "penalties42")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.penalties42
@@ -1057,7 +1087,9 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                       name="comments42"
                       id={`comments42-${index}`}
                       value={traffic.comments42.value}
-                      onChange={(e) => handleTrafficChange(e, index)}
+                      onChange={(e) =>
+                        handleTrafficChange(e, index, "comments42")
+                      }
                       disabled={isDisabled}
                       className={`w-full p-2 mt-1 border rounded-md ${
                         trafficErrors[index]?.comments42
