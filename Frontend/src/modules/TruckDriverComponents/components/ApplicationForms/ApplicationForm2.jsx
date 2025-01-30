@@ -338,13 +338,14 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col w-full gap-y-8 h-full">
-        <form className="w-full p-6 bg-white shadow-md h-[50vh] border-b-1 border-b-gray-400">
+
+      <div className="flex flex-col w-full gap-y-8">
+        <form className="w-full p-6 bg-white shadow-md min-h-[50vh] overflow-y-auto ssm:border-b-1 border-b-gray-400">
           {Array.isArray(localFormData) &&
             localFormData.map((address, index) => (
               <divs
                 key={index}
-                className="grid grid-cols-1 w-full smd:-mt-0 -mt-11 smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
+                className="grid grid-cols-1 w-full smd:-mt-0  smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
               >
                 <div>
                   <FormLabelWithStatus
@@ -475,7 +476,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
               </divs>
             ))}
           {currentUser.userType !== "Admin" && (
-            <div className="flex items-end justify-end w-full">
+            <div className="hidden sm:flex items-end justify-end w-full ">
               <button
                 type="button"
                 onClick={addAddressFields}
@@ -486,34 +487,42 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             </div>
           )}
         </form>
-        {currentUser.userType !== "Admin" ? (
-          <div className="flex items-center justify-between w-full mt-10">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
-            >
-              Back
-            </button>
-            <div>
+        {currentUser.userType !== "Admin" && (
+          <div className="flex flex-col gap-y-4 sm:flex-row sm:justify-between w-full">
+            <div className="order-2 sm:order-1">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
+              >
+                Back
+              </button>
+            </div>
+
+            <div className="order-1 sm:order-2 flex flex-col sm:flex-row gap-2">
+              <button
+                type="button"
+                onClick={addAddressFields}
+                className="w-full sm:hidden sm:w-auto px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+              >
+                Add More
+              </button>
               <button
                 type="button"
                 onClick={() => handleSave(currentUser.uid, 2)}
-                className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
               >
                 Save
               </button>
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-4 py-2 ml-4 font-semibold text-white bg-[#353535] rounded-md hover:bg-[#353535]"
+                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-[#353535] rounded-md hover:bg-[#353535]"
               >
                 Next
               </button>
             </div>
           </div>
-        ) : (
-          ""
         )}
       </div>
     </div>

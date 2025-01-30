@@ -500,10 +500,13 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
       (name.includes("from31") && isOverlapping(index, value, true)) ||
       (name.includes("to31") && isOverlapping(index, value, false))
     ) {
-      toast.error("Selected date overlaps with an existing date range.");
+      toast.error(
+        "Selected date overlaps with an existing Employment date range."
+      );
       updatedErrors[index] = {
         ...updatedErrors[index],
-        [name]: "Selected date overlaps with an existing date range.",
+        [name]:
+          "Selected date overlaps with an existing Employment date range.",
       };
       showError = true;
     } else {
@@ -1254,7 +1257,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                     </div>
                     {(gapErrors[index] ||
                       localFormData[index]?.gapReason?.value) && (
-                      <div>
+                      <div className=" w-[80%] md:w-[50%]">
                         <FormLabelWithStatus
                           label="Employment Gap Reason"
                           id={`gapReason-${index}`}
@@ -1264,7 +1267,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                           fieldName={`gapReason`}
                           uid={uid}
                         />
-                        <div className="gap-explanation w-[50%]">
+                        <div className="gap-explanation w-full">
                           {/* {gapErrors[index] && (
                             <p className="gap-error-text text-red-500">
                               {gapErrors[index]}

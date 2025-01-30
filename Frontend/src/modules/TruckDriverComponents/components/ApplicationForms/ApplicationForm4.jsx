@@ -603,7 +603,7 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
             </h1>
           </div>
           {currentUser.userType !== "Admin" && (
-            <FaBell className="p-2 text-white bg- rounded-md shadow-lg cursor-pointer text-4xl" />
+            <FaBell className="p-2 text-white bg-black rounded-md shadow-lg cursor-pointer text-4xl" />
           )}
         </div>
       </div>
