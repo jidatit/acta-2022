@@ -320,7 +320,6 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
   };
   if (currentUser.userType === "Admin") {
     useEffect(() => {
-      console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
         handleSave(uid, 6);

@@ -125,7 +125,6 @@ const FormLabelWithStatus = ({
         //     return item[fieldName].note;
         //   }
         if (Array.isArray(obj)) {
-          console.log("Array found:", obj); // Log the entire array
           return obj.map((item, index) => {
             // Check if the current index matches the target index
             if (index === targetIndex) {
@@ -162,7 +161,7 @@ const FormLabelWithStatus = ({
             updatedData[formKey],
             index
           );
-          console.log("note", note);
+
           if (note !== null) {
             return note;
           }
@@ -350,7 +349,7 @@ const FormLabelWithStatus = ({
 
       const data = docSnap.data();
       const updatedData = { ...data };
-      console.log("updated data: " + index);
+
       // Array of keys that we want to check for updates
       const arrayKeys = [
         "previousAddresses",
@@ -371,7 +370,7 @@ const FormLabelWithStatus = ({
         if (Array.isArray(obj)) {
           return obj.map((item, index) => {
             // Check if the array item has the specific field to update
-            console.log("Checking", obj, targetIndex, fieldName);
+
             if (index === targetIndex && item.hasOwnProperty(fieldName)) {
               return {
                 ...item,
@@ -454,7 +453,7 @@ const FormLabelWithStatus = ({
         if (Array.isArray(obj)) {
           return obj.map((item, index) => {
             // Check if the array item has the specific field to update
-            console.log("Checking", obj, targetIndex, fieldName);
+
             if (index === targetIndex && item.hasOwnProperty(fieldName)) {
               return {
                 ...item,

@@ -37,7 +37,7 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
     FormData = [],
     applicationStatus,
   } = currentUser?.userType === "Admin" ? adminAuthData : authData;
-  console.log("Setting", applicationStatus);
+
   const [localFormData, setLocalFormData] = useState(FormData || [{}]);
   const { editStatus, setEditStatus } = useEdit();
   const [savedFields, setSavedFields] = useState([]);
@@ -263,7 +263,6 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
   };
   if (currentUser.userType === "Admin") {
     useEffect(() => {
-      console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
         handleSave(uid, 2);

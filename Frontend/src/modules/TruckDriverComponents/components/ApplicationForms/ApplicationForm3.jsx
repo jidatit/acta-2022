@@ -306,7 +306,6 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleSave = async (uid) => {
-    console.log("editStatus", editStatus);
     try {
       if (currentUser.userType !== "Admin") {
         // Improved validation logic to check all fields
@@ -347,15 +346,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         const isAnyFieldFilled = Object.entries(localFormData).some(
           ([key, value]) => {
             const fieldHasValue = checkFieldValue(value);
-            console.log(`Checking field ${key}:`, {
-              value,
-              hasValue: fieldHasValue,
-            });
+
             return fieldHasValue;
           }
         );
-
-        console.log("Form validation result:", { isAnyFieldFilled });
 
         if (!isAnyFieldFilled) {
           toast.error("Please fill at least one field before saving");

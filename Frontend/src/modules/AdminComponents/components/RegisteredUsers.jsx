@@ -59,7 +59,7 @@ const RegisteredUsers = () => {
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
     );
   };
-  console.log("selected", selectedUser);
+
   const handleDeleteClick = () => {
     if (selectedUserIds.length > 0) {
       setShowDeleteModal(true);

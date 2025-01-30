@@ -315,7 +315,6 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
     // Check if at least one field is filled for non-admin users
     if (currentUser.userType !== "Admin") {
       // Debug logging
-      console.log("Form Data to validate:", localFormData);
 
       // Check if localFormData is array and not empty
       if (!Array.isArray(localFormData) || localFormData.length === 0) {
@@ -326,7 +325,6 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
       // Improved validation to check each entry's fields
       const isAnyFieldFilled = localFormData.some((formEntry) => {
         // Debug each entry
-        console.log("Checking entry:", formEntry);
 
         return Object.entries(formEntry).some(([key, field]) => {
           // Skip checking status and note fields
@@ -334,12 +332,10 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
 
           // Check if field has a value property and it's not empty
           const hasValue = field?.value && field.value.toString().trim() !== "";
-          console.log(`Field ${key}:`, { value: field?.value, hasValue });
+
           return hasValue;
         });
       });
-
-      console.log("Validation result:", { isAnyFieldFilled });
 
       if (!isAnyFieldFilled) {
         toast.error("Please fill in at least one field before saving");
@@ -391,7 +387,6 @@ const ApplicationForm8 = ({ uid, clicked, setClicked }) => {
   };
   if (currentUser.userType === "Admin") {
     useEffect(() => {
-      console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
         handleSave(uid, 8);

@@ -210,11 +210,10 @@ export const AdminProvider = ({ children }) => {
           if (docSnap.exists()) {
             clearLocalStorageAndState();
             const data = docSnap.data();
-            console.log("data", data);
+
             updateFormData(data);
           } else {
             clearLocalStorageAndState();
-            console.log("No such document! Cleared data.");
           }
           resolve();
         },

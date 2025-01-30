@@ -284,7 +284,6 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
           applicationStatus: "pending",
           applicationStatusDate: new Date().toISOString(),
         });
-        console.log("Driver status updated to 'Filled' successfully.");
       } else {
         console.error("No matching driver found in the collection.");
       }

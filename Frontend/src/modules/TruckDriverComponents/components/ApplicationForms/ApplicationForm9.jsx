@@ -212,7 +212,6 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
           applicationStatus: "filled",
           applicationStatusDate: new Date().toISOString(),
         });
-        console.log("Driver status updated to 'Filled' successfully.");
       } else {
         console.error("No matching driver found in the collection.");
       }
@@ -298,7 +297,6 @@ const ApplicationForm9 = ({ uid, clicked, setClicked }) => {
   };
   if (currentUser.userType === "Admin") {
     useEffect(() => {
-      console.log("child clicked", clicked);
       setClicked(false);
       if (clicked) {
         handleSave(uid, 9);

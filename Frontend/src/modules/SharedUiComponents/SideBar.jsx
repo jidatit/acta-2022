@@ -156,12 +156,7 @@ const SideBar = ({ isSidebarExpanded }) => {
       const currentPath = location.pathname;
       const requestedSection = routeToSectionMap[currentPath];
       const requestedFormIndex = sections.indexOf(requestedSection) + 1;
-      console.log(
-        "Request",
-        requestedSection,
-        requestedFormIndex,
-        completedForms
-      );
+
       // Allow access to the next form after the last completed one
       if (requestedFormIndex >= completedForms + 1) {
         navigate(`/TruckDriverLayout/ApplicationForm${completedForms + 1}`);
