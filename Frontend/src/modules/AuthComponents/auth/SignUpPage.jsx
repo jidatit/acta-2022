@@ -146,9 +146,7 @@ const SignUpPage = () => {
 
       // Check for specific Firebase error codes
       if (err.code === "auth/email-already-in-use") {
-        toast.error(
-          "You are Blocked By Admins. Please use a different email or try logging in."
-        );
+        toast.error("Please use a different email or try logging in.");
       } else if (err.code === "auth/invalid-email") {
         toast.error("Invalid email address. Please check your email format.");
       } else if (err.code === "auth/weak-password") {
