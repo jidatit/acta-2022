@@ -490,6 +490,8 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         [name.replace(`company-${index}-`, "")]: "",
       };
     }
+
+    // Check for overlapping dates
     if (
       (name.includes("from31") && isOverlapping(index, value, true)) ||
       (name.includes("to31") && isOverlapping(index, value, false))
@@ -509,6 +511,7 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
         [name]: "",
       };
     }
+
     // Update field values only if no errors
     if (!showError) {
       updatedFields = updatedFields.map((field, i) =>
@@ -584,70 +587,113 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
   };
 
   const handleDateChange = (index, name, value) => {
-    const formattedDate = value ? dayjs(value).format("YYYY-MM-DD") : null; // Ensure null for invalid dates
-    handleInputChange(index, { target: { name, value: formattedDate } });
+    handleInputChange(index, {
+      target: {
+        name: `company-${index}-${name}`,
+        value: value,
+      },
+    });
   };
 
-  // Get min date for "to" field based on "from" date
-  const getMinToDate = (field) => {
-    if (field.from31.value) {
-      const fromDate = new Date(field.from31.value);
-      fromDate.setDate(fromDate.getDate() + 1); // Ensure "To" date is at least one day after "From"
-      return fromDate.toISOString().split("T")[0];
+  // Modify isDateDisabled to use local date strings:
+  const isDateDisabled = (date, index, isFromDate) => {
+    const localDateStr = dayjs(date).format("YYYY-MM-DD");
+    // Disable dates that are invalid based on the `from` and `to` constraints
+    if (isFromDate) {
+      // When selecting a `from` date, disable dates greater than the `to` date (if it exists)
+      const toDate = localFormData[index]?.to31?.value;
+      if (toDate && localDateStr >= toDate) {
+        return true;
+      }
+    } else {
+      // When selecting a `to` date, disable dates less than the `from` date (if it exists)
+      const fromDate = localFormData[index]?.from31?.value;
+      if (fromDate && localDateStr <= fromDate) {
+        return true;
+      }
     }
-    return null; // Allow unrestricted dates if "From" date is not set
-  };
-  const isDateDisabled = (date, index) => {
-    return (
-      isOverlapping(index, date.toISOString().split("T")[0], true) ||
-      isOverlapping(index, date.toISOString().split("T")[0], false)
-    );
-  };
-  // Get max date for "from" field based on "to" date
-  const getMaxFromDate = (field) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to midnight
 
-    if (field.to31.value) {
-      const toDate = new Date(field.to31.value);
-      toDate.setDate(toDate.getDate() - 1); // Ensure "from" date is before "to"
+    // Check for overlapping dates
+    const overlaps =
+      isOverlapping(index, localDateStr, true) ||
+      isOverlapping(index, localDateStr, false);
 
-      // Return the earlier date between today and one day before "to" date
-      return toDate < today
-        ? toDate.toISOString().split("T")[0]
-        : today.toISOString().split("T")[0];
+    // Check for order violations
+    let orderViolation = false;
+    // Previous instance's "from" date
+    if (index > 0) {
+      const prevFrom = localFormData[index - 1]?.from31?.value;
+      if (prevFrom && localDateStr > prevFrom) {
+        orderViolation = true;
+      }
     }
-    return today.toISOString().split("T")[0]; // Default to today's date
+    // Next instance's "from" date
+    if (index < localFormData.length - 1) {
+      const nextFrom = localFormData[index + 1]?.from31?.value;
+      if (nextFrom && localDateStr < nextFrom) {
+        orderViolation = true;
+      }
+    }
+
+    return overlaps || orderViolation;
   };
 
-  // Allow any date to be selected for "from" field
-  const getMinFromDate = (field, index, localFormData) => {
-    return null; // No restriction on minimum date for "from"
-  };
-  const isOverlapping = (index, date, isFromDate) => {
+  const isOverlapping = (index, dateStr, isFromDate) => {
     for (let i = 0; i < localFormData.length; i++) {
       if (i !== index) {
-        const instanceFrom = new Date(localFormData[i]?.from31?.value);
-        const instanceTo = new Date(localFormData[i]?.to31?.value);
-        const selectedDate = new Date(date);
+        const instanceFrom = localFormData[i]?.from31?.value;
+        const instanceTo = localFormData[i]?.to31?.value;
 
-        if (
-          instanceFrom &&
-          instanceTo &&
-          ((isFromDate &&
-            selectedDate >= instanceFrom &&
-            selectedDate <= instanceTo) || // From date overlaps
-            (!isFromDate &&
-              selectedDate >= instanceFrom &&
-              selectedDate <= instanceTo)) // To date overlaps
-        ) {
+        if (!instanceFrom || !instanceTo) continue;
+
+        // Check if the selected date is within any existing range
+        if (dateStr >= instanceFrom && dateStr <= instanceTo) {
           return true;
+        }
+
+        // Additional check if the new range surrounds an existing range
+        const currentFrom = localFormData[index]?.from31?.value;
+        const currentTo = localFormData[index]?.to31?.value;
+        if (currentFrom && currentTo) {
+          if (currentFrom < instanceFrom && currentTo > instanceTo) {
+            return true;
+          }
         }
       }
     }
     return false;
   };
+  // Helper function to check if a date should be disabled in the date picker
 
+  // Get min date for "to" field based on "from" date
+  const getMinToDate = (field) => {
+    if (field.from31.value) {
+      const fromDate = new Date(field.from31.value);
+      fromDate.setHours(0, 0, 0, 0);
+      return fromDate.toISOString().split("T")[0];
+    }
+    return null;
+  };
+  const getMaxFromDate = (field) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (field.to31.value) {
+      const toDate = new Date(field.to31.value);
+      toDate.setHours(0, 0, 0, 0);
+
+      // Don't subtract a day - allow selection up to the "to" date
+      return toDate < today
+        ? toDate.toISOString().split("T")[0]
+        : today.toISOString().split("T")[0];
+    }
+    return today.toISOString().split("T")[0];
+  };
+  // Get max date for "from" field based on "to" date
+
+  const getMinFromDate = (field, index, localFormData) => {
+    return null; // No restriction on minimum date for "from"
+  };
   const removeCompany = (index) => {
     setLocalFormData(localFormData.filter((_, i) => i !== index));
     setErrors(errors.filter((_, i) => i !== index));
@@ -716,6 +762,10 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
 
       <div className=" flex flex-col gap-y-4 flex-wrap ">
         <form className="w-full bg-white shadow-md border-b-1 border-b-gray-400 pb-7">
+          <h1 className="text-red-500 text-lg font-bold font-radios mb-3">
+            Note : "Enter your most recent employment details first, followed by
+            older ones."{" "}
+          </h1>
           {Array.isArray(localFormData) &&
             localFormData?.map((field, index) => (
               <div key={index} className="mb-6">
@@ -968,16 +1018,15 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         value={
                           field.from31.value ? dayjs(field.from31.value) : null
                         }
-                        onChange={(newValue) =>
-                          handleDateChange(
-                            index,
-                            `from31`,
-                            newValue?.toISOString()
-                          )
-                        }
+                        onChange={(newValue) => {
+                          const formattedDate = newValue
+                            ? newValue.format("YYYY-MM-DD")
+                            : null;
+                          handleDateChange(index, `from31`, formattedDate);
+                        }}
                         maxDate={dayjs(getMaxFromDate(field))}
                         shouldDisableDate={(date) =>
-                          isDateDisabled(date, index)
+                          isDateDisabled(date, index, true)
                         }
                         minDate={dayjs(
                           getMinFromDate(field, index, localFormData)
@@ -1019,17 +1068,16 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
                         value={
                           field.to31.value ? dayjs(field.to31.value) : null
                         }
-                        onChange={(newValue) =>
-                          handleDateChange(
-                            index,
-                            `to31`,
-                            newValue?.toISOString()
-                          )
-                        }
+                        onChange={(newValue) => {
+                          const formattedDate = newValue
+                            ? newValue.format("YYYY-MM-DD")
+                            : null;
+                          handleDateChange(index, `to31`, formattedDate);
+                        }}
                         maxDate={dayjs()} // Prevent future dates
                         minDate={dayjs(getMinToDate(field))}
                         shouldDisableDate={(date) =>
-                          isDateDisabled(date, index)
+                          isDateDisabled(date, index, false)
                         }
                         renderInput={(params) => (
                           <input
