@@ -532,11 +532,11 @@ const ApplicationForm3 = ({ uid, clicked, setClicked }) => {
     let updatedErrorsWithGaps = [...updatedErrors];
 
     for (let i = 1; i < updatedFields.length; i++) {
-      const prevToDate = updatedFields[i - 1]?.to31?.value;
-      const currentFromDate = updatedFields[i]?.from31?.value;
+      const prevToDate = updatedFields[i - 1]?.from31?.value;
+      const currentFromDate = updatedFields[i]?.to31?.value;
 
       if (prevToDate && currentFromDate) {
-        const prevDate = new Date(prevToDate);
+        const prevDate = new Date(prevToDate); 
         const currentDate = new Date(currentFromDate);
 
         // Calculate the exact number of days between dates (absolute difference)
