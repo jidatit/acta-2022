@@ -337,188 +337,193 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
           )}
         </div>
       </div>
-
+      {/* <div className="flex flex-col items-start justify-start w-full gap-y-12">
       <div className="flex flex-col w-full gap-y-8">
-        <form className="w-full p-6 bg-white shadow-md min-h-[50vh] overflow-y-auto ssm:border-b-1 border-b-gray-400">
-          {Array.isArray(localFormData) &&
-            localFormData.map((address, index) => (
-              <divs
-                key={index}
-                className="grid grid-cols-1 w-full smd:-mt-0  smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
-              >
-                <div>
-                  <FormLabelWithStatus
-                    label="Street 1"
-                    id={`street12`}
-                    status={address?.street12?.status}
-                    note={address?.street12?.note}
-                    index={index}
-                    fieldName="street12"
-                    uid={uid}
-                    important={true}
-                  />
-                  <input
-                    type="text"
-                    name="street12"
-                    id={`street12-${index}`}
-                    value={address?.street12?.value}
-                    onChange={(e) => handleChange(e, index)}
-                    disabled={isDisabled}
-                    className={`w-full p-2 mt-1 border rounded-md  ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
-                </div>
-                <div>
-                  <FormLabelWithStatus
-                    label="Street 2"
-                    id={`street22`}
-                    status={address?.street22?.status}
-                    note={address?.street22?.note}
-                    index={index}
-                    fieldName="street22"
-                    uid={uid}
-                    important={true}
-                  />
-                  <input
-                    type="text"
-                    name="street22"
-                    id={`street22-${index}`}
-                    value={address?.street22?.value}
-                    onChange={(e) => handleChange(e, index)}
-                    disabled={isDisabled}
-                    className={`w-full p-2 mt-1 border rounded-md  ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
-                </div>
-                <div>
-                  <FormLabelWithStatus
-                    label="City"
-                    id={`city22`}
-                    status={address?.city22?.status}
-                    note={address?.city22?.note}
-                    index={index}
-                    fieldName="city22"
-                    uid={uid}
-                    important={true}
-                  />
-                  <input
-                    type="text"
-                    name="city22"
-                    id={`city22-${index}`}
-                    value={address?.city22?.value}
-                    onChange={(e) => handleChange(e, index)}
-                    disabled={isDisabled}
-                    className={`w-full p-2 mt-1 border rounded-md  ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
-                </div>
-                <div>
-                  <FormLabelWithStatus
-                    label="State"
-                    id={`state22`}
-                    status={address?.state22?.status}
-                    note={address?.state22?.note}
-                    index={index}
-                    fieldName="state22"
-                    uid={uid}
-                    important={true}
-                  />
-                  <input
-                    type="text"
-                    name="state22"
-                    id={`state22-${index}`}
-                    value={address?.state22?.value}
-                    onChange={(e) => handleChange(e, index)}
-                    disabled={isDisabled}
-                    className={`w-full p-2 mt-1 border rounded-md  ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
-                </div>
-                <div>
-                  <FormLabelWithStatus
-                    label="Zip Code"
-                    id={`zipCode22`}
-                    status={address?.zipCode22?.status}
-                    note={address?.zipCode22?.note}
-                    index={index}
-                    fieldName="zipCode22"
-                    uid={uid}
-                  />
-                  <input
-                    type="text"
-                    name="zipCode22"
-                    id={`zipCode22-${index}`}
-                    value={address?.zipCode22?.value}
-                    onChange={(e) => handleChange(e, index)}
-                    disabled={isDisabled}
-                    className={`w-full p-2 mt-1 border rounded-md  ${
-                      isDisabled ? "text-gray-400" : "bg-white border-gray-300"
-                    }`}
-                  />
-                </div>
+        <form className="w-full p-6 bg-white shadow-md min-h-[50vh] overflow-y-auto"> */}
+      <div className="flex flex-col items-start justify-start w-full gap-y-12">
+        <div className="flex flex-col w-full gap-y-8">
+          <form className="w-full p-6 bg-white shadow-md min-h-[50vh] overflow-y-auto border-b-1 border-b-gray-400">
+            {Array.isArray(localFormData) &&
+              localFormData.map((address, index) => (
+                <divs
+                  key={index}
+                  className="grid grid-cols-1 w-full smd:-mt-0  smd:-ml-0 -ml-4  gap-4 mb-6 ssm:grid-cols-2 md:grid-cols-3"
+                >
+                  <div>
+                    <FormLabelWithStatus
+                      label="Street 1"
+                      id={`street12`}
+                      status={address?.street12?.status}
+                      note={address?.street12?.note}
+                      index={index}
+                      fieldName="street12"
+                      uid={uid}
+                      important={true}
+                    />
+                    <input
+                      type="text"
+                      name="street12"
+                      id={`street12-${index}`}
+                      value={address?.street12?.value}
+                      onChange={(e) => handleChange(e, index)}
+                      disabled={isDisabled}
+                      className={`w-full p-2 mt-1 border rounded-md  ${
+                        isDisabled
+                          ? "text-gray-400"
+                          : "bg-white border-gray-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <FormLabelWithStatus
+                      label="Street 2"
+                      id={`street22`}
+                      status={address?.street22?.status}
+                      note={address?.street22?.note}
+                      index={index}
+                      fieldName="street22"
+                      uid={uid}
+                      important={true}
+                    />
+                    <input
+                      type="text"
+                      name="street22"
+                      id={`street22-${index}`}
+                      value={address?.street22?.value}
+                      onChange={(e) => handleChange(e, index)}
+                      disabled={isDisabled}
+                      className={`w-full p-2 mt-1 border rounded-md  ${
+                        isDisabled
+                          ? "text-gray-400"
+                          : "bg-white border-gray-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <FormLabelWithStatus
+                      label="City"
+                      id={`city22`}
+                      status={address?.city22?.status}
+                      note={address?.city22?.note}
+                      index={index}
+                      fieldName="city22"
+                      uid={uid}
+                      important={true}
+                    />
+                    <input
+                      type="text"
+                      name="city22"
+                      id={`city22-${index}`}
+                      value={address?.city22?.value}
+                      onChange={(e) => handleChange(e, index)}
+                      disabled={isDisabled}
+                      className={`w-full p-2 mt-1 border rounded-md  ${
+                        isDisabled
+                          ? "text-gray-400"
+                          : "bg-white border-gray-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <FormLabelWithStatus
+                      label="State"
+                      id={`state22`}
+                      status={address?.state22?.status}
+                      note={address?.state22?.note}
+                      index={index}
+                      fieldName="state22"
+                      uid={uid}
+                      important={true}
+                    />
+                    <input
+                      type="text"
+                      name="state22"
+                      id={`state22-${index}`}
+                      value={address?.state22?.value}
+                      onChange={(e) => handleChange(e, index)}
+                      disabled={isDisabled}
+                      className={`w-full p-2 mt-1 border rounded-md  ${
+                        isDisabled
+                          ? "text-gray-400"
+                          : "bg-white border-gray-300"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <FormLabelWithStatus
+                      label="Zip Code"
+                      id={`zipCode22`}
+                      status={address?.zipCode22?.status}
+                      note={address?.zipCode22?.note}
+                      index={index}
+                      fieldName="zipCode22"
+                      uid={uid}
+                    />
+                    <input
+                      type="text"
+                      name="zipCode22"
+                      id={`zipCode22-${index}`}
+                      value={address?.zipCode22?.value}
+                      onChange={(e) => handleChange(e, index)}
+                      disabled={isDisabled}
+                      className={`w-full p-2 mt-1 border rounded-md  ${
+                        isDisabled
+                          ? "text-gray-400"
+                          : "bg-white border-gray-300"
+                      }`}
+                    />
+                  </div>
 
-                <div className="flex items-center mt-4">
-                  {index >= initialFields.length && ( // Only show remove button for dynamically added fields
-                    <button
-                      type="button"
-                      onClick={() => removeAddressField(index)}
-                      className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              </divs>
-            ))}
-          {currentUser.userType !== "Admin" && (
-            <div className="hidden sm:flex items-end justify-end w-full ">
-              <button
-                type="button"
-                onClick={addAddressFields}
-                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-              >
-                Add More
-              </button>
-            </div>
-          )}
-        </form>
+                  <div className="flex items-center mt-4">
+                    {index >= initialFields.length && ( // Only show remove button for dynamically added fields
+                      <button
+                        type="button"
+                        onClick={() => removeAddressField(index)}
+                        className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </divs>
+              ))}
+            {/* Add More button moved inside form but after fields */}
+            {currentUser.userType !== "Admin" && (
+              <div className="flex justify-end w-full mt-6">
+                <button
+                  type="button"
+                  onClick={addAddressFields}
+                  className="  px-6 py-3 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+                >
+                  Add More
+                </button>
+              </div>
+            )}
+          </form>
+        </div>
         {currentUser.userType !== "Admin" && (
-          <div className="flex flex-col gap-y-4 sm:flex-row sm:justify-between w-full">
-            <div className="order-2 sm:order-1">
+          <div className="flex items-center gap-x-3 justify-between w-full mt-10">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
+            >
+              Back
+            </button>
+            <div>
               <button
-                type="button"
-                onClick={handleBack}
-                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-gray-400 rounded-md hover:bg-gray-500"
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#454545]"
               >
-                Back
-              </button>
-            </div>
-
-            <div className="order-1 sm:order-2 flex flex-col sm:flex-row gap-2">
-              <button
-                type="button"
-                onClick={addAddressFields}
-                className="w-full sm:hidden sm:w-auto px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-              >
-                Add More
+                Next
               </button>
               <button
                 type="button"
                 onClick={() => handleSave(currentUser.uid, 2)}
-                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+                className="px-4 py-2 ml-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
               >
                 Save
-              </button>
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="w-full sm:w-auto px-4 py-2 font-semibold text-white bg-[#353535] rounded-md hover:bg-[#353535]"
-              >
-                Next
               </button>
             </div>
           </div>
