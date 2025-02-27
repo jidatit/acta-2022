@@ -512,18 +512,18 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
             </button>
             <div>
               <button
-                type="submit"
-                onClick={handleSubmit}
-                className="px-4 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#454545]"
-              >
-                Next
-              </button>
-              <button
                 type="button"
                 onClick={() => handleSave(currentUser.uid, 2)}
-                className="px-4 py-2 ml-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+                className="px-4 py-2  font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
               >
                 Save
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-4 py-2 ml-4 font-semibold text-white bg-black rounded-md hover:bg-[#454545]"
+              >
+                Next
               </button>
             </div>
           </div>
