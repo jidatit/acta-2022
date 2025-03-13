@@ -90,6 +90,7 @@ const ModalWithForms = ({ openModal, setOpenModal, uid, driverStatus }) => {
 
     fetchFormData();
   }, [uid]);
+
   useEffect(() => {
     const fetchStatus = async () => {
       try {

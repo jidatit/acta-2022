@@ -16,9 +16,12 @@ import EnhancedStatusDropdown from "../../SharedComponents/components/EnhancedDr
 import { toast } from "react-toastify";
 import { deleteUser } from "firebase/auth";
 import { useAuth } from "../../../AuthContext";
+import PdfModal from "./PdfModal";
 
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [openPdfModal, setOpenPdfModal] = useState(false);
+
   const { currentUser } = useAuth();
   const [currentUserId, setCurrentUserId] = useState(null);
   const [truckDrivers, setTruckDrivers] = useState([]);
@@ -230,6 +233,10 @@ const RegisteredUsers = () => {
     setCurrentUserId(uid);
     setOpenModal(true); // Ensure `currentUserId` is set before opening modal
   };
+  const openPDfModalWithUser = (uid) => {
+    setCurrentUserId(uid);
+    setOpenPdfModal(true); // Ensure `currentUserId` is set before opening modal
+  };
 
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
@@ -294,12 +301,36 @@ const RegisteredUsers = () => {
                   >
                     Edit
                   </button>
+                  {driver.driverStatus === "approved" && (
+                    <button
+                      className={`py-1 ml-4 px-10 rounded ${
+                        driver.driverStatus === "registered"
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-black text-white hover:bg-[#353535]"
+                      }`}
+                      onClick={() => {
+                        if (driver.driverStatus !== "registered") {
+                          openPDfModalWithUser(driver.uid);
+                        }
+                      }}
+                      disabled={driver.driverStatus === "registered"}
+                    >
+                      View PDf
+                    </button>
+                  )}
                   {openModal && currentUserId === driver.uid && (
                     <FormShowingModal
                       uid={currentUserId}
                       openModal={openModal}
                       setOpenModal={setOpenModal}
                       driverStatus={driver.driverStatus}
+                    />
+                  )}
+                  {openPdfModal && (
+                    <PdfModal
+                      openModal={openPdfModal}
+                      setOpenModal={setOpenPdfModal}
+                      uid={currentUserId}
                     />
                   )}
                 </td>
