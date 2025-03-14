@@ -315,7 +315,7 @@ const RegisteredUsers = () => {
                       }}
                       disabled={driver.driverStatus === "registered"}
                     >
-                      View PDf
+                      View PDF
                     </button>
                   )}
                   {openModal && currentUserId === driver.uid && (

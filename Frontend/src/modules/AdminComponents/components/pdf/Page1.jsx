@@ -1,314 +1,519 @@
 import React from "react";
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-// Define styles for the PDF (mimicking Tailwind CSS)
+// Create styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    backgroundColor: "#FFFFFF", // bg-white
-    padding: 20, // p-5
+    padding: 20,
+    backgroundColor: "white",
+    fontFamily: "Helvetica",
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between", // justify-between
-    alignItems: "center", // items-center
-    paddingBottom: 10, // pb-2
-    borderBottom: "1px solid #1F2937", // border-b border-gray-800
-    marginBottom: 20, // mb-5
-  },
-  headerText: {
-    fontSize: 24, // text-2xl
-    fontWeight: "bold", // font-bold
-  },
-  headerSubtext: {
-    fontSize: 12, // text-sm
-    color: "#374151", // text-gray-700
-  },
-  logoContainer: {
-    width: 64, // w-16
-    height: 64, // h-16
-    borderRadius: 32, // rounded-full
-    backgroundColor: "#000000", // bg-black
-    justifyContent: "center", // justify-center
-    alignItems: "center", // items-center
-  },
-  logoText: {
-    color: "#F59E0B", // text-yellow-500
-    fontWeight: "bold", // font-bold
-  },
-  section: {
-    marginBottom: 20, // mb-5
-  },
-  formField: {
-    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8, // mb-2
+    marginBottom: 10,
   },
-  formLabel: {
-    width: 160, // w-40
-    fontSize: 12, // text-sm
-  },
-  formValue: {
-    flex: 1,
-    borderBottom: "1px solid #9CA3AF", // border-b border-gray-400
-    paddingLeft: 8, // pl-2
-    fontSize: 12, // text-sm
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8, // gap-4
-  },
-  checkbox: {
-    width: 16, // w-4
-    height: 16, // h-4
-    border: "1px solid #000000", // border border-black
+  logo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
   },
-  checkboxFilled: {
-    backgroundColor: "#000000", // bg-black
+  logoText: {
+    color: "#F59E0B",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  companyName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  address: {
+    fontSize: 16,
+  },
+
+  paragraph: {
+    fontSize: 13,
+    marginBottom: 10,
+    lineHeight: 1.3,
+  },
+  formRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  formColumn: {
+    flexDirection: "column",
+    marginBottom: 10,
+  },
+  twoColumnRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  label: {
+    fontSize: 12,
+    width: 120,
+  },
+  input: {
+    flex: 1,
+    borderBottom: 1,
+    borderBottomColor: "#999999",
+    fontSize: 13,
+    marginRight: 10,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    marginBottom: 6,
+    paddingVertical: 6,
+    justifyContent: "center",
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  },
+  radioLabel: {
+    fontSize: 13,
+  },
+  checkbox: {
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    marginLeft: 2,
+  },
+  checkedBox: {
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    backgroundColor: "black",
+    marginLeft: 2,
+  },
+  column: {
+    flex: 1,
+  },
+  leftColumn: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  rightColumn: {
+    flex: 1,
+    paddingLeft: 10,
   },
   grid: {
     flexDirection: "row",
-    gap: 32, // gap-8
+    marginTop: 10,
   },
-  col: {
-    flex: 1,
+  question: {
+    fontSize: 13,
+    marginBottom: 4,
+    lineHeight: 1.3,
+  },
+  longQuestion: {
+    fontSize: 13,
+    marginBottom: 4,
+    width: "90%",
+    lineHeight: 1.3,
+  },
+  pageNumber: {
+    position: "absolute",
+    bottom: 10,
+    right: 0,
+    left: 0,
+    textAlign: "center",
+    fontSize: 13,
   },
 });
 
-// Helper function to format dates
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-};
+// Create Document Component
+const Page1 = ({ formData }) => {
+  // Helper function for formatting date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-// Helper function to format phone numbers
-const formatPhone = (phone) => {
-  if (!phone || phone.length !== 10) return phone;
-  return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6)}`;
-};
+  // Helper function for formatting phone number
+  const formatPhone = (phoneString) => {
+    if (!phoneString) return "";
+    return phoneString; // Implement custom formatting if needed
+  };
 
-const Page1 = ({ formData }) => (
-  <>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerText}>FFA Inc</Text>
-          <Text style={styles.headerSubtext}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.headerSubtext}>Village, IL 60007</Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-          <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>FFA</Text>
+  return (
+    <>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header} fixed>
+          <View>
+            <Text style={styles.companyName}>FFA Inc</Text>
+            <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
+            <Text style={styles.address}>Village, IL 60007</Text>
           </View>
-          <Text style={styles.headerText}>Driver Application</Text>
+          <View style={styles.headerRight}>
+            <View style={styles.logo}>
+              <Text style={styles.logoText}>FFA</Text>
+            </View>
+            <Text style={styles.title}>Driver Application</Text>
+          </View>
         </View>
-      </View>
 
-      {/* Compliance Text */}
-      <View style={styles.section}>
-        <Text style={{ fontSize: 12, marginBottom: 24 }}>
-          Freight For All is in compliance with Federal and State equal
-          employment opportunity laws, qualified applicants are considered for
-          all positions without regard to race, color, religion, sex, national
-          origin, age, marital status and non-job related disabilities.
-        </Text>
-      </View>
+        <View style={styles.divider} />
 
-      {/* Applicant Information */}
-      <View style={styles.section}>
-        <View style={styles.formField}>
-          <Text style={styles.formLabel}>Applicant Full Name:</Text>
-          <Text style={styles.formValue}>
-            {formData?.form1?.applicantName?.value}
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Text style={styles.paragraph}>
+            Freight For All is in compliance with Federal and State equal
+            employment opportunity laws, qualified applicants are considered for
+            all positions without regard to race, color, religion, sex, national
+            origin, age, marital status and non-job related disabilities.
           </Text>
-        </View>
-        <View style={{ flexDirection: "row", gap: 32 }}>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Application Date:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.appliedDate?.value
-                ? formatDate(formData?.form1?.appliedDate?.value)
-                : ""}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Position Applied For:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.positionApplied?.value}
-            </Text>
-          </View>
-        </View>
-      </View>
 
-      {/* Two-Column Layout */}
-      <View style={styles.grid}>
-        {/* Left Column */}
-        <View style={styles.col}>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>SSN:</Text>
-            <Text style={styles.formValue}>{formData?.form1?.ssn?.value}</Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Date Of Birth:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.DOB?.value
-                ? formatDate(formData?.form1?.DOB?.value)
-                : ""}
+          <View style={styles.formRow}>
+            <Text style={styles.label}>Applicant Full Name:</Text>
+            <Text style={styles.input}>
+              {formData?.form1?.applicantName?.value}
             </Text>
           </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Street 1:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.street1?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Street 2:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.street2?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>City:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.city11?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>State:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.state11?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Zip Code:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.zipCode11?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Cell Phone #:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.cellPhone?.value
-                ? formatPhone(formData?.form1?.cellPhone?.value)
-                : ""}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Emergency Contact:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.EmergencyContact?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Relationship:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.Relationship?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Emergency Phone #:</Text>
-            <Text style={styles.formValue}></Text>
-          </View>
-        </View>
 
-        {/* Right Column */}
-        <View style={styles.col}>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Currently Employed:</Text>
-            <View style={styles.checkboxContainer}>
-              <View
-                style={[
-                  styles.checkbox,
-                  formData?.form1?.currentlyEmployed?.value === "yes" &&
-                    styles.checkboxFilled,
-                ]}
-              />
-              <Text>Yes</Text>
-              <View
-                style={[
-                  styles.checkbox,
-                  formData?.form1?.currentlyEmployed?.value === "no" &&
-                    styles.checkboxFilled,
-                ]}
-              />
-              <Text>No</Text>
+          <View style={styles.twoColumnRow}>
+            <View style={[styles.formRow, { flex: 1 }]}>
+              <Text style={styles.label}>Application Date:</Text>
+              <Text style={styles.input}>
+                {formData?.form1?.appliedDate?.value
+                  ? formatDate(formData?.form1?.appliedDate?.value)
+                  : ""}
+              </Text>
+            </View>
+            <View style={[styles.formRow, { flex: 1 }]}>
+              <Text style={styles.label}>Position Applied For:</Text>
+              <Text style={styles.input}>
+                {formData?.form1?.positionApplied?.value}
+              </Text>
             </View>
           </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>
-              If not, how long since leaving last employment?
-            </Text>
-            <Text style={styles.formValue}></Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Who referred you?</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.referredBy?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>Rate of pay expected:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.payExpected?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>
-              Do you have the legal right to work in the United States?
-            </Text>
-            <View style={styles.checkboxContainer}>
-              <View
-                style={[
-                  styles.checkbox,
-                  formData?.form1?.legalRightToWork?.value === "yes" &&
-                    styles.checkboxFilled,
-                ]}
-              />
-              <Text>Yes</Text>
-              <View
-                style={[
-                  styles.checkbox,
-                  formData?.form1?.legalRightToWork?.value === "no" &&
-                    styles.checkboxFilled,
-                ]}
-              />
-              <Text>No</Text>
+
+          <View style={styles.grid}>
+            <View style={styles.leftColumn}>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>SSN:</Text>
+                <Text style={styles.input}>{formData?.form1?.ssn?.value}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Date Of Birth:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.DOB?.value
+                    ? formatDate(formData?.form1?.DOB?.value)
+                    : ""}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Street 1:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.street1?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Street 2:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.street2?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>City:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.city11?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>State:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.state11?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Zip Code:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.zipCode11?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Cell Phone #:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.cellPhone?.value
+                    ? formatPhone(formData?.form1?.cellPhone?.value)
+                    : ""}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Emergency Contact:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.EmergencyContact?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Relationship:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.Relationship?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Emergency Phone #:</Text>
+                <Text style={styles.input}></Text>
+              </View>
+            </View>
+
+            <View style={styles.rightColumn}>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Currently Employed:</Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.currentlyEmployed?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.currentlyEmployed?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>
+                  If not, how long since leaving last employment?
+                </Text>
+                <Text style={styles.input}></Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Who referred you?</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.referredBy?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Rate of pay expected:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.payExpected?.value}
+                </Text>
+              </View>
+
+              <View style={[styles.formRow, { marginTop: 4, marginBottom: 4 }]}>
+                <Text style={styles.label}>
+                  Do you have the legal right to work in the United States?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.legalRightToWork?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.legalRightToWork?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.formRow}>
+                <Text style={styles.label}>CDL #:</Text>
+                <Text style={styles.input}>{formData?.form1?.CDL?.value}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>CDL State:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.CDLState?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>CDL Class:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.CDLClass?.value}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>CDL Expiration Date:</Text>
+                <Text style={styles.input}>
+                  {formData?.form1?.CDLExpirationDate?.value
+                    ? formatDate(formData?.form1?.CDLExpirationDate?.value)
+                    : ""}
+                </Text>
+              </View>
             </View>
           </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>CDL #:</Text>
-            <Text style={styles.formValue}>{formData?.form1?.CDL?.value}</Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>CDL State:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.CDLState?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>CDL Class:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.CDLClass?.value}
-            </Text>
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.formLabel}>CDL Expiration Date:</Text>
-            <Text style={styles.formValue}>
-              {formData?.form1?.CDLExpirationDate?.value
-                ? formatDate(formData?.form1?.CDLExpirationDate?.value)
-                : ""}
-            </Text>
+
+          <View style={styles.grid}>
+            <View style={styles.leftColumn}>
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.question}>
+                  Have you ever been denied a license, permit or privilege to
+                  operate a motor vehicle?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.EverBeenDeniedALicense?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.EverBeenDeniedALicense?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.question}>
+                  Have any license, permit or privilege ever been suspended or
+                  revoked?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.PermitPrivilegeOfLicense?.value ===
+                        "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.PermitPrivilegeOfLicense?.value ===
+                        "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.rightColumn}>
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.longQuestion}>
+                  Have you ever tested positive or refused a DOT drug or alcohol
+                  pre employment test within the past 3 years from an employer
+                  who did not hire you?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.TestedPositiveOrRefusedDotDrug
+                          ?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.TestedPositiveOrRefusedDotDrug
+                          ?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.question}>
+                  Have you ever been convicted of a felony?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        formData?.form1?.EverConvictedOfFelony?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        formData?.form1?.EverConvictedOfFelony?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
-      </View>
-    </Page>
-  </>
-);
+
+        {/* <Text style={styles.pageNumber}>1</Text> */}
+      </Page>
+    </>
+  );
+};
 
 export default Page1;
