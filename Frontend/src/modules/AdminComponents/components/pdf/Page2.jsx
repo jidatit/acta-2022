@@ -177,10 +177,9 @@ const styles = StyleSheet.create({
 
 // Create Document Component
 const Page2 = ({ formData }) => (
-  <>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      {/* <View style={styles.header}>
+  <Page size="A4" style={styles.page}>
+    {/* Header */}
+    {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -190,190 +189,185 @@ const Page2 = ({ formData }) => (
           <Text style={styles.logoText}>FFA</Text>
         </View>
       </View> */}
-      <HeaderPDf />
+    <HeaderPDf />
 
-      {/* Previous Addresses Section */}
-      <View
-        style={{
-          marginBottom: 30,
-          marginTop: 30,
-        }}
-      >
-        <Text style={styles.sectionTitle}>Previous Addresses</Text>
-        <View style={styles.tableContainer}>
-          <Text
-            style={[
-              styles.paragraph,
-              { fontWeight: 700, marginBottom: 15, marginTop: 15 },
-            ]}
-          >
-            List all address in previous 3 years
-          </Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.tableCell, { flex: 1.5 }]}>Street</Text>
-              <Text style={styles.tableCell}>City</Text>
-              <Text style={styles.tableCell}>State</Text>
-              <Text style={styles.tableCell}>ZIP</Text>
-              <Text style={styles.tableCell}>How Long</Text>
-            </View>
-            {formData?.form2?.previousAddresses?.map((address, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={[styles.tableCell, { flex: 1.5 }]}>
-                  {address?.street12?.value || ""}{" "}
-                  {address?.street22?.value
-                    ? `, ${address.street22.value}`
-                    : ""}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {address?.city22?.value || ""}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {address?.state22?.value || ""}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {address?.zipCode22?.value || ""}
-                </Text>
-                <Text style={styles.tableCell}></Text>
-              </View>
-            ))}
+    {/* Previous Addresses Section */}
+    <View
+      style={{
+        marginBottom: 30,
+        marginTop: 30,
+      }}
+    >
+      <Text style={styles.sectionTitle}>Previous Addresses</Text>
+      <View style={styles.tableContainer}>
+        <Text
+          style={[
+            styles.paragraph,
+            { fontWeight: 700, marginBottom: 15, marginTop: 15 },
+          ]}
+        >
+          List all address in previous 3 years
+        </Text>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.tableCell, { flex: 1.5 }]}>Street</Text>
+            <Text style={styles.tableCell}>City</Text>
+            <Text style={styles.tableCell}>State</Text>
+            <Text style={styles.tableCell}>ZIP</Text>
+            <Text style={styles.tableCell}>How Long</Text>
           </View>
+          {formData?.form2?.previousAddresses?.map((address, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={[styles.tableCell, { flex: 1.5 }]}>
+                {address?.street12?.value || ""}{" "}
+                {address?.street22?.value ? `, ${address.street22.value}` : ""}
+              </Text>
+              <Text style={styles.tableCell}>
+                {address?.city22?.value || ""}
+              </Text>
+              <Text style={styles.tableCell}>
+                {address?.state22?.value || ""}
+              </Text>
+              <Text style={styles.tableCell}>
+                {address?.zipCode22?.value || ""}
+              </Text>
+              <Text style={styles.tableCell}></Text>
+            </View>
+          ))}
         </View>
       </View>
+    </View>
 
-      {/* Employment History Section */}
-      <View style={styles.employmentSection}>
-        <Text style={styles.sectionTitle}>Employment History</Text>
-        {formData?.form3?.EmploymentHistory?.map((job, index) => (
-          <View key={index} style={styles.employmentContainer}>
-            <Text style={styles.subheader}>Employer/Lessor</Text>
-            <View style={styles.formGrid}>
-              <View style={styles.formColumn}>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Company Name:</Text>
-                  <Text style={styles.input}>
-                    {job?.companyName31?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Street:</Text>
-                  <Text style={styles.input}>{job?.street31?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>City, State:</Text>
-                  <Text style={styles.input}>
-                    {job?.city31?.value || ""}, {job?.zipCode31?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>ZIP Code:</Text>
-                  <Text style={styles.input}>
-                    {job?.zipCode31?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Contact Person:</Text>
-                  <Text style={styles.input}>
-                    {job?.contactPerson?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Phone #:</Text>
-                  <Text style={styles.input}>{job?.phone31?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>FAX #:</Text>
-                  <Text style={styles.input}>{job?.fax1?.value || ""}</Text>
-                </View>
-                <View style={{ marginBottom: 15 }}>
-                  <Text style={styles.question}>
-                    Were you subject to the FMCSRs* while employed?
-                  </Text>
-                  <View style={styles.radioGroup}>
-                    <View style={styles.radioOption}>
-                      <Text style={styles.radioLabel}>Yes</Text>
-                      <View
-                        style={
-                          job?.subjectToFMCSRs?.value === "yes"
-                            ? styles.checkedBox
-                            : styles.checkbox
-                        }
-                      ></View>
-                    </View>
-                    <View style={styles.radioOption}>
-                      <Text style={styles.radioLabel}>No</Text>
-                      <View
-                        style={
-                          job?.subjectToFMCSRs?.value === "no"
-                            ? styles.checkedBox
-                            : styles.checkbox
-                        }
-                      ></View>
-                    </View>
+    {/* Employment History Section */}
+    <View style={styles.employmentSection}>
+      <Text style={styles.sectionTitle}>Employment History</Text>
+      {formData?.form3?.EmploymentHistory?.map((job, index) => (
+        <View key={index} style={styles.employmentContainer}>
+          <Text style={styles.subheader}>Employer/Lessor</Text>
+          <View style={styles.formGrid}>
+            <View style={styles.formColumn}>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Company Name:</Text>
+                <Text style={styles.input}>
+                  {job?.companyName31?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Street:</Text>
+                <Text style={styles.input}>{job?.street31?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>City, State:</Text>
+                <Text style={styles.input}>
+                  {job?.city31?.value || ""}, {job?.zipCode31?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>ZIP Code:</Text>
+                <Text style={styles.input}>{job?.zipCode31?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Contact Person:</Text>
+                <Text style={styles.input}>
+                  {job?.contactPerson?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Phone #:</Text>
+                <Text style={styles.input}>{job?.phone31?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>FAX #:</Text>
+                <Text style={styles.input}>{job?.fax1?.value || ""}</Text>
+              </View>
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.question}>
+                  Were you subject to the FMCSRs* while employed?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        job?.subjectToFMCSRs?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        job?.subjectToFMCSRs?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
                   </View>
                 </View>
               </View>
+            </View>
 
-              <View style={styles.formColumn}>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>From:</Text>
-                  <Text style={styles.input}>{job?.from31?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>To:</Text>
-                  <Text style={styles.input}>{job?.to31?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Position:</Text>
-                  <Text style={styles.input}>{job?.position?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Salary:</Text>
-                  <Text style={styles.input}>{job?.salary?.value || ""}</Text>
-                </View>
-                <View style={styles.formRow}>
-                  <Text style={styles.label}>Reason for leaving:</Text>
-                  <Text style={styles.input}>
-                    {job?.leavingReason?.value || ""}
-                  </Text>
-                </View>
-                <View style={{ marginBottom: 15 }}>
-                  <Text style={styles.question}>
-                    Was your job designated as a safety-sensitive function in
-                    any DOT-regulated mode subject to the drug and alcohol
-                    testing requirements?
-                  </Text>
-                  <View style={styles.radioGroup}>
-                    <View style={styles.radioOption}>
-                      <Text style={styles.radioLabel}>Yes</Text>
-                      <View
-                        style={
-                          job?.jobDesignatedAsSafetySensitive?.value === "yes"
-                            ? styles.checkedBox
-                            : styles.checkbox
-                        }
-                      ></View>
-                    </View>
-                    <View style={styles.radioOption}>
-                      <Text style={styles.radioLabel}>No</Text>
-                      <View
-                        style={
-                          job?.jobDesignatedAsSafetySensitive?.value === "no"
-                            ? styles.checkedBox
-                            : styles.checkbox
-                        }
-                      ></View>
-                    </View>
+            <View style={styles.formColumn}>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>From:</Text>
+                <Text style={styles.input}>{job?.from31?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>To:</Text>
+                <Text style={styles.input}>{job?.to31?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Position:</Text>
+                <Text style={styles.input}>{job?.position?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Salary:</Text>
+                <Text style={styles.input}>{job?.salary?.value || ""}</Text>
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Reason for leaving:</Text>
+                <Text style={styles.input}>
+                  {job?.leavingReason?.value || ""}
+                </Text>
+              </View>
+              <View style={{ marginBottom: 15 }}>
+                <Text style={styles.question}>
+                  Was your job designated as a safety-sensitive function in any
+                  DOT-regulated mode subject to the drug and alcohol testing
+                  requirements?
+                </Text>
+                <View style={styles.radioGroup}>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>Yes</Text>
+                    <View
+                      style={
+                        job?.jobDesignatedAsSafetySensitive?.value === "yes"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
+                  </View>
+                  <View style={styles.radioOption}>
+                    <Text style={styles.radioLabel}>No</Text>
+                    <View
+                      style={
+                        job?.jobDesignatedAsSafetySensitive?.value === "no"
+                          ? styles.checkedBox
+                          : styles.checkbox
+                      }
+                    ></View>
                   </View>
                 </View>
               </View>
             </View>
           </View>
-        ))}
-      </View>
-      {/* <Text style={styles.pageNumber}>2</Text> */}
-    </Page>
-  </>
+        </View>
+      ))}
+    </View>
+    {/* <Text style={styles.pageNumber}>2</Text> */}
+  </Page>
 );
 
 export default Page2;

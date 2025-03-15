@@ -5,17 +5,6 @@ import HeaderPDf from "./HeaderPDf";
 const Page6 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
-      {/* <View style={styles.header}>
-        <View>
-          <Text style={styles.companyName}>FFA Inc</Text>
-          <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.address}>Village, IL 60007</Text>
-        </View>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>FFA</Text>
-        </View>
-      </View> */}
-
       <HeaderPDf />
 
       <View style={styles.section}>
@@ -83,7 +72,7 @@ const Page6 = ({ formData }) => {
         </Text>
       </View>
 
-      <Text style={styles.pageNumber}>7</Text>
+      {/* <Text style={styles.pageNumber}>7</Text> */}
     </Page>
   );
 };

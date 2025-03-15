@@ -173,212 +173,199 @@ const Page4 = ({ formData }) => {
   const driverLicenses = formData?.form5?.driverLicensePermit || [];
 
   return (
-    <>
-      <Page size="A4" style={styles.page}>
-        {/* <View style={styles.header}>
-          <View>
-            <Text style={styles.companyName}>FFA Inc</Text>
-            <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-            <Text style={styles.address}>Village, IL 60007</Text>
+    <Page size="A4" style={styles.page}>
+      <HeaderPDf />
+
+      <View style={{ marginTop: 70 }}>
+        <Text style={styles.paragraph}>
+          Provide traffic convictions and forfeitures record for previous 3
+          years
+        </Text>
+      </View>
+
+      <View style={styles.formRow}>
+        <View
+          style={noTrafficConvictions ? styles.checkedBox : styles.checkbox}
+        />
+        <Text style={styles.checkboxLabel}>
+          Check box if no convictions in past 3 years
+        </Text>
+      </View>
+
+      {/* Traffic Convictions Table */}
+      <View style={styles.convictionsTable}>
+        {/* Table Header */}
+        <View style={styles.tableRow}>
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Date</Text>
           </View>
-          <View style={styles.logo}>
-            <Text style={styles.logoText}>FFA</Text>
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Type of Offense</Text>
           </View>
-        </View> */}
-
-        <HeaderPDf />
-
-        <View style={{ marginTop: 70 }}>
-          <Text style={styles.paragraph}>
-            Provide traffic convictions and forfeitures record for previous 3
-            years
-          </Text>
-        </View>
-
-        <View style={styles.formRow}>
-          <View
-            style={noTrafficConvictions ? styles.checkedBox : styles.checkbox}
-          />
-          <Text style={styles.checkboxLabel}>
-            Check box if no convictions in past 3 years
-          </Text>
-        </View>
-
-        {/* Traffic Convictions Table */}
-        <View style={styles.convictionsTable}>
-          {/* Table Header */}
-          <View style={styles.tableRow}>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Date</Text>
-            </View>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Type of Offense</Text>
-            </View>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Location</Text>
-            </View>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Fatalities</Text>
-            </View>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Penalties</Text>
-            </View>
-            <View style={styles.convictionsColHeader}>
-              <Text style={styles.tableCellHeader}>Comments</Text>
-            </View>
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Location</Text>
           </View>
-
-          {/* Table Data - If no convictions, show empty rows */}
-          {noTrafficConvictions || trafficConvictions.length === 0 ? (
-            <>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.convictionsCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.convictionsCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.convictionsCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.convictionsCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          ) : (
-            // If there are convictions, map through them
-            trafficConvictions.map((record, index) => (
-              <View key={index} style={styles.tableRow}>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.date}</Text>
-                </View>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.offense}</Text>
-                </View>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.location}</Text>
-                </View>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.fatalities}</Text>
-                </View>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.penalties}</Text>
-                </View>
-                <View style={styles.convictionsCol}>
-                  <Text style={styles.tableCell}>{record.comments}</Text>
-                </View>
-              </View>
-            ))
-          )}
-        </View>
-
-        <View style={{ marginTop: 30, marginBottom: 15 }}>
-          <Text style={styles.sectionTitle}>
-            List all driver licenses or permits held in the past 3 years
-          </Text>
-        </View>
-
-        {/* Driver Licenses Table */}
-        <View style={styles.licenseTable}>
-          {/* Table Header */}
-          <View style={styles.tableRow}>
-            <View style={styles.licenseColHeader}>
-              <Text style={styles.tableCellHeader}>License No.</Text>
-            </View>
-            <View style={styles.licenseColHeader}>
-              <Text style={styles.tableCellHeader}>Type</Text>
-            </View>
-            <View style={styles.licenseColHeader}>
-              <Text style={styles.tableCellHeader}>State</Text>
-            </View>
-            <View style={styles.licenseColHeader}>
-              <Text style={styles.tableCellHeader}>Expiration Date</Text>
-            </View>
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Fatalities</Text>
           </View>
-
-          {/* Table Data - Show licenses from data or empty rows */}
-          {driverLicenses && driverLicenses.length > 0 ? (
-            driverLicenses.map((license, index) => (
-              <View key={index} style={styles.tableRow}>
-                <View style={styles.licenseCol}>
-                  <Text style={styles.tableCell}>
-                    {license.LicenseNo?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.licenseCol}>
-                  <Text style={styles.tableCell}>
-                    {license.type?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.licenseCol}>
-                  <Text style={styles.tableCell}>
-                    {license.state53?.value || ""}
-                  </Text>
-                </View>
-                <View style={styles.licenseCol}>
-                  <Text style={styles.tableCell}>
-                    {license.expiryDate?.value || ""}
-                  </Text>
-                </View>
-              </View>
-            ))
-          ) : (
-            // If no licenses, show empty rows
-            <>
-              <View style={styles.tableRow}>
-                {[...Array(4)].map((_, i) => (
-                  <View key={i} style={styles.licenseCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(4)].map((_, i) => (
-                  <View key={i} style={styles.licenseCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(4)].map((_, i) => (
-                  <View key={i} style={styles.licenseCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(4)].map((_, i) => (
-                  <View key={i} style={styles.licenseCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          )}
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Penalties</Text>
+          </View>
+          <View style={styles.convictionsColHeader}>
+            <Text style={styles.tableCellHeader}>Comments</Text>
+          </View>
         </View>
 
-        {/* <Text
+        {/* Table Data - If no convictions, show empty rows */}
+        {noTrafficConvictions || trafficConvictions.length === 0 ? (
+          <>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.convictionsCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.convictionsCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.convictionsCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.convictionsCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+          </>
+        ) : (
+          // If there are convictions, map through them
+          trafficConvictions.map((record, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.date}</Text>
+              </View>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.offense}</Text>
+              </View>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.location}</Text>
+              </View>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.fatalities}</Text>
+              </View>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.penalties}</Text>
+              </View>
+              <View style={styles.convictionsCol}>
+                <Text style={styles.tableCell}>{record.comments}</Text>
+              </View>
+            </View>
+          ))
+        )}
+      </View>
+
+      <View style={{ marginTop: 30, marginBottom: 15 }}>
+        <Text style={styles.sectionTitle}>
+          List all driver licenses or permits held in the past 3 years
+        </Text>
+      </View>
+
+      {/* Driver Licenses Table */}
+      <View style={styles.licenseTable}>
+        {/* Table Header */}
+        <View style={styles.tableRow}>
+          <View style={styles.licenseColHeader}>
+            <Text style={styles.tableCellHeader}>License No.</Text>
+          </View>
+          <View style={styles.licenseColHeader}>
+            <Text style={styles.tableCellHeader}>Type</Text>
+          </View>
+          <View style={styles.licenseColHeader}>
+            <Text style={styles.tableCellHeader}>State</Text>
+          </View>
+          <View style={styles.licenseColHeader}>
+            <Text style={styles.tableCellHeader}>Expiration Date</Text>
+          </View>
+        </View>
+
+        {/* Table Data - Show licenses from data or empty rows */}
+        {driverLicenses && driverLicenses.length > 0 ? (
+          driverLicenses.map((license, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={styles.licenseCol}>
+                <Text style={styles.tableCell}>
+                  {license.LicenseNo?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.licenseCol}>
+                <Text style={styles.tableCell}>
+                  {license.type?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.licenseCol}>
+                <Text style={styles.tableCell}>
+                  {license.state53?.value || ""}
+                </Text>
+              </View>
+              <View style={styles.licenseCol}>
+                <Text style={styles.tableCell}>
+                  {license.expiryDate?.value || ""}
+                </Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          // If no licenses, show empty rows
+          <>
+            <View style={styles.tableRow}>
+              {[...Array(4)].map((_, i) => (
+                <View key={i} style={styles.licenseCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(4)].map((_, i) => (
+                <View key={i} style={styles.licenseCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(4)].map((_, i) => (
+                <View key={i} style={styles.licenseCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(4)].map((_, i) => (
+                <View key={i} style={styles.licenseCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+      </View>
+
+      {/* <Text
           style={styles.pageNumber}
           render={({ pageNumber }) => `${pageNumber}`}
           fixed
         /> */}
-      </Page>
-    </>
+    </Page>
   );
 };
 

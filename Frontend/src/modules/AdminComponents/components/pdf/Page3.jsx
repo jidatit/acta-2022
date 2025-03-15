@@ -137,142 +137,134 @@ const styles = StyleSheet.create({
 const Page3 = ({ formData }) => {
   const noAccidents = formData?.form4?.noAccidents || false;
   const accidentRecords = formData?.form4?.accidentRecords || [];
+  // console.log("form 4", formData?.form4);
 
   return (
-    <>
-      <Page size="A4" style={styles.page}>
-        {/* <View style={styles.header}>
-          <View>
-            <Text style={styles.companyName}>FFA Inc</Text>
-            <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-            <Text style={styles.address}>Village, IL 60007</Text>
+    <Page size="A4" style={styles.page}>
+      <HeaderPDf />
+
+      <View style={{ marginTop: 70 }}>
+        <Text style={styles.paragraph}>
+          * The Federal Motor Carrier Safety Regulations (FMCSRS) apply to
+          anyone operating a motor vehicle on a highway in interstate commerce
+          to transport passengers or property when the vehicle: (1) weighs or
+          has a GVWR of 10,001 pounds or more, (2) is designed or used to
+          transport 9 or more passengers, OR (3) is of any size and is used to
+          transport hazardous materials in a quantity requiring placarding.
+        </Text>
+      </View>
+
+      <View style={styles.formTitle}>
+        <Text>Driving Background & Qualifications</Text>
+      </View>
+
+      <View style={{ marginTop: 30, marginBottom: 15 }}>
+        <Text style={styles.paragraph}>
+          Provide accident record and forfeitures record for previous 3 years
+        </Text>
+      </View>
+
+      <View style={styles.formRow}>
+        <View style={noAccidents ? styles.checkedBox : styles.checkbox} />
+        <Text style={[styles.checkboxLabel, { marginBottom: 15 }]}>
+          Check box if no accidents in past 3 years
+        </Text>
+      </View>
+
+      <View style={styles.table}>
+        {/* Table Header */}
+        <View style={styles.tableRow}>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Date</Text>
           </View>
-          <View style={styles.logo}>
-            <Text style={styles.logoText}>FFA</Text>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Type of Accident</Text>
           </View>
-        </View> */}
-
-        <HeaderPDf />
-
-        <View style={{ marginTop: 70 }}>
-          <Text style={styles.paragraph}>
-            * The Federal Motor Carrier Safety Regulations (FMCSRS) apply to
-            anyone operating a motor vehicle on a highway in interstate commerce
-            to transport passengers or property when the vehicle: (1) weighs or
-            has a GVWR of 10,001 pounds or more, (2) is designed or used to
-            transport 9 or more passengers, OR (3) is of any size and is used to
-            transport hazardous materials in a quantity requiring placarding.
-          </Text>
-        </View>
-
-        <View style={styles.formTitle}>
-          <Text>Driving Background & Qualifications</Text>
-        </View>
-
-        <View style={{ marginTop: 30, marginBottom: 15 }}>
-          <Text style={styles.paragraph}>
-            Provide accident record and forfeitures record for previous 3 years
-          </Text>
-        </View>
-
-        <View style={styles.formRow}>
-          <View style={noAccidents ? styles.checkedBox : styles.checkbox} />
-          <Text style={[styles.checkboxLabel, { marginBottom: 15 }]}>
-            Check box if no accidents in past 3 years
-          </Text>
-        </View>
-
-        <View style={styles.table}>
-          {/* Table Header */}
-          <View style={styles.tableRow}>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Date</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Type of Accident</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Location</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Fatalities</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Penalties</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Comments</Text>
-            </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Location</Text>
           </View>
-
-          {/* Table Data - If no accidents, show empty rows */}
-          {noAccidents || accidentRecords.length === 0 ? (
-            <>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.tableCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.tableCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.tableCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.tableRow}>
-                {[...Array(6)].map((_, i) => (
-                  <View key={i} style={styles.tableCol}>
-                    <Text style={styles.tableCell}></Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          ) : (
-            // If there are accidents, map through them
-            accidentRecords.map((record, index) => (
-              <View key={index} style={styles.tableRow}>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.date}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.type}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.location}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.fatalities}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.penalties}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{record.comments}</Text>
-                </View>
-              </View>
-            ))
-          )}
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Fatalities</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Penalties</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Comments</Text>
+          </View>
         </View>
 
-        {/* <Text
-          style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
-          fixed
-        /> */}
-      </Page>
-    </>
+        {/* Table Data - If no accidents, show empty rows */}
+        {noAccidents || accidentRecords.length === 0 ? (
+          <>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.tableCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.tableCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.tableCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.tableRow}>
+              {[...Array(6)].map((_, i) => (
+                <View key={i} style={styles.tableCol}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
+              ))}
+            </View>
+          </>
+        ) : (
+          // If there are accidents, map through them
+          accidentRecords.map((record, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.date41?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.accidentType?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.location41?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.fatalities?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.penalties41?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {record.comments41?.value || "N/A"}
+                </Text>
+              </View>
+            </View>
+          ))
+        )}
+      </View>
+    </Page>
   );
 };
 

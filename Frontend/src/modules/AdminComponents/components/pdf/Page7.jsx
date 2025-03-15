@@ -93,92 +93,6 @@ const Page7 = ({ formData }) => {
   );
 };
 
-//   page: {
-//     padding: 20,
-//     backgroundColor: "white",
-//     fontFamily: "Helvetica",
-//     marginTop: 30,
-//   },
-//   header: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginBottom: 20,
-//   },
-//   logo: {
-//     width: 50,
-//     height: 50,
-//     borderRadius: 25,
-//     backgroundColor: "black",
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   logoText: {
-//     color: "#F59E0B",
-//     fontWeight: "bold",
-//     fontSize: 16,
-//     textAlign: "center",
-//   },
-//   companyName: {
-//     fontSize: 18,
-//     fontWeight: "bold",
-//   },
-//   address: {
-//     fontSize: 16,
-//   },
-//   section: {
-//     marginBottom: 15,
-//   },
-//   sectionTitle: {
-//     fontSize: 12,
-//     fontWeight: "bold",
-//     textAlign: "center",
-//     marginBottom: 10,
-//     marginTop: 10,
-//   },
-//   paragraph: {
-//     fontSize: 10,
-//     lineHeight: 1.5,
-//     textAlign: "justify",
-//   },
-//   formField: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     marginBottom: 15,
-//   },
-//   label: {
-//     fontSize: 10,
-//     marginRight: 5,
-//     width: 100,
-//   },
-//   inputLine: {
-//     flex: 1,
-//     borderBottomWidth: 1,
-//     borderBottomColor: "black",
-//     marginLeft: 5,
-//     paddingBottom: 2,
-//   },
-//   signatureSection: {
-//     marginTop: 30,
-//   },
-//   signatureLine: {
-//     borderTopWidth: 1,
-//     borderTopColor: "black",
-//     marginBottom: 5,
-//   },
-//   signatureLabel: {
-//     fontSize: 10,
-//     marginTop: 5,
-//   },
-//   pageNumber: {
-//     position: "absolute",
-//     bottom: 20,
-//     right: 0,
-//     left: 0,
-//     textAlign: "center",
-//     fontSize: 12,
-//   },
-// });
 const styles = StyleSheet.create({
   page: {
     padding: 20,
@@ -268,19 +182,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "black",
     marginLeft: 5,
     paddingBottom: 2,
-    maxWidth: "50%",
+    maxWidth: "30%",
   },
-  signatureSection: {
-    marginTop: 30,
-  },
-  signatureLine: {
-    borderTopWidth: 1,
-    borderTopColor: "black",
-    marginBottom: 5,
-  },
-  signatureLabel: {
-    fontSize: 10,
-    marginTop: 5,
-  },
+  // signatureSection: {
+  //   marginTop: 30,
+  // },
 });
+
 export default Page7;

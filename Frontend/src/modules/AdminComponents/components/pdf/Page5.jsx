@@ -148,17 +148,6 @@ const Page5 = ({ formData }) => {
 
   return (
     <Page size="A4" style={styles.page}>
-      {/* <View style={styles.header}>
-        <View>
-          <Text style={styles.companyName}>FFA Inc</Text>
-          <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.address}>Village, IL 60007</Text>
-        </View>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>FFA</Text>
-        </View>
-      </View> */}
-
       <HeaderPDf />
 
       <Text style={styles.title}>Driving Experience</Text>
