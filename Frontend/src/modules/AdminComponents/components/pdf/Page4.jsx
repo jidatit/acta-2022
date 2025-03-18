@@ -103,9 +103,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  // tableCell: {
+  //   fontSize: 12,
+  //   textAlign: "center",
+  // },
   tableCell: {
     fontSize: 12,
     textAlign: "center",
+    // Add these properties for text wrapping
+    flexWrap: "wrap",
   },
   pageNumber: {
     position: "absolute",
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
-    height: 35,
+    minHeight: 35,
   },
   licenseTable: {
     display: "table",
@@ -163,14 +169,18 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
-    height: 35,
+    minHeight: 35,
   },
 });
 
 const Page4 = ({ formData }) => {
   const noTrafficConvictions = formData?.form4?.noTrafficConvictions || false;
+  console.log("noTrafficConvictions", noTrafficConvictions);
+
   const trafficConvictions = formData?.form4?.trafficConvictions || [];
+  console.log("trafficConvictions", trafficConvictions);
   const driverLicenses = formData?.form5?.driverLicensePermit || [];
+  console.log("driverLicenses", driverLicenses);
 
   return (
     <Page size="A4" style={styles.page}>
@@ -253,25 +263,60 @@ const Page4 = ({ formData }) => {
           trafficConvictions.map((record, index) => (
             <View key={index} style={styles.tableRow}>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.date}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.date42?.value || " "}
+                </Text>
               </View>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.offense}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.offenseType?.value || " "}
+                </Text>
               </View>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.location}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.location42?.value || ""}
+                </Text>
               </View>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.fatalities}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.fatalities42?.value || ""}
+                </Text>
               </View>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.penalties}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.penalties42?.value || ""}
+                </Text>
               </View>
               <View style={styles.convictionsCol}>
-                <Text style={styles.tableCell}>{record.comments}</Text>
+                <Text style={styles.tableCell}>
+                  {record?.comments42?.value || ""}
+                </Text>
               </View>
             </View>
           ))
+          // trafficConvictions.map((record, index) => (
+          //   <View key={index} style={styles.tableRow}>
+          //     <View style={styles.convictionsCol}>
+          //       <Text style={styles.tableCell}>{record.date42?.value}</Text>
+          //     </View>
+          //     <View style={styles.convictionsCol}>
+          //       <Text style={styles.tableCell}>
+          //         {record.offenseType?.value}
+          //       </Text>
+          //     </View>
+          //     <View style={styles.convictionsCol}>
+          //       <Text style={styles.tableCell}>{record.location42?.value}</Text>
+          //     </View>
+          //     <View style={styles.convictionsCol}>
+          //       <Text style={styles.tableCell}>
+          //         {record.penalties42?.value}
+          //       </Text>
+          //     </View>
+          //     <View style={styles.convictionsCol}>
+          //       <Text style={styles.tableCell}>{record.comments42?.value}</Text>
+          //     </View>
+          //   </View>
+          // ))
         )}
       </View>
 
@@ -305,22 +350,22 @@ const Page4 = ({ formData }) => {
             <View key={index} style={styles.tableRow}>
               <View style={styles.licenseCol}>
                 <Text style={styles.tableCell}>
-                  {license.LicenseNo?.value || ""}
+                  {license?.LicenseNo?.value || ""}
                 </Text>
               </View>
               <View style={styles.licenseCol}>
                 <Text style={styles.tableCell}>
-                  {license.type?.value || ""}
+                  {license?.type?.value || ""}
                 </Text>
               </View>
               <View style={styles.licenseCol}>
                 <Text style={styles.tableCell}>
-                  {license.state53?.value || ""}
+                  {license?.state53?.value || ""}
                 </Text>
               </View>
               <View style={styles.licenseCol}>
                 <Text style={styles.tableCell}>
-                  {license.expiryDate?.value || ""}
+                  {license?.expiryDate?.value || ""}
                 </Text>
               </View>
             </View>

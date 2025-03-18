@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
-    height: 35,
+    minHeight: 35,
   },
   tableCellHeader: {
     fontSize: 10,
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
   tableCell: {
     fontSize: 12,
     textAlign: "center",
+    flexWrap: "wrap",
   },
   pageNumber: {
     position: "absolute",

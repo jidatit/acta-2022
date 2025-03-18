@@ -120,8 +120,8 @@ const MyDocument = ({ formData }) => (
 
     <Page9 formData={formData} />
 
-    {/* <Page10 formData={formData} /> */}
-    {/* 
+    <Page10 formData={formData} />
+
     <Page11 formData={formData} />
 
     <Page12 formData={formData} />
@@ -136,7 +136,7 @@ const MyDocument = ({ formData }) => (
     <Page17 />
     <Page18 />
     <Page19 />
-    <Page20 /> */}
+    <Page20 />
   </Document>
 );
 
@@ -161,6 +161,7 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
 
           const data = docSnap.data();
           setFormData(data);
+          console.log("data", data);
         }
       } catch (error) {
         console.error("Error fetching form data:", error);

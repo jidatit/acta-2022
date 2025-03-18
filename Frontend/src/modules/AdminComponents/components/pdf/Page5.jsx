@@ -97,7 +97,7 @@ const Page5 = ({ formData }) => {
       borderLeftWidth: 0,
       borderTopWidth: 0,
       padding: 5,
-      height: 35,
+      minHeight: 35,
     },
     tableCellHeader: {
       fontSize: 10,
@@ -107,6 +107,7 @@ const Page5 = ({ formData }) => {
     tableCell: {
       fontSize: 10,
       textAlign: "center",
+      flexWrap: "wrap",
     },
     sectionTitle: {
       fontSize: 16,
