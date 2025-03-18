@@ -828,7 +828,6 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       handleDriverLicenseChange(newValue, "expiryDate", index)
                     }
                     disabled={isDisabled}
-                    maxDate={dayjs()}
                     slotProps={{
                       textField: {
                         fullWidth: true,
@@ -861,19 +860,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               )}
             </div>
           ))}
-          {currentUser.userType !== "Admin" ? (
-            <div className="flex items-end justify-end w-full">
-              <button
-                type="button"
-                onClick={addDriverLicenseFields}
-                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-              >
-                Add More
-              </button>
-            </div>
-          ) : (
-            <></>
-          )}
+
+          <div className="flex items-end justify-end w-full">
+            <button
+              type="button"
+              onClick={addDriverLicenseFields}
+              className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+            >
+              Add More
+            </button>
+          </div>
         </form>
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
@@ -1172,19 +1168,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               )}
             </div>
           ))}
-          {currentUser.userType !== "Admin" ? (
-            <div className="flex items-end justify-end w-full">
-              <button
-                type="button"
-                onClick={addDriverExperience}
-                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-              >
-                Add More
-              </button>
-            </div>
-          ) : (
-            <></>
-          )}
+
+          <div className="flex items-end justify-end w-full">
+            <button
+              type="button"
+              onClick={addDriverExperience}
+              className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+            >
+              Add More
+            </button>
+          </div>
         </form>
         <form className="w-full bg-white shadow-md">
           <div className="flex flex-row mb-6 gap-x-2">
@@ -1416,17 +1409,16 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
               )}
             </div>
           ))}
-          {currentUser.userType !== "Admin" && (
-            <div className="flex items-end justify-end w-full">
-              <button
-                type="button"
-                onClick={addEducationHistory}
-                className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-              >
-                Add More
-              </button>
-            </div>
-          )}
+
+          <div className="flex items-end justify-end w-full">
+            <button
+              type="button"
+              onClick={addEducationHistory}
+              className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+            >
+              Add More
+            </button>
+          </div>
         </form>
 
         <form className="w-full bg-white shadow-md">

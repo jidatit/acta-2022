@@ -605,17 +605,16 @@ const ApplicationForm6 = ({ uid, clicked, setClicked }) => {
                     </div>
                   </div>
                 ))}
-                {currentUser.userType !== "Admin" && (
-                  <div className="flex items-end justify-end w-full">
-                    <button
-                      type="button"
-                      onClick={addViolationFields}
-                      className="px-6 py-2 mb-4 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-                    >
-                      Add More
-                    </button>
-                  </div>
-                )}
+
+                <div className="flex items-end justify-end w-full">
+                  <button
+                    type="button"
+                    onClick={addViolationFields}
+                    className="px-6 py-2 mb-4 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+                  >
+                    Add More
+                  </button>
+                </div>
               </>
             )}
           </form>

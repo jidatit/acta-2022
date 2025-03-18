@@ -1124,17 +1124,16 @@ const ApplicationForm4 = ({ uid, clicked, setClicked }) => {
                   )}
                 </div>
               ))}
-              {currentUser.userType !== "Admin" && (
-                <div className="flex items-end justify-end w-full">
-                  <button
-                    type="button"
-                    onClick={addTrafficFields}
-                    className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-                  >
-                    Add More
-                  </button>
-                </div>
-              )}
+
+              <div className="flex items-end justify-end w-full">
+                <button
+                  type="button"
+                  onClick={addTrafficFields}
+                  className="px-6 py-2 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+                >
+                  Add More
+                </button>
+              </div>
             </>
           )}
         </form>

@@ -1185,7 +1185,6 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
               onChange={(newValue) =>
                 handleDateChange("CDLExpirationDate", newValue)
               }
-              maxDate={new Date().toISOString().split("T")[0]}
               disabled={isDisabled}
               error={!!errors.CDLExpirationDate}
               errorMessage={errors.CDLExpirationDate}

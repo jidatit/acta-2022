@@ -488,17 +488,16 @@ const ApplicationForm2 = ({ uid, clicked, setClicked }) => {
                 </divs>
               ))}
             {/* Add More button moved inside form but after fields */}
-            {currentUser.userType !== "Admin" && (
-              <div className="flex justify-end w-full mt-6">
-                <button
-                  type="button"
-                  onClick={addAddressFields}
-                  className="  px-6 py-3 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
-                >
-                  Add More
-                </button>
-              </div>
-            )}
+
+            <div className="flex justify-end w-full mt-6">
+              <button
+                type="button"
+                onClick={addAddressFields}
+                className="  px-6 py-3 font-semibold text-white bg-black rounded-md hover:bg-[#353535]"
+              >
+                Add More
+              </button>
+            </div>
           </form>
         </div>
         {currentUser.userType !== "Admin" && (
