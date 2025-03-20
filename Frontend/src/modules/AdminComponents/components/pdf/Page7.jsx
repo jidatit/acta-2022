@@ -1,10 +1,11 @@
 import React from "react";
 import { Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import HeaderPDf from "./HeaderPDf";
 
 const Page7 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -13,7 +14,9 @@ const Page7 = ({ formData }) => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>

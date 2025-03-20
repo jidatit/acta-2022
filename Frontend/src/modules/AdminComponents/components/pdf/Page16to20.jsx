@@ -1,11 +1,12 @@
 import React from "react";
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import HeaderPDf from "./HeaderPDf";
 
 // Page 17 - Road Test Examination
 export const Page16 = () => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -14,7 +15,9 @@ export const Page16 = () => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Road Test Examination</Text>
@@ -150,7 +153,7 @@ export const Page16 = () => {
 export const Page17 = () => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -159,7 +162,9 @@ export const Page17 = () => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
@@ -272,7 +277,7 @@ export const Page17 = () => {
 export const Page18 = () => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -281,7 +286,8 @@ export const Page18 = () => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { fontWeight: "bold" }]}>
@@ -363,7 +369,7 @@ export const Page18 = () => {
 export const Page19 = () => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -372,7 +378,8 @@ export const Page19 = () => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>
@@ -459,7 +466,7 @@ export const Page19 = () => {
 export const Page20 = () => {
   return (
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View>
           <Text style={styles.companyName}>FFA Inc</Text>
           <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
@@ -468,7 +475,8 @@ export const Page20 = () => {
         <View style={styles.logo}>
           <Text style={styles.logoText}>FFA</Text>
         </View>
-      </View>
+      </View> */}
+      <HeaderPDf />
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>

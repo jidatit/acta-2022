@@ -1,5 +1,12 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -138,6 +145,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 13,
   },
+  logoImg: {
+    width: 40,
+    height: 40,
+    objectFit: "contain",
+  },
 });
 
 // Create Document Component
@@ -168,10 +180,11 @@ const Page1 = ({ formData }) => {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.logo}>
-            <Text style={styles.logoText}>FFA</Text>
+            {/* <Text style={styles.logoText}>FFA</Text> */}
+            <Image style={styles.logoImg} src="/ffa.png" />
           </View>
-          <Text style={styles.title}>Driver Application</Text>
         </View>
+        <Text style={styles.title}>Driver Application</Text>
       </View>
 
       {/* <View style={styles.divider} /> */}

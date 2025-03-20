@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Page,
   Text,
@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  logoImg: {
+    width: 40,
+    height: 40,
+    objectFit: "contain",
+  },
   logoText: {
     color: "#F59E0B",
     fontWeight: "bold",
@@ -53,15 +58,27 @@ const styles = StyleSheet.create({
 });
 
 const HeaderPDf = () => {
+  const [imageBase64, setImageBase64] = useState(null);
+
+  // useEffect(() => {
+  //   fetch("/ffa.png") // Ensure it's inside the public folder
+  //     .then((res) => res.blob())
+  //     .then((blob) => {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => setImageBase64(reader.result);
+  //       reader.readAsDataURL(blob);
+  //     });
+  // }, []);
   return (
     <View style={styles.header}>
       <View>
         <Text style={styles.companyName}>FFA Inc</Text>
         <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-        <Text style={styles.address}>Village, IL 60007</Text>
+        <Text style={styles.address}>Village, IL 60007 </Text>
       </View>
       <View style={styles.logo}>
-        <Text style={styles.logoText}>FFA </Text>
+        {/* <Image style={styles.logoText} src="/ffa.png" /> */}
+        <Image style={styles.logoImg} src="/ffa.png" />
       </View>
     </View>
   );
