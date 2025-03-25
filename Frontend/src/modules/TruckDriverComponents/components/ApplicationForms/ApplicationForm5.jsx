@@ -1012,7 +1012,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       textField: {
                         fullWidth: true,
                         error: !!driverExperienceErrors?.[index]?.DateFrom51,
-                        helperText: driverExperienceErrors?.[index]?.DateFrom51,
+
                         sx: {
                           "& .MuiInputBase-root": {
                             backgroundColor: isDisabled
@@ -1062,7 +1062,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       textField: {
                         fullWidth: true,
                         error: !!driverExperienceErrors?.[index]?.DateTo51,
-                        helperText: driverExperienceErrors?.[index]?.DateTo51,
+
                         sx: {
                           "& .MuiInputBase-root": {
                             backgroundColor: isDisabled
@@ -1288,7 +1288,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       textField: {
                         fullWidth: true,
                         error: !!driverEducationError[index]?.DateFrom52,
-                        helperText: driverEducationError[index]?.DateFrom52,
+
                         sx: {
                           "& .MuiInputBase-root": {
                             backgroundColor: isDisabled
@@ -1338,7 +1338,7 @@ const ApplicationForm5 = ({ uid, clicked, setClicked }) => {
                       textField: {
                         fullWidth: true,
                         error: !!driverEducationError[index]?.DateTo52,
-                        helperText: driverEducationError[index]?.DateTo52,
+
                         sx: {
                           "& .MuiInputBase-root": {
                             backgroundColor: isDisabled

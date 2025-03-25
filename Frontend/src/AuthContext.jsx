@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
     cellPhone: { value: "", status: "pending", note: "" },
     Email: { value: "", status: "pending", note: "" },
     EmergencyContact: { value: "", status: "pending", note: "" },
+    EmergencyPhone: { value: "", status: "pending", note: "" },
     Relationship: { value: "", status: "pending", note: "" },
     CDL: { value: "", status: "pending", note: "" },
     CDLState: { value: "", status: "pending", note: "" },
@@ -315,6 +316,7 @@ export const AuthProvider = ({ children }) => {
   const clearLocalStorageAndState = () => {
     // Clear all relevant localStorage items
     localStorage.removeItem("formData1");
+    localStorage.removeItem("formData");
     localStorage.removeItem("formData8");
     localStorage.removeItem("formData9");
     localStorage.removeItem("formData2");
@@ -352,6 +354,7 @@ export const AuthProvider = ({ children }) => {
       cellPhone: { value: "", status: "pending", note: "" },
       Email: { value: "", status: "pending", note: "" },
       EmergencyContact: { value: "", status: "pending", note: "" },
+      EmergencyPhone: { value: "", status: "pending", note: "" },
       Relationship: { value: "", status: "pending", note: "" },
       CDL: { value: "", status: "pending", note: "" },
       CDLState: { value: "", status: "pending", note: "" },
@@ -602,7 +605,187 @@ export const AuthProvider = ({ children }) => {
       setIsEmailVerified(null);
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isEmailVerified");
+      localStorage.removeItem("formData1");
+      localStorage.removeItem("formData");
+      localStorage.removeItem("formData8");
+      localStorage.removeItem("formData9");
+      localStorage.removeItem("formData2");
+      localStorage.removeItem("formData3");
+      localStorage.removeItem("addressField4");
+      localStorage.removeItem("trafficConvictionField4");
+      localStorage.removeItem("noAccidentsChecked");
+      localStorage.removeItem("noTrafficConvictions");
+      localStorage.removeItem("driverLicensePermit5");
+      localStorage.removeItem("driverExperience5");
+      localStorage.removeItem("educationHistory5");
+      localStorage.removeItem("extraSkills5");
+      localStorage.removeItem("violationField6");
+      localStorage.removeItem("noViolationChecked");
+      localStorage.removeItem("alcoholDrugTest7");
+      localStorage.removeItem("completedForms");
+      localStorage.removeItem("completedSections");
 
+      // Reset all state variables to their empty/default values
+      setFormData1({
+        applicantName: { value: "", status: "pending", note: "" },
+        appliedDate: { value: "", status: "pending", note: "" },
+        positionApplied: { value: "", status: "pending", note: "" },
+        ssn: { value: "", status: "pending", note: "" },
+        DOB: { value: "", status: "pending", note: "" },
+        gender: { value: "", status: "pending", note: "" },
+        referredBy: { value: "", status: "pending", note: "" },
+        legalRightToWork: { value: "", status: "pending", note: "" },
+        payExpected: { value: "", status: "pending", note: "" },
+        street1: { value: "", status: "pending", note: "" },
+        street2: { value: "", status: "pending", note: "" },
+        city11: { value: "", status: "pending", note: "" },
+        state11: { value: "", status: "pending", note: "" },
+        zipCode11: { value: "", status: "pending", note: "" },
+        cellPhone: { value: "", status: "pending", note: "" },
+        Email: { value: "", status: "pending", note: "" },
+        EmergencyContact: { value: "", status: "pending", note: "" },
+        EmergencyPhone: { value: "", status: "pending", note: "" },
+        Relationship: { value: "", status: "pending", note: "" },
+        CDL: { value: "", status: "pending", note: "" },
+        CDLState: { value: "", status: "pending", note: "" },
+        CDLClass: { value: "", status: "pending", note: "" },
+        CDLExpirationDate: { value: "", status: "pending", note: "" },
+        EverBeenDeniedALicense: { value: "", status: "pending", note: "" },
+        PermitPrivilegeOfLicense: { value: "", status: "pending", note: "" },
+        TestedPositiveOrRefusedDotDrug: {
+          value: "",
+          status: "pending",
+          note: "",
+        },
+        EverConvictedOfFelony: { value: "", status: "pending", note: "" },
+      });
+      setFormData8({
+        day1: { value: "", status: "pending", note: "" },
+        day2: { value: "", status: "pending", note: "" },
+        day3: { value: "", status: "pending", note: "" },
+        day4: { value: "", status: "pending", note: "" },
+        day5: { value: "", status: "pending", note: "" },
+        day6: { value: "", status: "pending", note: "" },
+        day7: { value: "", status: "pending", note: "" },
+        day1HoursWorked: { value: "", status: "pending", note: "" },
+        day2HoursWorked: { value: "", status: "pending", note: "" },
+        day3HoursWorked: { value: "", status: "pending", note: "" },
+        day4HoursWorked: { value: "", status: "pending", note: "" },
+        day5HoursWorked: { value: "", status: "pending", note: "" },
+        day6HoursWorked: { value: "", status: "pending", note: "" },
+        day7HoursWorked: { value: "", status: "pending", note: "" },
+        TotalHours: { value: "", status: "pending", note: "" },
+        relievedTime: { value: "00:00", status: "pending", note: "" },
+        relievedDate: { value: "", status: "pending", note: "" },
+      });
+      setFormData9([
+        {
+          currentlyWorking: { value: "", status: "pending", note: "" },
+          workingForAnotherEmployer: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setFormData([
+        {
+          street12: { value: "", status: "pending", note: "" },
+          street22: { value: "", status: "pending", note: "" },
+          city22: { value: "", status: "pending", note: "" },
+          state22: { value: "", status: "pending", note: "" },
+          zipCode22: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setFormData3([
+        {
+          companyName31: { value: "", status: "pending", note: "" },
+          street31: { value: "", status: "pending", note: "" },
+          city31: { value: "", status: "pending", note: "" },
+          zipCode31: { value: "", status: "pending", note: "" },
+          contactPerson: { value: "", status: "pending", note: "" },
+          phone31: { value: "", status: "pending", note: "" },
+          fax1: { value: "", status: "pending", note: "" },
+          from31: { value: "", status: "pending", note: "" },
+          to31: { value: "", status: "pending", note: "" },
+          position: { value: "", status: "pending", note: "" },
+          salary: { value: "", status: "pending", note: "" },
+          leavingReason: { value: "", status: "pending", note: "" },
+          subjectToFMCSRs: { value: "", status: "pending", note: "" },
+          jobDesignatedAsSafetySensitive: {
+            value: "",
+            status: "pending",
+            note: "",
+          },
+        },
+      ]);
+      setAddressField([
+        {
+          date41: { value: "", status: "pending", note: "" },
+          accidentType: { value: "", status: "pending", note: "" },
+          location41: { value: "", status: "pending", note: "" },
+          fatalities: { value: "", status: "pending", note: "" },
+          penalties41: { value: "", status: "pending", note: "" },
+          comments41: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setTrafficConvictionField([
+        {
+          date42: { value: "", status: "pending", note: "" },
+          offenseType: { value: "", status: "pending", note: "" },
+          location42: { value: "", status: "pending", note: "" },
+          penalties42: { value: "", status: "pending", note: "" },
+          comments42: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setDriverLicensePermit([
+        {
+          LicenseNo: { value: "", status: "pending", note: "" },
+          type: { value: "", status: "pending", note: "" },
+          state53: { value: "", status: "pending", note: "" },
+          expiryDate: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setNoAccidentsChecked(false);
+      setNoTrafficConvictionsChecked(false);
+
+      setDriverExperience([
+        {
+          statesOperated: { value: "", status: "pending", note: "" },
+          ClassEquipment: { value: "", status: "pending", note: "" },
+          EquipmentType: { value: "", status: "pending", note: "" },
+          DateFrom51: { value: "", status: "pending", note: "" },
+          DateTo51: { value: "", status: "pending", note: "" },
+          ApproximatelyMiles: { value: "", status: "pending", note: "" },
+          comments51: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setEducationHistory([
+        {
+          school: { value: "", status: "pending", note: "" },
+          educationLevel: { value: "", status: "pending", note: "" },
+          DateFrom52: { value: "", status: "pending", note: "" },
+          DateTo52: { value: "", status: "pending", note: "" },
+          comments52: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setExtraSkills({
+        safeDrivingAwards: { value: "", status: "pending", note: "" },
+        specialTraining: { value: "", status: "pending", note: "" },
+        otherSkills: { value: "", status: "pending", note: "" },
+      });
+      setViolationField([
+        {
+          date61: { value: "", status: "pending", note: "" },
+          offense61: { value: "", status: "pending", note: "" },
+          location61: { value: "", status: "pending", note: "" },
+          vehicleOperated: { value: "", status: "pending", note: "" },
+        },
+      ]);
+
+      setAlcoholDrugTesting([
+        {
+          testedPositiveEver: { value: "", status: "pending", note: "" },
+          DOTCompletion: { value: "", status: "pending", note: "" },
+        },
+      ]);
+      setNoViolationChecked(false);
       // Clear the current user
       // Redirect to the homepage or login page
       //console.log("User signed out successfully");

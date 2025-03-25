@@ -87,6 +87,7 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
       "zipCode11",
       "cellPhone",
       "EmergencyContact",
+      "EmergencyPhone",
       "Relationship",
       "CDL",
       "CDLState",
@@ -1035,7 +1036,33 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 </p>
               )}
             </div>
-
+            <div>
+              <SingleLabelLogic
+                htmlFor="EmergencyPhone"
+                labelName="Emergency Phone"
+                value={formData?.EmergencyPhone?.value}
+                status={formData?.EmergencyPhone?.status}
+                note={formData?.EmergencyPhone?.note}
+                fieldName="EmergencyPhone"
+                uid={uid}
+              />
+              <input
+                type="number"
+                name="EmergencyPhone"
+                id="EmergencyPhone"
+                value={formData?.EmergencyPhone?.value}
+                onChange={handleChange}
+                disabled={isDisabled}
+                className={`w-full p-2 mt-1 border rounded-md ${
+                  errors.EmergencyPhone ? "border-red-500 border-2" : ""
+                } ${isDisabled ? "text-gray-400" : "bg-white border-gray-300"}`}
+              />
+              {errors.EmergencyPhone && (
+                <p className="mt-1 text-[15px] font-radios text-red-500 ">
+                  {errors.EmergencyPhone}
+                </p>
+              )}
+            </div>
             <div className="mb-6">
               <SingleLabelLogic
                 htmlFor="Relationship"
@@ -1153,48 +1180,30 @@ const ApplicationForm = ({ uid, clicked, setClicked }) => {
                 </p>
               )}
             </div>
+            <div className="mb-6">
+              <SingleLabelLogic
+                htmlFor="CDLExpirationDate"
+                labelName="CDL Expiration Date"
+                value={formData?.CDLExpirationDate?.value}
+                status={formData?.CDLExpirationDate?.status}
+                note={formData?.CDLExpirationDate?.note}
+                fieldName="CDLExpirationDate"
+                uid={uid}
+              />
+              <CustomDatePicker
+                value={formData?.CDLExpirationDate?.value}
+                onChange={(newValue) =>
+                  handleDateChange("CDLExpirationDate", newValue)
+                }
+                disabled={isDisabled}
+                error={!!errors.CDLExpirationDate}
+                errorMessage={errors.CDLExpirationDate}
+              />
+            </div>
           </div>
 
           {/* Line 9: Additional Questions */}
-          <div className="mb-6">
-            <SingleLabelLogic
-              htmlFor="CDLExpirationDate"
-              labelName="CDL Expiration Date"
-              value={formData?.CDLExpirationDate?.value}
-              status={formData?.CDLExpirationDate?.status}
-              note={formData?.CDLExpirationDate?.note}
-              fieldName="CDLExpirationDate"
-              uid={uid}
-            />
-            {/* <input
-              type="date"
-              name="CDLExpirationDate"
-              id="CDLExpirationDate"
-              value={formData?.CDLExpirationDate?.value}
-              onChange={handleChange}
-              min={new Date().toISOString().split("T")[0]}
-              disabled={isDisabled}
-              className={`w-full p-2 mt-1 border rounded-md ${
-                errors.CDLExpirationDate ? "border-red-500 border-2" : ""
-              } ${
-                isDisabled ? "text-gray-400" : "bg-white border-gray-300" // Add gray background if has value
-              }`}
-            /> */}
-            <CustomDatePicker
-              value={formData?.CDLExpirationDate?.value}
-              onChange={(newValue) =>
-                handleDateChange("CDLExpirationDate", newValue)
-              }
-              disabled={isDisabled}
-              error={!!errors.CDLExpirationDate}
-              errorMessage={errors.CDLExpirationDate}
-            />
-            {/* {errors.CDLExpirationDate && (
-              <p className="mt-1 text-[15px] font-radios text-red-500 ">
-                {errors.CDLExpirationDate}
-              </p>
-            )} */}
-          </div>
+
           <div className="mb-6">
             <SingleLabelLogic
               htmlFor="EverBeenDeniedALicense"
