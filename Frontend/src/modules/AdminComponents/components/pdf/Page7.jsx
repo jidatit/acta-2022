@@ -73,12 +73,17 @@ const Page7 = ({ formData }) => {
 
       <View style={styles.formField}>
         <Text style={styles.label}>Applicant Name:</Text>
-        <View style={styles.inputLine} />
+        <Text style={styles.input} >{formData?.form1?.applicantName?.value}</Text> 
+
       </View>
 
       <View style={styles.formField}>
         <Text style={styles.label}>Social Security #:</Text>
-        <View style={styles.inputLine} />
+        {/* <View style={styles.inputLine} />
+
+         */}
+        <Text style={styles.input} >{formData?.form1?.ssn?.value}</Text> 
+
       </View>
 
       <View style={styles.formField}>
@@ -134,6 +139,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
 
     marginBottom: 10,
+  },
+   input: {
+    flex: 1,
+    borderBottom: 1,
+    borderBottomColor: "black",
+    fontSize: 13,
+    marginRight: 10,
+    maxWidth: "30%",
+
   },
   sectionTitle: {
     fontSize: 14,

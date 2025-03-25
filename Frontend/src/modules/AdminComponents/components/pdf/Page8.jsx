@@ -128,6 +128,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
   },
+  input: {
+    
+    fontSize: 13,
+   
+
+  },
 });
 
 // Page 9: Certification Of Compliance With Driver License Requirements
@@ -199,15 +205,20 @@ const Page8 = ({ formData }) => (
     <View style={styles.formField}>
       <Text style={styles.label}>Driver's Name:</Text>
       <View style={styles.inputLine}>
-        <Text>{formData?.form5?.driverLicensePermit?.[0]?.fullName || ""}</Text>
+        <Text style={styles.input}>
+          {formData?.form1?.applicantName?.value || ""}
+
+        </Text>
       </View>
     </View>
 
     <View style={styles.formField}>
       <Text style={styles.label}>Driver's License #:</Text>
       <View style={styles.inputLine}>
-        <Text>
-          {formData?.form5?.driverLicensePermit?.[0]?.licenseNumber || ""}
+        <Text style={styles.input}>
+          {/* {formData?.form5?.driverLicensePermit?.[0]?.licenseNumber || ""} */}
+          {formData?.form1?.CDL?.value || ""}
+
         </Text>
       </View>
     </View>
@@ -215,7 +226,11 @@ const Page8 = ({ formData }) => (
     <View style={styles.formField}>
       <Text style={styles.label}>State:</Text>
       <View style={styles.inputLine}>
-        <Text>{formData?.form5?.driverLicensePermit?.[0]?.state || ""}</Text>
+        <Text style={styles.input}>
+          {/* {formData?.form5?.driverLicensePermit?.[0]?.state || ""} */}
+          {formData?.form1?.CDLState?.value || ""}
+
+        </Text>
       </View>
     </View>
 

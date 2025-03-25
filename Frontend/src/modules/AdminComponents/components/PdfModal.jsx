@@ -136,7 +136,7 @@ const MyDocument = ({ formData }) => (
     <Page17 />
     <Page18 />
     <Page19 />
-    <Page20 />
+    <Page20 formData={formData} />
   </Document>
 );
 

@@ -1,6 +1,18 @@
 import React from "react";
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Font,
+} from "@react-pdf/renderer";
 import HeaderPDf from "./HeaderPDf";
+
+// Font.register({
+//   family: "NotoSans",
+//   src: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosans/NotoSans-Regular.ttf",
+// });
 
 // Page 17 - Road Test Examination
 export const Page16 = () => {
@@ -45,7 +57,7 @@ export const Page16 = () => {
       <View style={styles.checklistSection}>
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             The pretrip inspection. (As required by Sec. 392.7)
@@ -54,7 +66,7 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Coupling and uncoupling of combination units, if the equipment he or
@@ -64,7 +76,7 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Placing the equipment in operation.
@@ -73,7 +85,7 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Use of vehicle's controls and emergency equipment.
@@ -82,7 +94,7 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Operating the vehicle in traffic and while passing other vehicles.
@@ -91,14 +103,14 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>Turning the vehicle.</Text>
         </View>
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Braking, and slowing the vehicle by means other than braking.
@@ -107,7 +119,7 @@ export const Page16 = () => {
 
         <View style={styles.checklistItem}>
           <View style={styles.checkbox}>
-            <Text style={styles.checkboxText}></Text>
+            <Text style={styles.checkboxText}>S</Text>
           </View>
           <Text style={styles.checklistText}>
             Backing, and parking the vehicle.
@@ -119,12 +131,12 @@ export const Page16 = () => {
         <Text style={[styles.label]}>
           Type of equipment used in giving test:
         </Text>
-        <Text style={[styles.fieldValue]}></Text>
+        <Text style={[styles.fieldValue]}>Tractor-Trailer</Text>
       </View>
 
       <View style={styles.formField}>
         <Text style={styles.label}>Examiner:</Text>
-        <Text style={styles.fieldValue}></Text>
+        <Text style={styles.fieldValue}>Juliet Vukajlovic</Text>
       </View>
 
       <View style={styles.formField}>
@@ -182,7 +194,8 @@ export const Page17 = () => {
       <View style={styles.checklistSection}>
         <View style={styles.checklistItem}>
           <View style={[styles.checkbox, styles.checkboxChecked]}>
-            <Text style={styles.checkboxText}>✓</Text>
+            {/* <Text style={styles.checkboxText}>{"\u2713"}</Text> */}
+            <Text style={[styles.checkboxText]}>✓</Text>
           </View>
           <Text style={styles.checklistText}>Accidents procedures</Text>
         </View>
@@ -463,7 +476,7 @@ export const Page19 = () => {
 };
 
 // Page 21 - Important Disclosure (Part 3)
-export const Page20 = () => {
+export const Page20 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -501,7 +514,16 @@ export const Page20 = () => {
 
       <View style={styles.formField}>
         <Text style={styles.label}>Applicant's Name:</Text>
-        <Text style={styles.fieldValue}></Text>
+        <Text
+          style={[
+            styles.fieldValue,
+            {
+              fontSize: 13,
+            },
+          ]}
+        >
+          {formData?.form1?.applicantName?.value}
+        </Text>
       </View>
 
       <View style={styles.section}>
@@ -626,11 +648,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxChecked: {
-    backgroundColor: "white",
+    backgroundColor: "black",
   },
   checkboxText: {
     fontSize: 10,
     fontWeight: "bold",
+    // fontFamily: "NotoSans",
   },
   checklistText: {
     fontSize: 12,

@@ -289,7 +289,9 @@ const Page1 = ({ formData }) => {
             </View>
             <View style={styles.formRow}>
               <Text style={styles.label}>Emergency Phone #:</Text>
-              <Text style={styles.input}></Text>
+              <Text style={styles.input}>
+                {formData?.form1?.EmergencyPhone?.value || ""}
+              </Text>
             </View>
           </View>
 

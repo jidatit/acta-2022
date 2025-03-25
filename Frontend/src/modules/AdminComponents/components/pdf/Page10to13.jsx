@@ -114,10 +114,15 @@ export const Page10 = ({ formData }) => {
       </View>
 
       <View style={styles.signatureSection}>
-        <View style={styles.signatureLine} />
+        <View style={styles.signatureLine}>
+          <Text style={styles.input}>
+            {formData?.form1?.applicantName?.value}
+          </Text>
+        </View>
         <Text style={styles.signatureLabel}>Applicant's Name</Text>
 
         <View style={[styles.signatureLine, { marginTop: 20 }]} />
+
         <Text style={styles.signatureLabel}>
           Applicant's Signature and Date
         </Text>
@@ -180,7 +185,11 @@ export const Page11 = ({ formData }) => (
     </View>
 
     <View style={styles.signatureSection}>
-      <View style={styles.signatureLine} />
+      <View style={styles.signatureLine}>
+        <Text style={styles.input}>
+          {formData?.form1?.applicantName?.value}
+        </Text>
+      </View>
       <Text style={styles.signatureLabel}>Applicant's Name</Text>
 
       <View style={[styles.signatureLine, { marginTop: 20 }]} />
@@ -294,7 +303,11 @@ export const Page12 = ({ formData }) => (
     </View>
 
     <View style={styles.signatureSection}>
-      <View style={styles.signatureLine} />
+      <View style={styles.signatureLine}>
+        <Text style={styles.input}>
+          {formData?.form1?.applicantName?.value}
+        </Text>
+      </View>
       <Text style={styles.signatureLabel}>Applicant's printed Name</Text>
 
       <View style={[styles.signatureLine, { marginTop: 20 }]} />
@@ -353,7 +366,7 @@ export const Page13 = ({ formData }) => {
 
       <View style={styles.formContainer}>
         <View style={styles.formField}>
-          <Text style={styles.formLabel}>Driver's Name:</Text>
+          <Text style={styles.formLabel}>Driver's Name: </Text>
           <View
             style={[
               styles.formInputLine,
@@ -362,7 +375,7 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{driverLicenseInfo?.fullName || ""}</Text>
+            <Text>{formData?.form1?.applicantName?.value || ""}</Text>
           </View>
         </View>
 
@@ -376,7 +389,7 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{formData?.form1?.SSN?.value || ""}</Text>
+            <Text>{formData?.form1?.ssn?.value || ""}</Text>
           </View>
         </View>
 
@@ -390,7 +403,7 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{driverLicenseInfo?.licenseNumber || ""}</Text>
+            <Text>{formData?.form1?.CDL?.value || ""}</Text>
           </View>
         </View>
 
@@ -404,7 +417,7 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{driverLicenseInfo?.state || ""}</Text>
+            <Text>{formData?.form1?.CDLState?.value || ""}</Text>
           </View>
         </View>
 
@@ -418,7 +431,18 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{driverLicenseInfo?.expirationDate || ""}</Text>
+            {/* <Text>{formData?.form1?.CDLExpirationDate?.value || ""}</Text> */}
+            <Text>
+              {formData?.form1?.CDLExpirationDate?.value
+                ? new Date(
+                    formData.form1.CDLExpirationDate.value
+                  ).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                  })
+                : ""}
+            </Text>
           </View>
         </View>
 
@@ -432,7 +456,7 @@ export const Page13 = ({ formData }) => {
               },
             ]}
           >
-            <Text>{driverLicenseInfo?.class || ""}</Text>
+            <Text>{formData?.form1?.CDLClass?.value || ""}</Text>
           </View>
         </View>
 
@@ -538,8 +562,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   signatureLine: {
-    borderTopWidth: 1,
-    borderTopColor: "black",
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
     marginBottom: 2,
     marginTop: 2,
     width: "70%",
@@ -610,5 +634,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     height: "20px",
     paddingBottom: 2,
+    fontSize: 13,
   },
 });

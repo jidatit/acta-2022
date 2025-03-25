@@ -153,17 +153,6 @@ export const Page15 = ({ formData }) => {
 
   return (
     <Page size="A4" style={styles.page}>
-      {/* <View style={styles.header}>
-        <View>
-          <Text style={styles.companyName}>FFA Inc</Text>
-          <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.address}>Village, IL 60007</Text>
-        </View>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>FFA</Text>
-        </View>
-      </View> */}
-
       <HeaderPDf />
 
       <View style={styles.section}>
@@ -276,6 +265,16 @@ export const Page15 = ({ formData }) => {
 
       <View style={styles.signatureSection}>
         {/* <View style={styles.signatureLine} /> */}
+        <Text
+          style={[
+            styles.signatureLabel,
+            {
+              fontSize: 13,
+            },
+          ]}
+        >
+          {formData?.form1?.applicantName?.value}
+        </Text>
         <View style={[styles.signatureLine, { maxWidth: "40%" }]} />
 
         <Text style={styles.signatureLabel}>Applicant's Name</Text>
