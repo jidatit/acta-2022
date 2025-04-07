@@ -6,9 +6,10 @@ import {
   Text,
   StyleSheet,
   PDFViewer,
+  pdf,
 } from "@react-pdf/renderer";
 import { X } from "lucide-react";
-
+import { saveAs } from "file-saver";
 import { useEffect, useState } from "react";
 import { db } from "../../../config/firebaseConfig";
 import {
@@ -99,7 +100,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// // PDF Document Component
 const MyDocument = ({ formData }) => (
   <Document>
     <Page1 formData={formData} />
@@ -140,7 +140,6 @@ const MyDocument = ({ formData }) => (
   </Document>
 );
 
-// PDF Modal Component
 const PdfModal = ({ openModal, setOpenModal, uid }) => {
   const [formData, setFormData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -151,14 +150,10 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
 
       setIsLoading(true);
       try {
-        // console.log("entered");
         const docRef = doc(db, "truck_driver_applications", uid);
         const docSnap = await getDoc(docRef);
-        // console.log("enteredn 1");
 
         if (docSnap.exists()) {
-          // console.log("enteredn 3");
-
           const data = docSnap.data();
           setFormData(data);
           console.log("data", data);
@@ -172,7 +167,6 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
     };
 
     fetchFormData();
-    // console.log("formData", formData);
   }, [uid]);
 
   if (!openModal) return null;
@@ -192,9 +186,6 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">
-          {/* <PDFViewer width="100%" height="100%">
-            <MyDocument formData={formData} />
-          </PDFViewer> */}
           {isLoading ? (
             <div className="flex justify-center items-center h-full w-full">
               loading...

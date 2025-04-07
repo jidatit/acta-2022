@@ -128,7 +128,7 @@ export const Page10 = ({ formData }) => {
         </Text>
       </View>
 
-      <Text style={styles.pageNumber}>11</Text>
+      {/* <Text style={styles.pageNumber}>11</Text> */}
     </Page>
   );
 };
@@ -225,7 +225,7 @@ export const Page11 = ({ formData }) => (
       </Text>
     </View>
 
-    <Text style={styles.pageNumber}>12</Text>
+    {/* <Text style={styles.pageNumber}>12</Text> */}
   </Page>
 );
 
@@ -324,7 +324,7 @@ export const Page12 = ({ formData }) => (
       </Text>
     </View>
 
-    <Text style={styles.pageNumber}>13</Text>
+    {/* <Text style={styles.pageNumber}>13</Text> */}
   </Page>
 );
 
@@ -489,7 +489,7 @@ export const Page13 = ({ formData }) => {
         </View>
       </View>
 
-      <Text style={styles.pageNumber}>14</Text>
+      {/* <Text style={styles.pageNumber}>14</Text> */}
     </Page>
   );
 };

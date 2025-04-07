@@ -125,7 +125,7 @@ const Page9 = ({ formData }) => (
       </View>
     </View>
 
-    <Text style={styles.pageNumber}>10</Text>
+    {/* <Text style={styles.pageNumber}>10</Text> */}
   </Page>
 );
 

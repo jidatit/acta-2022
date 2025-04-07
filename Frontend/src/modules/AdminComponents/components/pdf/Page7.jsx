@@ -5,17 +5,6 @@ import HeaderPDf from "./HeaderPDf";
 const Page7 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
-      {/* <View style={styles.header}>
-        <View>
-          <Text style={styles.companyName}>FFA Inc</Text>
-          <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.address}>Village, IL 60007</Text>
-        </View>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>FFA</Text>
-        </View>
-      </View> */}
-
       <HeaderPDf />
 
       <View style={styles.section}>
@@ -73,8 +62,9 @@ const Page7 = ({ formData }) => {
 
       <View style={styles.formField}>
         <Text style={styles.label}>Applicant Name:</Text>
-        <Text style={styles.input} >{formData?.form1?.applicantName?.value}</Text> 
-
+        <Text style={styles.input}>
+          {formData?.form1?.applicantName?.value}
+        </Text>
       </View>
 
       <View style={styles.formField}>
@@ -82,8 +72,7 @@ const Page7 = ({ formData }) => {
         {/* <View style={styles.inputLine} />
 
          */}
-        <Text style={styles.input} >{formData?.form1?.ssn?.value}</Text> 
-
+        <Text style={styles.input}>{formData?.form1?.ssn?.value}</Text>
       </View>
 
       <View style={styles.formField}>
@@ -96,7 +85,7 @@ const Page7 = ({ formData }) => {
         <Text style={styles.signatureLabel}>Applicant's Signature</Text>
       </View>
 
-      <Text style={styles.pageNumber}>8</Text>
+      {/* <Text style={styles.pageNumber}>8</Text> */}
     </Page>
   );
 };
@@ -140,14 +129,13 @@ const styles = StyleSheet.create({
 
     marginBottom: 10,
   },
-   input: {
+  input: {
     flex: 1,
     borderBottom: 1,
     borderBottomColor: "black",
     fontSize: 13,
     marginRight: 10,
     maxWidth: "30%",
-
   },
   sectionTitle: {
     fontSize: 14,

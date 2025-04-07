@@ -129,10 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   input: {
-    
     fontSize: 13,
-   
-
   },
 });
 
@@ -207,7 +204,6 @@ const Page8 = ({ formData }) => (
       <View style={styles.inputLine}>
         <Text style={styles.input}>
           {formData?.form1?.applicantName?.value || ""}
-
         </Text>
       </View>
     </View>
@@ -218,7 +214,6 @@ const Page8 = ({ formData }) => (
         <Text style={styles.input}>
           {/* {formData?.form5?.driverLicensePermit?.[0]?.licenseNumber || ""} */}
           {formData?.form1?.CDL?.value || ""}
-
         </Text>
       </View>
     </View>
@@ -229,7 +224,6 @@ const Page8 = ({ formData }) => (
         <Text style={styles.input}>
           {/* {formData?.form5?.driverLicensePermit?.[0]?.state || ""} */}
           {formData?.form1?.CDLState?.value || ""}
-
         </Text>
       </View>
     </View>
@@ -252,7 +246,7 @@ const Page8 = ({ formData }) => (
       <Text style={styles.signatureLabel}>Applicant's Signature and Date</Text>
     </View>
 
-    <Text style={styles.pageNumber}>9</Text>
+    {/* <Text style={styles.pageNumber}>9</Text> */}
   </Page>
 );
 

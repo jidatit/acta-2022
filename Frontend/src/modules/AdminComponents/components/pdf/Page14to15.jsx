@@ -298,7 +298,7 @@ export const Page15 = ({ formData }) => {
         </View>
       </View>
 
-      <Text style={styles.pageNumber}>16</Text>
+      {/* <Text style={styles.pageNumber}>16</Text> */}
     </Page>
   );
 };
