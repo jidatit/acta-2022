@@ -15,7 +15,7 @@ export const Page14 = ({ formData }) => {
 
   return (
     <Page size="A4" style={styles.page}>
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View
         style={[
@@ -153,7 +153,7 @@ export const Page15 = ({ formData }) => {
 
   return (
     <Page size="A4" style={styles.page}>
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { marginTop: 20 }]}>

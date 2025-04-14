@@ -142,7 +142,7 @@ const Page3 = ({ formData }) => {
 
   return (
     <Page size="A4" style={styles.page}>
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View style={{ marginTop: 70 }}>
         <Text style={styles.paragraph}>

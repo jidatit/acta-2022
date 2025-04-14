@@ -189,7 +189,7 @@ const Page2 = ({ formData }) => (
           <Text style={styles.logoText}>FFA</Text>
         </View>
       </View> */}
-    <HeaderPDf />
+    {/* <HeaderPDf /> */}
 
     {/* Previous Addresses Section */}
     <View

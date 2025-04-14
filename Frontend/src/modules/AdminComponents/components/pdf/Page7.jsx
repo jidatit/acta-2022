@@ -5,7 +5,7 @@ import HeaderPDf from "./HeaderPDf";
 const Page7 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>

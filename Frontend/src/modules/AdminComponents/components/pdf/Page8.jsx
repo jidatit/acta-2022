@@ -146,7 +146,7 @@ const Page8 = ({ formData }) => (
         <Text style={styles.logoText}>FFA</Text>
       </View>
     </View> */}
-    <HeaderPDf />
+    {/* <HeaderPDf /> */}
 
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>

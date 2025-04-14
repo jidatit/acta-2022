@@ -31,7 +31,7 @@ export const Page10 = ({ formData }) => {
           <Text style={styles.logoText}>FFA</Text>
         </View>
       </View> */}
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View style={[styles.section, { marginTop: 50 }]}>
         <Text style={styles.sectionTitle}>
@@ -147,7 +147,7 @@ export const Page11 = ({ formData }) => (
       </View>
     </View> */}
 
-    <HeaderPDf />
+    {/* <HeaderPDf /> */}
 
     <View style={[styles.section, { marginTop: 30 }]}>
       <Text style={styles.sectionTitle}>
@@ -242,7 +242,7 @@ export const Page12 = ({ formData }) => (
         <Text style={styles.logoText}>FFA</Text>
       </View>
     </View> */}
-    <HeaderPDf />
+    {/* <HeaderPDf /> */}
 
     <View style={styles.section}>
       <Text style={styles.paragraph}>
@@ -345,7 +345,7 @@ export const Page13 = ({ formData }) => {
           <Text style={styles.logoText}>FFA</Text>
         </View>
       </View> */}
-      <HeaderPDf />
+      {/* <HeaderPDf /> */}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Statement of On-Duty Hours</Text>
