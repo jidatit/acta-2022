@@ -364,7 +364,7 @@ const RegisteredUsers = () => {
   };
 
   // Company Dropdown Component - removed since we're using inline dropdown
-  console.log("truckDrivers", truckDrivers);
+
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-row justify-between items-center w-full">
@@ -476,6 +476,7 @@ const RegisteredUsers = () => {
                       View PDF
                     </button>
                   )}
+
                   {openModal && currentUserId === driver.uid && (
                     <FormShowingModal
                       uid={currentUserId}
@@ -497,6 +498,86 @@ const RegisteredUsers = () => {
           </tbody>
         </table>
       </div>
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowDeleteModal(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white w-full max-w-xl mx-auto rounded-xl z-60 p-6">
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
+              <svg
+                className="h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div className="text-center mt-4">
+              <h2 className="text-xl font-semibold">
+                Are you sure you want to delete this driver?
+              </h2>
+              <p className="text-gray-600 mt-2">
+                {selectedUser?.length > 0 && `"${selectedUser.join(", ")}"`}
+              </p>
+              <div className="flex justify-center gap-4 mt-6">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="bg-gray-300 text-black py-2.5 px-6 rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={loading}
+                  className={`bg-black text-white py-2.5 px-6 rounded-xl ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {loading ? (
+                    <div className="flex items-center">
+                      <svg
+                        className="animate-spin h-5 w-5 mr-2 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                      </svg>
+                      Deleting...
+                    </div>
+                  ) : (
+                    "Delete"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
