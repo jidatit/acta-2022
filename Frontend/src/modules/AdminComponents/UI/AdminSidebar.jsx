@@ -68,7 +68,7 @@ const AdminSidebar = ({ isSidebarExpanded }) => {
               <img
                 src={logoPreview}
                 alt="Company logo preview"
-                className="w-16 h-16 text-center rounded-full object-cover"
+                className="w-26 h-16 text-center rounded-full object-cover"
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full">

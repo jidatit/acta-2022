@@ -35,6 +35,7 @@ import Page9 from "./pdf/Page9";
 import { Page10, Page11, Page12, Page13 } from "./pdf/Page10to13";
 import { Page14, Page15 } from "./pdf/Page14to15";
 import { Page16, Page17, Page18, Page19, Page20 } from "./pdf/Page16to20";
+import { Page21 } from "./pdf/Page21";
 
 // Define styles for the PDF (mimicking Tailwind CSS)
 const styles = StyleSheet.create({
@@ -100,9 +101,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const MyDocument = ({ formData }) => (
+const MyDocument = ({ formData, truckDriverData }) => (
   <Document>
-    <Page1 formData={formData} />
+    <Page1 formData={formData} truckDriverData={truckDriverData} />
 
     <Page2 formData={formData} />
 
@@ -112,9 +113,9 @@ const MyDocument = ({ formData }) => (
 
     <Page5 formData={formData} />
 
-    <Page6 formData={formData} />
+    <Page6 formData={formData} truckDriverData={truckDriverData} />
 
-    <Page7 formData={formData} />
+    <Page7 formData={formData} truckDriverData={truckDriverData} />
 
     <Page8 formData={formData} />
 
@@ -131,44 +132,67 @@ const MyDocument = ({ formData }) => (
     <Page14 formData={formData} />
 
     <Page15 formData={formData} />
-    <Page16 />
+    <Page16 truckDriverData={truckDriverData} />
 
-    <Page17 />
-    <Page18 />
-    <Page19 />
-    <Page20 formData={formData} />
+    <Page17 truckDriverData={truckDriverData} />
+    <Page18 truckDriverData={truckDriverData} />
+    <Page19 truckDriverData={truckDriverData} />
+    <Page20 formData={formData} truckDriverData={truckDriverData} />
+    <Page21 formData={formData} />
   </Document>
 );
 
 const PdfModal = ({ openModal, setOpenModal, uid }) => {
   const [formData, setFormData] = useState({});
+  const [truckDriverData, setTruckDriverData] = useState(null); // <-- new state
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFormData = async () => {
+    const fetchFormAndDriverData = async () => {
       if (!uid) return;
 
       setIsLoading(true);
-      try {
-        const docRef = doc(db, "truck_driver_applications", uid);
-        const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setFormData(data);
-          console.log("data", data);
+      try {
+        // Step 1: Fetch application form data
+        const appDocRef = doc(db, "truck_driver_applications", uid);
+        const appSnap = await getDoc(appDocRef);
+
+        if (!appSnap.exists()) {
+          throw new Error("Application not found");
+        }
+
+        const applicationData = appSnap.data();
+        setFormData(applicationData);
+
+        // Step 2: Search TruckDrivers collection for matching uid
+        const driversSnap = await getDocs(collection(db, "TruckDrivers"));
+
+        let matchedDriver = null;
+
+        driversSnap.forEach((docSnap) => {
+          const driver = docSnap.data();
+          if (driver?.uid === uid) {
+            matchedDriver = driver;
+          }
+        });
+        console.log("matchedDriver", matchedDriver);
+        if (matchedDriver) {
+          setTruckDriverData(matchedDriver);
+          console.log("Matched Truck Driver:", matchedDriver);
+        } else {
+          console.warn("No matching truck driver found for uid:", uid);
         }
       } catch (error) {
-        console.error("Error fetching form data:", error);
-        toast.error("Error loading form data");
+        console.error("Error:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchFormData();
+    fetchFormAndDriverData();
   }, [uid]);
-
+  console.log("truckDriverData", truckDriverData);
   if (!openModal) return null;
 
   return (
@@ -192,7 +216,10 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
             </div>
           ) : (
             <PDFViewer width="100%" height="100%">
-              <MyDocument formData={formData} />
+              <MyDocument
+                formData={formData}
+                truckDriverData={truckDriverData}
+              />
             </PDFViewer>
           )}
         </div>

@@ -15,7 +15,7 @@ import HeaderPDf from "./HeaderPDf";
 // });
 
 // Page 17 - Road Test Examination
-export const Page16 = () => {
+export const Page16 = ({ truckDriverData }) => {
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -135,11 +135,6 @@ export const Page16 = () => {
       </View>
 
       <View style={styles.formField}>
-        <Text style={styles.label}>Examiner:</Text>
-        <Text style={styles.fieldValue}>Juliet Vukajlovic</Text>
-      </View>
-
-      <View style={styles.formField}>
         <Text style={styles.label}>Date:</Text>
         <Text style={styles.fieldValue}></Text>
       </View>
@@ -162,7 +157,7 @@ export const Page16 = () => {
 };
 
 // Page 18 - Driver's Acknowledgement of Receipt
-export const Page17 = () => {
+export const Page17 = ({ truckDriverData }) => {
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -238,10 +233,13 @@ export const Page17 = () => {
           </View>
           <Text style={styles.checklistText}>
             I hereby certify that I am familiar with U.S. DOT drug and alcohol
-            testing requirements of 49 CFR part 40; FMCSR's and Freight For All
+            testing requirements of 49 CFR part 40; FMCSR's and{" "}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}
             company policy and safety manual, and FMCSR's pocketbook, and hereby
             agree to follow and obey those rules and regulations during my
-            employment with Freight For All.
+            employment with{" "}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            For All.
           </Text>
         </View>
       </View>
@@ -254,9 +252,10 @@ export const Page17 = () => {
           <Text style={styles.checklistText}>
             I hereby certify that I am informed and I understood that Freight
             For All designated representative to answer all drug and alcohol;
-            FMCSR's and Freight For All company policy related questions is. I
-            understand that, in the case I have above mentioned questions I can
-            call at () -.
+            FMCSR's and{" "}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            company policy related questions is. I understand that, in the case
+            I have above mentioned questions I can call at () -.
           </Text>
         </View>
       </View>
@@ -267,7 +266,8 @@ export const Page17 = () => {
             <Text style={styles.checkboxText}>✓</Text>
           </View>
           <Text style={styles.checklistText}>
-            I hereby certify that I read and understood Freight For All
+            I hereby certify that I read and understood{" "}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}
             disciplinary actions in Addendum A of "Company Policy", and that
             those actions are subject to change without prior notice given. I
             understand that most updated disciplinary actions handout is
@@ -379,7 +379,7 @@ export const Page18 = () => {
 };
 
 // Page 20 - Important Disclosure (Part 2)
-export const Page19 = () => {
+export const Page19 = ({ truckDriverData }) => {
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -430,16 +430,17 @@ export const Page19 = () => {
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>
-          I authorize Freight For All ("Prospective Employer") to access the
-          FMCSA Pre-Employment Screening Program (PSP) system to seek
-          information regarding my commercial driver's safety record and
-          information regarding my safety inspection history. I understand that
-          I am authorizing the release of safety performance information
-          including crash data from the previous five (5) years and inspection
-          history from the previous three (3) years. I understand and
-          acknowledge that this release of information may assist the
-          Prospective Employer to make a determination regarding my suitability
-          as an employee.
+          I authorize{" "}
+          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+          ("Prospective Employer") to access the FMCSA Pre-Employment Screening
+          Program (PSP) system to seek information regarding my commercial
+          driver's safety record and information regarding my safety inspection
+          history. I understand that I am authorizing the release of safety
+          performance information including crash data from the previous five
+          (5) years and inspection history from the previous three (3) years. I
+          understand and acknowledge that this release of information may assist
+          the Prospective Employer to make a determination regarding my
+          suitability as an employee.
         </Text>
       </View>
 

@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    marginLeft: 170,
   },
   title: {
     fontSize: 20,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const Page1 = ({ formData }) => {
+const Page1 = ({ formData, truckDriverData }) => {
   // Helper function for formatting date
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -174,15 +175,14 @@ const Page1 = ({ formData }) => {
   return (
     <Page size="A4" style={styles.page}>
       <View style={styles.header} fixed>
-        <View>
-          <Text style={styles.companyName}>FFA Inc</Text>
-          <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-          <Text style={styles.address}>Village, IL 60007</Text>
-        </View>
+        <View></View>
         <View style={styles.headerRight}>
           <View style={styles.logo}>
             {/* <Text style={styles.logoText}>FFA</Text> */}
-            <Image style={styles.logoImg} src="/ffa.png" />
+            <Image
+              style={styles.logoImg}
+              src={`${truckDriverData?.selectedCompany?.logoUrl || `../../../../../public/ffa.png`}`}
+            />
           </View>
         </View>
         <Text style={styles.title}>Driver Application</Text>
@@ -196,10 +196,11 @@ const Page1 = ({ formData }) => {
         }}
       >
         <Text style={styles.paragraph}>
-          Freight For All is in compliance with Federal and State equal
-          employment opportunity laws, qualified applicants are considered for
-          all positions without regard to race, color, religion, sex, national
-          origin, age, marital status and non-job related disabilities.
+          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`} is
+          in compliance with Federal and State equal employment opportunity
+          laws, qualified applicants are considered for all positions without
+          regard to race, color, religion, sex, national origin, age, marital
+          status and non-job related disabilities.
         </Text>
 
         <View style={styles.formRow}>

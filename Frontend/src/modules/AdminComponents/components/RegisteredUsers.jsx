@@ -29,6 +29,80 @@ const RegisteredUsers = () => {
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [adminData, setAdminData] = useState(null);
+
+  // Fetch companies from companyInfo collection
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const companiesSnapshot = await getDocs(collection(db, "companyInfo"));
+        const companiesData = [];
+
+        companiesSnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Add main company
+          if (data.companyName && data.id && data.logoUrl) {
+            companiesData.push({
+              id: data.id,
+              name: data.companyName,
+              logoUrl: data.logoUrl,
+            });
+          }
+
+          // Add additional companies if they exist
+          if (
+            data.additionalCompanies &&
+            Array.isArray(data.additionalCompanies)
+          ) {
+            data.additionalCompanies.forEach((company) => {
+              if (company.companyName && company.id && company.logoUrl) {
+                companiesData.push({
+                  id: company.id,
+                  name: company.companyName,
+                  logoUrl: company.logoUrl,
+                });
+              }
+            });
+          }
+        });
+
+        setCompanies(companiesData);
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
+  // Fetch admin data
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      if (currentUser?.uid) {
+        try {
+          const adminQuery = query(
+            collection(db, "admin"),
+            where("uid", "==", currentUser.uid)
+          );
+          const adminSnapshot = await getDocs(adminQuery);
+
+          if (!adminSnapshot.empty) {
+            const adminDoc = adminSnapshot.docs[0];
+            setAdminData({
+              docId: adminDoc.id,
+              ...adminDoc.data(),
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching admin data:", error);
+        }
+      }
+    };
+
+    fetchAdminData();
+  }, [currentUser]);
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "TruckDrivers"),
@@ -53,6 +127,52 @@ const RegisteredUsers = () => {
     return () => unsubscribe();
   }, []);
 
+  // Function to handle company selection
+
+  const handleCompanyChange = async (companyId, driverId) => {
+    if (!companyId || !driverId) {
+      toast.error("Missing companyId or driverId");
+      return;
+    }
+
+    try {
+      const selectedCompany = companies.find(
+        (company) => company.id === companyId
+      );
+      if (!selectedCompany) {
+        toast.error("Company not found");
+        return;
+      }
+
+      // Step 1: Query TruckDrivers by matching uid with driverId
+      const driversRef = collection(db, "TruckDrivers");
+      const q = query(driversRef, where("uid", "==", driverId));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast.error("TruckDriver not found");
+        return;
+      }
+
+      const driverDoc = querySnapshot.docs[0];
+      const driverDocRef = driverDoc.ref;
+
+      // Step 2: Update that driver's selectedCompany
+      await updateDoc(driverDocRef, {
+        selectedCompany: {
+          id: selectedCompany.id,
+          name: selectedCompany.name,
+          logoUrl: selectedCompany.logoUrl,
+        },
+        companyUpdatedAt: new Date().toISOString(),
+      });
+
+      toast.success("Company updated for driver successfully!");
+    } catch (error) {
+      console.error("Error updating TruckDriver document:", error);
+      toast.error("Failed to update company for driver");
+    }
+  };
   // Function to confirm delete
   const handleSelectRow = (uid, name) => {
     setSelectedUserIds((prev) =>
@@ -187,6 +307,7 @@ const RegisteredUsers = () => {
 
     return `${day}${suffix(day)} ${month} ${year}`;
   };
+
   const handleStatusChange = async (documentId, newStatus, appId) => {
     try {
       // Update the driver status in the "TruckDrivers" collection
@@ -206,6 +327,7 @@ const RegisteredUsers = () => {
       console.error("Error updating status:", error);
     }
   };
+
   const statusOptions = [
     "pending",
     "filled",
@@ -213,6 +335,7 @@ const RegisteredUsers = () => {
     "approved",
     "rejected",
   ];
+
   const getStatusColor = (status) => {
     switch (status) {
       case "pending":
@@ -229,15 +352,19 @@ const RegisteredUsers = () => {
         return "bg-gray-200";
     }
   };
+
   const openModalWithUser = (uid) => {
     setCurrentUserId(uid);
     setOpenModal(true); // Ensure `currentUserId` is set before opening modal
   };
+
   const openPDfModalWithUser = (uid) => {
     setCurrentUserId(uid);
     setOpenPdfModal(true); // Ensure `currentUserId` is set before opening modal
   };
 
+  // Company Dropdown Component - removed since we're using inline dropdown
+  console.log("truckDrivers", truckDrivers);
   return (
     <div className="flex flex-col min-h-[94.9vh] items-start justify-start overflow-x-hidden w-full gap-y-12 pr-4">
       <div className="flex flex-row justify-between items-center w-full">
@@ -257,6 +384,7 @@ const RegisteredUsers = () => {
               <th className="border p-2 text-left">Status</th>
               <th className="border p-2 text-left">Date</th>
               <th className="border p-2 text-left">Time</th>
+              <th className="border p-2 text-left">Companies</th>
               <th className="border p-2 text-left">Application</th>
             </tr>
           </thead>
@@ -285,6 +413,36 @@ const RegisteredUsers = () => {
                 <td className="px-2 py-3">{formatDate(driver.dateCreated)}</td>
                 <td className=" px-2 py-3">--</td>{" "}
                 {/* Placeholder for time or remove this column */}
+                <td className="px-2 py-3">
+                  <div className="relative w-[180px]">
+                    <select
+                      value={driver?.selectedCompany?.id || ""}
+                      onChange={(e) =>
+                        handleCompanyChange(e.target.value, driver.uid)
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+                    >
+                      <option value="">Select Company</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name}
+                        </option>
+                      ))}
+                    </select>
+                    {/* {driver?.selectedCompany && (
+                      <div className=" flex items-center space-x-2">
+                       <img
+                          src={driver.selectedCompany.logoUrl}
+                          alt={driver.selectedCompany.name}
+                          className="w-5 h-5 object-cover rounded"
+                        />
+                        <span className="text-xs text-gray-600">
+                          {driver.selectedCompany.name}
+                        </span>
+                      </div>
+                    )} */}
+                  </div>
+                </td>
                 <td className=" px-2 py-3">
                   <button
                     className={`py-1 px-10 rounded ${
@@ -339,94 +497,6 @@ const RegisteredUsers = () => {
           </tbody>
         </table>
       </div>
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-40 min-h-full w-full overflow-y-auto overflow-x-hidden transition flex items-center">
-          {/* overlay */}
-          <div
-            aria-hidden="true"
-            className="fixed inset-0 w-full h-full bg-black/50 cursor-pointer"
-            onClick={() => setShowDeleteModal(false)} // Close the modal when clicking outside
-          ></div>
-          {/* Modal */}
-          <div className="relative w-full cursor-pointer pointer-events-none transition my-auto p-4">
-            <div className="w-full py-2 bg-white cursor-default pointer-events-auto relative rounded-xl mx-auto max-w-xl">
-              <button
-                tabIndex={-1}
-                type="button"
-                className="absolute top-2 right-2"
-                onClick={() => setShowDeleteModal(false)} // Close the modal
-              >
-                <svg
-                  title="Close"
-                  tabIndex={-1}
-                  className="h-4 w-4 cursor-pointer text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-              <div className="flex flex-col items-center justify-center gap-y-0">
-                <p className="text-center text-xl font-radios mt-4 p-4">
-                  Are you sure you want to delete this driver?{" "}
-                </p>
-                <p className="text-center text-lg font-radios">
-                  {selectedUser && selectedUser.length > 0
-                    ? `"${selectedUser.join(", ")}"`
-                    : ""}
-                </p>
-                <div className="flex justify-center gap-4 mt-4">
-                  <button
-                    onClick={() => setShowDeleteModal(false)}
-                    className="bg-gray-300 text-black py-2.5 px-6 rounded-xl"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleConfirmDelete}
-                    className={`bg-black text-white py-2.5 px-6 rounded-xl ${
-                      loading ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                    disabled={loading} // Disable button while loading
-                  >
-                    {loading ? (
-                      <div className="flex items-center">
-                        {/* Spinner */}
-                        <svg
-                          className="animate-spin h-5 w-5 mr-2 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                          />
-                        </svg>
-                        Deleting...
-                      </div>
-                    ) : (
-                      "Delete"
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
