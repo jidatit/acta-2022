@@ -234,12 +234,12 @@ export const Page17 = ({ truckDriverData }) => {
           <Text style={styles.checklistText}>
             I hereby certify that I am familiar with U.S. DOT drug and alcohol
             testing requirements of 49 CFR part 40; FMCSR's and{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
             company policy and safety manual, and FMCSR's pocketbook, and hereby
             agree to follow and obey those rules and regulations during my
             employment with{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
-            For All.
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`} .
+            {/* For All. */}
           </Text>
         </View>
       </View>
@@ -250,9 +250,10 @@ export const Page17 = ({ truckDriverData }) => {
             <Text style={styles.checkboxText}>✓</Text>
           </View>
           <Text style={styles.checklistText}>
-            I hereby certify that I am informed and I understood that Freight
-            For All designated representative to answer all drug and alcohol;
-            FMCSR's and{" "}
+            I hereby certify that I am informed and I understood that{" "}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            designated representative to answer all drug and alcohol; FMCSR's
+            and{" "}
             {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
             company policy related questions is. I understand that, in the case
             I have above mentioned questions I can call at () -.
@@ -267,7 +268,7 @@ export const Page17 = ({ truckDriverData }) => {
           </View>
           <Text style={styles.checklistText}>
             I hereby certify that I read and understood{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}
+            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
             disciplinary actions in Addendum A of "Company Policy", and that
             those actions are subject to change without prior notice given. I
             understand that most updated disciplinary actions handout is
@@ -287,7 +288,7 @@ export const Page17 = ({ truckDriverData }) => {
 };
 
 // Page 19 - Important Disclosure (Part 1)
-export const Page18 = () => {
+export const Page18 = ({ truckDriverData }) => {
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -313,11 +314,12 @@ export const Page18 = () => {
 
       <View style={styles.section}>
         <Text style={styles.paragraph}>
-          In connection with your application for employment with Freight For
-          All ("Prospective Employer"), Prospective Employer, its employees,
-          agents or contractors may obtain one or more reports regarding your
-          driving, and safety inspection history from the Federal Motor Carrier
-          Safety Administration (FMCSA).
+          In connection with your application for employment with{" "}
+          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+          ("Prospective Employer"), Prospective Employer, its employees, agents
+          or contractors may obtain one or more reports regarding your driving,
+          and safety inspection history from the Federal Motor Carrier Safety
+          Administration (FMCSA).
         </Text>
       </View>
 

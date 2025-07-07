@@ -175,12 +175,10 @@ const styles = StyleSheet.create({
 
 const Page4 = ({ formData }) => {
   const noTrafficConvictions = formData?.form4?.noTrafficConvictions || false;
-  console.log("noTrafficConvictions", noTrafficConvictions);
 
   const trafficConvictions = formData?.form4?.trafficConvictions || [];
-  console.log("trafficConvictions", trafficConvictions);
+
   const driverLicenses = formData?.form5?.driverLicensePermit || [];
-  console.log("driverLicenses", driverLicenses);
 
   return (
     <Page size="A4" style={styles.page}>

@@ -34,8 +34,8 @@ const Page7 = ({ formData, truckDriverData }) => {
           above, I also authorize (company/school) to release and furnish: (VI)
           the dates of my negative drug and/or alcohol tests and/or tests with
           results below two -year period; and (VII) the name and phone number of
-          any substance abuse professional who evaluated me during the past.
-          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}
+          any substance abuse professional who evaluated me during the past{" "}
+          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}.
         </Text>
       </View>
 
