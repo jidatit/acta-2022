@@ -374,7 +374,7 @@ const MainCompanyFormSection = ({
           value={formData.companyName}
           onChange={onInputChange}
           className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-black focus:border-transparent"
-          required
+     
         />
       </div>
 
@@ -386,7 +386,7 @@ const MainCompanyFormSection = ({
           value={formData.address}
           onChange={onInputChange}
           className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-black focus:border-transparent"
-          required
+    
         />
       </div>
 
@@ -398,7 +398,7 @@ const MainCompanyFormSection = ({
           value={formData.phoneNumber}
           onChange={onInputChange}
           className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-black focus:border-transparent"
-          required
+     
         />
       </div>
 
@@ -421,7 +421,7 @@ const MainCompanyFormSection = ({
           value={formData.website}
           onChange={onInputChange}
           className="w-full p-2 border-1 border-gray-300 rounded focus:ring-2 focus:ring-black focus:border-transparent"
-          required
+       
         />
       </div>
     </div>
