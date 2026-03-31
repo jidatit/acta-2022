@@ -228,13 +228,13 @@ const RegisteredUsers = () => {
 
       // Process the results
       const successfulDeletions = [];
+      const failedDeletions = [];
       deleteResults.forEach((result, index) => {
         const uid = selectedUserIds[index];
         if (result.status === "fulfilled") {
           successfulDeletions.push(uid);
         } else {
-          setShowDeleteModal(false);
-          setLoading(false);
+          failedDeletions.push(uid);
           console.error(`Error deleting user `);
           toast.error(`Error deleting user `, {
             autoClose: 2000,
@@ -249,7 +249,13 @@ const RegisteredUsers = () => {
         )
       );
       setLoading(false);
-      setSelectedUserIds([]);
+      // Keep failed users selected so admin can retry without reloading.
+      setSelectedUserIds(failedDeletions);
+      setSelectedUser((prevSelectedUsers) =>
+        prevSelectedUsers.filter((name, index) =>
+          failedDeletions.includes(selectedUserIds[index])
+        )
+      );
       setShowDeleteModal(false);
 
       if (successfulDeletions.length) {
@@ -395,6 +401,7 @@ const RegisteredUsers = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox"
+                    checked={selectedUserIds.includes(driver.uid)}
                     onChange={() => handleSelectRow(driver.uid, driver.name)}
                   />
                 </td>
