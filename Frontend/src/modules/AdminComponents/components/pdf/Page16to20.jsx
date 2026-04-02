@@ -157,7 +157,8 @@ export const Page16 = ({ truckDriverData }) => {
 };
 
 // Page 18 - Driver's Acknowledgement of Receipt
-export const Page17 = ({ truckDriverData }) => {
+export const Page17 = ({ pdfCompany }) => {
+  const companyName = pdfCompany?.name || "Company";
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -234,11 +235,11 @@ export const Page17 = ({ truckDriverData }) => {
           <Text style={styles.checklistText}>
             I hereby certify that I am familiar with U.S. DOT drug and alcohol
             testing requirements of 49 CFR part 40; FMCSR's and{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            {`${companyName}`}{" "}
             company policy and safety manual, and FMCSR's pocketbook, and hereby
             agree to follow and obey those rules and regulations during my
             employment with{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`} .
+            {`${companyName}`} .
             {/* For All. */}
           </Text>
         </View>
@@ -251,10 +252,10 @@ export const Page17 = ({ truckDriverData }) => {
           </View>
           <Text style={styles.checklistText}>
             I hereby certify that I am informed and I understood that{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            {`${companyName}`}{" "}
             designated representative to answer all drug and alcohol; FMCSR's
             and{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            {`${companyName}`}{" "}
             company policy related questions is. I understand that, in the case
             I have above mentioned questions I can call at () -.
           </Text>
@@ -268,7 +269,7 @@ export const Page17 = ({ truckDriverData }) => {
           </View>
           <Text style={styles.checklistText}>
             I hereby certify that I read and understood{" "}
-            {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+            {`${companyName}`}{" "}
             disciplinary actions in Addendum A of "Company Policy", and that
             those actions are subject to change without prior notice given. I
             understand that most updated disciplinary actions handout is
@@ -288,7 +289,8 @@ export const Page17 = ({ truckDriverData }) => {
 };
 
 // Page 19 - Important Disclosure (Part 1)
-export const Page18 = ({ truckDriverData }) => {
+export const Page18 = ({ pdfCompany }) => {
+  const companyName = pdfCompany?.name || "Company";
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -315,7 +317,7 @@ export const Page18 = ({ truckDriverData }) => {
       <View style={styles.section}>
         <Text style={styles.paragraph}>
           In connection with your application for employment with{" "}
-          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+          {`${companyName}`}{" "}
           ("Prospective Employer"), Prospective Employer, its employees, agents
           or contractors may obtain one or more reports regarding your driving,
           and safety inspection history from the Federal Motor Carrier Safety
@@ -381,7 +383,8 @@ export const Page18 = ({ truckDriverData }) => {
 };
 
 // Page 20 - Important Disclosure (Part 2)
-export const Page19 = ({ truckDriverData }) => {
+export const Page19 = ({ pdfCompany }) => {
+  const companyName = pdfCompany?.name || "Company";
   return (
     <Page size="A4" style={styles.page}>
       {/* <View style={styles.header}>
@@ -433,7 +436,7 @@ export const Page19 = ({ truckDriverData }) => {
       <View style={styles.section}>
         <Text style={styles.paragraph}>
           I authorize{" "}
-          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}{" "}
+          {`${companyName}`}{" "}
           ("Prospective Employer") to access the FMCSA Pre-Employment Screening
           Program (PSP) system to seek information regarding my commercial
           driver's safety record and information regarding my safety inspection

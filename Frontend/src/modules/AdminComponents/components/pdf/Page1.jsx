@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const Page1 = ({ formData, truckDriverData }) => {
+const Page1 = ({ formData, pdfCompany }) => {
   // Helper function for formatting date
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -171,18 +171,22 @@ const Page1 = ({ formData, truckDriverData }) => {
     return phoneString; // Implement custom formatting if needed
   };
 
+  const companyLabel = pdfCompany?.name || "DriverApp";
   return (
     <Page size="A4" style={styles.page}>
       <View style={styles.header} fixed>
         <View></View>
         <View style={styles.headerRight}>
-          <View style={styles.logo}>
-            {/* <Text style={styles.logoText}>FFA</Text> */}
+          {pdfCompany?.logoDataUrl || pdfCompany?.logoUrl ? (
             <Image
               style={styles.logoImg}
-              src={`${truckDriverData?.selectedCompany?.logoUrl || `../../../../../public/ffa.png`}`}
+              src={pdfCompany?.logoDataUrl || pdfCompany?.logoUrl}
             />
-          </View>
+          ) : (
+            <View style={styles.logo}>
+              <Text style={styles.logoText}>CAM</Text>
+            </View>
+          )}
         </View>
         <Text style={styles.title}>Driver Application</Text>
       </View>
@@ -195,7 +199,7 @@ const Page1 = ({ formData, truckDriverData }) => {
         }}
       >
         <Text style={styles.paragraph}>
-          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`} is
+          {`${companyLabel}`} is
           in compliance with Federal and State equal employment opportunity
           laws, qualified applicants are considered for all positions without
           regard to race, color, religion, sex, national origin, age, marital

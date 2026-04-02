@@ -57,7 +57,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const HeaderPDf = () => {
+const HeaderPDf = ({ pdfCompany }) => {
+  const companyName = pdfCompany?.name || "DriverApp";
+  const logoSrc = pdfCompany?.logoDataUrl || pdfCompany?.logoUrl || null;
   const [imageBase64, setImageBase64] = useState(null);
 
   // useEffect(() => {
@@ -72,13 +74,16 @@ const HeaderPDf = () => {
   return (
     <View style={styles.header}>
       <View>
-        <Text style={styles.companyName}>FFA Inc</Text>
-        <Text style={styles.address}>3506 Bristol Ln, Elk Grove</Text>
-        <Text style={styles.address}>Village, IL 60007 </Text>
+        <Text style={styles.companyName}>{companyName}</Text>
+        <Text style={styles.address}> </Text>
+        <Text style={styles.address}> </Text>
       </View>
       <View style={styles.logo}>
-        {/* <Image style={styles.logoText} src="/ffa.png" /> */}
-        <Image style={styles.logoImg} src="/ffa.png" />
+        {logoSrc ? (
+          <Image style={styles.logoImg} src={logoSrc} />
+        ) : (
+          <Text style={styles.logoText}>CAM</Text>
+        )}
       </View>
     </View>
   );

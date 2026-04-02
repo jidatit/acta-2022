@@ -2,7 +2,8 @@ import React from "react";
 import { Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import HeaderPDf from "./HeaderPDf";
 
-const Page7 = ({ formData, truckDriverData }) => {
+const Page7 = ({ formData, pdfCompany }) => {
+  const companyName = pdfCompany?.name || "Company";
   return (
     <Page size="A4" style={styles.page}>
       {/* <HeaderPDf /> */}
@@ -35,7 +36,7 @@ const Page7 = ({ formData, truckDriverData }) => {
           the dates of my negative drug and/or alcohol tests and/or tests with
           results below two -year period; and (VII) the name and phone number of
           any substance abuse professional who evaluated me during the past{" "}
-          {`${truckDriverData?.selectedCompany?.name || `Freight For All`}`}.
+          {`${companyName}`}.
         </Text>
       </View>
 

@@ -1,27 +1,18 @@
 import React from "react";
 import {
   Document,
-  Page,
-  View,
-  Text,
   StyleSheet,
   PDFViewer,
   pdf,
 } from "@react-pdf/renderer";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { saveAs } from "file-saver";
 import { useEffect, useState } from "react";
-import { db } from "../../../config/firebaseConfig";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { db, storage } from "../../../config/firebaseConfig";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { getBlob, ref as storageRef } from "firebase/storage";
+import { resolvePdfCompany } from "./pdf/resolvePdfCompany";
+import Loader from "../../SharedUiComponents/Loader";
 
 import Page1 from "./pdf/Page1";
 import Page2 from "./pdf/Page2";
@@ -101,98 +92,143 @@ const styles = StyleSheet.create({
   },
 });
 
-const MyDocument = ({ formData, truckDriverData }) => (
+const MyDocument = ({ formData, truckDriverData, pdfCompany }) => (
   <Document>
-    <Page1 formData={formData} truckDriverData={truckDriverData} />
+    <Page1
+      formData={formData}
+      truckDriverData={truckDriverData}
+      pdfCompany={pdfCompany}
+    />
 
-    <Page2 formData={formData} />
+    <Page2 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page3 formData={formData} />
+    <Page3 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page4 formData={formData} />
+    <Page4 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page5 formData={formData} />
+    <Page5 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page6 formData={formData} truckDriverData={truckDriverData} />
+    <Page6 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page7 formData={formData} truckDriverData={truckDriverData} />
+    <Page7 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page8 formData={formData} />
+    <Page8 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page9 formData={formData} />
+    <Page9 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page10 formData={formData} />
+    <Page10 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page11 formData={formData} />
+    <Page11 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page12 formData={formData} />
+    <Page12 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page13 formData={formData} />
+    <Page13 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page14 formData={formData} />
+    <Page14 formData={formData} pdfCompany={pdfCompany} />
 
-    <Page15 formData={formData} />
-    <Page16 truckDriverData={truckDriverData} />
+    <Page15 formData={formData} pdfCompany={pdfCompany} />
+    <Page16 truckDriverData={truckDriverData} pdfCompany={pdfCompany} />
 
-    <Page17 truckDriverData={truckDriverData} />
-    <Page18 truckDriverData={truckDriverData} />
-    <Page19 truckDriverData={truckDriverData} />
-    <Page20 formData={formData} truckDriverData={truckDriverData} />
-    <Page21 formData={formData} />
+    <Page17 pdfCompany={pdfCompany} />
+    <Page18 pdfCompany={pdfCompany} />
+    <Page19 pdfCompany={pdfCompany} />
+    <Page20 formData={formData} truckDriverData={truckDriverData} pdfCompany={pdfCompany} />
+    <Page21 formData={formData} pdfCompany={pdfCompany} />
   </Document>
 );
 
 const PdfModal = ({ openModal, setOpenModal, uid }) => {
   const [formData, setFormData] = useState({});
   const [truckDriverData, setTruckDriverData] = useState(null); // <-- new state
+  const [pdfCompany, setPdfCompany] = useState({
+    name: "DriverApp",
+    logoUrl: null,
+    logoDataUrl: null,
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchFormAndDriverData = async () => {
-      if (!uid) return;
+      // Only fetch when the modal is actually opened
+      if (!openModal || !uid) return;
 
       setIsLoading(true);
 
       try {
-        // Step 1: Fetch application form data
+        // companyInfo is assumed to have ONE document.
+        const companySnap = await getDocs(collection(db, "companyInfo"));
+        const companyDoc = companySnap.docs[0];
+        const companyInfoData = companyDoc
+          ? { id: companyDoc.id, ...companyDoc.data() }
+          : null;
+
+        // Step 1: Search TruckDrivers collection for matching uid
+        const driversSnap = await getDocs(collection(db, "TruckDrivers"));
+        const matchedDriver =
+          driversSnap.docs.map((d) => d.data()).find((d) => d?.uid === uid) ||
+          null;
+
+        setTruckDriverData(matchedDriver);
+
+        const resolved = resolvePdfCompany(companyInfoData, matchedDriver);
+
+        // react-pdf can be strict about remote image loading.
+        // So we convert the Firebase Storage object to a base64 data URL (authenticated).
+        let logoDataUrl = null;
+        if (resolved?.logoUrl) {
+          try {
+            // Extract storage object path from a download URL like:
+            // https://.../o/<encodedPath>?alt=media&token=...
+            const match = String(resolved.logoUrl).match(/\/o\/([^?]+)\?/);
+            const encodedPath = match?.[1];
+            const objectPath = encodedPath ? decodeURIComponent(encodedPath) : null;
+
+            if (objectPath) {
+              const blob = await getBlob(storageRef(storage, objectPath));
+              logoDataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+              });
+            } else {
+              // Fallback: try remote fetch (may fail if Storage rules require auth).
+              const resp = await fetch(resolved.logoUrl);
+              if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+              const blob = await resp.blob();
+              logoDataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+              });
+            }
+          } catch (e) {
+            console.warn("Failed to inline logo for PDF:", e);
+          }
+        }
+
+        setPdfCompany({
+          ...resolved,
+          logoDataUrl,
+        });
+
+        // Step 2: Fetch application form data (optional; if missing, still render with empty form)
         const appDocRef = doc(db, "truck_driver_applications", uid);
         const appSnap = await getDoc(appDocRef);
-
-        if (!appSnap.exists()) {
-          throw new Error("Application not found");
-        }
-
-        const applicationData = appSnap.data();
-        setFormData(applicationData);
-
-        // Step 2: Search TruckDrivers collection for matching uid
-        const driversSnap = await getDocs(collection(db, "TruckDrivers"));
-
-        let matchedDriver = null;
-
-        driversSnap.forEach((docSnap) => {
-          const driver = docSnap.data();
-          if (driver?.uid === uid) {
-            matchedDriver = driver;
-          }
-        });
-        console.log("matchedDriver", matchedDriver);
-        if (matchedDriver) {
-          setTruckDriverData(matchedDriver);
-          console.log("Matched Truck Driver:", matchedDriver);
+        if (appSnap.exists()) {
+          setFormData(appSnap.data());
         } else {
-          console.warn("No matching truck driver found for uid:", uid);
+          setFormData({});
+          console.warn("Application not found for uid:", uid);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching PDF data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchFormAndDriverData();
-  }, [uid]);
-  console.log("truckDriverData", truckDriverData);
+  }, [uid, openModal]);
   if (!openModal) return null;
 
   return (
@@ -212,13 +248,14 @@ const PdfModal = ({ openModal, setOpenModal, uid }) => {
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-full w-full">
-              loading...
+              <Loader2 size={40} className="animate-spin text-blue-500" />
             </div>
           ) : (
             <PDFViewer width="100%" height="100%">
               <MyDocument
                 formData={formData}
                 truckDriverData={truckDriverData}
+                pdfCompany={pdfCompany}
               />
             </PDFViewer>
           )}
