@@ -28,25 +28,38 @@ const SignUpPage = () => {
     driverStatus: "",
   });
   const [logoPreview, setLogoPreview] = useState(null);
+  const [logoLoading, setLogoLoading] = useState(true);
   const [companyInfo, setCompanyInfo] = useState(null);
   useEffect(() => {
+    const preloadLogo = (url) =>
+      new Promise((resolve) => {
+        if (!url) return resolve(false);
+        const img = new window.Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+
     // Try to get cached data first
 
     const cachedLogoUrl = localStorage.getItem("companyLogo");
     const lastFetchTimestamp = localStorage.getItem("lastCompanyInfoFetch");
 
-    if (cachedLogoUrl) {
-      // setCompanyInfo(JSON.parse(cachedCompanyInfo));
-      setLogoPreview(cachedLogoUrl);
-    }
-
     // Set up real-time listener for changes
     const companyCollection = collection(db, "companyInfo");
-    const unsubscribe = onSnapshot(companyCollection, (snapshot) => {
+    const unsubscribe = onSnapshot(companyCollection, async (snapshot) => {
       const companyData = snapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }))[0]; // Getting first document
+
+      if (!companyData?.logoUrl && cachedLogoUrl) {
+        const loaded = await preloadLogo(cachedLogoUrl);
+        if (loaded) {
+          setLogoPreview(cachedLogoUrl);
+          setLogoLoading(false);
+        }
+      }
 
       if (companyData) {
         // Compare with cached data
@@ -58,14 +71,22 @@ const SignUpPage = () => {
         if (JSON.stringify(cachedData) !== JSON.stringify(companyData)) {
           // Update state
           setCompanyInfo(companyData);
-          setLogoPreview(companyData.logoUrl);
+          if (companyData.logoUrl) {
+            const loaded = await preloadLogo(companyData.logoUrl);
+            if (loaded) {
+              setLogoPreview(companyData.logoUrl);
+            }
+          }
 
           // Update cache
           // localStorage.setItem("companyInfo", JSON.stringify(companyData));
-          localStorage.setItem("companyLogo", companyData.logoUrl);
+          if (companyData.logoUrl) {
+            localStorage.setItem("companyLogo", companyData.logoUrl);
+          }
           localStorage.setItem("lastCompanyInfoFetch", Date.now().toString());
         }
       }
+      setLogoLoading(false);
     });
 
     // Cleanup listener
@@ -167,6 +188,11 @@ const SignUpPage = () => {
                 alt="Company logo preview"
                 className="w-[80%] max-h-[48vh] h-[40vh] rounded-xl text-center mx-auto object-contain"
               />
+            ) : logoLoading ? (
+              <div className="flex flex-col items-center justify-center h-full">
+                <Loader />
+                <span className="mt-2 text-sm text-gray-500">Loading logo</span>
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full">
                 <Camera className="w-8 h-8 text-gray-400" />

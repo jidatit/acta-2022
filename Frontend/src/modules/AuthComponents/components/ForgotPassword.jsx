@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth, db } from "../../../config/firebaseConfig";
+import Loader from "../../SharedUiComponents/Loader";
 import {
   collection,
   doc,
@@ -75,9 +76,9 @@ const ForgotPassword = () => {
       <main
         id="content"
         role="main"
-        className="flex items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-[#3B82F6]"
+        className="flex items-center justify-center w-screen h-[93vh] ssm:h-screen p-3 bg-black"
       >
-        <div className="bg-white w-[90%] md:w-[50%] lg:w-[30%] border-2 border-indigo-300 shadow-lg mt-7 rounded-xl dark:bg-white dark:border-gray-700">
+        <div className="bg-white w-[90%] md:w-[50%] lg:w-[30%] border border-gray-200 shadow-xl mt-7 rounded-xl dark:bg-white dark:border-gray-700">
           <div className="p-4 sm:p-7">
             <div className="text-center">
               <h1 className="block text-2xl font-bold text-gray-800 dark:text-gray-800">
@@ -99,7 +100,7 @@ const ForgotPassword = () => {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block mb-2 ml-1 text-sm font-bold dark:text-gray-800"
+                      className="block mb-2 ml-1 text-sm font-semibold dark:text-gray-800"
                     >
                       Email address
                     </label>
@@ -110,7 +111,7 @@ const ForgotPassword = () => {
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-md shadow-sm focus:border-black focus:ring-black"
+                        className="block w-full px-4 py-3 text-sm bg-blue-50 border border-gray-200 rounded-md shadow-sm focus:border-black focus:ring-black"
                         required
                         aria-describedby="email-error"
                       />
@@ -118,9 +119,10 @@ const ForgotPassword = () => {
                   </div>
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white transition-all bg-black border border-transparent rounded-md hover:bg-[#353535] focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                   >
-                    Reset password
+                    {isSubmitting ? <Loader /> : "Reset password"}
                   </button>
                 </div>
               </form>

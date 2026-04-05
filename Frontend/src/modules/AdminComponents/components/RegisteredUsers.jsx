@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { deleteUser } from "firebase/auth";
 import { useAuth } from "../../../AuthContext";
 import PdfModal from "./PdfModal";
+import Loader from "../../SharedUiComponents/Loader";
 
 const RegisteredUsers = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -29,6 +30,7 @@ const RegisteredUsers = () => {
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
   const [adminData, setAdminData] = useState(null);
 
@@ -118,9 +120,11 @@ const RegisteredUsers = () => {
           return dateB - dateA; // Descending order
         });
         setTruckDrivers(drivers);
+        setTableLoading(false);
       },
       (error) => {
         console.error("Error in snapshot listener:", error);
+        setTableLoading(false);
       }
     );
 
@@ -395,7 +399,23 @@ const RegisteredUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {truckDrivers.map((driver) => (
+            {tableLoading ? (
+              <tr>
+                <td colSpan={7} className="py-8">
+                  <div className="flex items-center justify-center gap-3 text-gray-600">
+                    <Loader className="text-blue-600" size={50}/>
+                    <span>Loading drivers...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : truckDrivers.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="py-8 text-center text-gray-500">
+                  No drivers found.
+                </td>
+              </tr>
+            ) : (
+              truckDrivers.map((driver) => (
               <tr key={driver.uid} className="hover:bg-gray-100 ">
                 <td className="px-4 py-2">
                   <input
@@ -450,39 +470,41 @@ const RegisteredUsers = () => {
                     )} */}
                   </div>
                 </td>
-                <td className=" px-2 py-3">
-                  <button
-                    className={`py-1 px-10 rounded ${
-                      driver.driverStatus === "registered"
-                        ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-black text-white hover:bg-[#353535]"
-                    }`}
-                    onClick={() => {
-                      if (driver.driverStatus !== "registered") {
-                        openModalWithUser(driver.uid);
-                      }
-                    }}
-                    disabled={driver.driverStatus === "registered"}
-                  >
-                    Edit
-                  </button>
-                  {driver.driverStatus === "approved" && (
+                <td className="px-2 py-3">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <button
-                      className={`py-1 ml-4 px-10 rounded ${
+                      className={`py-1 px-4 sm:px-6 rounded text-sm whitespace-nowrap ${
                         driver.driverStatus === "registered"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-black text-white hover:bg-[#353535]"
                       }`}
                       onClick={() => {
                         if (driver.driverStatus !== "registered") {
-                          openPDfModalWithUser(driver.uid);
+                          openModalWithUser(driver.uid);
                         }
                       }}
                       disabled={driver.driverStatus === "registered"}
                     >
-                      View PDF
+                      Edit
                     </button>
-                  )}
+                    {driver.driverStatus === "approved" && (
+                      <button
+                        className={`py-1 px-4 sm:px-6 rounded text-sm whitespace-nowrap ${
+                          driver.driverStatus === "registered"
+                            ? "bg-gray-400 text-white cursor-not-allowed"
+                            : "bg-black text-white hover:bg-[#353535]"
+                        }`}
+                        onClick={() => {
+                          if (driver.driverStatus !== "registered") {
+                            openPDfModalWithUser(driver.uid);
+                          }
+                        }}
+                        disabled={driver.driverStatus === "registered"}
+                      >
+                        View PDF
+                      </button>
+                    )}
+                  </div>
 
                   {openModal && currentUserId === driver.uid && (
                     <FormShowingModal
@@ -501,7 +523,7 @@ const RegisteredUsers = () => {
                   )}
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>
